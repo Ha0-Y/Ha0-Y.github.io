@@ -1,38 +1,265 @@
-<!doctype html>
-<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>汇编学习 - haoy&#039;s blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="haoy&#039;s blog"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="haoy&#039;s blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="基本的汇编学习。  学习目标：首先能看懂。然后尝试编写 shellcode。  个人习惯小写指令。  little-endian  常见的汇编格式  Intel格式。 AT&amp;amp;T，实际使用也很常见(Linux中默认的格式)   部分名词 1234ISA: Instruction Set Architecture, 指令集架构RISC: Reduced Instruction Set Com"><meta property="og:type" content="article"><meta property="og:title" content="汇编学习"><meta property="og:url" content="https://ha0-y.github.io/2023/06/10/%E6%B1%87%E7%BC%96%E5%AD%A6%E4%B9%A0/"><meta property="og:site_name" content="haoy&#039;s blog"><meta property="og:description" content="基本的汇编学习。  学习目标：首先能看懂。然后尝试编写 shellcode。  个人习惯小写指令。  little-endian  常见的汇编格式  Intel格式。 AT&amp;amp;T，实际使用也很常见(Linux中默认的格式)   部分名词 1234ISA: Instruction Set Architecture, 指令集架构RISC: Reduced Instruction Set Com"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://ha0-y.github.io/img/og_image.png"><meta property="article:published_time" content="2023-06-10T11:50:08.095Z"><meta property="article:modified_time" content="2023-06-21T06:02:22.019Z"><meta property="article:author" content="haoy"><meta property="article:tag" content="asm"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://ha0-y.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://ha0-y.github.io/2023/06/10/%E6%B1%87%E7%BC%96%E5%AD%A6%E4%B9%A0/"},"headline":"汇编学习","image":["https://ha0-y.github.io/img/og_image.png"],"datePublished":"2023-06-10T11:50:08.095Z","dateModified":"2023-06-21T06:02:22.019Z","author":{"@type":"Person","name":"haoy"},"publisher":{"@type":"Organization","name":"haoy's blog","logo":{"@type":"ImageObject","url":"https://ha0-y.github.io/img/logo.png"}},"description":"基本的汇编学习。  学习目标：首先能看懂。然后尝试编写 shellcode。  个人习惯小写指令。  little-endian  常见的汇编格式  Intel格式。 AT&amp;T，实际使用也很常见(Linux中默认的格式)   部分名词 1234ISA: Instruction Set Architecture, 指令集架构RISC: Reduced Instruction Set Com"}</script><link rel="canonical" href="https://ha0-y.github.io/2023/06/10/%E6%B1%87%E7%BC%96%E5%AD%A6%E4%B9%A0/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/googlecode.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
-  (function () {
-      function switchTab() {
-          if (!location.hash) {
-            return;
-          }
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-          const id = '#' + CSS.escape(location.hash.substring(1));
-          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
-          if (!$tabMenu) {
-            return;
-          }
+<link rel="stylesheet" href="/css/main.css">
 
-          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
-          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
-          Array.from($tabMenuContainer.querySelectorAll('a'))
-              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
-              .forEach($content => $content.classList.add('is-hidden'));
 
-          if ($tabMenu) {
-              $tabMenu.parentElement.classList.add('is-active');
-          }
-          const $activeTab = document.querySelector(id);
-          if ($activeTab) {
-              $activeTab.classList.remove('is-hidden');
-          }
-      }
-      switchTab();
-      window.addEventListener('hashchange', switchTab, false);
-  })();
-  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.png" alt="haoy&#039;s blog" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/archives">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-9-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-06-10T11:50:08.095Z" title="2023/6/10 19:50:08">2023-06-10</time>发表</span><span class="level-item"><time dateTime="2023-06-21T06:02:22.019Z" title="2023/6/21 14:02:22">2023-06-21</time>更新</span><span class="level-item"><a class="link-muted" href="/categorievariants/asm/">asm</a></span><span class="level-item">15 分钟读完 (大约2248个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">汇编学习</h1><div class="content"><ul>
-<li><p>基本的汇编学习。</p>
-</li>
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ha0-y.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":18,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="基本的汇编学习。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="汇编学习">
+<meta property="og:url" content="https://ha0-y.github.io/2023/06/10/%E6%B1%87%E7%BC%96%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="personal blog">
+<meta property="og:description" content="基本的汇编学习。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-06-10T11:50:08.095Z">
+<meta property="article:modified_time" content="2023-09-01T09:33:59.454Z">
+<meta property="article:author" content="Ha0Y">
+<meta property="article:tag" content="asm">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://ha0-y.github.io/2023/06/10/%E6%B1%87%E7%BC%96%E5%AD%A6%E4%B9%A0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>汇编学习 | personal blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">personal blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">I'm possible</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ha0-y.github.io/2023/06/10/%E6%B1%87%E7%BC%96%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ha0Y">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="personal blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          汇编学习
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-06-10 19:50:08" itemprop="dateCreated datePublished" datetime="2023-06-10T19:50:08+08:00">2023-06-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-09-01 17:33:59" itemprop="dateModified" datetime="2023-09-01T17:33:59+08:00">2023-09-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categorievariants/asm/" itemprop="url" rel="index"><span itemprop="name">asm</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>11 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>基本的汇编学习。</p>
+</blockquote>
+<span id="more"></span>
+
+<ul>
 <li><p>学习目标：首先能看懂。然后尝试编写 <code>shellcode</code>。</p>
 </li>
 <li><p>个人习惯小写指令。</p>
@@ -46,8 +273,10 @@
 </ul>
 </li>
 <li><p>部分名词</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ISA: Instruction Set Architecture, 指令集架构</span><br><span class="line">RISC: Reduced Instruction Set Computer, 精简指令集计算机</span><br><span class="line">CISC: Complex Instruction Set Computer, 复杂指令集计算机</span><br><span class="line">ABI: application binary interface</span><br></pre></td></tr></table></figure></li>
+</li>
 </ul>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ISA: Instruction Set Architecture, 指令集架构</span><br><span class="line">RISC: Reduced Instruction Set Computer, 精简指令集计算机</span><br><span class="line">CISC: Complex Instruction Set Computer, 复杂指令集计算机</span><br><span class="line">ABI: application binary interface</span><br></pre></td></tr></table></figure>
+
 <h2 id="环境问题"><a href="#环境问题" class="headerlink" title="环境问题"></a>环境问题</h2><ul>
 <li><p>本机 linux: ubuntu &amp;&amp; kali virtual machine；CPU: AMD。</p>
 <ul>
@@ -65,84 +294,126 @@
 </ul>
 </li>
 <li><p>arm 环境</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># gun 编译工具链 + 动态链接库</span></span><br><span class="line">sudo apt list gcc* | grep arm</span><br><span class="line">sudo apt install gcc-arm-linux-gnueabi gcc-aarch64-linux-gnu</span><br><span class="line"></span><br><span class="line"><span class="comment"># optional: qemu arm system mode</span></span><br><span class="line">sudo apt list  <span class="string">&quot;qemu*&quot;</span> <span class="comment"># 寻找对用的arch</span></span><br><span class="line">sudo apt install qemu-system-arm qemu-system-aarch64</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>mips 环境.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># gun 编译工具链</span></span><br><span class="line">sudo apt install gcc-mips-linux-gnu gcc-mips64-linux-gnuabi64 gcc-mipsel-linux-gnu gcc-mips64el-linux-gnuabi64</span><br><span class="line"></span><br><span class="line"><span class="comment"># optional: qemu mips system mode, 目前没见过， user mode 应该够了</span></span><br><span class="line">sudo apt install qemu-system-mips</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>gdb</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install gdb gdb-multiarch</span><br></pre></td></tr></table></figure></li>
 </ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># gun 编译工具链 + 动态链接库</span></span><br><span class="line">sudo apt list gcc* | grep arm</span><br><span class="line">sudo apt install gcc-arm-linux-gnueabi gcc-aarch64-linux-gnu</span><br><span class="line"></span><br><span class="line"><span class="comment"># optional: qemu arm system mode</span></span><br><span class="line">sudo apt list  <span class="string">&quot;qemu*&quot;</span> <span class="comment"># 寻找对用的arch</span></span><br><span class="line">sudo apt install qemu-system-arm qemu-system-aarch64</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>mips 环境.</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># gun 编译工具链</span></span><br><span class="line">sudo apt install gcc-mips-linux-gnu gcc-mips64-linux-gnuabi64 gcc-mipsel-linux-gnu gcc-mips64el-linux-gnuabi64</span><br><span class="line"></span><br><span class="line"><span class="comment"># optional: qemu mips system mode, 目前没见过， user mode 应该够了</span></span><br><span class="line">sudo apt install qemu-system-mips</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>gdb</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install gdb gdb-multiarch</span><br></pre></td></tr></table></figure>
+
 <h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><ul>
 <li><p>qemu-user 使用 <code>-g</code> gdb模式 确定gdb调试端口</p>
 </li>
 <li><p>qemu-system 使用 <code>-s -S  或者 -gdb tcp:1234</code> gdbserver等待连接，默认端口 <code>1234</code></p>
 </li>
 <li><p>编程测试</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;hello, world!&quot;</span>);</span><br><span class="line">	getchar();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>寻找动态链接库。<code>lib-&gt;/usr/lib</code> 的链接</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">ls</span> -al /usr/lib | grep arm  <span class="comment"># aarch64 mips...</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>arm 测试，不知为什么，测试时 <code>-g</code>放前面才成功</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 编译</span></span><br><span class="line">arm-linux-gnueabi-gcc hello.c -o helloarm -g</span><br><span class="line">aarch64-linux-gnu-gcc hello.c -o helloaarch -g</span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行</span></span><br><span class="line">$ qemu-arm -L /usr/arm-linux-gnueabi ./helloarm</span><br><span class="line">$ qemu-aarch64</span><br><span class="line"></span><br><span class="line"><span class="comment"># 调试</span></span><br><span class="line">$ qemu-arm -g 1234 -L /usr/arm-linux-gnueabi ./helloarm </span><br><span class="line">$ gdb-multiarch</span><br><span class="line">gdb&gt; <span class="built_in">set</span> <span class="built_in">arch</span> arm <span class="comment"># aarch64</span></span><br><span class="line">gdb&gt; target remote localhost:1234</span><br><span class="line">xxx </span><br></pre></td></tr></table></figure>
-</li>
-<li><p>mips 测试, 与arm类似</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ mips-linux-gnu-gcc hello.c -o hellomips -g</span><br><span class="line">...</span><br></pre></td></tr></table></figure></li>
 </ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;hello, world!&quot;</span>);</span><br><span class="line">	getchar();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>寻找动态链接库。<code>lib-&gt;/usr/lib</code> 的链接</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">ls</span> -al /usr/lib | grep arm  <span class="comment"># aarch64 mips...</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>arm 测试，不知为什么，测试时 <code>-g</code>放前面才成功</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 编译</span></span><br><span class="line">arm-linux-gnueabi-gcc hello.c -o helloarm -g</span><br><span class="line">aarch64-linux-gnu-gcc hello.c -o helloaarch -g</span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行</span></span><br><span class="line">$ qemu-arm -L /usr/arm-linux-gnueabi ./helloarm</span><br><span class="line">$ qemu-aarch64</span><br><span class="line"></span><br><span class="line"><span class="comment"># 调试</span></span><br><span class="line">$ qemu-arm -g 1234 -L /usr/arm-linux-gnueabi ./helloarm </span><br><span class="line">$ gdb-multiarch</span><br><span class="line">gdb&gt; <span class="built_in">set</span> <span class="built_in">arch</span> arm <span class="comment"># aarch64</span></span><br><span class="line">gdb&gt; target remote localhost:1234</span><br><span class="line">xxx </span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>mips 测试, 与arm类似</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ mips-linux-gnu-gcc hello.c -o hellomips -g</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
 <h2 id="x86"><a href="#x86" class="headerlink" title="x86"></a>x86</h2><ul>
 <li>CISC</li>
 </ul>
 <h3 id="x86-1"><a href="#x86-1" class="headerlink" title="x86"></a>x86</h3><ul>
-<li><p>intel x86 通用寄存器</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">; 通用</span><br><span class="line">eax: 累加器</span><br><span class="line">ebx: 一般基址寄存器，base</span><br><span class="line">ecx: counter, 在loop时，默认计数</span><br><span class="line">edx: 一般用于存放data</span><br><span class="line"></span><br><span class="line">esi: source index, 处理字符串常用</span><br><span class="line">edi: destinatin index, 处理字符串常用</span><br><span class="line"></span><br><span class="line">esp: stack pointer, 栈顶</span><br><span class="line">ebp: base pointer, 栈基址</span><br><span class="line"></span><br><span class="line">eip: 指向将要执行的指令。</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>标志位 <code>eflags</code></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">CF: carry flag, 进位</span><br><span class="line">ZF: zero, 0</span><br><span class="line">SF: sign, 符号</span><br><span class="line">OF: overflow, 溢出</span><br><span class="line">TF: trap, 跟踪</span><br><span class="line">IF: interrupt, 中断</span><br><span class="line">PF: parity, 奇偶</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>段寄存器</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cs: code segment 代码段</span><br><span class="line">ds: data 数据段</span><br><span class="line">ss: stack 堆栈段</span><br><span class="line">es: extend 扩展段</span><br><span class="line">fs: 数据段</span><br><span class="line">gs: 数据段</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>控制寄存器</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">; 某些保护模式</span><br><span class="line">cr0-cr4</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>寻址</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mov</span><br><span class="line">lea</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>算术指令</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">; 基本运算</span><br><span class="line">add</span><br><span class="line">sub</span><br><span class="line">mul</span><br><span class="line">div</span><br><span class="line">inc</span><br><span class="line">dec</span><br><span class="line"></span><br><span class="line">; 逻辑运算</span><br><span class="line">cmp</span><br><span class="line">and</span><br><span class="line">or</span><br><span class="line">xor</span><br><span class="line">not</span><br><span class="line"></span><br><span class="line">; 移位操作</span><br><span class="line">shl  ; shift left</span><br><span class="line">shr</span><br><span class="line">sal  ; shift arithmetic left 算数左移</span><br><span class="line">sar</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>跳转</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">; jmp 类</span><br><span class="line">jmp</span><br><span class="line">jb   ; blow</span><br><span class="line">jg   ; greater</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>函数调用</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">call function</span><br><span class="line">; call 执行时，保存 eip+4, 并跳转到对应地址</span><br><span class="line">; 参数传递，使用栈传递参数</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>栈帧</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">; 在调用子程序时，会开辟子程序的栈帧。esp和ebp保存栈顶和栈底</span><br><span class="line">; 在返回父程序需要还原esp, ebp指针。</span><br><span class="line">; 栈 低地址生长</span><br><span class="line"></span><br><span class="line">; sp自动变化</span><br><span class="line">push ebx  ; sp-4</span><br><span class="line">pop rax   ; sp+4</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>系统调用</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">; 系统中断处理syscall</span><br><span class="line">int 0x80            ; eax系统调用号 ebx, ecx, edx对应函数前三个参数</span><br></pre></td></tr></table></figure></li>
+<li>intel x86 通用寄存器</li>
 </ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">; 通用</span><br><span class="line">eax: 累加器</span><br><span class="line">ebx: 一般基址寄存器，base</span><br><span class="line">ecx: counter, 在loop时，默认计数</span><br><span class="line">edx: 一般用于存放data</span><br><span class="line"></span><br><span class="line">esi: source index, 处理字符串常用</span><br><span class="line">edi: destinatin index, 处理字符串常用</span><br><span class="line"></span><br><span class="line">esp: stack pointer, 栈顶</span><br><span class="line">ebp: base pointer, 栈基址</span><br><span class="line"></span><br><span class="line">eip: 指向将要执行的指令。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>标志位 <code>eflags</code></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">CF: carry flag, 进位</span><br><span class="line">ZF: zero, 0</span><br><span class="line">SF: sign, 符号</span><br><span class="line">OF: overflow, 溢出</span><br><span class="line">TF: trap, 跟踪</span><br><span class="line">IF: interrupt, 中断</span><br><span class="line">PF: parity, 奇偶</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>段寄存器</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cs: code segment 代码段</span><br><span class="line">ds: data 数据段</span><br><span class="line">ss: stack 堆栈段</span><br><span class="line">es: extend 扩展段</span><br><span class="line">fs: 数据段</span><br><span class="line">gs: 数据段</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>控制寄存器</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">; 某些保护模式</span><br><span class="line">cr0-cr4</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>寻址</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mov</span><br><span class="line">lea</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>算术指令</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">; 基本运算</span><br><span class="line">add</span><br><span class="line">sub</span><br><span class="line">mul</span><br><span class="line">div</span><br><span class="line">inc</span><br><span class="line">dec</span><br><span class="line"></span><br><span class="line">; 逻辑运算</span><br><span class="line">cmp</span><br><span class="line">and</span><br><span class="line">or</span><br><span class="line">xor</span><br><span class="line">not</span><br><span class="line"></span><br><span class="line">; 移位操作</span><br><span class="line">shl  ; shift left</span><br><span class="line">shr</span><br><span class="line">sal  ; shift arithmetic left 算数左移</span><br><span class="line">sar</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>跳转</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">; jmp 类</span><br><span class="line">jmp</span><br><span class="line">jb   ; blow</span><br><span class="line">jg   ; greater</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>函数调用</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">call function</span><br><span class="line">; call 执行时，保存 eip+4, 并跳转到对应地址</span><br><span class="line">; 参数传递，使用栈传递参数</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>栈帧</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">; 在调用子程序时，会开辟子程序的栈帧。esp和ebp保存栈顶和栈底</span><br><span class="line">; 在返回父程序需要还原esp, ebp指针。</span><br><span class="line">; 栈 低地址生长</span><br><span class="line"></span><br><span class="line">; sp自动变化</span><br><span class="line">push ebx  ; sp-4</span><br><span class="line">pop rax   ; sp+4</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>系统调用</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">; 系统中断处理syscall</span><br><span class="line">int 0x80            ; eax系统调用号 ebx, ecx, edx对应函数前三个参数</span><br></pre></td></tr></table></figure>
+
+
 <h3 id="x86-64"><a href="#x86-64" class="headerlink" title="x86-64"></a>x86-64</h3><ul>
 <li><p>实际上x86-64与AMD64基本是同一个ISA，现在我们使用购买的Intel或者AMD生产的CPU，都属于x86-64的ISA。</p>
 </li>
 <li><p>x86-64: 64位，可寻址 <code>2^64</code>, 兼容x86</p>
+</li>
+</ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">; 32位 r-&gt;b比如 rax-&gt;eax</span><br><span class="line">rax, rbx, rcx, rdx</span><br><span class="line">rsi, rdi</span><br><span class="line">rsp, rbp</span><br><span class="line">r8: r8d 32位 寄存器，低32位</span><br><span class="line">r9: r9d</span><br><span class="line">r10: ...</span><br><span class="line">r11: ...</span><br><span class="line">r12: ...</span><br><span class="line">r13: ...</span><br><span class="line">r14: ...</span><br><span class="line">r15: ...</span><br></pre></td></tr></table></figure>
 
-</li>
-<li><p>函数调用约定, 与x86相差较大</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">; 函数参数</span><br><span class="line">rdi, rsi, rdx, rcx, r8, r9           ; 传递前6个参数，第7个参数开始和x86一样使用栈传递</span><br><span class="line"></span><br><span class="line">; 返回值</span><br><span class="line">rax</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>系统调用</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">; syscall</span><br><span class="line">rax: 系统调用号</span><br><span class="line">; 参数传递与函数一致， rdi, rsi...</span><br></pre></td></tr></table></figure></li>
+
+<ul>
+<li>函数调用约定, 与x86相差较大</li>
 </ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">; 函数参数</span><br><span class="line">rdi, rsi, rdx, rcx, r8, r9           ; 传递前6个参数，第7个参数开始和x86一样使用栈传递</span><br><span class="line"></span><br><span class="line">; 返回值</span><br><span class="line">rax</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>系统调用</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">; syscall</span><br><span class="line">rax: 系统调用号</span><br><span class="line">; 参数传递与函数一致， rdi, rsi...</span><br></pre></td></tr></table></figure>
+
 <h2 id="ARM"><a href="#ARM" class="headerlink" title="ARM"></a>ARM</h2><ul>
 <li><p>RISC</p>
 </li>
 <li><p>ARM指令格式</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">label op-code oprand1 oprand2 oprand3 ...        @commit</span><br><span class="line"></span><br><span class="line">@ 更加学术 rd: destination; rn: 寄存器中用于算术运算的操作数; shifter_operand: 数据处理指令</span><br><span class="line">&lt;opcode&gt; &#123;&lt;cond&gt;&#125; &#123;S&#125; &lt;rd&gt;,&lt;rn&gt;,&lt;shifter_operand&gt;</span><br><span class="line"></span><br><span class="line">@ 注释  `@`, `//`  `/**/` `;`</span><br></pre></td></tr></table></figure></li>
+</li>
 </ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">label op-code oprand1 oprand2 oprand3 ...        @commit</span><br><span class="line"></span><br><span class="line">@ 更加学术 rd: destination; rn: 寄存器中用于算术运算的操作数; shifter_operand: 数据处理指令</span><br><span class="line">&lt;opcode&gt; &#123;&lt;cond&gt;&#125; &#123;S&#125; &lt;rd&gt;,&lt;rn&gt;,&lt;shifter_operand&gt;</span><br><span class="line"></span><br><span class="line">@ 注释  `@`, `//`  `/**/` `;`</span><br></pre></td></tr></table></figure>
+
 <h3 id="ARMv7"><a href="#ARMv7" class="headerlink" title="ARMv7"></a>ARMv7</h3><ul>
 <li><p>32位指令集<code>A32</code>，兼容16位指令集<code>T16</code></p>
 <ul>
@@ -150,55 +421,84 @@
 </ul>
 </li>
 <li><p>ARMv7通用寄存器</p>
+</li>
+</ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">r0-r3: args, 函数前四个参数，返回值也会存入r0. </span><br><span class="line">r4-r10:  </span><br><span class="line">r11: fp, frame pointer</span><br><span class="line">r12: ip, Intra-Procedure-call scratch register, 在新版本当作通用寄存器使用，会在bl时引发bug</span><br><span class="line">r13: sp, stack pointer</span><br><span class="line">r14: lr, link register</span><br><span class="line">r15: pc, program count, 指向下一条需要执行的指令</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>标志位(CPSR: program status reg),如果想改变，需要在某些指令后加 <code>s</code> (sub -&gt; subs)</p>
+
+<ul>
+<li>标志位(CPSR: program status reg),如果想改变，需要在某些指令后加 <code>s</code> (sub -&gt; subs)</li>
+</ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">N: negative, 运算结果&gt;=0 N=0, 负数，N=1</span><br><span class="line">Z: zero, 为0</span><br><span class="line">C: carry, 进位</span><br><span class="line">V: overflow 有溢出</span><br><span class="line"></span><br><span class="line">; cmp 可以改变</span><br><span class="line">cmp r0, r1</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>mov 立即数</p>
+
+<ul>
+<li>mov 立即数</li>
+</ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mov r0, #1     @ r0 &lt;- 1</span><br><span class="line"></span><br><span class="line">@ 特殊寄存器 cpsr || spsr</span><br><span class="line">mrs r0, cpsr   @ r0 &lt;- cpsr</span><br><span class="line">msr cpsr, r1   @ cpsr &lt;- r1</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>访问内存</p>
+
+<ul>
+<li>访问内存</li>
+</ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@ 不能直接像intel mov访问内存, 使用 load, store命令间接访问内存</span><br><span class="line">ldr rd, [rn , #offset]   @ load register</span><br><span class="line">str rd, [rn, #offset]</span><br><span class="line">ldm                      @ load multiple</span><br><span class="line">stm  </span><br><span class="line"></span><br><span class="line">; 例子</span><br><span class="line">ldr r0, =0X20000002  @ r0=0X20000002，加载地址到寄存器 </span><br><span class="line">str r1, [r0]         @ r1 中的值写入到 r0 中所保存的地址中</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>算术指令</p>
+
+<ul>
+<li>算术指令</li>
+</ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">@ 基本算数运算</span><br><span class="line">add rd, rn, rm   @ rd = rn + rm</span><br><span class="line">sub rd, rn, rm   @ rd = rn - rm</span><br><span class="line">mul rd, rn, rm   @ rd = rn * rm</span><br><span class="line">sdiv rd, rn, rm  @ rd = rn / rm, s(ign)div u(nsign)div</span><br><span class="line"></span><br><span class="line">@ 想改变标志位, 加 &#x27;s&#x27; =&gt; subs...</span><br><span class="line"></span><br><span class="line">@ 逻辑运算</span><br><span class="line">and rd, rn       @ rd = rd &amp; rn</span><br><span class="line">and rd, rn, #imm @ rd = rn &amp; #imm</span><br><span class="line">orr rd, rn       @ rd = rd | rn</span><br><span class="line">eor rd, rn       @ rd = rd ^ rn</span><br><span class="line"></span><br><span class="line">@ 移位操作</span><br><span class="line">lsl   @ logic shift left 逻辑左移</span><br><span class="line">lsr   @ 逻辑右移</span><br><span class="line">asr   @ arithmetic shift right 算数右移</span><br><span class="line">ror   @ rotate right 循环右移</span><br></pre></td></tr></table></figure>
 
-</li>
-<li><p>程序跳转</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">b: 直接跳到label。 branch</span><br><span class="line">bx: 跳转+状态切换    @ ARM/Thumb 模式(使用一次，切换一次)</span><br><span class="line">bl: b + link, 首先保存下一条指令地址到lr, 然后改变pc。</span><br><span class="line">blx: bl+bx</span><br><span class="line"></span><br><span class="line">@ 条件跳转, 状态寄存器</span><br><span class="line">eq: equal 相等</span><br><span class="line">ne: not eq</span><br><span class="line">lt: less </span><br><span class="line">le: less equal</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>函数调用 </p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@ 仍然是使用 `b` 指令调用函数</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>栈帧相关</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">@ sp, fp 维护栈帧的状态, 栈向 低地址生长</span><br><span class="line"></span><br><span class="line">fp -&gt; +-------+</span><br><span class="line">      | frame |</span><br><span class="line">sp -&gt; +-------+</span><br><span class="line"></span><br><span class="line">@ push/pop 可以操作多个寄存器，甚至可以控制pc; sp自动变化</span><br><span class="line">@ 下面是常见的函数调用出现出现的gadget </span><br><span class="line">push &#123;r0-r4, lr&#125;           @ 顺序是 push r12; push r4; push r3 ...</span><br><span class="line">...</span><br><span class="line">pop &#123;r0-r4, pc&#125;            @ 顺序是  pop r0; pop r1; ...</span><br><span class="line"></span><br><span class="line">@ 等价于 push, 先计算sp的值?</span><br><span class="line">stmfd sp!, &#123;r0-r4, r12&#125;</span><br><span class="line"></span><br><span class="line">@ 等价于 pop</span><br><span class="line">ldmfd sp!, lr</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>系统中断</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@ 通过vector_swi/svc 获得系统调用号</span><br><span class="line">swi #imm</span><br><span class="line">svc #imm</span><br><span class="line"></span><br><span class="line">@ O(old)ABI 形式</span><br><span class="line">mov r0, #34</span><br><span class="line">swi 12</span><br><span class="line"></span><br><span class="line">@ E(extended)ABI 形式，立即数 imm被忽略,由r0决定</span><br><span class="line">mov r0, #12</span><br><span class="line">mov r1, #34</span><br><span class="line">swi 0</span><br></pre></td></tr></table></figure></li>
+
+<ul>
+<li>程序跳转</li>
 </ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">b: 直接跳到label。 branch</span><br><span class="line">bx: 跳转+状态切换    @ ARM/Thumb 模式(使用一次，切换一次)</span><br><span class="line">bl: b + link, 首先保存下一条指令地址到lr, 然后改变pc。</span><br><span class="line">blx: bl+bx</span><br><span class="line"></span><br><span class="line">@ 条件跳转, 状态寄存器</span><br><span class="line">eq: equal 相等</span><br><span class="line">ne: not eq</span><br><span class="line">lt: less </span><br><span class="line">le: less equal</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>函数调用</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@ 仍然是使用 `b` 指令调用函数</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>栈帧相关</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">@ sp, fp 维护栈帧的状态, 栈向 低地址生长</span><br><span class="line"></span><br><span class="line">fp -&gt; +-------+</span><br><span class="line">      | frame |</span><br><span class="line">sp -&gt; +-------+</span><br><span class="line"></span><br><span class="line">@ push/pop 可以操作多个寄存器，甚至可以控制pc; sp自动变化</span><br><span class="line">@ 下面是常见的函数调用出现出现的gadget </span><br><span class="line">push &#123;r0-r4, lr&#125;           @ 顺序是 push r12; push r4; push r3 ...</span><br><span class="line">...</span><br><span class="line">pop &#123;r0-r4, pc&#125;            @ 顺序是  pop r0; pop r1; ...</span><br><span class="line"></span><br><span class="line">@ 等价于 push, 先计算sp的值?</span><br><span class="line">stmfd sp!, &#123;r0-r4, r12&#125;</span><br><span class="line"></span><br><span class="line">@ 等价于 pop</span><br><span class="line">ldmfd sp!, lr</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>系统中断</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@ 通过vector_swi/svc 获得系统调用号</span><br><span class="line">swi #imm</span><br><span class="line">svc #imm</span><br><span class="line"></span><br><span class="line">@ O(old)ABI 形式</span><br><span class="line">mov r0, #34</span><br><span class="line">swi 12</span><br><span class="line"></span><br><span class="line">@ E(extended)ABI 形式，立即数 imm被忽略,由r0决定</span><br><span class="line">mov r0, #12</span><br><span class="line">mov r1, #34</span><br><span class="line">swi 0</span><br></pre></td></tr></table></figure>
+
 <h3 id="ARMv8"><a href="#ARMv8" class="headerlink" title="ARMv8"></a>ARMv8</h3><ul>
 <li><p>与 <code>armv7</code> 存在一定的区别</p>
 </li>
 <li><p>64位指令集 <code>aarch64</code>, 兼容32位 <code>aarch32</code></p>
+</li>
+</ul>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">aarch64: 64-bit registers and memory accesses, new instruction set；</span><br><span class="line">aarch32: backwards compatible with ARMv7-A</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>ARMv8 通用寄存器</p>
+
+<ul>
+<li>ARMv8 通用寄存器</li>
+</ul>
 <figure class="highlight arm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">x0</span>-x31</span><br><span class="line"><span class="symbol">x0</span>-x7: 函数前<span class="number">8</span>个参数值</span><br><span class="line"><span class="symbol">x8:</span> 函数返回值</span><br><span class="line"><span class="symbol">x19</span>-x28: 没特殊用途 </span><br><span class="line"><span class="symbol">x29:</span> <span class="built_in">fp</span> frame pointer</span><br><span class="line"><span class="symbol">x30:</span> <span class="built_in">lr</span></span><br><span class="line"><span class="symbol">x31:</span> zr, zero register, 恒<span class="number">0</span></span><br><span class="line"><span class="symbol">x32:</span> <span class="built_in">pc</span>, 不能像armv7一样被修改</span><br><span class="line"></span><br><span class="line"><span class="comment">@ 也可使用32位的 w0...寄存器, 可扩展使用</span></span><br><span class="line"></span><br><span class="line"><span class="comment">@ sp对应的物理寄存器有如下四个(某一时刻只能对应下面其中一个)</span></span><br><span class="line"><span class="symbol">SP_EL0</span>和SP_EL1</span><br><span class="line"><span class="symbol">SP_EL2</span></span><br><span class="line"><span class="symbol">SP_EL3</span></span><br></pre></td></tr></table></figure>
-</li>
+
+<ul>
 <li><p>SPSR 替代了 CPSR</p>
 </li>
 <li><p>内存访问</p>
+</li>
+</ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@ load &amp; store, 兼容armv7 ldr</span><br><span class="line">ldp  @ load pair 一对。</span><br><span class="line">	ldp x8, x2, [x0, #0x10]   @ 将x8&lt;-(x0+0x10), x2&lt;-(x0+0x10+8)</span><br><span class="line">stp  @ store pair</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>函数</p>
+
+<ul>
+<li>函数</li>
+</ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@ 参数传递</span><br><span class="line">x0-x7: 函数前8个参数值</span><br><span class="line">x8: 函数返回值</span><br><span class="line"></span><br><span class="line">@ aarch64没有push和pop 指令</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>系统调用</p>
+
+<ul>
+<li>系统调用</li>
+</ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@ supervisor call</span><br><span class="line">svc #imm</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>TrustZone 相关<br>xxx</p>
-</li>
+
+<ul>
+<li>TrustZone 相关<br>xxx</li>
 </ul>
 <h3 id="ARMv9"><a href="#ARMv9" class="headerlink" title="ARMv9"></a>ARMv9</h3><p>xxx</p>
 <h2 id="Mips"><a href="#Mips" class="headerlink" title="Mips"></a>Mips</h2><ul>
@@ -207,75 +507,258 @@
 <li><p><code>mips</code> 是<code>big-endian</code>, mipsel是 <code>little-endian</code></p>
 </li>
 <li><p>格式</p>
+</li>
+</ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 根据位数</span><br><span class="line">31-26   25-21 20-16 15-11  10-6  5-0</span><br><span class="line">op-code   rs    rt   rd    shamt func</span><br><span class="line"></span><br><span class="line"># 注释使用 `#`</span><br><span class="line"></span><br><span class="line">rd: register destination</span><br><span class="line">rt: target</span><br><span class="line">rs: source</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>通用寄存器， 32个</p>
-<figure class="highlight mips"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">$<span class="number">0</span>-$<span class="number">31</span>          <span class="comment"># 有各自的助记符，看汇编时多使用助记符</span></span><br><span class="line"><span class="symbol">$0:</span>    $<span class="built_in">zero</span>    <span class="comment"># 恒0</span></span><br><span class="line"><span class="number">1</span>:     $<span class="built_in">at</span>      # </span><br><span class="line"><span class="number">2</span><span class="number">-3</span>:   $<span class="built_in">v0</span>-<span class="built_in">v1</span>   <span class="comment"># value 函数返回值</span></span><br><span class="line"><span class="number">4</span><span class="number">-7</span>:   $<span class="built_in">a0</span>-<span class="built_in">a3</span>   <span class="comment"># arg  函数参数</span></span><br><span class="line"><span class="number">8</span><span class="number">-15</span>:  $<span class="built_in">t0</span>-<span class="built_in">t7</span>   <span class="comment"># temp</span></span><br><span class="line"><span class="number">16</span><span class="number">-23</span>: $<span class="built_in">s0</span>-<span class="built_in">s7</span>   <span class="comment"># save 保留</span></span><br><span class="line"><span class="number">24</span><span class="number">-25</span>: $<span class="built_in">t8</span>-<span class="built_in">t9</span>   <span class="comment"># temp</span></span><br><span class="line"><span class="number">16</span><span class="number">-27</span>: $<span class="built_in">k0</span>-<span class="built_in">k1</span>   <span class="comment"># 异常或中断</span></span><br><span class="line"><span class="number">28</span>:    $<span class="built_in">gp</span>      <span class="comment"># global pointer</span></span><br><span class="line"><span class="number">29</span>:    $<span class="built_in">sp</span>      <span class="comment"># stack pointer</span></span><br><span class="line"><span class="number">30</span>:    $<span class="built_in">fp</span>, <span class="built_in">s8</span>  <span class="comment"># frame pointer </span></span><br><span class="line"><span class="number">31</span>:    $<span class="built_in">ra</span>      <span class="comment"># ret addr</span></span><br><span class="line"></span><br><span class="line"><span class="comment">; 特殊</span></span><br><span class="line"><span class="symbol">pc:</span> program cunter</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>指令格式</p>
-<figure class="highlight mips"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">r: register format <span class="comment"># 使用寄存器</span></span><br><span class="line">i: immediate       <span class="comment"># 使用立即数</span></span><br><span class="line"><span class="keyword">j: </span><span class="keyword">jump</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>寻址</p>
-<figure class="highlight mips"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">move </span>$<span class="built_in">a0</span>, $<span class="built_in">zero</span>    <span class="comment"># a0&lt;-0</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>访问内存</p>
-<figure class="highlight mips"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 仍然 load, store</span></span><br><span class="line"><span class="comment"># b: byte; w: word; h: half word; ...</span></span><br><span class="line"><span class="keyword">sw: </span><span class="keyword">sw </span>$<span class="built_in">ra</span>, <span class="number">0x38</span>($<span class="built_in">sp</span>)   <span class="comment"># 将$ra存入栈中 $sp+38的地方</span></span><br><span class="line"><span class="keyword">sb: </span>...</span><br><span class="line"><span class="keyword">lw: </span>...</span><br><span class="line"><span class="keyword">lb: </span>...</span><br><span class="line"></span><br><span class="line"><span class="comment"># 例子</span></span><br><span class="line"><span class="keyword">sb </span>r1, <span class="number">0</span>(R2)</span><br><span class="line"><span class="keyword">lb </span>r1, <span class="number">0</span>(r2)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>算术</p>
-<figure class="highlight mips"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">; 基本算术</span></span><br><span class="line"><span class="keyword">add</span></span><br><span class="line"><span class="keyword"></span><span class="keyword">sub</span></span><br><span class="line"><span class="keyword"></span></span><br><span class="line"><span class="comment">; 逻辑</span></span><br><span class="line"><span class="keyword">or</span></span><br><span class="line"><span class="keyword"></span><span class="keyword">xor</span></span><br><span class="line"><span class="keyword"></span><span class="keyword">nor</span></span><br><span class="line"><span class="keyword"></span></span><br><span class="line"><span class="comment">; 移位</span></span><br><span class="line"><span class="keyword">sll</span></span><br><span class="line"><span class="keyword"></span><span class="keyword">srl</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>跳转</p>
-<figure class="highlight mips"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">; jmp</span></span><br><span class="line"><span class="keyword">j: </span><span class="keyword">jmp </span>label</span><br><span class="line"><span class="keyword">jr: </span>用法 <span class="keyword">jr </span>$<span class="built_in">ra</span> 等</span><br><span class="line"><span class="keyword">jal: </span><span class="keyword">jmp </span><span class="keyword">and </span>link, 保存 ret <span class="keyword">addr(pc+4) </span>到 $<span class="built_in">ra</span></span><br><span class="line"><span class="keyword">jalr: </span>借用寄存器跳转，链接，常用</span><br><span class="line"></span><br><span class="line"><span class="comment">; branch, 后面需要跟操作</span></span><br><span class="line"><span class="keyword">beq: </span><span class="keyword">beq </span>$s, $t, offset   <span class="comment"># $s=$t跳转</span></span><br><span class="line"><span class="keyword">bne: </span><span class="keyword">b </span>not eq</span><br><span class="line"><span class="keyword">bltz: </span><span class="keyword">branch </span>less than <span class="built_in">zero</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>架构缓存</p>
+
 <ul>
+<li>通用寄存器， 32个</li>
+</ul>
+<figure class="highlight mips"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">$<span class="number">0</span>-$<span class="number">31</span>          <span class="comment"># 有各自的助记符，看汇编时多使用助记符</span></span><br><span class="line"><span class="symbol">$0:</span>    $<span class="built_in">zero</span>    <span class="comment"># 恒0</span></span><br><span class="line"><span class="number">1</span>:     $<span class="built_in">at</span>      # </span><br><span class="line"><span class="number">2</span><span class="number">-3</span>:   $<span class="built_in">v0</span>-<span class="built_in">v1</span>   <span class="comment"># value 函数返回值</span></span><br><span class="line"><span class="number">4</span><span class="number">-7</span>:   $<span class="built_in">a0</span>-<span class="built_in">a3</span>   <span class="comment"># arg  函数参数</span></span><br><span class="line"><span class="number">8</span><span class="number">-15</span>:  $<span class="built_in">t0</span>-<span class="built_in">t7</span>   <span class="comment"># temp</span></span><br><span class="line"><span class="number">16</span><span class="number">-23</span>: $<span class="built_in">s0</span>-<span class="built_in">s7</span>   <span class="comment"># save 保留</span></span><br><span class="line"><span class="number">24</span><span class="number">-25</span>: $<span class="built_in">t8</span>-<span class="built_in">t9</span>   <span class="comment"># temp</span></span><br><span class="line"><span class="number">16</span><span class="number">-27</span>: $<span class="built_in">k0</span>-<span class="built_in">k1</span>   <span class="comment"># 异常或中断</span></span><br><span class="line"><span class="number">28</span>:    $<span class="built_in">gp</span>      <span class="comment"># global pointer</span></span><br><span class="line"><span class="number">29</span>:    $<span class="built_in">sp</span>      <span class="comment"># stack pointer</span></span><br><span class="line"><span class="number">30</span>:    $<span class="built_in">fp</span>, <span class="built_in">s8</span>  <span class="comment"># frame pointer </span></span><br><span class="line"><span class="number">31</span>:    $<span class="built_in">ra</span>      <span class="comment"># ret addr</span></span><br><span class="line"></span><br><span class="line"><span class="comment">; 特殊</span></span><br><span class="line"><span class="symbol">pc:</span> program cunter</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>指令格式</li>
+</ul>
+<figure class="highlight mips"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">r: register format <span class="comment"># 使用寄存器</span></span><br><span class="line">i: immediate       <span class="comment"># 使用立即数</span></span><br><span class="line"><span class="keyword">j: </span><span class="keyword">jump</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>寻址</li>
+</ul>
+<figure class="highlight mips"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">move </span>$<span class="built_in">a0</span>, $<span class="built_in">zero</span>    <span class="comment"># a0&lt;-0</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>访问内存</li>
+</ul>
+<figure class="highlight mips"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 仍然 load, store</span></span><br><span class="line"><span class="comment"># b: byte; w: word; h: half word; ...</span></span><br><span class="line"><span class="keyword">sw: </span><span class="keyword">sw </span>$<span class="built_in">ra</span>, <span class="number">0x38</span>($<span class="built_in">sp</span>)   <span class="comment"># 将$ra存入栈中 $sp+38的地方</span></span><br><span class="line"><span class="keyword">sb: </span>...</span><br><span class="line"><span class="keyword">lw: </span>...</span><br><span class="line"><span class="keyword">lb: </span>...</span><br><span class="line"></span><br><span class="line"><span class="comment"># 例子</span></span><br><span class="line"><span class="keyword">sb </span>r1, <span class="number">0</span>(R2)</span><br><span class="line"><span class="keyword">lb </span>r1, <span class="number">0</span>(r2)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>算术</li>
+</ul>
+<figure class="highlight mips"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">; 基本算术</span></span><br><span class="line"><span class="keyword">add</span></span><br><span class="line"><span class="keyword"></span><span class="keyword">sub</span></span><br><span class="line"><span class="keyword"></span></span><br><span class="line"><span class="comment">; 逻辑</span></span><br><span class="line"><span class="keyword">or</span></span><br><span class="line"><span class="keyword"></span><span class="keyword">xor</span></span><br><span class="line"><span class="keyword"></span><span class="keyword">nor</span></span><br><span class="line"><span class="keyword"></span></span><br><span class="line"><span class="comment">; 移位</span></span><br><span class="line"><span class="keyword">sll</span></span><br><span class="line"><span class="keyword"></span><span class="keyword">srl</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>跳转</li>
+</ul>
+<figure class="highlight mips"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">; jmp</span></span><br><span class="line"><span class="keyword">j: </span><span class="keyword">jmp </span>label</span><br><span class="line"><span class="keyword">jr: </span>用法 <span class="keyword">jr </span>$<span class="built_in">ra</span> 等</span><br><span class="line"><span class="keyword">jal: </span><span class="keyword">jmp </span><span class="keyword">and </span>link, 保存 ret <span class="keyword">addr(pc+4) </span>到 $<span class="built_in">ra</span></span><br><span class="line"><span class="keyword">jalr: </span>借用寄存器跳转，链接，常用</span><br><span class="line"></span><br><span class="line"><span class="comment">; branch, 后面需要跟操作</span></span><br><span class="line"><span class="keyword">beq: </span><span class="keyword">beq </span>$s, $t, offset   <span class="comment"># $s=$t跳转</span></span><br><span class="line"><span class="keyword">bne: </span><span class="keyword">b </span>not eq</span><br><span class="line"><span class="keyword">bltz: </span><span class="keyword">branch </span>less than <span class="built_in">zero</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>架构缓存<ul>
 <li>有两个独立的cache: 指令 和 数据</li>
 </ul>
 </li>
 </ul>
 <h2 id="RISC-V"><a href="#RISC-V" class="headerlink" title="RISC-V"></a>RISC-V</h2><p>xxx</p>
-</div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/asm/">asm</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2023/06/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%95%99%E8%82%B2%E7%BC%BA%E5%A4%B1%E7%9A%84%E4%B8%80%E8%AF%BE/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">计算机教育缺失的一课</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2023/06/05/Pwn%20init/"><span class="level-item">pwn init</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/h.png" alt="hy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">hy</p><p class="is-size-6 is-block">My blog</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>China</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">6</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">6</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">6</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/Ha0-Y/" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/Ha0-Y/"><i class="fab fa-github"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://github.com/Ha0-Y/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">mygithub</span></span><span class="level-right"><span class="level-item tag">github.com</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categorievariants/CS/"><span class="level-start"><span class="level-item">CS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categorievariants/asm/"><span class="level-start"><span class="level-item">asm</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categorievariants/db/"><span class="level-start"><span class="level-item">db</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categorievariants/kernel-uaf/"><span class="level-start"><span class="level-item">kernel uaf</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categorievariants/misc/"><span class="level-start"><span class="level-item">misc</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categorievariants/pwn/"><span class="level-start"><span class="level-item">pwn</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-07-28T07:57:40.221Z">2023-07-28</time></p><p class="title"><a href="/2023/07/28/peekgeek%20mmsg/">peekgeek mmsg</a></p><p class="categories"><a href="/categorievariants/kernel-uaf/">kernel uaf</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-06-30T02:49:11.489Z">2023-06-30</time></p><p class="title"><a href="/2023/06/30/%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/">常用数据库基本语法</a></p><p class="categories"><a href="/categorievariants/db/">db</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-06-19T02:54:28.071Z">2023-06-19</time></p><p class="title"><a href="/2023/06/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%95%99%E8%82%B2%E7%BC%BA%E5%A4%B1%E7%9A%84%E4%B8%80%E8%AF%BE/">计算机教育缺失的一课</a></p><p class="categories"><a href="/categorievariants/CS/">CS</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-06-10T11:50:08.095Z">2023-06-10</time></p><p class="title"><a href="/2023/06/10/%E6%B1%87%E7%BC%96%E5%AD%A6%E4%B9%A0/">汇编学习</a></p><p class="categories"><a href="/categorievariants/asm/">asm</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-06-05T02:16:53.446Z">2023-06-05</time></p><p class="title"><a href="/2023/06/05/Pwn%20init/">pwn init</a></p><p class="categories"><a href="/categorievariants/pwn/">pwn</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2023/"><span class="level-start"><span class="level-item">2023</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/CS/"><span class="tag">CS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/asm/"><span class="tag">asm</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/blog/"><span class="tag">blog</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/db/"><span class="tag">db</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/kernel-pwn/"><span class="tag">kernel pwn</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pwn/"><span class="tag">pwn</span><span class="tag">1</span></a></div></div></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.png" alt="haoy&#039;s blog" height="28"></a><p class="is-size-7"><span>&copy; 2023 haoy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p><p class="is-size-7">❤️❤️❤️</p></div><div class="level-end"></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
-            article: {
-                highlight: {
-                    clipboard: true,
-                    fold: 'unfolded'
-                }
-            }
-        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
-      window.cookieconsent.initialise({
-        type: "info",
-        theme: "edgeless",
-        static: false,
-        position: "bottom-left",
-        content: {
-          message: "此网站使用Cookie来改善您的体验。",
-          dismiss: "知道了！",
-          allow: "允许使用Cookie",
-          deny: "拒绝",
-          link: "了解更多",
-          policy: "Cookie政策",
-          href: "https://www.cookiesandyou.com/",
-        },
-        palette: {
-          popup: {
-            background: "#edeff5",
-            text: "#838391"
-          },
-          button: {
-            background: "#4b81e8"
-          },
-        },
-      });
-    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
-            if (typeof $.fn.lightGallery === 'function') {
-                $('.article').lightGallery({ selector: '.gallery-item' });
-            }
-            if (typeof $.fn.justifiedGallery === 'function') {
-                if ($('.justified-gallery > p > .gallery-item').length) {
-                    $('.justified-gallery > p > .gallery-item').unwrap();
-                }
-                $('.justified-gallery').justifiedGallery();
-            }
-        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
-            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
-        });</script></body></html>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/asm/" rel="tag"># asm</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/06/05/Pwn%20init/" rel="prev" title="pwn init">
+      <i class="fa fa-chevron-left"></i> pwn init
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/06/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%95%99%E8%82%B2%E7%BC%BA%E5%A4%B1%E7%9A%84%E4%B8%80%E8%AF%BE/" rel="next" title="计算机教育缺失的一课">
+      计算机教育缺失的一课 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">环境问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85"><span class="nav-number">1.1.</span> <span class="nav-text">环境安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95"><span class="nav-number">1.2.</span> <span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#x86"><span class="nav-number">2.</span> <span class="nav-text">x86</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#x86-1"><span class="nav-number">2.1.</span> <span class="nav-text">x86</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#x86-64"><span class="nav-number">2.2.</span> <span class="nav-text">x86-64</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ARM"><span class="nav-number">3.</span> <span class="nav-text">ARM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ARMv7"><span class="nav-number">3.1.</span> <span class="nav-text">ARMv7</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ARMv8"><span class="nav-number">3.2.</span> <span class="nav-text">ARMv8</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ARMv9"><span class="nav-number">3.3.</span> <span class="nav-text">ARMv9</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mips"><span class="nav-number">4.</span> <span class="nav-text">Mips</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RISC-V"><span class="nav-number">5.</span> <span class="nav-text">RISC-V</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ha0Y</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Ha0-Y" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Ha0-Y" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ha0Y</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">45k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:22</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
