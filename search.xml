@@ -1,166 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>pwn init</title>
-    <url>/2023/06/05/Pwn%20init/</url>
-    <content><![CDATA[<blockquote>
-<p>搭建一个pwn环境。</p>
-</blockquote>
-<span id="more"></span>
-
-<ul>
-<li><code>apt</code> or <code>apt-get</code>? 虽然我使用apt出现warning,但是依然能用<ul>
-<li>在脚本中，更加推荐 <code>apt-get</code></li>
-<li><code>-y</code> yes 避免交互而产生错误</li>
-</ul>
-</li>
-</ul>
-<h3 id="VM-or-WSL"><a href="#VM-or-WSL" class="headerlink" title="VM or WSL"></a>VM or WSL</h3><blockquote>
-<p>安装必备的应用</p>
-</blockquote>
-<ul>
-<li>root下使用，但是普通用户无法使用<code>gdb插件</code>功能，因为gdbinit文件的位置，我们可以复制一份到自己的用户目录下</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> ~</span><br><span class="line"></span><br><span class="line">apt-get update &amp;&amp; apt-get upgrade</span><br><span class="line"></span><br><span class="line">apt-get install -y patchelf</span><br><span class="line">apt-get install -y wget</span><br><span class="line">apt-get install -y zip</span><br><span class="line">apt-get install -y tzdata</span><br><span class="line">apt-get install -y libncursesw5-dev libgdbm-dev libc6-dev openssl</span><br><span class="line">apt-get install -y --fix-missing python3 python3-pip python3-dev lib32z1 \</span><br><span class="line"> xinetd curl gcc gdb gdbserver g++ git libssl-dev libffi-dev build-essential tmux \</span><br><span class="line"> vim netcat iputils-ping cpio file net-tools socat ruby ruby-dev locales \</span><br><span class="line"> autoconf automake libtool make zsh openssh-server openssh-client \</span><br><span class="line"> gdb-multiarch bison clang</span><br><span class="line"></span><br><span class="line"><span class="comment"># python工具</span></span><br><span class="line">python3 -m pip install capstone filebytes unicorn keystone-engine ropper z3-solver angr</span><br><span class="line"></span><br><span class="line"><span class="comment"># pwntools</span></span><br><span class="line"><span class="comment"># 换源，可选</span></span><br><span class="line"><span class="comment"># pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple</span></span><br><span class="line">python3 -m pip install --upgrade pip </span><br><span class="line">python3 -m pip install --upgrade pwntools</span><br><span class="line"></span><br><span class="line"><span class="comment"># ROPgadget</span></span><br><span class="line">python3 -m pip install ROPgadget</span><br><span class="line"></span><br><span class="line"><span class="comment"># pwndbg</span></span><br><span class="line"><span class="built_in">cd</span> ~</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/pwndbg/pwndbg </span><br><span class="line"><span class="built_in">cd</span> pwndbg </span><br><span class="line">./setup.sh</span><br><span class="line"></span><br><span class="line"><span class="comment"># pwngdb</span></span><br><span class="line"><span class="built_in">cd</span> ~</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/scwuapt-getx/Pwngdb.git </span><br><span class="line"></span><br><span class="line"><span class="built_in">cat</span> ~/Pwngdb/.gdbinit &gt;&gt; ~/.gdbinit</span><br><span class="line"></span><br><span class="line"><span class="comment"># gem源</span></span><br><span class="line">gem sources --add https://mirrors.tuna.tsinghua.edu.cn/rubygems/ --remove https://rubygems.org/</span><br><span class="line"></span><br><span class="line"><span class="comment"># seccomp-tools</span></span><br><span class="line">gem install seccomp-tools</span><br><span class="line"></span><br><span class="line"><span class="comment"># one_gadget</span></span><br><span class="line">gem install one_gadget</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># pwninit</span></span><br><span class="line">apt-get install liblzma-dev pkgconf</span><br><span class="line">apt-get install cargo</span><br><span class="line">cargo install pwninit</span><br><span class="line"></span><br><span class="line"><span class="comment"># docker 自己选择</span></span><br><span class="line"><span class="comment"># apt-get install docker.io</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># qemu 自己选择</span></span><br><span class="line"><span class="comment"># apt-get install qemu qemu-system qemu-user-static binfmt-support</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="Docker"><a href="#Docker" class="headerlink" title="Docker"></a>Docker</h3><ul>
-<li><p>搭建更加容易</p>
-</li>
-<li><p>由于某些题目没有Libc版本，而是给出了Dockerfile。或者说，不想下载虚拟机。</p>
-<ul>
-<li>glibc-all-in-one 下载一个libc 进行patch(但是<code>patchelf</code>容易导致程序破坏).</li>
-<li>自己的docker环境</li>
-</ul>
-</li>
-<li><p>docker环境搭建: 更改VERSION就行，禁止交互。</p>
-</li>
-</ul>
-<figure class="highlight dockerfile"><table><tr><td class="code"><pre><span class="line"><span class="keyword">ARG</span> VERSION=<span class="number">20.04</span></span><br><span class="line"><span class="keyword">FROM</span> ubuntu:$VERSION</span><br><span class="line"></span><br><span class="line"><span class="keyword">ARG</span> DEBIAN_FRONTEND noninteractive </span><br><span class="line"><span class="comment"># ENV TZ=Asia/Shanghai</span></span><br><span class="line"><span class="comment">########## solve some error ##############</span></span><br><span class="line"><span class="comment"># 定义时区参数</span></span><br><span class="line"><span class="keyword">ENV</span> TZ=Asia/Shanghai</span><br><span class="line"><span class="comment"># 设置时区</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">ln</span> -snf /usr/share/zoneinfo/<span class="variable">$TZ</span> /etc/localtime &amp;&amp; <span class="built_in">echo</span> <span class="string">&#x27;$TZ&#x27;</span> &gt; /etc/timezone</span></span><br><span class="line"><span class="comment"># 设置编码</span></span><br><span class="line"><span class="keyword">ENV</span> LANG C.UTF-<span class="number">8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">USER</span> root</span><br><span class="line"></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /root</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> ./pwninit.sh /root</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">chmod</span> +x /root/pwninit.sh &amp;&amp; /root/pwninit</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>pwninit: 只需要安装部分工具</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"><span class="built_in">cd</span> ~</span><br><span class="line">apt-get update &amp;&amp; apt-get upgrade</span><br><span class="line">apt-get install -y libncursesw5-dev libgdbm-dev libc6-dev openssl</span><br><span class="line">apt-get install -y python3 python3-pip python3-dev lib32z1 \</span><br><span class="line"> curl gcc gdb gdbserver g++ git libssl-dev libffi-dev build-essential tmux \</span><br><span class="line"> vim netcat iputils-ping cpio file net-tools locales \</span><br><span class="line"> autoconf automake libtool make zsh openssh-server openssh-client \</span><br><span class="line"> gdb-multiarch bison clang</span><br><span class="line"></span><br><span class="line"><span class="comment"># others</span></span><br><span class="line">python3 -m pip install capstone filebytes unicorn keystone-engine ropper</span><br><span class="line"></span><br><span class="line"><span class="comment"># pwntools</span></span><br><span class="line"><span class="comment"># 换源，可选</span></span><br><span class="line"><span class="comment"># pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple</span></span><br><span class="line">python3 -m pip install --upgrade pip </span><br><span class="line">python3 -m pip install --upgrade pwntools</span><br><span class="line"></span><br><span class="line"><span class="comment"># ROPgadget</span></span><br><span class="line">python3 -m pip install ROPgadget</span><br><span class="line"></span><br><span class="line"><span class="comment"># pwndbg</span></span><br><span class="line"><span class="built_in">cd</span> ~</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/pwndbg/pwndbg </span><br><span class="line"><span class="built_in">cd</span> pwndbg </span><br><span class="line">./setup.sh</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>创建一个容器</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker build -h &lt;repo&gt;:&lt;tag&gt; .</span><br><span class="line"><span class="comment"># -f 指定dockerfile</span></span><br><span class="line"><span class="comment"># repo 形式 xxx/xxx</span></span><br><span class="line">docker ps -a</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>进入docker</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run -it ubuntu:VERSION /bin/bash</span><br><span class="line"><span class="comment"># -v dir:dir 共享文件夹</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p>docker 命令</p>
-<ul>
-<li>-i: 交互式</li>
-<li>-t: terminl</li>
-<li>-v hostDir:dockerDir 共享文件夹</li>
-<li>ps -a: 查看所有的容器</li>
-</ul>
-</li>
-<li><p>停止后重新计入容器</p>
-</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker start &lt;ID&gt;</span><br><span class="line">docker attach &lt;ID&gt;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>停止容器</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker stop &lt;ID&gt;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>删除容器</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker <span class="built_in">rm</span> &lt;ID&gt;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>删除镜像</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker rmi &lt;ID&gt;</span><br></pre></td></tr></table></figure>
-
-<h4 id="报错处理"><a href="#报错处理" class="headerlink" title="报错处理"></a>报错处理</h4><ul>
-<li>error 1</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">******</span><br><span class="line">Your encoding (ANSI_X3.4-1968) is different than UTF-8. pwndbg might not work properly.</span><br><span class="line">You might try launching gdb with:</span><br><span class="line">    LC_ALL=en_US.UTF-8 PYTHONIOENCODING=UTF-8 gdb</span><br><span class="line">Make sure that en_US.UTF-8 is activated <span class="keyword">in</span> /etc/locale.gen and you called locale-gen</span><br><span class="line">******</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>error 2</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;/root/pwndbg/gdbinit.py&quot;</span>, line 58, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    import pwndbg  <span class="comment"># noqa: F401</span></span><br><span class="line">  File <span class="string">&quot;/root/pwndbg/pwndbg/__init__.py&quot;</span>, line 86, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    config_mod.init_params()</span><br><span class="line">  File <span class="string">&quot;/root/pwndbg/pwndbg/gdblib/config.py&quot;</span>, line 159, <span class="keyword">in</span> init_params</span><br><span class="line">    Parameter(p)</span><br><span class="line">  File <span class="string">&quot;/root/pwndbg/pwndbg/gdblib/config.py&quot;</span>, line 45, <span class="keyword">in</span> __init__</span><br><span class="line">    self.value = param.value</span><br><span class="line">UnicodeEncodeError: <span class="string">&#x27;ascii&#x27;</span> codec can<span class="string">&#x27;t encode characters in position 0-1: ordinal not in range(128)</span></span><br><span class="line"><span class="string">------- tip of the day (disable with set show-tips off) -------</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p>出现了如上错误。寻找到一个<a href="https://github.com/pwndbg/pwndbg/issues/1539">issue</a></p>
-</li>
-<li><p>error1，修改dockerfile的类似如下变量。选择中国</p>
-</li>
-<li><p>error2  也解决了。</p>
-</li>
-</ul>
-<figure class="highlight dockerfile"><table><tr><td class="code"><pre><span class="line"><span class="comment"># ENV LANG en_US.utf8</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 我们的设置</span></span><br><span class="line"><span class="comment"># 定义时区参数</span></span><br><span class="line"><span class="keyword">ENV</span> TZ=Asia/Shanghai</span><br><span class="line"><span class="comment"># 设置时区</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">ln</span> -snf /usr/share/zoneinfo/<span class="variable">$TZ</span> /etc/localtime &amp;&amp; <span class="built_in">echo</span> <span class="string">&#x27;$TZ&#x27;</span> &gt; /etc/timezone</span></span><br><span class="line"><span class="comment"># 设置编码</span></span><br><span class="line"><span class="keyword">ENV</span> LANG C.UTF-<span class="number">8</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="docker-compose"><a href="#docker-compose" class="headerlink" title="docker-compose"></a>docker-compose</h4><ul>
-<li>创建多个docker。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>PWN</category>
-      </categories>
-      <tags>
-        <tag>pwn</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>init-blog</title>
-    <url>/2023/03/19/init-blog/</url>
-    <content><![CDATA[<blockquote>
-<p>blog init</p>
-</blockquote>
-<span id="more"></span>
-
-<h1 id="搭建博客"><a href="#搭建博客" class="headerlink" title="搭建博客"></a>搭建博客</h1><h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><ul>
-<li>github + hexo</li>
-</ul>
-<!--more-->
-
-<h3 id="hexo使用"><a href="#hexo使用" class="headerlink" title="hexo使用"></a>hexo使用</h3><ul>
-<li><p><code>hexo</code> 命令报错，上网查，使用 <code>npx hexo</code></p>
-</li>
-<li><p>插件下载</p>
-</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install --save hexo-deployer-git</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>常用命令</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npx hexo init <span class="comment"># 初始化一个仓库</span></span><br><span class="line">npx hexo clean</span><br><span class="line">npx hexo g   <span class="comment"># 静态界面生成</span></span><br><span class="line">npx hexo s   <span class="comment"># 本地启动 service</span></span><br><span class="line">npx hexo d   <span class="comment"># 插件。传到github</span></span><br><span class="line"></span><br><span class="line">npx hexo new page &lt;name&gt; <span class="comment"># 生成目录</span></span><br><span class="line">npx hexo new &lt;name&gt;.md   <span class="comment">#生成文章</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>常用属性</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">title: 标题， 使用 &#123;&#123;title&#125;&#125;</span><br><span class="line"><span class="built_in">date</span>: 日期, 使用 &#123;&#123;<span class="built_in">date</span>&#125;&#125;</span><br><span class="line">updated: 更新</span><br><span class="line">tags: 标签</span><br><span class="line">categories: 分类</span><br><span class="line">comments: 开启评论 <span class="literal">true</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="本地"><a href="#本地" class="headerlink" title="本地"></a>本地</h3><ul>
-<li>obsidian 写md</li>
-<li>vscode</li>
-</ul>
-<h2 id="持续学习"><a href="#持续学习" class="headerlink" title="持续学习"></a>持续学习</h2><ul>
-<li>简单点也还行，不想折腾了。</li>
-<li>官网 + google，满足一切要求</li>
-</ul>
-<p><a href="https://hexo.io/zh-cn/docs/">中文文档</a></p>
-]]></content>
-      <categories>
-        <category>MISC</category>
-      </categories>
-      <tags>
-        <tag>blog</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Cmake 使用</title>
     <url>/2023/09/09/Cmake%20%E4%BD%BF%E7%94%A8/</url>
     <content><![CDATA[<blockquote>
@@ -283,6 +123,166 @@
       </categories>
       <tags>
         <tag>cmake</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>init-blog</title>
+    <url>/2023/03/19/init-blog/</url>
+    <content><![CDATA[<blockquote>
+<p>blog init</p>
+</blockquote>
+<span id="more"></span>
+
+<h1 id="搭建博客"><a href="#搭建博客" class="headerlink" title="搭建博客"></a>搭建博客</h1><h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><ul>
+<li>github + hexo</li>
+</ul>
+<!--more-->
+
+<h3 id="hexo使用"><a href="#hexo使用" class="headerlink" title="hexo使用"></a>hexo使用</h3><ul>
+<li><p><code>hexo</code> 命令报错，上网查，使用 <code>npx hexo</code></p>
+</li>
+<li><p>插件下载</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install --save hexo-deployer-git</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>常用命令</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npx hexo init <span class="comment"># 初始化一个仓库</span></span><br><span class="line">npx hexo clean</span><br><span class="line">npx hexo g   <span class="comment"># 静态界面生成</span></span><br><span class="line">npx hexo s   <span class="comment"># 本地启动 service</span></span><br><span class="line">npx hexo d   <span class="comment"># 插件。传到github</span></span><br><span class="line"></span><br><span class="line">npx hexo new page &lt;name&gt; <span class="comment"># 生成目录</span></span><br><span class="line">npx hexo new &lt;name&gt;.md   <span class="comment">#生成文章</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>常用属性</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">title: 标题， 使用 &#123;&#123;title&#125;&#125;</span><br><span class="line"><span class="built_in">date</span>: 日期, 使用 &#123;&#123;<span class="built_in">date</span>&#125;&#125;</span><br><span class="line">updated: 更新</span><br><span class="line">tags: 标签</span><br><span class="line">categories: 分类</span><br><span class="line">comments: 开启评论 <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="本地"><a href="#本地" class="headerlink" title="本地"></a>本地</h3><ul>
+<li>obsidian 写md</li>
+<li>vscode</li>
+</ul>
+<h2 id="持续学习"><a href="#持续学习" class="headerlink" title="持续学习"></a>持续学习</h2><ul>
+<li>简单点也还行，不想折腾了。</li>
+<li>官网 + google，满足一切要求</li>
+</ul>
+<p><a href="https://hexo.io/zh-cn/docs/">中文文档</a></p>
+]]></content>
+      <categories>
+        <category>MISC</category>
+      </categories>
+      <tags>
+        <tag>blog</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>pwn init</title>
+    <url>/2023/06/05/Pwn%20init/</url>
+    <content><![CDATA[<blockquote>
+<p>搭建一个pwn环境。</p>
+</blockquote>
+<span id="more"></span>
+
+<ul>
+<li><code>apt</code> or <code>apt-get</code>? 虽然我使用apt出现warning,但是依然能用<ul>
+<li>在脚本中，更加推荐 <code>apt-get</code></li>
+<li><code>-y</code> yes 避免交互而产生错误</li>
+</ul>
+</li>
+</ul>
+<h3 id="VM-or-WSL"><a href="#VM-or-WSL" class="headerlink" title="VM or WSL"></a>VM or WSL</h3><blockquote>
+<p>安装必备的应用</p>
+</blockquote>
+<ul>
+<li>root下使用，但是普通用户无法使用<code>gdb插件</code>功能，因为gdbinit文件的位置，我们可以复制一份到自己的用户目录下</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> ~</span><br><span class="line"></span><br><span class="line">apt-get update &amp;&amp; apt-get upgrade</span><br><span class="line"></span><br><span class="line">apt-get install -y patchelf</span><br><span class="line">apt-get install -y wget</span><br><span class="line">apt-get install -y zip</span><br><span class="line">apt-get install -y tzdata</span><br><span class="line">apt-get install -y libncursesw5-dev libgdbm-dev libc6-dev openssl</span><br><span class="line">apt-get install -y --fix-missing python3 python3-pip python3-dev lib32z1 \</span><br><span class="line"> xinetd curl gcc gdb gdbserver g++ git libssl-dev libffi-dev build-essential tmux \</span><br><span class="line"> vim netcat iputils-ping cpio file net-tools socat ruby ruby-dev locales \</span><br><span class="line"> autoconf automake libtool make zsh openssh-server openssh-client \</span><br><span class="line"> gdb-multiarch bison clang</span><br><span class="line"></span><br><span class="line"><span class="comment"># python工具</span></span><br><span class="line">python3 -m pip install capstone filebytes unicorn keystone-engine ropper z3-solver angr</span><br><span class="line"></span><br><span class="line"><span class="comment"># pwntools</span></span><br><span class="line"><span class="comment"># 换源，可选</span></span><br><span class="line"><span class="comment"># pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple</span></span><br><span class="line">python3 -m pip install --upgrade pip </span><br><span class="line">python3 -m pip install --upgrade pwntools</span><br><span class="line"></span><br><span class="line"><span class="comment"># ROPgadget</span></span><br><span class="line">python3 -m pip install ROPgadget</span><br><span class="line"></span><br><span class="line"><span class="comment"># pwndbg</span></span><br><span class="line"><span class="built_in">cd</span> ~</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/pwndbg/pwndbg </span><br><span class="line"><span class="built_in">cd</span> pwndbg </span><br><span class="line">./setup.sh</span><br><span class="line"></span><br><span class="line"><span class="comment"># pwngdb</span></span><br><span class="line"><span class="built_in">cd</span> ~</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/scwuapt-getx/Pwngdb.git </span><br><span class="line"></span><br><span class="line"><span class="built_in">cat</span> ~/Pwngdb/.gdbinit &gt;&gt; ~/.gdbinit</span><br><span class="line"></span><br><span class="line"><span class="comment"># gem源</span></span><br><span class="line">gem sources --add https://mirrors.tuna.tsinghua.edu.cn/rubygems/ --remove https://rubygems.org/</span><br><span class="line"></span><br><span class="line"><span class="comment"># seccomp-tools</span></span><br><span class="line">gem install seccomp-tools</span><br><span class="line"></span><br><span class="line"><span class="comment"># one_gadget</span></span><br><span class="line">gem install one_gadget</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># pwninit</span></span><br><span class="line">apt-get install liblzma-dev pkgconf</span><br><span class="line">apt-get install cargo</span><br><span class="line">cargo install pwninit</span><br><span class="line"></span><br><span class="line"><span class="comment"># docker 自己选择</span></span><br><span class="line"><span class="comment"># apt-get install docker.io</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># qemu 自己选择</span></span><br><span class="line"><span class="comment"># apt-get install qemu qemu-system qemu-user-static binfmt-support</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Docker"><a href="#Docker" class="headerlink" title="Docker"></a>Docker</h3><ul>
+<li><p>搭建更加容易</p>
+</li>
+<li><p>由于某些题目没有Libc版本，而是给出了Dockerfile。或者说，不想下载虚拟机。</p>
+<ul>
+<li>glibc-all-in-one 下载一个libc 进行patch(但是<code>patchelf</code>容易导致程序破坏).</li>
+<li>自己的docker环境</li>
+</ul>
+</li>
+<li><p>docker环境搭建: 更改VERSION就行，禁止交互。</p>
+</li>
+</ul>
+<figure class="highlight dockerfile"><table><tr><td class="code"><pre><span class="line"><span class="keyword">ARG</span> VERSION=<span class="number">20.04</span></span><br><span class="line"><span class="keyword">FROM</span> ubuntu:$VERSION</span><br><span class="line"></span><br><span class="line"><span class="keyword">ARG</span> DEBIAN_FRONTEND noninteractive </span><br><span class="line"><span class="comment"># ENV TZ=Asia/Shanghai</span></span><br><span class="line"><span class="comment">########## solve some error ##############</span></span><br><span class="line"><span class="comment"># 定义时区参数</span></span><br><span class="line"><span class="keyword">ENV</span> TZ=Asia/Shanghai</span><br><span class="line"><span class="comment"># 设置时区</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">ln</span> -snf /usr/share/zoneinfo/<span class="variable">$TZ</span> /etc/localtime &amp;&amp; <span class="built_in">echo</span> <span class="string">&#x27;$TZ&#x27;</span> &gt; /etc/timezone</span></span><br><span class="line"><span class="comment"># 设置编码</span></span><br><span class="line"><span class="keyword">ENV</span> LANG C.UTF-<span class="number">8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">USER</span> root</span><br><span class="line"></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /root</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> ./pwninit.sh /root</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">chmod</span> +x /root/pwninit.sh &amp;&amp; /root/pwninit</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>pwninit: 只需要安装部分工具</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"><span class="built_in">cd</span> ~</span><br><span class="line">apt-get update &amp;&amp; apt-get upgrade</span><br><span class="line">apt-get install -y libncursesw5-dev libgdbm-dev libc6-dev openssl</span><br><span class="line">apt-get install -y python3 python3-pip python3-dev lib32z1 \</span><br><span class="line"> curl gcc gdb gdbserver g++ git libssl-dev libffi-dev build-essential tmux \</span><br><span class="line"> vim netcat iputils-ping cpio file net-tools locales \</span><br><span class="line"> autoconf automake libtool make zsh openssh-server openssh-client \</span><br><span class="line"> gdb-multiarch bison clang</span><br><span class="line"></span><br><span class="line"><span class="comment"># others</span></span><br><span class="line">python3 -m pip install capstone filebytes unicorn keystone-engine ropper</span><br><span class="line"></span><br><span class="line"><span class="comment"># pwntools</span></span><br><span class="line"><span class="comment"># 换源，可选</span></span><br><span class="line"><span class="comment"># pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple</span></span><br><span class="line">python3 -m pip install --upgrade pip </span><br><span class="line">python3 -m pip install --upgrade pwntools</span><br><span class="line"></span><br><span class="line"><span class="comment"># ROPgadget</span></span><br><span class="line">python3 -m pip install ROPgadget</span><br><span class="line"></span><br><span class="line"><span class="comment"># pwndbg</span></span><br><span class="line"><span class="built_in">cd</span> ~</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/pwndbg/pwndbg </span><br><span class="line"><span class="built_in">cd</span> pwndbg </span><br><span class="line">./setup.sh</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>创建一个容器</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker build -h &lt;repo&gt;:&lt;tag&gt; .</span><br><span class="line"><span class="comment"># -f 指定dockerfile</span></span><br><span class="line"><span class="comment"># repo 形式 xxx/xxx</span></span><br><span class="line">docker ps -a</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>进入docker</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run -it ubuntu:VERSION /bin/bash</span><br><span class="line"><span class="comment"># -v dir:dir 共享文件夹</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>docker 命令</p>
+<ul>
+<li>-i: 交互式</li>
+<li>-t: terminl</li>
+<li>-v hostDir:dockerDir 共享文件夹</li>
+<li>ps -a: 查看所有的容器</li>
+</ul>
+</li>
+<li><p>停止后重新计入容器</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker start &lt;ID&gt;</span><br><span class="line">docker attach &lt;ID&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>停止容器</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker stop &lt;ID&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>删除容器</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker <span class="built_in">rm</span> &lt;ID&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>删除镜像</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker rmi &lt;ID&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="报错处理"><a href="#报错处理" class="headerlink" title="报错处理"></a>报错处理</h4><ul>
+<li>error 1</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">******</span><br><span class="line">Your encoding (ANSI_X3.4-1968) is different than UTF-8. pwndbg might not work properly.</span><br><span class="line">You might try launching gdb with:</span><br><span class="line">    LC_ALL=en_US.UTF-8 PYTHONIOENCODING=UTF-8 gdb</span><br><span class="line">Make sure that en_US.UTF-8 is activated <span class="keyword">in</span> /etc/locale.gen and you called locale-gen</span><br><span class="line">******</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>error 2</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;/root/pwndbg/gdbinit.py&quot;</span>, line 58, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    import pwndbg  <span class="comment"># noqa: F401</span></span><br><span class="line">  File <span class="string">&quot;/root/pwndbg/pwndbg/__init__.py&quot;</span>, line 86, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    config_mod.init_params()</span><br><span class="line">  File <span class="string">&quot;/root/pwndbg/pwndbg/gdblib/config.py&quot;</span>, line 159, <span class="keyword">in</span> init_params</span><br><span class="line">    Parameter(p)</span><br><span class="line">  File <span class="string">&quot;/root/pwndbg/pwndbg/gdblib/config.py&quot;</span>, line 45, <span class="keyword">in</span> __init__</span><br><span class="line">    self.value = param.value</span><br><span class="line">UnicodeEncodeError: <span class="string">&#x27;ascii&#x27;</span> codec can<span class="string">&#x27;t encode characters in position 0-1: ordinal not in range(128)</span></span><br><span class="line"><span class="string">------- tip of the day (disable with set show-tips off) -------</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>出现了如上错误。寻找到一个<a href="https://github.com/pwndbg/pwndbg/issues/1539">issue</a></p>
+</li>
+<li><p>error1，修改dockerfile的类似如下变量。选择中国</p>
+</li>
+<li><p>error2  也解决了。</p>
+</li>
+</ul>
+<figure class="highlight dockerfile"><table><tr><td class="code"><pre><span class="line"><span class="comment"># ENV LANG en_US.utf8</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 我们的设置</span></span><br><span class="line"><span class="comment"># 定义时区参数</span></span><br><span class="line"><span class="keyword">ENV</span> TZ=Asia/Shanghai</span><br><span class="line"><span class="comment"># 设置时区</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">ln</span> -snf /usr/share/zoneinfo/<span class="variable">$TZ</span> /etc/localtime &amp;&amp; <span class="built_in">echo</span> <span class="string">&#x27;$TZ&#x27;</span> &gt; /etc/timezone</span></span><br><span class="line"><span class="comment"># 设置编码</span></span><br><span class="line"><span class="keyword">ENV</span> LANG C.UTF-<span class="number">8</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="docker-compose"><a href="#docker-compose" class="headerlink" title="docker-compose"></a>docker-compose</h4><ul>
+<li>创建多个docker。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>PWN</category>
+      </categories>
+      <tags>
+        <tag>pwn</tag>
       </tags>
   </entry>
   <entry>
@@ -545,129 +545,6 @@
       </categories>
       <tags>
         <tag>Database</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>程序保护机制</title>
-    <url>/2023/08/26/%E7%A8%8B%E5%BA%8F%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%88%B6/</url>
-    <content><![CDATA[<blockquote>
-<p>程序保护机制学习</p>
-</blockquote>
-<span id="more"></span>
-
-<h2 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h2><h3 id="ELF"><a href="#ELF" class="headerlink" title="ELF"></a>ELF</h3><h4 id="relro"><a href="#relro" class="headerlink" title="relro"></a>relro</h4><p>read only relocation: 由linker指定binary的一块经过dynamic linker处理过 relocation之后的区域为只读.</p>
-<ul>
-<li>比如说 got表，在完全开启后只读，我们无法修改修改函数 got 表的内容从而改变函数的执行过程。</li>
-</ul>
-<p>gcc 选项</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">-z norelro   <span class="comment"># 关闭</span></span><br><span class="line">-z lazy      <span class="comment"># 部分开启</span></span><br><span class="line">-z now       <span class="comment"># 完全开启</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="aslr"><a href="#aslr" class="headerlink" title="aslr"></a>aslr</h4><p>Address Space Layout Randomization, 这种技术使得系统上运行的进程的内存地址无法被预测，使得与这些进程有关的漏洞变得更加难以利用。配合 PIE 保护从而得到最好的效果</p>
-<p>Linux上ASLR分为0&#x2F;1&#x2F;2三级，用户可以通过内核参数randomize_va_space进行等级控制，对应效果如下：</p>
-<ul>
-<li>0：没有随机化，即关闭ASLR</li>
-<li>1：保留的随机化，即<strong>共享库、栈、mmap()以及VSDO将被随机化</strong></li>
-<li>2：完全的随机化，在1的基础上，<strong>通过brk分配的内存空间(heap通过此系统调用获得)也将随机化</strong></li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cat</span>  /proc/sys/kernel/randomize_va_space</span><br><span class="line">  2</span><br><span class="line"><span class="built_in">echo</span> 0 &gt; /proc/sys/kernel/randomize_va_space</span><br></pre></td></tr></table></figure>
-
-<p>在使用 gdb 软件调试时可以关闭此保护，从而在调试时获得的地址一致。</p>
-<p>因为存在一定的地址随机化，所以在漏洞利用时不能使用固定的函数地址。比如没开 aslr 保护system函数(共享库中的函数)地址是 0x1234。开启aslr时system函数位置会改变，从而利用失败。</p>
-<h4 id="NX"><a href="#NX" class="headerlink" title="NX"></a>NX</h4><p>No-eXecute 不可执行。和DEP(Data Execute Protector)一致</p>
-<p>将数据所在内存页标识为不可执行，当程序溢出成功转入shellcode时，程序会尝试在数据页面上执行指令，此时CPU就会抛出异常，而不是去执行恶意指令。</p>
-<p>gcc参数</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">-z execstack    <span class="comment"># 栈可执行</span></span><br><span class="line">-z noexecstack  <span class="comment"># 开启</span></span><br></pre></td></tr></table></figure>
-
-<p>bypass: 杜绝了一定写shellcode的利用，但是可以使用**ROP(Return-oriented programming)**来bypass，造成我们想要的攻击效果。</p>
-<h4 id="pie"><a href="#pie" class="headerlink" title="pie"></a>pie</h4><p>Position independent code, 位置无关代码，默认开启。<br>针对代码段.text, 数据段，.data，.bss等固定地址的一个防护技术。同ASLR一样，应用了PIE的程序会在每次加载时都变换加载基址，从而使位于程序本身的gadget也失效</p>
-<p>没有PIE保护的程序，每次加载的基址都是固定的，64位上一般是0x400000。</p>
-<p>gcc 参数</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">-no-pie    <span class="comment"># 关闭pie</span></span><br><span class="line">-pie       <span class="comment"># 开启pie</span></span><br></pre></td></tr></table></figure>
-
-<p>开启aslr，我们可以获得text段的gadget，并且可以使用。但是开其pie保护后，text随机化，我们寻找的gadget也需要加上一个偏移才能使用。</p>
-<ul>
-<li>bypass<ul>
-<li>partial write: 由于内存的页载入机制，PIE的随机化只能<strong>影响到单个内存页</strong>。通常来说，一个内存页大小为0x1000，这就意味着不管地址怎么变，某条指令的后12位是始终不变的。因此通过覆盖部分内容比如后8位从而劫持函数执行流。<ul>
-<li>leak: 程序本身的漏洞可以泄露某些函数地址，从而获得程序加载的基地址。</li>
-</ul>
-</li>
-<li>vdso&#x2F;vsyscall: 系统把几个常用的无参内核调用从内核中映射到用户空间中，这就是vsyscall。在某些版本中，这个地址不会改变，并且不受保护的影响。vsyscall 内存页中包含了三个系统调用。而且这三个系统调用对程序运行基本没有影响，也就是说我们获得了三个已知地址的 ret。相当可以执行 <code>ret</code> 指令，获得：查看程序的映射 <code>cat /proc/&lt;pid&gt;/maps</code>。</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">__vsyscall_page:</span><br><span class="line"> mov $__NR_gettimeofday, %rax</span><br><span class="line"> syscall</span><br><span class="line"> ret</span><br><span class="line"></span><br><span class="line"> .balign <span class="number">1024</span>, <span class="number">0xcc</span></span><br><span class="line"> mov $__NR_time, %rax</span><br><span class="line"> syscall</span><br><span class="line"> ret</span><br><span class="line"></span><br><span class="line"> .balign <span class="number">1024</span>, <span class="number">0xcc</span></span><br><span class="line"> mov $__NR_getcpu, %rax</span><br><span class="line"> syscall</span><br><span class="line"> ret</span><br></pre></td></tr></table></figure>
-
-<h4 id="stack-canary"><a href="#stack-canary" class="headerlink" title="stack canary"></a>stack canary</h4><p>当启用 canary 保护后，函数开始执行的时候会先往栈里<strong>插入 cookie 信息</strong>，当函数真正返回的时候会验证cookie信息是否合法，如果不合法就停止程序运行。攻击者在栈溢出覆盖返回地址的时候往往也会将cookie信息给覆盖掉，导致栈保护检查失败而阻止shellcode的执行。在Linux中我们将cookie信息称为canary。</p>
-<p>Linux canary 最后一字节为 <code>\x00</code></p>
-<p>gcc 开启和关闭的参数</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">-fno-stack-protector   <span class="comment"># 关闭，默认没有canary</span></span><br><span class="line"></span><br><span class="line">-fstack-protector          <span class="comment"># 保护函数中通过alloca()分配缓存以及存在大于8字节的buffer。保护能力有限，不会保护所有的函数</span></span><br><span class="line">-fstack-protector-all      <span class="comment"># 启用堆栈保护，为所有函数插入保护代码</span></span><br><span class="line">-fstack-protector-strong   <span class="comment"># 编译参数让保护的范围更广</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="kernel"><a href="#kernel" class="headerlink" title="kernel"></a>kernel</h3><h4 id="kaslr"><a href="#kaslr" class="headerlink" title="kaslr"></a>kaslr</h4><p>kernel address space layout randomize</p>
-<p>在开启了 KASLR 的内核中，内核的代码段基地址等地址会整体偏移。</p>
-<h4 id="smap"><a href="#smap" class="headerlink" title="smap"></a>smap</h4><p>Supervisor Mode Access Prevention，管理模式访问保护。</p>
-<p>如果内核态可以访问用户态的数据，也会出现问题。比如在劫持控制流后，攻击者可以通过栈迁移将栈迁移(pop rsp类似的指令)到用户态，然后进行 ROP，进一步达到提权的目的。</p>
-<p>在 Linux 内核中，这个防御措施的实现是与<strong>指令集架构相关</strong>的。x86 下对应的保护机制的名字为 SMAP。CR4 寄存器中的第 21 位用来标记是否开启 SMEP 保护。</p>
-<ul>
-<li>bypass: 修改cr4</li>
-</ul>
-<h4 id="smep"><a href="#smep" class="headerlink" title="smep"></a>smep</h4><p>Supervisor Mode Execution Prevention，管理模式执行保护。</p>
-<p>在内核态执行代码时，可以直接执行用户态的代码。那如果攻击者<strong>控制了内核中的执行流，就可以执行处于用户态的代码</strong>。由于用户态的代码是攻击者可控的，所以更容易实施攻击。为了防范这种攻击，研究者提出当位于内核态时，不能执行用户态的代码。</p>
-<p>在 Linux 内核中，这个防御措施的实现是与<strong>指令集架构相关</strong>的(ARM PXN)。x86下 <code>CR4</code> 寄存器中的第 20 位用来标记是否开启 SMEP 保护。</p>
-<p>查看是否开启</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">grep smap /proc/cpuinfo  <span class="comment"># 如果出现结果，说明开启</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>bypass: 修改cr4</li>
-</ul>
-<h4 id="kpti"><a href="#kpti" class="headerlink" title="kpti"></a>kpti</h4><p>Kernel Page Table Isolation，内核页表隔离</p>
-<p>在 x86_64 的 PTI 机制中，<strong>内核态的用户空间内存映射部分被全部标记为不可执行</strong>。也就是说，之前不具有 SMEP 特性的硬件，如果开启了 KPTI 保护，也具有了类似于 SMEP 的特性。此外，SMAP 模拟也可以以类似的方式引入，只是现在还没有引入。因此，在目前开启了 KPTI 保护的内核中，如果没有开启 SMAP 保护，那么内核仍然可以访问用户态空间的内存，只是不能跳转到用户态空间执行 Shellcode。</p>
-<ul>
-<li>bypass<ul>
-<li>signal handler</li>
-<li>change cr3<ul>
-<li>swapgs_restore_regs_and_return_to_usermode 函数中存在可以改变 cr3 的gadget</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h4 id="fgkaslr"><a href="#fgkaslr" class="headerlink" title="fgkaslr"></a>fgkaslr</h4><p>FGKASLR 在 KASLR 基地址随机化的基础上，在加载时刻，以函数粒度重新排布内核代码。目前，FGKASLR 只支持 <strong>x86_64</strong> 架构。</p>
-<p>FGKASLR 利用 gcc 的编译选项 <code>-ffunction-sections</code> 把内核中不同的函数放到不同的 section 中。 在编译的过程中，任何使用 C 语言编写的函数以及不在特殊输入节的函数都会单独作为一个节；使用汇编编写的代码会位于一个统一的节中。</p>
-<p>如果想要开启内核的 FGKASLR，你需要开启 <code>CONFIG_FG_KASLR=y</code> 选项。</p>
-<h4 id="Kernel-Stack-Canary"><a href="#Kernel-Stack-Canary" class="headerlink" title="Kernel Stack Canary"></a>Kernel Stack Canary</h4><p>在编译内核时，我们可以设置 CONFIG_CC_STACKPROTECTOR 选项，来开启该保护</p>
-<p>在 x86 架构中，同一个 task 中使用相同的 Canary。</p>
-<h2 id="Android"><a href="#Android" class="headerlink" title="Android"></a>Android</h2><blockquote>
-<p>安卓使用 Linux Kernel，有些保护并非特有，而是是否默认开启。</p>
-</blockquote>
-<h3 id="pxn"><a href="#pxn" class="headerlink" title="pxn"></a>pxn</h3><p>Privileged Execute-Never。内核安全特性，用来阻止内核直接执行用户空间的代码，能够极大地提升漏洞利用的难度。</p>
-<p>和 smep 一个性质</p>
-<h3 id="pan"><a href="#pan" class="headerlink" title="pan"></a>pan</h3><p>smap 类似的性质</p>
-<h3 id="cfi"><a href="#cfi" class="headerlink" title="cfi"></a>cfi</h3><p>Control-Flow Integrity 控制流完整性</p>
-<p>其核心思想是<strong>限制程序运行中的控制转移，使之始终处于原有的控制流图所限定的范围内</strong>。具体做法是通过分析程序的控制流图，获取间接转移指令（包括间接跳转、间接调用、和函数返回指令）目标的白名单，并在运行过程中，核对间接转移指令的目标是否在白名单中。控制流劫持攻击往往会违背原有的控制流图，CFI使得这种攻击行为难以实现，从而保障软件系统的安全。</p>
-<p>内核 CFI 手动启用，x86通过此开启</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">CONFIG_CFI_CLANG=y</span><br></pre></td></tr></table></figure>
-
-
-<h2 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h2><h3 id="ASLR"><a href="#ASLR" class="headerlink" title="ASLR"></a>ASLR</h3><p>与 Linux 相同，ASLR 保护指的是地址随机化技术(Address Space Layout Randomization)，这项技术将在程序启动时将 DLL 随机的加载到内存中的位置，这将缓解恶意程序的加载。ASLR 自 Windows 10 开始已经在系统中被配置为默认启用。</p>
-<h3 id="DEP"><a href="#DEP" class="headerlink" title="DEP"></a>DEP</h3><p>Data Execute Protector</p>
-<h3 id="GS"><a href="#GS" class="headerlink" title="GS"></a>GS</h3><p>这个保护类似于 Linux 中的 Canary 保护，一旦开启，会在返回地址和 BP 之前压入一个额外的 <strong>Security Cookie</strong>。系统会比较栈中的这个值和原先存放在 .data 中的值做一个比较。如果两者不吻合，说法栈中发生了溢出。</p>
-<h3 id="NET"><a href="#NET" class="headerlink" title=".NET"></a>.NET</h3><p>DLL 混淆级保护。</p>
-<h3 id="Isolation"><a href="#Isolation" class="headerlink" title="Isolation"></a>Isolation</h3><p>被称为隔离保护，一旦开启，表示此程序加载时将会在一个相对独立的隔离环境中被加载，从而阻止攻击者过度提升权限。</p>
-<h3 id="SEH"><a href="#SEH" class="headerlink" title="SEH"></a>SEH</h3><p>结构化异常处理（Structured Exception Handling，简称 SEH）是一种 <code>Windows</code> 操作系统对错误或异常提供的处理技术。为Windows 的程序设计者提供了程序错误或异常的处理途径，使得系统更加健壮。</p>
-<h3 id="SafeSEH"><a href="#SafeSEH" class="headerlink" title="SafeSEH"></a>SafeSEH</h3><p>安全结构化异常处理函数，即白名单安全沙箱，事先定义一些异常处理程序，并基于此构造安全结构化异常处理表，程序正式运行后，安全结构化异常处理表之外的异常处理程序将会被阻止运行。</p>
-<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><ul>
-<li><a href="https://ctf-wiki.org/pwn/linux/kernel-mode/defense/readme/">CTF-wili</a></li>
-<li><a href="https://source.android.google.cn/docs/security/test/cfi?hl=zh-cn">android CFI</a></li>
-<li><a href="https://clang.llvm.org/docs/ControlFlowIntegrity.html">Control Flow Integrity — Clang</a></li>
-<li><a href="https://www.cnblogs.com/pwnfeifei/p/17162374.html">windows pwn</a></li>
-<li><a href="https://a1ex.online/2020/10/15/Windows-Pwn%E5%AD%A6%E4%B9%A0/">Windows_Pwn学习</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>PWN</category>
-      </categories>
-      <tags>
-        <tag>程序缓解机制</tag>
       </tags>
   </entry>
   <entry>
@@ -973,6 +850,129 @@
       </categories>
       <tags>
         <tag>asm</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>程序保护机制</title>
+    <url>/2023/08/26/%E7%A8%8B%E5%BA%8F%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%88%B6/</url>
+    <content><![CDATA[<blockquote>
+<p>程序保护机制学习</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h2><h3 id="ELF"><a href="#ELF" class="headerlink" title="ELF"></a>ELF</h3><h4 id="relro"><a href="#relro" class="headerlink" title="relro"></a>relro</h4><p>read only relocation: 由linker指定binary的一块经过dynamic linker处理过 relocation之后的区域为只读.</p>
+<ul>
+<li>比如说 got表，在完全开启后只读，我们无法修改修改函数 got 表的内容从而改变函数的执行过程。</li>
+</ul>
+<p>gcc 选项</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">-z norelro   <span class="comment"># 关闭</span></span><br><span class="line">-z lazy      <span class="comment"># 部分开启</span></span><br><span class="line">-z now       <span class="comment"># 完全开启</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="aslr"><a href="#aslr" class="headerlink" title="aslr"></a>aslr</h4><p>Address Space Layout Randomization, 这种技术使得系统上运行的进程的内存地址无法被预测，使得与这些进程有关的漏洞变得更加难以利用。配合 PIE 保护从而得到最好的效果</p>
+<p>Linux上ASLR分为0&#x2F;1&#x2F;2三级，用户可以通过内核参数randomize_va_space进行等级控制，对应效果如下：</p>
+<ul>
+<li>0：没有随机化，即关闭ASLR</li>
+<li>1：保留的随机化，即<strong>共享库、栈、mmap()以及VSDO将被随机化</strong></li>
+<li>2：完全的随机化，在1的基础上，<strong>通过brk分配的内存空间(heap通过此系统调用获得)也将随机化</strong></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cat</span>  /proc/sys/kernel/randomize_va_space</span><br><span class="line">  2</span><br><span class="line"><span class="built_in">echo</span> 0 &gt; /proc/sys/kernel/randomize_va_space</span><br></pre></td></tr></table></figure>
+
+<p>在使用 gdb 软件调试时可以关闭此保护，从而在调试时获得的地址一致。</p>
+<p>因为存在一定的地址随机化，所以在漏洞利用时不能使用固定的函数地址。比如没开 aslr 保护system函数(共享库中的函数)地址是 0x1234。开启aslr时system函数位置会改变，从而利用失败。</p>
+<h4 id="NX"><a href="#NX" class="headerlink" title="NX"></a>NX</h4><p>No-eXecute 不可执行。和DEP(Data Execute Protector)一致</p>
+<p>将数据所在内存页标识为不可执行，当程序溢出成功转入shellcode时，程序会尝试在数据页面上执行指令，此时CPU就会抛出异常，而不是去执行恶意指令。</p>
+<p>gcc参数</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">-z execstack    <span class="comment"># 栈可执行</span></span><br><span class="line">-z noexecstack  <span class="comment"># 开启</span></span><br></pre></td></tr></table></figure>
+
+<p>bypass: 杜绝了一定写shellcode的利用，但是可以使用**ROP(Return-oriented programming)**来bypass，造成我们想要的攻击效果。</p>
+<h4 id="pie"><a href="#pie" class="headerlink" title="pie"></a>pie</h4><p>Position independent code, 位置无关代码，默认开启。<br>针对代码段.text, 数据段，.data，.bss等固定地址的一个防护技术。同ASLR一样，应用了PIE的程序会在每次加载时都变换加载基址，从而使位于程序本身的gadget也失效</p>
+<p>没有PIE保护的程序，每次加载的基址都是固定的，64位上一般是0x400000。</p>
+<p>gcc 参数</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">-no-pie    <span class="comment"># 关闭pie</span></span><br><span class="line">-pie       <span class="comment"># 开启pie</span></span><br></pre></td></tr></table></figure>
+
+<p>开启aslr，我们可以获得text段的gadget，并且可以使用。但是开其pie保护后，text随机化，我们寻找的gadget也需要加上一个偏移才能使用。</p>
+<ul>
+<li>bypass<ul>
+<li>partial write: 由于内存的页载入机制，PIE的随机化只能<strong>影响到单个内存页</strong>。通常来说，一个内存页大小为0x1000，这就意味着不管地址怎么变，某条指令的后12位是始终不变的。因此通过覆盖部分内容比如后8位从而劫持函数执行流。<ul>
+<li>leak: 程序本身的漏洞可以泄露某些函数地址，从而获得程序加载的基地址。</li>
+</ul>
+</li>
+<li>vdso&#x2F;vsyscall: 系统把几个常用的无参内核调用从内核中映射到用户空间中，这就是vsyscall。在某些版本中，这个地址不会改变，并且不受保护的影响。vsyscall 内存页中包含了三个系统调用。而且这三个系统调用对程序运行基本没有影响，也就是说我们获得了三个已知地址的 ret。相当可以执行 <code>ret</code> 指令，获得：查看程序的映射 <code>cat /proc/&lt;pid&gt;/maps</code>。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">__vsyscall_page:</span><br><span class="line"> mov $__NR_gettimeofday, %rax</span><br><span class="line"> syscall</span><br><span class="line"> ret</span><br><span class="line"></span><br><span class="line"> .balign <span class="number">1024</span>, <span class="number">0xcc</span></span><br><span class="line"> mov $__NR_time, %rax</span><br><span class="line"> syscall</span><br><span class="line"> ret</span><br><span class="line"></span><br><span class="line"> .balign <span class="number">1024</span>, <span class="number">0xcc</span></span><br><span class="line"> mov $__NR_getcpu, %rax</span><br><span class="line"> syscall</span><br><span class="line"> ret</span><br></pre></td></tr></table></figure>
+
+<h4 id="stack-canary"><a href="#stack-canary" class="headerlink" title="stack canary"></a>stack canary</h4><p>当启用 canary 保护后，函数开始执行的时候会先往栈里<strong>插入 cookie 信息</strong>，当函数真正返回的时候会验证cookie信息是否合法，如果不合法就停止程序运行。攻击者在栈溢出覆盖返回地址的时候往往也会将cookie信息给覆盖掉，导致栈保护检查失败而阻止shellcode的执行。在Linux中我们将cookie信息称为canary。</p>
+<p>Linux canary 最后一字节为 <code>\x00</code></p>
+<p>gcc 开启和关闭的参数</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">-fno-stack-protector   <span class="comment"># 关闭，默认没有canary</span></span><br><span class="line"></span><br><span class="line">-fstack-protector          <span class="comment"># 保护函数中通过alloca()分配缓存以及存在大于8字节的buffer。保护能力有限，不会保护所有的函数</span></span><br><span class="line">-fstack-protector-all      <span class="comment"># 启用堆栈保护，为所有函数插入保护代码</span></span><br><span class="line">-fstack-protector-strong   <span class="comment"># 编译参数让保护的范围更广</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="kernel"><a href="#kernel" class="headerlink" title="kernel"></a>kernel</h3><h4 id="kaslr"><a href="#kaslr" class="headerlink" title="kaslr"></a>kaslr</h4><p>kernel address space layout randomize</p>
+<p>在开启了 KASLR 的内核中，内核的代码段基地址等地址会整体偏移。</p>
+<h4 id="smap"><a href="#smap" class="headerlink" title="smap"></a>smap</h4><p>Supervisor Mode Access Prevention，管理模式访问保护。</p>
+<p>如果内核态可以访问用户态的数据，也会出现问题。比如在劫持控制流后，攻击者可以通过栈迁移将栈迁移(pop rsp类似的指令)到用户态，然后进行 ROP，进一步达到提权的目的。</p>
+<p>在 Linux 内核中，这个防御措施的实现是与<strong>指令集架构相关</strong>的。x86 下对应的保护机制的名字为 SMAP。CR4 寄存器中的第 21 位用来标记是否开启 SMEP 保护。</p>
+<ul>
+<li>bypass: 修改cr4</li>
+</ul>
+<h4 id="smep"><a href="#smep" class="headerlink" title="smep"></a>smep</h4><p>Supervisor Mode Execution Prevention，管理模式执行保护。</p>
+<p>在内核态执行代码时，可以直接执行用户态的代码。那如果攻击者<strong>控制了内核中的执行流，就可以执行处于用户态的代码</strong>。由于用户态的代码是攻击者可控的，所以更容易实施攻击。为了防范这种攻击，研究者提出当位于内核态时，不能执行用户态的代码。</p>
+<p>在 Linux 内核中，这个防御措施的实现是与<strong>指令集架构相关</strong>的(ARM PXN)。x86下 <code>CR4</code> 寄存器中的第 20 位用来标记是否开启 SMEP 保护。</p>
+<p>查看是否开启</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">grep smap /proc/cpuinfo  <span class="comment"># 如果出现结果，说明开启</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>bypass: 修改cr4</li>
+</ul>
+<h4 id="kpti"><a href="#kpti" class="headerlink" title="kpti"></a>kpti</h4><p>Kernel Page Table Isolation，内核页表隔离</p>
+<p>在 x86_64 的 PTI 机制中，<strong>内核态的用户空间内存映射部分被全部标记为不可执行</strong>。也就是说，之前不具有 SMEP 特性的硬件，如果开启了 KPTI 保护，也具有了类似于 SMEP 的特性。此外，SMAP 模拟也可以以类似的方式引入，只是现在还没有引入。因此，在目前开启了 KPTI 保护的内核中，如果没有开启 SMAP 保护，那么内核仍然可以访问用户态空间的内存，只是不能跳转到用户态空间执行 Shellcode。</p>
+<ul>
+<li>bypass<ul>
+<li>signal handler</li>
+<li>change cr3<ul>
+<li>swapgs_restore_regs_and_return_to_usermode 函数中存在可以改变 cr3 的gadget</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="fgkaslr"><a href="#fgkaslr" class="headerlink" title="fgkaslr"></a>fgkaslr</h4><p>FGKASLR 在 KASLR 基地址随机化的基础上，在加载时刻，以函数粒度重新排布内核代码。目前，FGKASLR 只支持 <strong>x86_64</strong> 架构。</p>
+<p>FGKASLR 利用 gcc 的编译选项 <code>-ffunction-sections</code> 把内核中不同的函数放到不同的 section 中。 在编译的过程中，任何使用 C 语言编写的函数以及不在特殊输入节的函数都会单独作为一个节；使用汇编编写的代码会位于一个统一的节中。</p>
+<p>如果想要开启内核的 FGKASLR，你需要开启 <code>CONFIG_FG_KASLR=y</code> 选项。</p>
+<h4 id="Kernel-Stack-Canary"><a href="#Kernel-Stack-Canary" class="headerlink" title="Kernel Stack Canary"></a>Kernel Stack Canary</h4><p>在编译内核时，我们可以设置 CONFIG_CC_STACKPROTECTOR 选项，来开启该保护</p>
+<p>在 x86 架构中，同一个 task 中使用相同的 Canary。</p>
+<h2 id="Android"><a href="#Android" class="headerlink" title="Android"></a>Android</h2><blockquote>
+<p>安卓使用 Linux Kernel，有些保护并非特有，而是是否默认开启。</p>
+</blockquote>
+<h3 id="pxn"><a href="#pxn" class="headerlink" title="pxn"></a>pxn</h3><p>Privileged Execute-Never。内核安全特性，用来阻止内核直接执行用户空间的代码，能够极大地提升漏洞利用的难度。</p>
+<p>和 smep 一个性质</p>
+<h3 id="pan"><a href="#pan" class="headerlink" title="pan"></a>pan</h3><p>smap 类似的性质</p>
+<h3 id="cfi"><a href="#cfi" class="headerlink" title="cfi"></a>cfi</h3><p>Control-Flow Integrity 控制流完整性</p>
+<p>其核心思想是<strong>限制程序运行中的控制转移，使之始终处于原有的控制流图所限定的范围内</strong>。具体做法是通过分析程序的控制流图，获取间接转移指令（包括间接跳转、间接调用、和函数返回指令）目标的白名单，并在运行过程中，核对间接转移指令的目标是否在白名单中。控制流劫持攻击往往会违背原有的控制流图，CFI使得这种攻击行为难以实现，从而保障软件系统的安全。</p>
+<p>内核 CFI 手动启用，x86通过此开启</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">CONFIG_CFI_CLANG=y</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h2><h3 id="ASLR"><a href="#ASLR" class="headerlink" title="ASLR"></a>ASLR</h3><p>与 Linux 相同，ASLR 保护指的是地址随机化技术(Address Space Layout Randomization)，这项技术将在程序启动时将 DLL 随机的加载到内存中的位置，这将缓解恶意程序的加载。ASLR 自 Windows 10 开始已经在系统中被配置为默认启用。</p>
+<h3 id="DEP"><a href="#DEP" class="headerlink" title="DEP"></a>DEP</h3><p>Data Execute Protector</p>
+<h3 id="GS"><a href="#GS" class="headerlink" title="GS"></a>GS</h3><p>这个保护类似于 Linux 中的 Canary 保护，一旦开启，会在返回地址和 BP 之前压入一个额外的 <strong>Security Cookie</strong>。系统会比较栈中的这个值和原先存放在 .data 中的值做一个比较。如果两者不吻合，说法栈中发生了溢出。</p>
+<h3 id="NET"><a href="#NET" class="headerlink" title=".NET"></a>.NET</h3><p>DLL 混淆级保护。</p>
+<h3 id="Isolation"><a href="#Isolation" class="headerlink" title="Isolation"></a>Isolation</h3><p>被称为隔离保护，一旦开启，表示此程序加载时将会在一个相对独立的隔离环境中被加载，从而阻止攻击者过度提升权限。</p>
+<h3 id="SEH"><a href="#SEH" class="headerlink" title="SEH"></a>SEH</h3><p>结构化异常处理（Structured Exception Handling，简称 SEH）是一种 <code>Windows</code> 操作系统对错误或异常提供的处理技术。为Windows 的程序设计者提供了程序错误或异常的处理途径，使得系统更加健壮。</p>
+<h3 id="SafeSEH"><a href="#SafeSEH" class="headerlink" title="SafeSEH"></a>SafeSEH</h3><p>安全结构化异常处理函数，即白名单安全沙箱，事先定义一些异常处理程序，并基于此构造安全结构化异常处理表，程序正式运行后，安全结构化异常处理表之外的异常处理程序将会被阻止运行。</p>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><ul>
+<li><a href="https://ctf-wiki.org/pwn/linux/kernel-mode/defense/readme/">CTF-wili</a></li>
+<li><a href="https://source.android.google.cn/docs/security/test/cfi?hl=zh-cn">android CFI</a></li>
+<li><a href="https://clang.llvm.org/docs/ControlFlowIntegrity.html">Control Flow Integrity — Clang</a></li>
+<li><a href="https://www.cnblogs.com/pwnfeifei/p/17162374.html">windows pwn</a></li>
+<li><a href="https://a1ex.online/2020/10/15/Windows-Pwn%E5%AD%A6%E4%B9%A0/">Windows_Pwn学习</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>PWN</category>
+      </categories>
+      <tags>
+        <tag>程序缓解机制</tag>
       </tags>
   </entry>
   <entry>
