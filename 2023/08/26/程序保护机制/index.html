@@ -28,7 +28,7 @@
 <meta property="og:description" content="程序保护机制学习">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-08-26T00:41:07.061Z">
-<meta property="article:modified_time" content="2023-09-09T00:56:19.737Z">
+<meta property="article:modified_time" content="2023-09-09T14:19:25.498Z">
 <meta property="article:author" content="Ha0Y">
 <meta property="article:tag" content="程序缓解机制">
 <meta name="twitter:card" content="summary">
@@ -217,7 +217,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-09-09 08:56:19" itemprop="dateModified" datetime="2023-09-09T08:56:19+08:00">2023-09-09</time>
+                <time title="修改时间：2023-09-09 22:19:25" itemprop="dateModified" datetime="2023-09-09T22:19:25+08:00">2023-09-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -259,14 +259,14 @@
 </blockquote>
 <span id="more"></span>
 
-<h1 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h1><h2 id="ELF"><a href="#ELF" class="headerlink" title="ELF"></a>ELF</h2><h3 id="relro"><a href="#relro" class="headerlink" title="relro"></a>relro</h3><p>read only relocation: 由linker指定binary的一块经过dynamic linker处理过 relocation之后的区域为只读.</p>
+<h2 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h2><h3 id="ELF"><a href="#ELF" class="headerlink" title="ELF"></a>ELF</h3><h4 id="relro"><a href="#relro" class="headerlink" title="relro"></a>relro</h4><p>read only relocation: 由linker指定binary的一块经过dynamic linker处理过 relocation之后的区域为只读.</p>
 <ul>
 <li>比如说 got表，在完全开启后只读，我们无法修改修改函数 got 表的内容从而改变函数的执行过程。</li>
 </ul>
 <p>gcc 选项</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-z norelro   <span class="comment"># 关闭</span></span><br><span class="line">-z lazy      <span class="comment"># 部分开启</span></span><br><span class="line">-z now       <span class="comment"># 完全开启</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="aslr"><a href="#aslr" class="headerlink" title="aslr"></a>aslr</h3><p>Address Space Layout Randomization, 这种技术使得系统上运行的进程的内存地址无法被预测，使得与这些进程有关的漏洞变得更加难以利用。配合 PIE 保护从而得到最好的效果</p>
+<h4 id="aslr"><a href="#aslr" class="headerlink" title="aslr"></a>aslr</h4><p>Address Space Layout Randomization, 这种技术使得系统上运行的进程的内存地址无法被预测，使得与这些进程有关的漏洞变得更加难以利用。配合 PIE 保护从而得到最好的效果</p>
 <p>Linux上ASLR分为0&#x2F;1&#x2F;2三级，用户可以通过内核参数randomize_va_space进行等级控制，对应效果如下：</p>
 <ul>
 <li>0：没有随机化，即关闭ASLR</li>
@@ -277,13 +277,13 @@
 
 <p>在使用 gdb 软件调试时可以关闭此保护，从而在调试时获得的地址一致。</p>
 <p>因为存在一定的地址随机化，所以在漏洞利用时不能使用固定的函数地址。比如没开 aslr 保护system函数(共享库中的函数)地址是 0x1234。开启aslr时system函数位置会改变，从而利用失败。</p>
-<h3 id="NX"><a href="#NX" class="headerlink" title="NX"></a>NX</h3><p>No-eXecute 不可执行。和DEP(Data Execute Protector)一致</p>
+<h4 id="NX"><a href="#NX" class="headerlink" title="NX"></a>NX</h4><p>No-eXecute 不可执行。和DEP(Data Execute Protector)一致</p>
 <p>将数据所在内存页标识为不可执行，当程序溢出成功转入shellcode时，程序会尝试在数据页面上执行指令，此时CPU就会抛出异常，而不是去执行恶意指令。</p>
 <p>gcc参数</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-z execstack    <span class="comment"># 栈可执行</span></span><br><span class="line">-z noexecstack  <span class="comment"># 开启</span></span><br></pre></td></tr></table></figure>
 
 <p>bypass: 杜绝了一定写shellcode的利用，但是可以使用**ROP(Return-oriented programming)**来bypass，造成我们想要的攻击效果。</p>
-<h3 id="pie"><a href="#pie" class="headerlink" title="pie"></a>pie</h3><p>Position independent code, 位置无关代码，默认开启。<br>针对代码段.text, 数据段，.data，.bss等固定地址的一个防护技术。同ASLR一样，应用了PIE的程序会在每次加载时都变换加载基址，从而使位于程序本身的gadget也失效</p>
+<h4 id="pie"><a href="#pie" class="headerlink" title="pie"></a>pie</h4><p>Position independent code, 位置无关代码，默认开启。<br>针对代码段.text, 数据段，.data，.bss等固定地址的一个防护技术。同ASLR一样，应用了PIE的程序会在每次加载时都变换加载基址，从而使位于程序本身的gadget也失效</p>
 <p>没有PIE保护的程序，每次加载的基址都是固定的，64位上一般是0x400000。</p>
 <p>gcc 参数</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-no-pie    <span class="comment"># 关闭pie</span></span><br><span class="line">-pie       <span class="comment"># 开启pie</span></span><br></pre></td></tr></table></figure>
@@ -301,20 +301,20 @@
 </ul>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">__vsyscall_page:</span><br><span class="line"> mov $__NR_gettimeofday, %rax</span><br><span class="line"> syscall</span><br><span class="line"> ret</span><br><span class="line"></span><br><span class="line"> .balign <span class="number">1024</span>, <span class="number">0xcc</span></span><br><span class="line"> mov $__NR_time, %rax</span><br><span class="line"> syscall</span><br><span class="line"> ret</span><br><span class="line"></span><br><span class="line"> .balign <span class="number">1024</span>, <span class="number">0xcc</span></span><br><span class="line"> mov $__NR_getcpu, %rax</span><br><span class="line"> syscall</span><br><span class="line"> ret</span><br></pre></td></tr></table></figure>
 
-<h3 id="stack-canary"><a href="#stack-canary" class="headerlink" title="stack canary"></a>stack canary</h3><p>当启用 canary 保护后，函数开始执行的时候会先往栈里<strong>插入 cookie 信息</strong>，当函数真正返回的时候会验证cookie信息是否合法，如果不合法就停止程序运行。攻击者在栈溢出覆盖返回地址的时候往往也会将cookie信息给覆盖掉，导致栈保护检查失败而阻止shellcode的执行。在Linux中我们将cookie信息称为canary。</p>
+<h4 id="stack-canary"><a href="#stack-canary" class="headerlink" title="stack canary"></a>stack canary</h4><p>当启用 canary 保护后，函数开始执行的时候会先往栈里<strong>插入 cookie 信息</strong>，当函数真正返回的时候会验证cookie信息是否合法，如果不合法就停止程序运行。攻击者在栈溢出覆盖返回地址的时候往往也会将cookie信息给覆盖掉，导致栈保护检查失败而阻止shellcode的执行。在Linux中我们将cookie信息称为canary。</p>
 <p>Linux canary 最后一字节为 <code>\x00</code></p>
 <p>gcc 开启和关闭的参数</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-fno-stack-protector   <span class="comment"># 关闭，默认没有canary</span></span><br><span class="line"></span><br><span class="line">-fstack-protector          <span class="comment"># 保护函数中通过alloca()分配缓存以及存在大于8字节的buffer。保护能力有限，不会保护所有的函数</span></span><br><span class="line">-fstack-protector-all      <span class="comment"># 启用堆栈保护，为所有函数插入保护代码</span></span><br><span class="line">-fstack-protector-strong   <span class="comment"># 编译参数让保护的范围更广</span></span><br></pre></td></tr></table></figure>
 
-<h2 id="kernel"><a href="#kernel" class="headerlink" title="kernel"></a>kernel</h2><h3 id="kaslr"><a href="#kaslr" class="headerlink" title="kaslr"></a>kaslr</h3><p>kernel address space layout randomize</p>
+<h3 id="kernel"><a href="#kernel" class="headerlink" title="kernel"></a>kernel</h3><h4 id="kaslr"><a href="#kaslr" class="headerlink" title="kaslr"></a>kaslr</h4><p>kernel address space layout randomize</p>
 <p>在开启了 KASLR 的内核中，内核的代码段基地址等地址会整体偏移。</p>
-<h3 id="smap"><a href="#smap" class="headerlink" title="smap"></a>smap</h3><p>Supervisor Mode Access Prevention，管理模式访问保护。</p>
+<h4 id="smap"><a href="#smap" class="headerlink" title="smap"></a>smap</h4><p>Supervisor Mode Access Prevention，管理模式访问保护。</p>
 <p>如果内核态可以访问用户态的数据，也会出现问题。比如在劫持控制流后，攻击者可以通过栈迁移将栈迁移(pop rsp类似的指令)到用户态，然后进行 ROP，进一步达到提权的目的。</p>
 <p>在 Linux 内核中，这个防御措施的实现是与<strong>指令集架构相关</strong>的。x86 下对应的保护机制的名字为 SMAP。CR4 寄存器中的第 21 位用来标记是否开启 SMEP 保护。</p>
 <ul>
 <li>bypass: 修改cr4</li>
 </ul>
-<h3 id="smep"><a href="#smep" class="headerlink" title="smep"></a>smep</h3><p>Supervisor Mode Execution Prevention，管理模式执行保护。</p>
+<h4 id="smep"><a href="#smep" class="headerlink" title="smep"></a>smep</h4><p>Supervisor Mode Execution Prevention，管理模式执行保护。</p>
 <p>在内核态执行代码时，可以直接执行用户态的代码。那如果攻击者<strong>控制了内核中的执行流，就可以执行处于用户态的代码</strong>。由于用户态的代码是攻击者可控的，所以更容易实施攻击。为了防范这种攻击，研究者提出当位于内核态时，不能执行用户态的代码。</p>
 <p>在 Linux 内核中，这个防御措施的实现是与<strong>指令集架构相关</strong>的(ARM PXN)。x86下 <code>CR4</code> 寄存器中的第 20 位用来标记是否开启 SMEP 保护。</p>
 <p>查看是否开启</p>
@@ -323,7 +323,7 @@
 <ul>
 <li>bypass: 修改cr4</li>
 </ul>
-<h3 id="kpti"><a href="#kpti" class="headerlink" title="kpti"></a>kpti</h3><p>Kernel Page Table Isolation，内核页表隔离</p>
+<h4 id="kpti"><a href="#kpti" class="headerlink" title="kpti"></a>kpti</h4><p>Kernel Page Table Isolation，内核页表隔离</p>
 <p>在 x86_64 的 PTI 机制中，<strong>内核态的用户空间内存映射部分被全部标记为不可执行</strong>。也就是说，之前不具有 SMEP 特性的硬件，如果开启了 KPTI 保护，也具有了类似于 SMEP 的特性。此外，SMAP 模拟也可以以类似的方式引入，只是现在还没有引入。因此，在目前开启了 KPTI 保护的内核中，如果没有开启 SMAP 保护，那么内核仍然可以访问用户态空间的内存，只是不能跳转到用户态空间执行 Shellcode。</p>
 <ul>
 <li>bypass<ul>
@@ -335,12 +335,12 @@
 </ul>
 </li>
 </ul>
-<h3 id="fgkaslr"><a href="#fgkaslr" class="headerlink" title="fgkaslr"></a>fgkaslr</h3><p>FGKASLR 在 KASLR 基地址随机化的基础上，在加载时刻，以函数粒度重新排布内核代码。目前，FGKASLR 只支持 <strong>x86_64</strong> 架构。</p>
+<h4 id="fgkaslr"><a href="#fgkaslr" class="headerlink" title="fgkaslr"></a>fgkaslr</h4><p>FGKASLR 在 KASLR 基地址随机化的基础上，在加载时刻，以函数粒度重新排布内核代码。目前，FGKASLR 只支持 <strong>x86_64</strong> 架构。</p>
 <p>FGKASLR 利用 gcc 的编译选项 <code>-ffunction-sections</code> 把内核中不同的函数放到不同的 section 中。 在编译的过程中，任何使用 C 语言编写的函数以及不在特殊输入节的函数都会单独作为一个节；使用汇编编写的代码会位于一个统一的节中。</p>
 <p>如果想要开启内核的 FGKASLR，你需要开启 <code>CONFIG_FG_KASLR=y</code> 选项。</p>
-<h3 id="Kernel-Stack-Canary"><a href="#Kernel-Stack-Canary" class="headerlink" title="Kernel Stack Canary"></a>Kernel Stack Canary</h3><p>在编译内核时，我们可以设置 CONFIG_CC_STACKPROTECTOR 选项，来开启该保护</p>
+<h4 id="Kernel-Stack-Canary"><a href="#Kernel-Stack-Canary" class="headerlink" title="Kernel Stack Canary"></a>Kernel Stack Canary</h4><p>在编译内核时，我们可以设置 CONFIG_CC_STACKPROTECTOR 选项，来开启该保护</p>
 <p>在 x86 架构中，同一个 task 中使用相同的 Canary。</p>
-<h1 id="Android"><a href="#Android" class="headerlink" title="Android"></a>Android</h1><blockquote>
+<h2 id="Android"><a href="#Android" class="headerlink" title="Android"></a>Android</h2><blockquote>
 <p>安卓使用 Linux Kernel，有些保护并非特有，而是是否默认开启。</p>
 </blockquote>
 <h3 id="pxn"><a href="#pxn" class="headerlink" title="pxn"></a>pxn</h3><p>Privileged Execute-Never。内核安全特性，用来阻止内核直接执行用户空间的代码，能够极大地提升漏洞利用的难度。</p>
@@ -351,7 +351,8 @@
 <p>内核 CFI 手动启用，x86通过此开启</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CONFIG_CFI_CLANG=y</span><br></pre></td></tr></table></figure>
 
-<h1 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h1><h3 id="ASLR"><a href="#ASLR" class="headerlink" title="ASLR"></a>ASLR</h3><p>与 Linux 相同，ASLR 保护指的是地址随机化技术(Address Space Layout Randomization)，这项技术将在程序启动时将 DLL 随机的加载到内存中的位置，这将缓解恶意程序的加载。ASLR 自 Windows 10 开始已经在系统中被配置为默认启用。</p>
+
+<h2 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h2><h3 id="ASLR"><a href="#ASLR" class="headerlink" title="ASLR"></a>ASLR</h3><p>与 Linux 相同，ASLR 保护指的是地址随机化技术(Address Space Layout Randomization)，这项技术将在程序启动时将 DLL 随机的加载到内存中的位置，这将缓解恶意程序的加载。ASLR 自 Windows 10 开始已经在系统中被配置为默认启用。</p>
 <h3 id="DEP"><a href="#DEP" class="headerlink" title="DEP"></a>DEP</h3><p>Data Execute Protector</p>
 <h3 id="GS"><a href="#GS" class="headerlink" title="GS"></a>GS</h3><p>这个保护类似于 Linux 中的 Canary 保护，一旦开启，会在返回地址和 BP 之前压入一个额外的 <strong>Security Cookie</strong>。系统会比较栈中的这个值和原先存放在 .data 中的值做一个比较。如果两者不吻合，说法栈中发生了溢出。</p>
 <h3 id="NET"><a href="#NET" class="headerlink" title=".NET"></a>.NET</h3><p>DLL 混淆级保护。</p>
@@ -386,7 +387,10 @@
     <a href="/2023/07/28/peekgeek%20mmsg/" rel="prev" title="peekgeek mmsg">
       <i class="fa fa-chevron-left"></i> peekgeek mmsg
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2023/09/09/Cmake%20%E4%BD%BF%E7%94%A8/" rel="next" title="Cmake 使用">
+      Cmake 使用 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -445,7 +449,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Linux"><span class="nav-number">1.</span> <span class="nav-text">Linux</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ELF"><span class="nav-number">1.1.</span> <span class="nav-text">ELF</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#relro"><span class="nav-number">1.1.1.</span> <span class="nav-text">relro</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#aslr"><span class="nav-number">1.1.2.</span> <span class="nav-text">aslr</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NX"><span class="nav-number">1.1.3.</span> <span class="nav-text">NX</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pie"><span class="nav-number">1.1.4.</span> <span class="nav-text">pie</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#stack-canary"><span class="nav-number">1.1.5.</span> <span class="nav-text">stack canary</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kernel"><span class="nav-number">1.2.</span> <span class="nav-text">kernel</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#kaslr"><span class="nav-number">1.2.1.</span> <span class="nav-text">kaslr</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#smap"><span class="nav-number">1.2.2.</span> <span class="nav-text">smap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#smep"><span class="nav-number">1.2.3.</span> <span class="nav-text">smep</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kpti"><span class="nav-number">1.2.4.</span> <span class="nav-text">kpti</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fgkaslr"><span class="nav-number">1.2.5.</span> <span class="nav-text">fgkaslr</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kernel-Stack-Canary"><span class="nav-number">1.2.6.</span> <span class="nav-text">Kernel Stack Canary</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Android"><span class="nav-number">2.</span> <span class="nav-text">Android</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pxn"><span class="nav-number">2.0.1.</span> <span class="nav-text">pxn</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pan"><span class="nav-number">2.0.2.</span> <span class="nav-text">pan</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cfi"><span class="nav-number">2.0.3.</span> <span class="nav-text">cfi</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Windows"><span class="nav-number">3.</span> <span class="nav-text">Windows</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ASLR"><span class="nav-number">3.0.1.</span> <span class="nav-text">ASLR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DEP"><span class="nav-number">3.0.2.</span> <span class="nav-text">DEP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GS"><span class="nav-number">3.0.3.</span> <span class="nav-text">GS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NET"><span class="nav-number">3.0.4.</span> <span class="nav-text">.NET</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Isolation"><span class="nav-number">3.0.5.</span> <span class="nav-text">Isolation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SEH"><span class="nav-number">3.0.6.</span> <span class="nav-text">SEH</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SafeSEH"><span class="nav-number">3.0.7.</span> <span class="nav-text">SafeSEH</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-number">4.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux"><span class="nav-number">1.</span> <span class="nav-text">Linux</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ELF"><span class="nav-number">1.1.</span> <span class="nav-text">ELF</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#relro"><span class="nav-number">1.1.1.</span> <span class="nav-text">relro</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#aslr"><span class="nav-number">1.1.2.</span> <span class="nav-text">aslr</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#NX"><span class="nav-number">1.1.3.</span> <span class="nav-text">NX</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pie"><span class="nav-number">1.1.4.</span> <span class="nav-text">pie</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#stack-canary"><span class="nav-number">1.1.5.</span> <span class="nav-text">stack canary</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kernel"><span class="nav-number">1.2.</span> <span class="nav-text">kernel</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#kaslr"><span class="nav-number">1.2.1.</span> <span class="nav-text">kaslr</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#smap"><span class="nav-number">1.2.2.</span> <span class="nav-text">smap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#smep"><span class="nav-number">1.2.3.</span> <span class="nav-text">smep</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#kpti"><span class="nav-number">1.2.4.</span> <span class="nav-text">kpti</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#fgkaslr"><span class="nav-number">1.2.5.</span> <span class="nav-text">fgkaslr</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Kernel-Stack-Canary"><span class="nav-number">1.2.6.</span> <span class="nav-text">Kernel Stack Canary</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android"><span class="nav-number">2.</span> <span class="nav-text">Android</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pxn"><span class="nav-number">2.1.</span> <span class="nav-text">pxn</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pan"><span class="nav-number">2.2.</span> <span class="nav-text">pan</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cfi"><span class="nav-number">2.3.</span> <span class="nav-text">cfi</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Windows"><span class="nav-number">3.</span> <span class="nav-text">Windows</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ASLR"><span class="nav-number">3.1.</span> <span class="nav-text">ASLR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DEP"><span class="nav-number">3.2.</span> <span class="nav-text">DEP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GS"><span class="nav-number">3.3.</span> <span class="nav-text">GS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NET"><span class="nav-number">3.4.</span> <span class="nav-text">.NET</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Isolation"><span class="nav-number">3.5.</span> <span class="nav-text">Isolation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SEH"><span class="nav-number">3.6.</span> <span class="nav-text">SEH</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SafeSEH"><span class="nav-number">3.7.</span> <span class="nav-text">SafeSEH</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-number"></span> <span class="nav-text">参考文章</span></a></div>
       </div>
       <!--/noindex-->
 
@@ -459,7 +463,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-count">8</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -468,7 +472,7 @@
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -509,12 +513,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">45k</span>
+    <span title="站点总字数">48k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:22</span>
+    <span title="站点阅读时长">1:27</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>
