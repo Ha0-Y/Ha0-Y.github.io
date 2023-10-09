@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ha0-y.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":18,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="不该点开那一篇推文。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android-1">
+<meta property="og:url" content="https://ha0-y.github.io/2023/10/08/Android-1/index.html">
+<meta property="og:site_name" content="personal blog">
+<meta property="og:description" content="不该点开那一篇推文。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-10-07T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-10-09T02:57:04.486Z">
+<meta property="article:author" content="Ha0Y">
+<meta property="article:tag" content="Android">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://ha0-y.github.io/2023/10/08/Android-1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Android-1 | personal blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">personal blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">I'm possible</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ha0-y.github.io/2023/10/08/Android-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ha0Y">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="personal blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Android-1
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-10-08 00:00:00" itemprop="dateCreated datePublished" datetime="2023-10-08T00:00:00+08:00">2023-10-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-10-09 10:57:04" itemprop="dateModified" datetime="2023-10-09T10:57:04+08:00">2023-10-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categorievariants/CS/" itemprop="url" rel="index"><span itemprop="name">CS</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>11 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>不该点开那一篇推文。</p>
+</blockquote>
+<span id="more"></span>
+
+<ul>
+<li>腾讯玄武实验室一篇关于ARM 的文章</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://8ksec.io/arm64-reversing-and-exploitation-part-7-bypassing-aslr-and-nx/">ARM64 Reversing And Exploitation Part 7 – Bypassing ASLR and NX - 8kSec</a></p>
+<p>但是看完了这篇文章，突然想学一学安卓安全相关的内容</p>
+<h2 id="Android-环境搭建"><a href="#Android-环境搭建" class="headerlink" title="Android 环境搭建"></a>Android 环境搭建</h2><h3 id="SDK"><a href="#SDK" class="headerlink" title="SDK"></a>SDK</h3><ul>
+<li>在windows 和 Linux 下搭建。比较简单的方式：使用Android Studio</li>
+</ul>
+<ol>
+<li>下载 Java，配置环境变量。</li>
+</ol>
+<p>Linux 使用包管理器进行安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># linux</span></span><br><span class="line">sudo apt install openjdk-17-jdk</span><br></pre></td></tr></table></figure>
+
+<p>windows 下在oracle下载 <a target="_blank" rel="noopener" href="https://www.oracle.com/java/technologies/downloads/">Java Downloads | Oracle</a>，然后配置</p>
+<ol start="2">
+<li>下载android studio，使用<a target="_blank" rel="noopener" href="https://www.jetbrains.com/zh-cn/lp/toolbox/">JetBrains Toolbox</a></li>
+<li>下载 Android SDK，Android studio 打开后如果没有sdk会自行下载，但是有墙，不一定会下载成功，但是总有解决问题的方法（</li>
+<li>path: 下载sdk后，将 <code>xxx\platform-tools</code> 加入环境变量，就可以使用adb。翻翻下载的目录，可能有其余有趣的工具，比如qemu</li>
+</ol>
+<h3 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h3><ol>
+<li>模拟器</li>
+</ol>
+<ul>
+<li>在安装 WSL2 后导致大部分模拟器不能使用，可以安装WSA，但是万一存在 恶意软件 就会很难搞</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://www.bluestacks.cn/">BlueStacks安卓模拟器</a>，配置后，以<strong>管理员运行</strong>，不会失败</p>
+<ul>
+<li>root：我在修改了配置文件后就成功了。<a target="_blank" rel="noopener" href="https://appuals.com/root-bluestacks/">How to Root Bluestacks on Windows Easily?</a></li>
+</ul>
+<ol start="2">
+<li>root 真机，这个才是最好的方法。<del>但是买不起</del></li>
+</ol>
+<h2 id="逆向工具"><a href="#逆向工具" class="headerlink" title="逆向工具"></a>逆向工具</h2><h3 id="反编译"><a href="#反编译" class="headerlink" title="反编译"></a>反编译</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/skylot/jadx">jadx</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.pnfsoftware.com/jeb/">JEB Decompiler</a></li>
+<li><a target="_blank" rel="noopener" href="https://hex-rays.com/IDA-pro/">IDA Pro</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/NationalSecurityAgency/ghidra">ghidra</a></li>
+</ul>
+<h3 id="hook"><a href="#hook" class="headerlink" title="hook"></a>hook</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://pypi.org/project/frida-tools/">frida-tools</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/frida/frida/releases">firda server</a></li>
+</ul>
+<h3 id="抓包"><a href="#抓包" class="headerlink" title="抓包"></a>抓包</h3><h2 id="APK结构"><a href="#APK结构" class="headerlink" title="APK结构"></a>APK结构</h2><ul>
+<li>APK, 本质上是一个zip文件，我们可以修改文件后缀然后解压。</li>
+</ul>
+<h3 id="assert"><a href="#assert" class="headerlink" title="assert"></a>assert</h3><p>用于存放需要打包到APK中的静态文件</p>
+<p>assets目录<strong>支持任意深度的子目录</strong>，用户可以根据自己的需求任意部署文件夹架构。</p>
+<h3 id="META-INF"><a href="#META-INF" class="headerlink" title="META-INF"></a>META-INF</h3><p>存放的是签名信息，用来保证apk包的完整性和系统的安全。</p>
+<p>在编译生成一个apk包时，会对所有要打包的文件做一个校验计算，并把计算结果放在META-INF目录下。在安装时，如果校验结果与META-INF下的内容不一致，系统就不会安装这个apk。从而保证了apk包里的文件不能被随意替换。</p>
+<p>META-INF目录下包含的文件有CERT.RSA，CERT.DSA，CERT.SF和MANIFEST.MF</p>
+<ul>
+<li>CERT.RSA：是开发者利用私钥对APK进行签名的签名文件</li>
+<li>CERT.SF，MANIFEST.MF：记录了文件中文件的哈希值</li>
+</ul>
+<h3 id="lib"><a href="#lib" class="headerlink" title="lib"></a>lib</h3><p>这里存放应用程序依赖的<strong>native库文件</strong>，一般是用C&#x2F;C++编写，这里的lib库可能包含多种不同类型，大体可以分为ARM，X86等架构。</p>
+<h3 id="res"><a href="#res" class="headerlink" title="res"></a>res</h3><p>res是resource的缩写，这个目录存放资源文件，存在这个文件夹下的所有文件都会映射到Android工程的<code>.R</code>文件中，生成对应的ID，访问的时候直接使用资源ID即R.id.filename，res文件夹下可以包含多个文件夹。</p>
+<p><strong>res文件夹，存放的也是资源文件，与assets文件夹不同的是，这里是编译后的资源文件。</strong></p>
+<h3 id="AndroidManifest-xml"><a href="#AndroidManifest-xml" class="headerlink" title="AndroidManifest.xml"></a>AndroidManifest.xml</h3><p>是Android应用程序的配置文件，是一个用来描述Android应用“整体资讯”的设定文件， Android系统可以根据这个<strong>自我介绍</strong>完整地了解APK应用程序的资讯，每个Android应用程序都必须包含一个AndroidManifest.xml文件，且它的名字是固定的，不能修改。我们在开发Android应用程序的时候，一般都把代码中的每一个Activity，Service，Provider和Receiver在AndroidManifest.xml中注册，只有这样系统才能启动对应的组件，另外这个文件还包含一些权限声明以及使用的SDK版本信息等等。程序打包时，会把AndroidManifest.xml进行简单的编译，便于Android系统识别，编译之后的格式是AXML格式</p>
+<h3 id="classes-dex"><a href="#classes-dex" class="headerlink" title="classes.dex"></a>classes.dex</h3><p>传统的Java程序，首先先把Java文件编译成class文件，字节码都保存在了class文件中，Java虚拟机可以通过解释执行这些class文件。</p>
+<p>而Dalvik虚拟机是在Java虚拟机进行了优化，执行的是Dalvik字节码，而这些Dalvik字节码是由Java字节码转换而来，一般情况下，Android应用在打包时通过AndroidSDK中的dx工具将Java字节码转换为Dalvik字节码。dx工具可以对多个class文件进行合并，重组，优化，可以达到减小体积，缩短运行时间的目的。</p>
+<p>dx工具把每个.class文件的每个区域的内容进行去重，重组，优化重排后生成dex文件，生成的dex文件可以在Dalvik虚拟机执行，且速度比较快</p>
+<h3 id="resources-arsc"><a href="#resources-arsc" class="headerlink" title="resources.arsc"></a>resources.arsc</h3><p>用来记录资源文件和资源ID之间的映射关系，用来根据资源ID寻找资源。Android的开发是分模块的，res目录专门用来存放资源文件，当在代码中需要调用资源文件时，只需要调用findviewbyId()就可以得到资源文件，每当在res文件夹下放一个文件，aapt就会自动生成对应的ID保存在.R文件，我们调用这个ID就可以，但是只有这个ID还不够，.R文件只是保证编译程序不报错，实际上在程序运行时，系统要根据ID去寻找对应的资源路径，而resources.arsc文件就是用来记录这些ID和资源文件位置对应关系的文件。</p>
+<h3 id="kotlin"><a href="#kotlin" class="headerlink" title="kotlin"></a>kotlin</h3><p>kotlin 是一门编程语言，也可以直接运行在Java虚拟机中，这个目录存放kotlin资源</p>
+<h2 id="adb-简单使用"><a href="#adb-简单使用" class="headerlink" title="adb 简单使用"></a>adb 简单使用</h2><ul>
+<li>将文件放入android机器里</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb push xxx /data/local/tmp</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>安装应用</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb install apk.apk</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>卸载</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb uninstall com.xxx.xxx</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>获得shell</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">adb connect &lt;ip&gt;:&lt;port&gt;</span><br><span class="line">adb shell</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">exit</span></span></span><br><span class="line">adb disconnect &lt;ip&gt;:&lt;port&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>启动指定的activity</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">am start -n &lt;package&gt;/&lt;activity&gt; </span><br></pre></td></tr></table></figure>
+
+<h2 id="frida-简单使用"><a href="#frida-简单使用" class="headerlink" title="frida 简单使用"></a>frida 简单使用</h2><ul>
+<li><p>python 的 frida-tools 和 手机端的 server 必须保持一致的版本, 可以使用python venv</p>
+</li>
+<li><p>CPU 信息</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb shell getprop ro.product.cpu.abi</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>指向hook 脚本</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">frida -U -l hook.js -f com.package.name --no-pause</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>使用python 执行</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> frida</span><br><span class="line"></span><br><span class="line">device = frida.get_usb_device()</span><br><span class="line"><span class="comment"># frida-ps -Ua 获得一个pid号</span></span><br><span class="line">process = device.attach(<span class="number">8189</span>)</span><br><span class="line"></span><br><span class="line">path = <span class="string">&quot;hook.js&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># send js</span></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(path, encoding=<span class="string">&quot;UTF-8&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    jscode = f.readall()</span><br><span class="line">    hook = process.create_script(jscode)</span><br><span class="line">hook.load()</span><br><span class="line"></span><br><span class="line"><span class="built_in">input</span>()  <span class="comment"># 可以操作Android软件并且进行hook</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="hook-java"><a href="#hook-java" class="headerlink" title="hook java"></a>hook java</h3><ul>
+<li>框架</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Java.perform(() =&gt; &#123;</span><br><span class="line"></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>获得类</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">var</span> <span class="variable">stringClass</span> <span class="operator">=</span> Java.use(<span class="string">&quot;java.util.String&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>实例化</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stringClass.$<span class="keyword">new</span>()</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>变量</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// static</span></span><br><span class="line">&lt;class&gt;.&lt;<span class="keyword">var</span>&gt;.value = xxx;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>hook java method</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&lt;class&gt;.&lt;method&gt;.implementation = function(arg...) &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 重载: 当一个 class 两个名称相同的方法</span></span><br><span class="line">&lt;class&gt;.&lt;method&gt;.overload([TYPE], [TYPE]).implementation = function(args...)&#123; </span><br><span class="line">	<span class="comment">// do sth </span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 构造函数的 hook $init</span></span><br><span class="line">StringBuilder.$init.overload(<span class="string">&#x27;java.lang.String&#x27;</span>).implementation = function (arg) &#123;</span><br><span class="line">    <span class="type">var</span> <span class="variable">partial</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">    <span class="type">var</span> <span class="variable">result</span> <span class="operator">=</span> <span class="built_in">this</span>.$init(arg);</span><br><span class="line">    <span class="keyword">if</span> (arg !== <span class="literal">null</span>) &#123;</span><br><span class="line">         partial = arg.toString().replace(<span class="string">&#x27;\n&#x27;</span>, <span class="string">&#x27;&#x27;</span>).slice(<span class="number">0</span>,<span class="number">10</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// console.log(&#x27;new StringBuilder(java.lang.String); =&gt; &#x27; + result)</span></span><br><span class="line">    console.log(<span class="string">&#x27;new StringBuilder(&quot;&#x27;</span> + partial + <span class="string">&#x27;&quot;);&#x27;</span>)</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="入门例子"><a href="#入门例子" class="headerlink" title="入门例子"></a>入门例子</h2><h3 id="newstartCTF-2023-lazyactivity"><a href="#newstartCTF-2023-lazyactivity" class="headerlink" title="newstartCTF 2023 lazyactivity"></a>newstartCTF 2023 lazyactivity</h3><p>两个activity</p>
+<ul>
+<li>MainActivity</li>
+<li>FlagActivity</li>
+</ul>
+<p>模拟器打开时是MainActivity，但是我们需要运行FlagActivity</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">am start -n com.droidlearn.activity_travel/com.droidlearn.activity_travel.FlagActivit</span><br></pre></td></tr></table></figure>
+
+<p>FlagActivity 逻辑：点击10000次，但是我们可以hook <code>access$004</code> 使其返回结果大于10000就行(原来的逻辑为点击一次，cnt+&#x3D;1, hook后就是点击一次，返回10001)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FlagActivity</span> <span class="keyword">extends</span> <span class="title class_">AppCompatActivity</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> <span class="variable">cnt</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="comment">/* synthetic */</span> <span class="type">int</span> access$<span class="number">004</span>(FlagActivity flagActivity) &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> flagActivity.cnt + <span class="number">1</span>;</span><br><span class="line">        flagActivity.cnt = i;</span><br><span class="line">        <span class="keyword">return</span> i;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* JADX INFO: Access modifiers changed from: protected */</span></span><br><span class="line">    <span class="meta">@Override</span> <span class="comment">// androidx.fragment.app.FragmentActivity, androidx.activity.ComponentActivity, androidx.core.app.ComponentActivity, android.app.Activity</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onCreate</span><span class="params">(Bundle bundle)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>.onCreate(bundle);</span><br><span class="line">        setContentView(C0535R.layout.layout_2);</span><br><span class="line">        <span class="keyword">final</span> <span class="type">TextView</span> <span class="variable">textView</span> <span class="operator">=</span> (TextView) findViewById(C0535R.C0538id.textView2);</span><br><span class="line">        <span class="keyword">final</span> <span class="type">EditText</span> <span class="variable">editText</span> <span class="operator">=</span> (EditText) findViewById(C0535R.C0538id.editTextTextPersonName2);</span><br><span class="line">        ((Button) findViewById(C0535R.C0538id.button)).setOnClickListener(<span class="keyword">new</span> <span class="title class_">View</span>.OnClickListener() &#123; <span class="comment">// from class: com.droidlearn.activity_travel.FlagActivity.1</span></span><br><span class="line">            <span class="meta">@Override</span> <span class="comment">// android.view.View.OnClickListener</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onClick</span><span class="params">(View view)</span> &#123;</span><br><span class="line">                textView.setText(Integer.toString(FlagActivity.access$<span class="number">004</span>(FlagActivity.<span class="built_in">this</span>)));</span><br><span class="line">                <span class="keyword">if</span> (FlagActivity.<span class="built_in">this</span>.cnt &gt;= <span class="number">10000</span>) &#123;</span><br><span class="line">                    Toast.makeText(FlagActivity.<span class="built_in">this</span>, editText.getText().toString(), <span class="number">0</span>).show();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><del>是男人就点击10000次（bushi</del></p>
+<ul>
+<li>hook.py</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> frida</span><br><span class="line"><span class="comment"># 连接安卓机上的frida-server</span></span><br><span class="line">device = frida.get_usb_device()</span><br><span class="line">session = device.attach(<span class="number">3157</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 加载hooook.js脚本</span></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;lazy_activity.js&quot;</span>, encoding=<span class="string">&#x27;UTF-8&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    script = session.create_script(f.read())</span><br><span class="line">script.load()</span><br><span class="line"></span><br><span class="line"><span class="built_in">input</span>()</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>hook.js</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Script loaded successfully &quot;</span>);</span><br><span class="line"><span class="title class_">Java</span>.<span class="title function_">perform</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Inside java perform function&quot;</span>);</span><br><span class="line">    <span class="comment">//定位类</span></span><br><span class="line">    <span class="keyword">var</span> my_class = <span class="title class_">Java</span>.<span class="title function_">use</span>(<span class="string">&quot;com.droidlearn.activity_travel.FlagActivity&quot;</span>);</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Java.Use.Successfully!&quot;</span>);</span><br><span class="line">    <span class="comment">//在这里更改类的方法的实现（implementation）</span></span><br><span class="line">    my_class.<span class="property">access$000</span>.<span class="property">implementation</span> = <span class="keyword">function</span>(<span class="params">x</span>)&#123;</span><br><span class="line">        <span class="comment">//打印替换前的参数</span></span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Successfully!&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">10001</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>运行python脚本，然后在模拟器或者真机上点击一下就行。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Android/" rel="tag"># Android</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/09/17/%E8%99%9A%E6%8B%9F%E6%9C%BA%E9%85%8D%E7%BD%AE/" rel="prev" title="虚拟机配置">
+      <i class="fa fa-chevron-left"></i> 虚拟机配置
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="nav-number">1.</span> <span class="nav-text">Android 环境搭建</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SDK"><span class="nav-number">1.1.</span> <span class="nav-text">SDK</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C"><span class="nav-number">1.2.</span> <span class="nav-text">运行</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%86%E5%90%91%E5%B7%A5%E5%85%B7"><span class="nav-number">2.</span> <span class="nav-text">逆向工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8D%E7%BC%96%E8%AF%91"><span class="nav-number">2.1.</span> <span class="nav-text">反编译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hook"><span class="nav-number">2.2.</span> <span class="nav-text">hook</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%93%E5%8C%85"><span class="nav-number">2.3.</span> <span class="nav-text">抓包</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#APK%E7%BB%93%E6%9E%84"><span class="nav-number">3.</span> <span class="nav-text">APK结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#assert"><span class="nav-number">3.1.</span> <span class="nav-text">assert</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#META-INF"><span class="nav-number">3.2.</span> <span class="nav-text">META-INF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lib"><span class="nav-number">3.3.</span> <span class="nav-text">lib</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#res"><span class="nav-number">3.4.</span> <span class="nav-text">res</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AndroidManifest-xml"><span class="nav-number">3.5.</span> <span class="nav-text">AndroidManifest.xml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#classes-dex"><span class="nav-number">3.6.</span> <span class="nav-text">classes.dex</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#resources-arsc"><span class="nav-number">3.7.</span> <span class="nav-text">resources.arsc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kotlin"><span class="nav-number">3.8.</span> <span class="nav-text">kotlin</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#adb-%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">adb 简单使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#frida-%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8"><span class="nav-number">5.</span> <span class="nav-text">frida 简单使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#hook-java"><span class="nav-number">5.1.</span> <span class="nav-text">hook java</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%A5%E9%97%A8%E4%BE%8B%E5%AD%90"><span class="nav-number">6.</span> <span class="nav-text">入门例子</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#newstartCTF-2023-lazyactivity"><span class="nav-number">6.1.</span> <span class="nav-text">newstartCTF 2023 lazyactivity</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ha0Y</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Ha0-Y" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Ha0-Y" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ha0Y</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">63k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:55</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

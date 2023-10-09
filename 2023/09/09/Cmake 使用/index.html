@@ -28,7 +28,7 @@
 <meta property="og:description" content="编写自动化构建脚本">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-09-09T06:58:12.260Z">
-<meta property="article:modified_time" content="2023-09-15T14:55:20.049Z">
+<meta property="article:modified_time" content="2023-09-24T06:45:20.379Z">
 <meta property="article:author" content="Ha0Y">
 <meta property="article:tag" content="cmake">
 <meta name="twitter:card" content="summary">
@@ -217,7 +217,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-09-15 22:55:20" itemprop="dateModified" datetime="2023-09-15T22:55:20+08:00">2023-09-15</time>
+                <time title="修改时间：2023-09-24 14:45:20" itemprop="dateModified" datetime="2023-09-24T14:45:20+08:00">2023-09-24</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -235,14 +235,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>3.1k</span>
+              <span>3.8k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>6 分钟</span>
+              <span>7 分钟</span>
             </span>
 
         </div>
@@ -383,6 +383,26 @@
 <li>项目添加动态链接库：包含库 + 二进制文件链接</li>
 </ul>
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">link_directories</span>(</span><br><span class="line">    <span class="variable">$&#123;CMAKE_SOURCE_DIR&#125;</span>/lib</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">target_link_libraries</span>(client PUBLIC packet)</span><br></pre></td></tr></table></figure>
+
+<h3 id="添加cpp文件"><a href="#添加cpp文件" class="headerlink" title="添加cpp文件"></a>添加cpp文件</h3><ul>
+<li>或许最简单，我们也可以使用其他的宏和函数获取cpp文件添加</li>
+</ul>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">add_executable</span> (client client.cpp <span class="variable">$&#123;CMAKE_SOURCE_DIR&#125;</span>/packet/packet.cpp)</span><br></pre></td></tr></table></figure>
+
+<h2 id="debug"><a href="#debug" class="headerlink" title="debug"></a>debug</h2><blockquote>
+<p>主要是在 vscode 中配合 LLVM 工具链进行debug。~~CLion 啥都有🫢 ~~</p>
+</blockquote>
+<p>环境：vscode + llvm + clangd插件 + code-lldb插件</p>
+<ul>
+<li>写好一个cmake工程</li>
+</ul>
+<p>f5 进行调试，需要文件夹下有一个 <code>.vscode</code> 文件夹，配置<code>launch.json</code>。其中有一个属性：<code>program</code> 修改为我们的生成的二进制文件就行</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="attr">&quot;configurations&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">       <span class="punctuation">&#123;</span></span><br><span class="line">           <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;lldb&quot;</span><span class="punctuation">,</span></span><br><span class="line">           <span class="attr">&quot;request&quot;</span><span class="punctuation">:</span> <span class="string">&quot;launch&quot;</span><span class="punctuation">,</span></span><br><span class="line">           <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;windows&quot;</span><span class="punctuation">,</span></span><br><span class="line">           <span class="attr">&quot;program&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;workspaceFolder&#125;/build/Debug/test.exe&quot;</span><span class="punctuation">,</span></span><br><span class="line">           <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">           <span class="attr">&quot;cwd&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;workspaceFolder&#125;&quot;</span></span><br><span class="line">       <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">   <span class="punctuation">]</span></span><br><span class="line">   ...</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>lldb 指令和 gdb 类似，我们可以在下面的 debug 窗口 进行单步执行</li>
+</ul>
+
     </div>
 
     
@@ -465,7 +485,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Makefile"><span class="nav-number">1.</span> <span class="nav-text">Makefile</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#version1"><span class="nav-number">1.1.</span> <span class="nav-text">version1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#version2"><span class="nav-number">1.2.</span> <span class="nav-text">version2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#version3"><span class="nav-number">1.3.</span> <span class="nav-text">version3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#version4"><span class="nav-number">1.4.</span> <span class="nav-text">version4</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CMake"><span class="nav-number">2.</span> <span class="nav-text">CMake</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95"><span class="nav-number">2.1.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="nav-number">2.2.</span> <span class="nav-text">多文件夹</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E6%88%90%E5%BA%93"><span class="nav-number">2.3.</span> <span class="nav-text">编译成库</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Makefile"><span class="nav-number">1.</span> <span class="nav-text">Makefile</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#version1"><span class="nav-number">1.1.</span> <span class="nav-text">version1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#version2"><span class="nav-number">1.2.</span> <span class="nav-text">version2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#version3"><span class="nav-number">1.3.</span> <span class="nav-text">version3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#version4"><span class="nav-number">1.4.</span> <span class="nav-text">version4</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CMake"><span class="nav-number">2.</span> <span class="nav-text">CMake</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95"><span class="nav-number">2.1.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="nav-number">2.2.</span> <span class="nav-text">多文件夹</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E6%88%90%E5%BA%93"><span class="nav-number">2.3.</span> <span class="nav-text">编译成库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0cpp%E6%96%87%E4%BB%B6"><span class="nav-number">2.4.</span> <span class="nav-text">添加cpp文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#debug"><span class="nav-number">3.</span> <span class="nav-text">debug</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -479,7 +499,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-count">12</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -488,7 +508,7 @@
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -529,12 +549,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">56k</span>
+    <span title="站点总字数">63k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:41</span>
+    <span title="站点阅读时长">1:55</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>
