@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"ha0-y.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":18,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="C++ 的逆向">
+  <meta name="description" content="多动手，多调试🙌">
 <meta property="og:type" content="website">
 <meta property="og:title" content="C++ 逆向">
 <meta property="og:url" content="https://ha0-y.github.io/todo/Windows%20C++%20%E9%80%86%E5%90%91.html">
 <meta property="og:site_name" content="personal blog">
-<meta property="og:description" content="C++ 的逆向">
+<meta property="og:description" content="多动手，多调试🙌">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-09-10T15:08:30.628Z">
-<meta property="article:modified_time" content="2023-09-10T15:08:30.628Z">
+<meta property="article:published_time" content="2023-10-31T09:05:55.977Z">
+<meta property="article:modified_time" content="2023-10-31T09:05:55.977Z">
 <meta property="article:author" content="Ha0Y">
 <meta property="article:tag" content="C++">
 <meta property="article:tag" content="reverse">
@@ -208,11 +208,11 @@
       
       <div class="post-body">
           <blockquote>
-<p>C++ 的逆向</p>
+<p>多动手，多调试🙌</p>
 </blockquote>
 <span id="more"></span>
 
-<h2 id="windbg"><a href="#windbg" class="headerlink" title="windbg"></a>windbg</h2><p>想一想 gdb 常用什么</p>
+<h2 id="windbg"><a href="#windbg" class="headerlink" title="windbg"></a>windbg</h2><p>gdb 常用什么</p>
 <p>帮助</p>
 <figure class="highlight pwsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">?</span><br><span class="line">.help</span><br></pre></td></tr></table></figure>
 
@@ -223,13 +223,13 @@
 <p>打印内存 dump</p>
 <p>寄存器</p>
 <p>attach</p>
-<h2 id="hello-world"><a href="#hello-world" class="headerlink" title="hello world"></a>hello world</h2><h3 id="STL"><a href="#STL" class="headerlink" title="STL"></a>STL</h3><ul>
+<h2 id="hello-world"><a href="#hello-world" class="headerlink" title="hello world"></a>hello world</h2><h3 id="函数调用与寄存器"><a href="#函数调用与寄存器" class="headerlink" title="函数调用与寄存器"></a>函数调用与寄存器</h3><h2 id="STL"><a href="#STL" class="headerlink" title="STL"></a>STL</h2><ul>
 <li>STL 常用方法</li>
 </ul>
 <h2 id="class"><a href="#class" class="headerlink" title="class"></a>class</h2><h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><h3 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h3><h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><ol>
 <li>构造函数和析构函数</li>
 </ol>
-<h4 id="虚函数"><a href="#虚函数" class="headerlink" title="虚函数"></a>虚函数</h4><h4 id="override"><a href="#override" class="headerlink" title="override"></a>override</h4>
+<h4 id="继承-1"><a href="#继承-1" class="headerlink" title="继承"></a>继承</h4><h4 id="虚函数"><a href="#虚函数" class="headerlink" title="虚函数"></a>虚函数</h4><h4 id="override"><a href="#override" class="headerlink" title="override"></a>override</h4>
       </div>
       
       
@@ -290,7 +290,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#windbg"><span class="nav-number">1.</span> <span class="nav-text">windbg</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hello-world"><span class="nav-number">2.</span> <span class="nav-text">hello world</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#STL"><span class="nav-number">2.1.</span> <span class="nav-text">STL</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#class"><span class="nav-number">3.</span> <span class="nav-text">class</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%9E%E6%80%A7"><span class="nav-number">3.1.</span> <span class="nav-text">属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%A7%E6%89%BF"><span class="nav-number">3.2.</span> <span class="nav-text">继承</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-number">3.3.</span> <span class="nav-text">方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%99%9A%E5%87%BD%E6%95%B0"><span class="nav-number">3.3.1.</span> <span class="nav-text">虚函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#override"><span class="nav-number">3.3.2.</span> <span class="nav-text">override</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#windbg"><span class="nav-number">1.</span> <span class="nav-text">windbg</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hello-world"><span class="nav-number">2.</span> <span class="nav-text">hello world</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E4%B8%8E%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">2.1.</span> <span class="nav-text">函数调用与寄存器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#STL"><span class="nav-number">3.</span> <span class="nav-text">STL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#class"><span class="nav-number">4.</span> <span class="nav-text">class</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%9E%E6%80%A7"><span class="nav-number">4.1.</span> <span class="nav-text">属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%A7%E6%89%BF"><span class="nav-number">4.2.</span> <span class="nav-text">继承</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-number">4.3.</span> <span class="nav-text">方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%A7%E6%89%BF-1"><span class="nav-number">4.3.1.</span> <span class="nav-text">继承</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%99%9A%E5%87%BD%E6%95%B0"><span class="nav-number">4.3.2.</span> <span class="nav-text">虚函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#override"><span class="nav-number">4.3.3.</span> <span class="nav-text">override</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -304,7 +304,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-count">13</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -354,12 +354,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">63k</span>
+    <span title="站点总字数">71k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:55</span>
+    <span title="站点阅读时长">2:10</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>

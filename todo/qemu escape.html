@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ha0-y.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":18,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="虚拟机逃逸实在是泰裤辣！！！  基础qemu运行方式 User mode：用户模式，在这种模式下，QEMU 运行某个单一的程序，并且适配其的系统调用。通常我们遇到的异构 PWN 题都会使用这种模式 System mode：系统模式，在这种模式下，QEMU 可以模拟出一个完整的计算机系统。 KVM：KVM（Kernel-based Virtual Machine，基于内核的虚拟机）是一种 TYPE">
+<meta property="og:type" content="website">
+<meta property="og:title" content="personal blog">
+<meta property="og:url" content="https://ha0-y.github.io/todo/qemu%20escape.html">
+<meta property="og:site_name" content="personal blog">
+<meta property="og:description" content="虚拟机逃逸实在是泰裤辣！！！  基础qemu运行方式 User mode：用户模式，在这种模式下，QEMU 运行某个单一的程序，并且适配其的系统调用。通常我们遇到的异构 PWN 题都会使用这种模式 System mode：系统模式，在这种模式下，QEMU 可以模拟出一个完整的计算机系统。 KVM：KVM（Kernel-based Virtual Machine，基于内核的虚拟机）是一种 TYPE">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-02T03:43:44.017Z">
+<meta property="article:modified_time" content="2023-11-02T03:43:44.017Z">
+<meta property="article:author" content="Ha0Y">
+<meta property="article:tag" content="Blog">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://ha0-y.github.io/todo/qemu%20escape">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title> | personal blog
+</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">personal blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">I'm possible</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content page posts-expand">
+            
+
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <blockquote>
+<p>虚拟机逃逸实在是泰裤辣！！！</p>
+</blockquote>
+<h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><h3 id="qemu运行方式"><a href="#qemu运行方式" class="headerlink" title="qemu运行方式"></a>qemu运行方式</h3><ol>
+<li>User mode：用户模式，在这种模式下，QEMU 运行某个单一的程序，并且适配其的系统调用。通常我们遇到的异构 PWN 题都会使用这种模式</li>
+<li>System mode：系统模式，在这种模式下，QEMU 可以模拟出一个完整的计算机系统。</li>
+<li>KVM：KVM（Kernel-based Virtual Machine，基于内核的虚拟机）是一种 TYPE1 Hypervisor（裸金属类型）虚拟化技术，VMM 和 HostOS 一体化，直接运行 Host Hardware 之上，实现硬件和虚拟机完全管控。</li>
+<li>Xen：Xen是一个开放源代码虚拟机监视器，由剑桥大学开发。Xen的缺点是操作系统必须进行显式地修改（移植）以在Xen上运行（但是提供对用户应用的兼容性），所以比较麻烦。使得Xen无需特殊硬件支持，就能达到高性能的虚拟化。</li>
+</ol>
+<h3 id="内存结构"><a href="#内存结构" class="headerlink" title="内存结构"></a>内存结构</h3><p>每个qemu虚拟机都是宿主机上的一个进程，在进程中用mmap分配出大小为0x40000000字节的宿主机的虚拟内存来作为虚拟机的物理内存</p>
+<p>PCI设备有其配置空间来保存设备信息，头部最开始的数据为Device id和Vendor id</p>
+<h3 id="地址翻译"><a href="#地址翻译" class="headerlink" title="地址翻译"></a>地址翻译</h3><ol>
+<li><p>从用户虚拟地址到用户物理地址：这一层转换是模拟真实设备中所需要的虚拟地址和物理地址而存在的，所以我们也可以通过分析转换规则，编写程序来模拟这一层转换。</p>
+</li>
+<li><p>从用户物理地址到 QEMU 的虚拟地址空间：这一层是把用户的物理地址转换为 QEMU 上使用 mmap 申请出的地址空间，这部分空间的内容与用户的物理地址逐一对应，所以我们只需要知道 QEMU 上使用 mmap 申请出的地址空间的初始地址，再加上用户物理地址，就可以得到此地址对应的在 QEMU 中的虚拟地址。</p>
+</li>
+<li><p>计算</p>
+</li>
+</ol>
+<ul>
+<li>在 x64 系统上，虚拟地址由 page offset (bits 0-11) 和 page number 组成，&#x2F;proc&#x2F;$pid&#x2F;pagemap 这个文件中储存着此进程的页表，让用户空间进程可以找出每个虚拟页面映射到哪个物理帧（需要 CAP_SYS_ADMIN 权限），它包含一个 64 位的值。</li>
+</ul>
+<ol start="4">
+<li>实现</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdint.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;assert.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;inttypes.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> PAGE_SHIFT  12</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> PAGE_SIZE   (1 &lt;&lt; PAGE_SHIFT)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> PFN_PRESENT (1ull &lt;&lt; 63)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> PFN_PFN     ((1ull &lt;&lt; 55) - 1)</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> fd;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获得页内偏移 后12位</span></span><br><span class="line"><span class="function"><span class="type">uint32_t</span> <span class="title">page_offset</span><span class="params">(<span class="type">uint32_t</span> addr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> addr &amp; ((<span class="number">1</span> &lt;&lt; PAGE_SHIFT) - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 虚拟地址获得页表 frame number</span></span><br><span class="line"><span class="function"><span class="type">uint64_t</span> <span class="title">gva_to_gfn</span><span class="params">(<span class="type">void</span> *addr)</span> </span>&#123;</span><br><span class="line">    <span class="type">uint64_t</span> pme, gfn;</span><br><span class="line">    <span class="type">size_t</span> offset;</span><br><span class="line">    offset = ((<span class="type">uintptr_t</span>)addr &gt;&gt; <span class="number">9</span>) &amp; ~<span class="number">7</span>;</span><br><span class="line">    <span class="built_in">lseek</span>(fd, offset, SEEK_SET);</span><br><span class="line">    <span class="built_in">read</span>(fd, &amp;pme, <span class="number">8</span>);</span><br><span class="line">    <span class="keyword">if</span> (!(pme &amp; PFN_PRESENT))</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    gfn = pme &amp; PFN_PFN;</span><br><span class="line">    <span class="keyword">return</span> gfn;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// virtual address 转化为 物理地址 phycial address</span></span><br><span class="line"><span class="function"><span class="type">uint64_t</span> <span class="title">gva_to_gpa</span><span class="params">(<span class="type">void</span> *addr)</span> </span>&#123;</span><br><span class="line">    <span class="type">uint64_t</span> gfn = <span class="built_in">gva_to_gfn</span>(addr);</span><br><span class="line">    <span class="built_in">assert</span>(gfn != <span class="number">-1</span>);</span><br><span class="line">    <span class="keyword">return</span> (gfn &lt;&lt; PAGE_SHIFT) | <span class="built_in">page_offset</span>((<span class="type">uint64_t</span>)addr);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">void</span> *ptr;</span><br><span class="line">    <span class="type">uint64_t</span> ptr_mem;</span><br><span class="line"></span><br><span class="line">    fd = <span class="built_in">open</span>(<span class="string">&quot;/proc/self/pagemap&quot;</span>, O_RDONLY);</span><br><span class="line">    <span class="keyword">if</span> (fd &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">perror</span>(<span class="string">&quot;open&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ptr = <span class="built_in">malloc</span>(<span class="number">256</span>);</span><br><span class="line"></span><br><span class="line">    ptr_mem = <span class="built_in">gva_to_gpa</span>(ptr);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Your physical address is at 0x%&quot;</span>PRIx64<span class="string">&quot;\n&quot;</span>, ptr_mem);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">getchar</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="PCI"><a href="#PCI" class="headerlink" title="PCI"></a>PCI</h3><p><strong>总线</strong>（bus）是一种将多个功能单元进行连接并允许功能单元之间进行数据交换的一种数据通路，在现代计算机中通常采用总线结构，即存在一根主要的公共通信干线，CPU 及各种设备都通过这跟总线进行通信。</p>
+<p>PCI 即 <code>Peripheral Component Interconnect</code>，是一种<strong>连接电脑主板和外部设备的总线标准</strong>，其通过多根 PCI bus 完成 CPU 与 多个 PCI 设备间的连接，，在 X86 硬件体系结构中几乎所有的设备都以各种形式连接到 PCI 设备树上</p>
+<p>PCI 标准中的三个基本组件：</p>
+<ul>
+<li><strong>PCI 设备</strong>（device）：符合 PCI 总线标准的设备都可以称之为 PCI 设备，在一个 PCI 总线上可以包含多个 PCI 设备</li>
+<li><strong>PCI 总线</strong>（bus）：用以连接多个 PCI 设备与多个 PCI 桥的通信干道</li>
+<li><strong>PCI 桥</strong>（bridge）：总线之间的<strong>连接枢纽</strong>，主要有以下三种：<ul>
+<li>HOST&#x2F;PCI 桥：也称为 PCI 主桥或者 PCI 总线控制器，用以连接 CPU 与 PCI 根总线，<strong>隔离设备地址空间与存储器地址空间</strong>，现代 PC 通常还会在其中集成内存控制器，称之为<strong>北桥芯片组</strong>（North Bridge Chipset）</li>
+<li>PCI&#x2F;ISA 桥：用于连接旧的 ISA 总线，通常还会集成中断控制器（如 i8359A），称之为<strong>南桥芯片组</strong>（South Bridge Chipset）</li>
+<li>PCI-to-PCI 桥：用于连接 PCI 主总线（Primary Bus）与次总线（Secondary Bus）</li>
+</ul>
+</li>
+</ul>
+<h4 id="mmio-memory-mapped-io"><a href="#mmio-memory-mapped-io" class="headerlink" title="mmio : memory mapped io"></a>mmio : memory mapped io</h4><p>内存映射 IO。这种方式将 IO 设备的内存与寄存器映射到指定的内存地址空间上，此时我们便可以通过常规的访问内存的方式来直接访问到设备的寄存器与内存</p>
+<h4 id="pmio-port-mapped-io"><a href="#pmio-port-mapped-io" class="headerlink" title="pmio : port mapped io"></a>pmio : port mapped io</h4><p>端口映射 IO。这种方式将 IO 设备的寄存器编码到指定的端口上，我们需要通过访问端口的方式来访问设备的寄存器与内存（例如在 x86 下通过 <code>in</code> 与 <code>out</code> 这一类的指令可以读写端口）。IO 设备通过专用的针脚或者专用的总线与 CPU 连接，这与内存地址空间相独立，因此又称作 isolated I&#x2F;O</p>
+<h4 id="查看系统pci设备"><a href="#查看系统pci设备" class="headerlink" title="查看系统pci设备"></a>查看系统pci设备</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ lspci</span><br><span class="line">	-v</span><br></pre></td></tr></table></figure>
+
+<h3 id="面向对象的思想-Qemu-Object-Model"><a href="#面向对象的思想-Qemu-Object-Model" class="headerlink" title="面向对象的思想 Qemu Object Model"></a>面向对象的思想 Qemu Object Model</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/qemu/qemu/blob/master/include/qom/object.h">QEMU QOM</a></li>
+</ul>
+<p>Qemu 是使用 C 编写的，但是充满了 OOP 的思想，在 Qemu 当中有着一套叫做 <strong>Qemu Object Model</strong> 的东西来实现面向对象</p>
+<p>在 QOM 当中使用成员嵌套的方式来完成类的继承，父类作为类结构体的第一个成员 <code>parent</code> 而存在，不支持多继承</p>
+<ul>
+<li><code>Type</code>：用来定义一个「类」的基本属性，例如类的名字、大小、构造函数等</li>
+<li><code>Class</code>：用来定义一个「类」的静态内容，例如类中存储的静态数据、方法函数指针等</li>
+<li><code>Object</code>：动态分配的一个「类」的具体的实例（instance），储存类的动态数据</li>
+<li><code>Property</code>：动态对象数据的访问器（accessor），可以通过监视器接口进行检查</li>
+</ul>
+<p>在初始化设备时会初始化四个比较重要的结构体：TypeInfo -&gt; TypeImpl -&gt; ObjectClass -&gt; Object，每个 Object对应一个具体的device，其构造函数在qemu启动用<code>-device</code>参数加载设备时调用</p>
+<h4 id="Type"><a href="#Type" class="headerlink" title="Type"></a>Type</h4><h4 id="ObjectClass"><a href="#ObjectClass" class="headerlink" title="ObjectClass"></a>ObjectClass</h4><h4 id="Object"><a href="#Object" class="headerlink" title="Object"></a>Object</h4><h3 id="hw-misc-edu-c"><a href="#hw-misc-edu-c" class="headerlink" title="hw&#x2F;misc&#x2F;edu.c"></a>hw&#x2F;misc&#x2F;edu.c</h3><p>看一点源码 <a target="_blank" rel="noopener" href="https://github.com/qemu/qemu">qemu github</a></p>
+<h3 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h3><p>qemu无法与 shell 内容交互，但是可以反弹shell。</p>
+<h2 id="ACTF2023"><a href="#ACTF2023" class="headerlink" title="ACTF2023"></a>ACTF2023</h2><h3 id="qemu-playground"><a href="#qemu-playground" class="headerlink" title="qemu playground"></a>qemu playground</h3><p><strong>1和2是两个相同的附件，一个是逆向，一个PWN</strong></p>
+<p>启动脚本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"><span class="built_in">timeout</span> --foreground 300 ./qemu-system-x86_64 \</span><br><span class="line">    -device actf \</span><br><span class="line">    -m 128M \</span><br><span class="line">    -L ./pc-bios \</span><br><span class="line">    -append <span class="string">&quot;console=ttyS0&quot;</span> \</span><br><span class="line">    -kernel bzImage \</span><br><span class="line">    -initrd rootfs.cpio \</span><br><span class="line">    -nographic \</span><br><span class="line">    -no-reboot \</span><br><span class="line">    -monitor /dev/null</span><br></pre></td></tr></table></figure>
+
+<p>一般这种题目，有问题的都是自定义的device。因此我们使用IDA打开，<strong>直接搜索字符串，可以找到actf</strong>，从而寻找到 <code>realize</code> 函数，但是需要恢复一下符号表</p>
+<ul>
+<li>mmio内存大小 0x1000</li>
+<li>pmio内存大小 0x20</li>
+<li>这题将自定义的类型符号表去除了，使用<strong>动态调试</strong>的方法看内存区域。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">__int64 __fastcall <span class="title">pci_actf_realize</span><span class="params">(<span class="type">const</span> <span class="type">char</span> ****pcidevice)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="type">const</span> <span class="type">char</span> ****v1; <span class="comment">// rax</span></span><br><span class="line">  __int64 v2; <span class="comment">// r13</span></span><br><span class="line">  __int64 v3; <span class="comment">// rbp</span></span><br><span class="line"></span><br><span class="line">  v1 = <span class="built_in">object_property_add_uint64_ptr</span>(pcidevice, <span class="string">&quot;actf&quot;</span>, <span class="string">&quot;../hw/misc/actfdev.c&quot;</span>, <span class="number">0x24</span>u, <span class="string">&quot;ACTF&quot;</span>);</span><br><span class="line">  v2 = (__int64)(v1 + <span class="number">336</span>);</span><br><span class="line">  v3 = (__int64)v1;</span><br><span class="line">  <span class="built_in">memory_region_init_io</span>((__int64)(v1 + <span class="number">336</span>), (__int64)v1, actf_mmio_ops, (__int64)v1, (__int64)<span class="string">&quot;actf-mmio&quot;</span>, <span class="number">4096LL</span>);</span><br><span class="line">  <span class="built_in">pci_register_bar</span>(pcidevice, <span class="number">0</span>, <span class="number">0</span>, v2);</span><br><span class="line">  <span class="built_in">memory_region_init_io</span>(v3 + <span class="number">2960</span>, v3, actf_pmio_ops, v3, (__int64)<span class="string">&quot;actf-pmio&quot;</span>, <span class="number">32LL</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">pci_register_bar</span>(pcidevice, <span class="number">1</span>, <span class="number">1u</span>, v3 + <span class="number">2960</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>交叉引用，找到class_init</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">__int64 __fastcall <span class="title">actf_class_init</span><span class="params">(__int64 a1)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  __int64 dc; <span class="comment">// rbx</span></span><br><span class="line">  __int64 k; <span class="comment">// rax</span></span><br><span class="line"></span><br><span class="line">  dc = <span class="built_in">object_class_dynmic_assert</span>(a1, <span class="string">&quot;device&quot;</span>, <span class="string">&quot;/home/esifiel/qemu/include/hw/qdev-core.h&quot;</span>, <span class="number">77LL</span>, <span class="string">&quot;DEVICE_CLASS&quot;</span>);</span><br><span class="line">  k = <span class="built_in">object_class_dynmic_assert</span>(</span><br><span class="line">        a1,</span><br><span class="line">        <span class="string">&quot;pci-device&quot;</span>,</span><br><span class="line">        <span class="string">&quot;/home/esifiel/qemu/include/hw/pci/pci_device.h&quot;</span>,</span><br><span class="line">        <span class="number">9LL</span>,</span><br><span class="line">        <span class="string">&quot;PCI_DEVICE_CLASS&quot;</span>);</span><br><span class="line">  *(_QWORD *)(k + <span class="number">176</span>) = pci_actf_realize;      <span class="comment">// realize</span></span><br><span class="line">  *(_DWORD *)(k + <span class="number">208</span>) = <span class="number">0xAC7F1234</span>;            <span class="comment">// vendor_id + device_id</span></span><br><span class="line">  *(_BYTE *)(k + <span class="number">212</span>) = <span class="number">16</span>;                     <span class="comment">// reversion</span></span><br><span class="line">  *(_WORD *)(k + <span class="number">214</span>) = <span class="number">0xFF</span>;                   <span class="comment">// classid</span></span><br><span class="line">  *(_QWORD *)(dc + <span class="number">96</span>) |= <span class="number">0x80</span>uLL;</span><br><span class="line">  <span class="keyword">return</span> k;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>mmio_ops，两个结构体，mmio_read：a1 一般为一个void类型指针，一般会强转为自定义的PCIDevice。读4个字节。</p>
+<ul>
+<li>是<strong>char指针的加法 1byte加</strong></li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">__int64 __fastcall <span class="title">actf_mmio_read</span><span class="params">(<span class="type">void</span> *opaque, <span class="type">unsigned</span> __int64 addr, <span class="type">int</span> size)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  __int64 result; <span class="comment">// rax</span></span><br><span class="line"></span><br><span class="line">  result = <span class="number">-1LL</span>;</span><br><span class="line">  <span class="keyword">if</span> ( size == <span class="number">4</span> &amp;&amp; addr &lt;= <span class="number">0x40</span> )</span><br><span class="line">    <span class="keyword">return</span> *(<span class="type">unsigned</span> <span class="type">int</span> *)((<span class="type">char</span> *)opaque + addr + <span class="number">2616</span>);</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> __fastcall <span class="title">actf_mmio_write</span><span class="params">(<span class="type">void</span> *opeque, <span class="type">unsigned</span> __int64 addr, <span class="type">int</span> value, <span class="type">int</span> size)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">if</span> ( size == <span class="number">4</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">if</span> ( addr &gt; <span class="number">0x20</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">if</span> ( addr &lt;= <span class="number">0x40</span> )</span><br><span class="line">        *(_DWORD *)((<span class="type">char</span> *)opeque + addr + <span class="number">2616</span>) = value;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">      *(_DWORD *)((<span class="type">char</span> *)opeque + addr + <span class="number">2616</span>) = value;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>pmio，pmio_write 创建一个线程，启动一个函数，在这里重命名为 xxxx。</p>
+<ul>
+<li>是<strong>QWORD的指针加法，8byte加法</strong></li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">__int64 __fastcall <span class="title">actf_pmio_read</span><span class="params">(__int64 a1, <span class="type">unsigned</span> __int64 addr)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  __int64 v2; <span class="comment">// rax</span></span><br><span class="line">  __int64 v3; <span class="comment">// r8</span></span><br><span class="line"></span><br><span class="line">  v2 = <span class="built_in">object_property_add_uint64_ptr</span>(a1, <span class="string">&quot;actf&quot;</span>, <span class="string">&quot;../hw/misc/actfdev.c&quot;</span>, <span class="number">36LL</span>, <span class="string">&quot;ACTF&quot;</span>);</span><br><span class="line">  <span class="keyword">if</span> ( addr == <span class="number">1</span> )</span><br><span class="line">    <span class="keyword">return</span> *(<span class="type">unsigned</span> __int8 *)(v2 + <span class="number">2609</span>);</span><br><span class="line">  <span class="keyword">if</span> ( addr &lt;= <span class="number">1</span> )</span><br><span class="line">    <span class="keyword">return</span> *(<span class="type">unsigned</span> __int8 *)(v2 + <span class="number">2608</span>);</span><br><span class="line">  v3 = <span class="number">-1LL</span>;</span><br><span class="line">  <span class="keyword">if</span> ( addr - <span class="number">16</span> &gt; <span class="number">0xF</span> || !*(_BYTE *)(v2 + <span class="number">2609</span>) )</span><br><span class="line">    <span class="keyword">return</span> v3;</span><br><span class="line">  <span class="keyword">return</span> *(<span class="type">unsigned</span> <span class="type">int</span> *)(*(_QWORD *)(v2 + <span class="number">2680</span>) + (addr &amp; <span class="number">0xF</span>));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">unsigned</span> __int64 __fastcall <span class="title">actf_pmio_write</span><span class="params">(<span class="type">const</span> <span class="type">char</span> ****a1, <span class="type">unsigned</span> __int64 addr, <span class="type">int</span> value)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="type">const</span> <span class="type">char</span> ****v4; <span class="comment">// r12</span></span><br><span class="line">  __int64 v5; <span class="comment">// rcx</span></span><br><span class="line">  <span class="type">int</span> v6; <span class="comment">// r8d</span></span><br><span class="line">  <span class="type">int</span> v7; <span class="comment">// r9d</span></span><br><span class="line">  __int64 v9; <span class="comment">// rax</span></span><br><span class="line"></span><br><span class="line">  v4 = <span class="built_in">object_property_add_uint64_ptr</span>(a1, <span class="string">&quot;actf&quot;</span>, <span class="string">&quot;../hw/misc/actfdev.c&quot;</span>, <span class="number">0x24</span>u, <span class="string">&quot;ACTF&quot;</span>);</span><br><span class="line">  <span class="built_in">qemu_mutex_lock</span>(v4 + <span class="number">405</span>, <span class="string">&quot;../hw/misc/actfdev.c&quot;</span>, <span class="number">116LL</span>);</span><br><span class="line">  <span class="keyword">if</span> ( addr == <span class="number">1</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">if</span> ( !*((_BYTE *)v4 + <span class="number">2608</span>) )</span><br><span class="line">    &#123;</span><br><span class="line">      *((_BYTE *)v4 + <span class="number">2608</span>) = <span class="number">1</span>;</span><br><span class="line">      <span class="built_in">thread_create</span>((<span class="type">pthread_t</span> *)v4 + <span class="number">404</span>, (__int64)<span class="string">&quot;actf-worker-thread&quot;</span>, (__int64)xxxx, (__int64)v4, <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span> ( addr &gt; <span class="number">1</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">if</span> ( addr - <span class="number">16</span> &lt;= <span class="number">0xF</span> &amp;&amp; *((_BYTE *)v4 + <span class="number">2609</span>) )</span><br><span class="line">    &#123;</span><br><span class="line">      v9 = (__int64)v4[<span class="number">335</span>];        <span class="comment">// 335 * 8 = 2680</span></span><br><span class="line">      <span class="keyword">if</span> ( !v9 )</span><br><span class="line">      &#123;</span><br><span class="line">        v9 = <span class="built_in">g_malloc</span>(<span class="number">32LL</span>);</span><br><span class="line">        v4[<span class="number">335</span>] = (<span class="type">const</span> <span class="type">char</span> ***)v9;</span><br><span class="line">      &#125;</span><br><span class="line">      *(_DWORD *)(v9 + (addr &amp; <span class="number">0xF</span>)) = value;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">    *((_BYTE *)v4 + <span class="number">2608</span>) = <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">qemu_mutex_unlock</span>((<span class="type">pthread_mutex_t</span> *)v4 + <span class="number">81</span>, (<span class="type">int</span>)<span class="string">&quot;../hw/misc/actfdev.c&quot;</span>, <span class="number">139</span>, v5, v6, v7);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因此我们主要查看如下地址区域内容</p>
+<ul>
+<li><code>a1 + addr + 2608</code> </li>
+<li><code>v2 + 2608</code> 和 <code>v2 + 2680</code>。</li>
+</ul>
+<p>重新打包cpio文件，尽量不覆盖原来的文件，我们改个名字</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">exp: exp.c</span></span><br><span class="line">	musl-gcc exp.c -no-pie -fno-stack-protector -O2 -static -o exp</span><br><span class="line">	strip exp</span><br><span class="line">	find . | cpio -o --format=newc &gt; ../new_rootfs.cpio</span><br><span class="line"><span class="section">clean:</span></span><br><span class="line">	rm -f exp</span><br></pre></td></tr></table></figure>
+
+<p>要让pmio_write走到<code>v2 + 2680</code>，需要满足 <code>addr - 16 &gt; 0xF || !*(_BYTE *)(v2 + 2609)</code> 这一个条件。而这个条件在<code>xxxx</code> 函数赋值。</p>
+<ul>
+<li>一个密码算法（可能吧），也是逆向题目的答案。</li>
+<li>使用mmio写入数据。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">__int64 __fastcall <span class="title">xxxx</span><span class="params">(<span class="type">const</span> <span class="type">char</span> ****a1)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="type">const</span> <span class="type">char</span> ****v1; <span class="comment">// rax</span></span><br><span class="line">  <span class="type">int</span> v2; <span class="comment">// edx</span></span><br><span class="line">  <span class="type">const</span> <span class="type">char</span> ****v3; <span class="comment">// r10</span></span><br><span class="line">  __m128i *v4; <span class="comment">// rbx</span></span><br><span class="line">  <span class="type">const</span> __m128i *v5; <span class="comment">// r11</span></span><br><span class="line">  __int64 *v6; <span class="comment">// rax</span></span><br><span class="line">  <span class="type">int</span> v7; <span class="comment">// r8d</span></span><br><span class="line">  __m128i *v8; <span class="comment">// rdi</span></span><br><span class="line">  __int64 *v9; <span class="comment">// rdx</span></span><br><span class="line">  <span class="type">const</span> __m128i *v10; <span class="comment">// rsi</span></span><br><span class="line">  __m128i v11; <span class="comment">// xmm2</span></span><br><span class="line">  <span class="type">char</span> v12; <span class="comment">// al</span></span><br><span class="line">  <span class="type">char</span> v13; <span class="comment">// cl</span></span><br><span class="line">  __m128i v14; <span class="comment">// xmm5</span></span><br><span class="line">  __m128i v15; <span class="comment">// xmm6</span></span><br><span class="line">  __int128 v16; <span class="comment">// rax</span></span><br><span class="line">  __int128 v18; <span class="comment">// rax</span></span><br><span class="line">  __int128 v19[<span class="number">2</span>]; <span class="comment">// [rsp+0h] [rbp-98h] BYREF</span></span><br><span class="line">  __int64 v20[<span class="number">2</span>]; <span class="comment">// [rsp+20h] [rbp-78h] BYREF</span></span><br><span class="line">  __int64 v21; <span class="comment">// [rsp+30h] [rbp-68h]</span></span><br><span class="line">  __int64 v22; <span class="comment">// [rsp+38h] [rbp-60h]</span></span><br><span class="line">  __m128i v23; <span class="comment">// [rsp+40h] [rbp-58h] BYREF</span></span><br><span class="line">  __m128i v24; <span class="comment">// [rsp+50h] [rbp-48h] BYREF</span></span><br><span class="line">  <span class="type">unsigned</span> __int64 v25; <span class="comment">// [rsp+68h] [rbp-30h]</span></span><br><span class="line"></span><br><span class="line">  v25 = __readfsqword(<span class="number">0x28</span>u);</span><br><span class="line">  v1 = <span class="built_in">object_property_add_uint64_ptr</span>(a1, <span class="string">&quot;actf&quot;</span>, <span class="string">&quot;../hw/misc/actfdev.c&quot;</span>, <span class="number">0x24</span>u, <span class="string">&quot;ACTF&quot;</span>);</span><br><span class="line">  v2 = *((_DWORD *)v1 + <span class="number">653</span>);           <span class="comment">// 653 * 4 = 2612</span></span><br><span class="line">  v3 = v1;</span><br><span class="line">  <span class="built_in">memset</span>(v19, <span class="number">0</span>, <span class="built_in">sizeof</span>(v19));</span><br><span class="line">  v4 = (__m128i *)(v1 + <span class="number">327</span>);</span><br><span class="line">  v5 = (<span class="type">const</span> __m128i *)(v1 + <span class="number">331</span>);</span><br><span class="line">  v6 = (__int64 *)v19;</span><br><span class="line">  <span class="keyword">do</span></span><br><span class="line">  &#123;</span><br><span class="line">    *(_DWORD *)v6 = v2;</span><br><span class="line">    v6 = (__int64 *)((<span class="type">char</span> *)v6 + <span class="number">4</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">while</span> ( v6 != v20 );</span><br><span class="line">  v7 = -(<span class="type">int</span>)v5;</span><br><span class="line">  <span class="keyword">do</span></span><br><span class="line">  &#123;</span><br><span class="line">    v8 = &amp;v23;</span><br><span class="line">    v9 = (__int64 *)v19;</span><br><span class="line">    v10 = v5;</span><br><span class="line">    v11 = _mm_loadu_si128((<span class="type">const</span> __m128i *)(v3 + <span class="number">329</span>));</span><br><span class="line">    v23 = _mm_loadu_si128((<span class="type">const</span> __m128i *)(v3 + <span class="number">327</span>));</span><br><span class="line">    v24 = v11;</span><br><span class="line">    <span class="keyword">do</span></span><br><span class="line">    &#123;</span><br><span class="line">      v12 = v8-&gt;m128i_i8[<span class="number">0</span>] ^ v10-&gt;m128i_i8[<span class="number">0</span>];</span><br><span class="line">      v9 = (__int64 *)((<span class="type">char</span> *)v9 + <span class="number">1</span>);</span><br><span class="line">      v13 = *((_BYTE *)v9 - <span class="number">1</span>) ^ (v7 + (_BYTE)v10);</span><br><span class="line">      v10 = (<span class="type">const</span> __m128i *)((<span class="type">char</span> *)v10 + <span class="number">1</span>);</span><br><span class="line">      v8 = (__m128i *)((<span class="type">char</span> *)v8 + <span class="number">1</span>);</span><br><span class="line">      *((_BYTE *)v9 - <span class="number">1</span>) = v13;</span><br><span class="line">      v8[<span class="number">-1</span>].m128i_i8[<span class="number">15</span>] = v13 ^ v12;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> ( v9 != v20 );</span><br><span class="line">    v14 = _mm_load_si128(&amp;v23);</span><br><span class="line">    <span class="built_in">LOBYTE</span>(v7) = v7 + <span class="number">17</span>;</span><br><span class="line">    v15 = _mm_load_si128(&amp;v24);</span><br><span class="line">    *v4 = _mm_loadu_si128(v5);</span><br><span class="line">    v4[<span class="number">1</span>] = _mm_loadu_si128(v5 + <span class="number">1</span>);</span><br><span class="line">    *(__m128i *)(v3 + <span class="number">331</span>) = v14;</span><br><span class="line">    *(__m128i *)(v3 + <span class="number">333</span>) = v15;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">while</span> ( (_BYTE)v7 != <span class="number">-86</span> - (_BYTE)v5 );</span><br><span class="line">  v20[<span class="number">0</span>] = <span class="number">0xABA29EC2A98DD89A</span>LL;</span><br><span class="line">  *((_QWORD *)&amp;v16 + <span class="number">1</span>) = (<span class="type">unsigned</span> __int64)v3[<span class="number">327</span>] ^ <span class="number">0xABA29EC2A98DD89A</span>LL;</span><br><span class="line">  v20[<span class="number">1</span>] = <span class="number">0xBBF1B4AB81B4A9D4</span>LL;</span><br><span class="line">  *(_QWORD *)&amp;v16 = v4-&gt;m128i_i64[<span class="number">1</span>] ^ <span class="number">0xBBF1B4AB81B4A9D4</span>LL;</span><br><span class="line">  v21 = <span class="number">0xFB92A48DB386FFA8</span>LL;</span><br><span class="line">  v22 = <span class="number">0xEFB491B8AFB4ABD3</span>LL;</span><br><span class="line">  <span class="keyword">if</span> ( v16 == <span class="number">0</span> &amp;&amp; !(v21 ^ v4[<span class="number">1</span>].m128i_i64[<span class="number">0</span>] | v4[<span class="number">1</span>].m128i_i64[<span class="number">1</span>] ^ <span class="number">0xEFB491B8AFB4ABD3</span>LL) )</span><br><span class="line">  &#123;</span><br><span class="line">    v23.m128i_i64[<span class="number">0</span>] = <span class="number">0x80EF69F1CBD00397</span>LL;</span><br><span class="line">    *((_QWORD *)&amp;v18 + <span class="number">1</span>) = (<span class="type">unsigned</span> __int64)v3[<span class="number">331</span>] ^ <span class="number">0x80EF69F1CBD00397</span>LL;</span><br><span class="line">    v23.m128i_i64[<span class="number">1</span>] = <span class="number">0xB2EB07859CDA52D3</span>LL;</span><br><span class="line">    *(_QWORD *)&amp;v18 = v5-&gt;m128i_i64[<span class="number">1</span>] ^ <span class="number">0xB2EB07859CDA52D3</span>LL;</span><br><span class="line">    v24.m128i_i64[<span class="number">0</span>] = <span class="number">0xEC9E22F5A5A07FA3</span>LL;</span><br><span class="line">    v24.m128i_i64[<span class="number">1</span>] = <span class="number">0x4B36DF7B5B655A84</span>LL;</span><br><span class="line">    <span class="keyword">if</span> ( v18 == <span class="number">0</span> &amp;&amp; !(v24.m128i_i64[<span class="number">0</span>] ^ v5[<span class="number">1</span>].m128i_i64[<span class="number">0</span>] | v5[<span class="number">1</span>].m128i_i64[<span class="number">1</span>] ^ <span class="number">0x4B36DF7B5B655A84</span>LL) )</span><br><span class="line">      *((_BYTE *)v3 + <span class="number">2609</span>) = <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  *((_BYTE *)v3 + <span class="number">2608</span>) = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0LL</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>调试：逆向看内存使用ida，pwn使用gdb看内存，各有各的好处。</p>
+<p>gdb脚本启动</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">// gdbscript</span><br><span class="line">file ./qemu-system-x86_64</span><br><span class="line"><span class="built_in">set</span> args -device actf \</span><br><span class="line">    -m 128M \</span><br><span class="line">    -L ./pc-bios \</span><br><span class="line">    -append <span class="string">&quot;console=ttyS0&quot;</span> \</span><br><span class="line">    -kernel bzImage \</span><br><span class="line">    -initrd rootfs.cpio \</span><br><span class="line">    -nographic \</span><br><span class="line">    -no-reboot \</span><br><span class="line">    -monitor /dev/null</span><br><span class="line">start</span><br><span class="line">b *<span class="variable">$rebase</span>(0x40A1B1)</span><br><span class="line">b *<span class="variable">$rebase</span>(0x40A1F0)</span><br><span class="line">b *<span class="variable">$rebase</span>(0x40A250)</span><br><span class="line"></span><br><span class="line">// cmd</span><br><span class="line">$ gdb -x gdbscript ./qemu-system-x86_64</span><br></pre></td></tr></table></figure>
+
+
+<p>触发漏洞：一般是需要一个函数调用。</p>
+<h3 id="EasyVirtio"><a href="#EasyVirtio" class="headerlink" title="EasyVirtio"></a>EasyVirtio</h3><h2 id="more"><a href="#more" class="headerlink" title="more"></a>more</h2><h3 id="Qemu-KVM"><a href="#Qemu-KVM" class="headerlink" title="Qemu KVM"></a>Qemu KVM</h3><h3 id="Qemu-CVE"><a href="#Qemu-CVE" class="headerlink" title="Qemu CVE"></a>Qemu CVE</h3><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="http://www.phrack.org/issues/70/5.html">VM escape - QEMU Case Study</a></li>
+</ul>
+
+      </div>
+      
+      
+      
+    </div>
+    
+
+    
+    
+    
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80"><span class="nav-number">1.</span> <span class="nav-text">基础</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#qemu%E8%BF%90%E8%A1%8C%E6%96%B9%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">qemu运行方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E7%BB%93%E6%9E%84"><span class="nav-number">1.2.</span> <span class="nav-text">内存结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%B0%E5%9D%80%E7%BF%BB%E8%AF%91"><span class="nav-number">1.3.</span> <span class="nav-text">地址翻译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PCI"><span class="nav-number">1.4.</span> <span class="nav-text">PCI</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#mmio-memory-mapped-io"><span class="nav-number">1.4.1.</span> <span class="nav-text">mmio : memory mapped io</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pmio-port-mapped-io"><span class="nav-number">1.4.2.</span> <span class="nav-text">pmio : port mapped io</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E7%B3%BB%E7%BB%9Fpci%E8%AE%BE%E5%A4%87"><span class="nav-number">1.4.3.</span> <span class="nav-text">查看系统pci设备</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%9A%84%E6%80%9D%E6%83%B3-Qemu-Object-Model"><span class="nav-number">1.5.</span> <span class="nav-text">面向对象的思想 Qemu Object Model</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Type"><span class="nav-number">1.5.1.</span> <span class="nav-text">Type</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ObjectClass"><span class="nav-number">1.5.2.</span> <span class="nav-text">ObjectClass</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Object"><span class="nav-number">1.5.3.</span> <span class="nav-text">Object</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hw-misc-edu-c"><span class="nav-number">1.6.</span> <span class="nav-text">hw&#x2F;misc&#x2F;edu.c</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8"><span class="nav-number">1.7.</span> <span class="nav-text">漏洞利用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ACTF2023"><span class="nav-number">2.</span> <span class="nav-text">ACTF2023</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#qemu-playground"><span class="nav-number">2.1.</span> <span class="nav-text">qemu playground</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EasyVirtio"><span class="nav-number">2.2.</span> <span class="nav-text">EasyVirtio</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#more"><span class="nav-number">3.</span> <span class="nav-text">more</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Qemu-KVM"><span class="nav-number">3.1.</span> <span class="nav-text">Qemu KVM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Qemu-CVE"><span class="nav-number">3.2.</span> <span class="nav-text">Qemu CVE</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ha0Y</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Ha0-Y" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Ha0-Y" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ha0Y</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">71k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2:10</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
