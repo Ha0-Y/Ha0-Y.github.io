@@ -20,20 +20,20 @@
     var CONFIG = {"hostname":"ha0-y.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":18,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="好难呀😭  StackHeapHeap overflow无限制将当前chunk的下一个相邻的size改大，free下一个相邻的chunk，将后面1个或者多个chunk覆盖。malloc堆切割，下一个chunk在bin里，但是没有free掉。如果能泄露信息就可以很容易的获得libc的基址，然后就可以利用堆溢出修改某个bin的fd，bk等指针利用 off-by-one一般是修改size size">
+  <meta name="description" content="买买买  物理设备 芯片通用测试夹   夹在flash芯片上，就不需要将 flash 用热风枪吹下来。然后连接编程器dump固件   编程器   cha341a 编程器，比较便宜 RT809H，比较贵😫   杜邦线 + 排针   电焊引脚，杜邦线用于连接   CH340G   uart 转 USB，这样我们我们可以使用 xshell 之类的工具 uart 串口调试。   万用表   有些设备没">
 <meta property="og:type" content="website">
 <meta property="og:title" content="personal blog">
-<meta property="og:url" content="https://ha0-y.github.io/todo/ELF%20exploit.html">
+<meta property="og:url" content="https://ha0-y.github.io/todo/IoT.html">
 <meta property="og:site_name" content="personal blog">
-<meta property="og:description" content="好难呀😭  StackHeapHeap overflow无限制将当前chunk的下一个相邻的size改大，free下一个相邻的chunk，将后面1个或者多个chunk覆盖。malloc堆切割，下一个chunk在bin里，但是没有free掉。如果能泄露信息就可以很容易的获得libc的基址，然后就可以利用堆溢出修改某个bin的fd，bk等指针利用 off-by-one一般是修改size size">
+<meta property="og:description" content="买买买  物理设备 芯片通用测试夹   夹在flash芯片上，就不需要将 flash 用热风枪吹下来。然后连接编程器dump固件   编程器   cha341a 编程器，比较便宜 RT809H，比较贵😫   杜邦线 + 排针   电焊引脚，杜邦线用于连接   CH340G   uart 转 USB，这样我们我们可以使用 xshell 之类的工具 uart 串口调试。   万用表   有些设备没">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-11-01T08:26:05.848Z">
-<meta property="article:modified_time" content="2023-11-01T08:26:05.848Z">
+<meta property="article:published_time" content="2023-12-17T08:24:48.187Z">
+<meta property="article:modified_time" content="2023-09-26T09:37:55.764Z">
 <meta property="article:author" content="Ha0Y">
 <meta property="article:tag" content="Blog">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://ha0-y.github.io/todo/ELF%20exploit">
+<link rel="canonical" href="https://ha0-y.github.io/todo/IoT">
 
 
 <script id="page-configurations">
@@ -202,19 +202,58 @@
       
       <div class="post-body">
           <blockquote>
-<p>好难呀😭</p>
+<p>买买买</p>
 </blockquote>
-<h1 id="Stack"><a href="#Stack" class="headerlink" title="Stack"></a>Stack</h1><h1 id="Heap"><a href="#Heap" class="headerlink" title="Heap"></a>Heap</h1><h2 id="Heap-overflow"><a href="#Heap-overflow" class="headerlink" title="Heap overflow"></a>Heap overflow</h2><h3 id="无限制"><a href="#无限制" class="headerlink" title="无限制"></a>无限制</h3><p>将当前chunk的下一个相邻的size改大，free下一个相邻的chunk，将后面1个或者多个chunk覆盖。malloc堆切割，下一个chunk在bin里，但是没有free掉。如果能泄露信息就可以很容易的获得libc的基址，然后就可以利用堆溢出修改某个bin的fd，bk等指针利用</p>
-<h3 id="off-by-one"><a href="#off-by-one" class="headerlink" title="off-by-one"></a>off-by-one</h3><p>一般是修改size</p>
-<h4 id="size-限制"><a href="#size-限制" class="headerlink" title="size 限制"></a>size 限制</h4><p>比如限制大小 <code>&lt;=0x70</code></p>
-<p>将当前chunk的下一个相邻的size改大，free下一个相邻的chunk，将后面1个或者多个chunk覆盖。malloc获得整个bin，可以通过新的chunk修改原来的chunk的size，从而利用</p>
-<h3 id="off-by-null"><a href="#off-by-null" class="headerlink" title="off-by-null"></a>off-by-null</h3><p>要求 size 至少 0x100。</p>
-<p>ABC, free A, 能通过B修改C的prev_size 和 in_use 位</p>
-<h2 id="UAF"><a href="#UAF" class="headerlink" title="UAF"></a>UAF</h2><p>悬挂指针，直接用</p>
-<h2 id="Double-free"><a href="#Double-free" class="headerlink" title="Double free"></a>Double free</h2><p>2.23 fastbin<br>2.26 tcachebin</p>
-<p>以后的版本：tcache stash, fastbin reverse into tcache</p>
-<h1 id="IO-FILE"><a href="#IO-FILE" class="headerlink" title="IO_FILE"></a>IO_FILE</h1><h2 id="stdout-leak"><a href="#stdout-leak" class="headerlink" title="stdout leak"></a>stdout leak</h2><h2 id="house-of-cat"><a href="#house-of-cat" class="headerlink" title="house of cat"></a>house of cat</h2><h2 id="house-of-apple"><a href="#house-of-apple" class="headerlink" title="house of apple"></a>house of apple</h2><h2 id="tips"><a href="#tips" class="headerlink" title="tips"></a>tips</h2><p>scanf(“%d”, &amp;choice);  由于存在输入缓冲区，当我们输入 <code>&#39;0&#39; * 一个比较大的size</code> 是，就会触发堆的释放</p>
-
+<h2 id="物理设备"><a href="#物理设备" class="headerlink" title="物理设备"></a>物理设备</h2><ol>
+<li>芯片通用测试夹</li>
+</ol>
+<ul>
+<li>夹在flash芯片上，就不需要将 flash 用热风枪吹下来。然后连接编程器dump固件</li>
+</ul>
+<ol start="2">
+<li>编程器</li>
+</ol>
+<ul>
+<li>cha341a 编程器，比较便宜</li>
+<li>RT809H，比较贵😫</li>
+</ul>
+<ol start="3">
+<li>杜邦线 + 排针</li>
+</ol>
+<ul>
+<li>电焊引脚，杜邦线用于连接</li>
+</ul>
+<ol start="4">
+<li>CH340G</li>
+</ol>
+<ul>
+<li>uart 转 USB，这样我们我们可以使用 xshell 之类的工具 uart 串口调试。</li>
+</ul>
+<ol start="5">
+<li>万用表</li>
+</ol>
+<ul>
+<li>有些设备没有表 RX, TX 串口，需要我们自己测电压确定串口</li>
+</ul>
+<ol start="6">
+<li>电烙铁</li>
+</ol>
+<ul>
+<li>焊接设备，最好买送东西（松香，焊锡丝，镊子）比较多的，就不需要单独买了</li>
+</ul>
+<ol start="7">
+<li>螺丝刀</li>
+</ol>
+<ul>
+<li>拆解设备</li>
+</ul>
+<ol start="8">
+<li>热风枪</li>
+</ol>
+<ul>
+<li>物理卸载或者安装芯片，可以和电烙铁一起二合一一起买，或者单独购买。<del>说的好，我选使用通用测试夹</del></li>
+</ul>
+<h2 id="软件"><a href="#软件" class="headerlink" title="软件"></a>软件</h2>
       </div>
       
       
@@ -275,7 +314,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Stack"><span class="nav-number">1.</span> <span class="nav-text">Stack</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Heap"><span class="nav-number">2.</span> <span class="nav-text">Heap</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Heap-overflow"><span class="nav-number">2.1.</span> <span class="nav-text">Heap overflow</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E9%99%90%E5%88%B6"><span class="nav-number">2.1.1.</span> <span class="nav-text">无限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#off-by-one"><span class="nav-number">2.1.2.</span> <span class="nav-text">off-by-one</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#size-%E9%99%90%E5%88%B6"><span class="nav-number">2.1.2.1.</span> <span class="nav-text">size 限制</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#off-by-null"><span class="nav-number">2.1.3.</span> <span class="nav-text">off-by-null</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UAF"><span class="nav-number">2.2.</span> <span class="nav-text">UAF</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Double-free"><span class="nav-number">2.3.</span> <span class="nav-text">Double free</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IO-FILE"><span class="nav-number">3.</span> <span class="nav-text">IO_FILE</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#stdout-leak"><span class="nav-number">3.1.</span> <span class="nav-text">stdout leak</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#house-of-cat"><span class="nav-number">3.2.</span> <span class="nav-text">house of cat</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#house-of-apple"><span class="nav-number">3.3.</span> <span class="nav-text">house of apple</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tips"><span class="nav-number">3.4.</span> <span class="nav-text">tips</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%A9%E7%90%86%E8%AE%BE%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">物理设备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">软件</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -289,16 +328,16 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-count">18</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -334,7 +373,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2023</span>
+  <span itemprop="copyrightYear">2024</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -343,12 +382,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">150k</span>
+    <span title="站点总字数">162k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">4:34</span>
+    <span title="站点阅读时长">4:54</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>

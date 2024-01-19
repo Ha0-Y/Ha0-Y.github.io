@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ha0-y.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":18,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="什么？对象，虚？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++ 逆向">
+<meta property="og:url" content="https://ha0-y.github.io/2024/01/19/C++%20%E9%80%86%E5%90%91/index.html">
+<meta property="og:site_name" content="personal blog">
+<meta property="og:description" content="什么？对象，虚？">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-01-18T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-01-19T15:12:07.041Z">
+<meta property="article:author" content="Ha0Y">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="reverse">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://ha0-y.github.io/2024/01/19/C++%20%E9%80%86%E5%90%91/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>C++ 逆向 | personal blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">personal blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">I'm possible</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ha0-y.github.io/2024/01/19/C++%20%E9%80%86%E5%90%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ha0Y">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="personal blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C++ 逆向
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-01-19 00:00:00 / 修改时间：23:12:07" itemprop="dateCreated datePublished" datetime="2024-01-19T00:00:00+08:00">2024-01-19</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categorievariants/reverse/" itemprop="url" rel="index"><span itemprop="name">reverse</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>9.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>17 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>什么？对象，虚？</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="PE-文件格式"><a href="#PE-文件格式" class="headerlink" title="PE 文件格式"></a>PE 文件格式</h2><blockquote>
+<p>为什么会有这个？逆向为什么没有这个！</p>
+</blockquote>
+<p>微软官方文档：<a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows/win32/debug/pe-format">PE 格式 - Win32 apps</a></p>
+<p>使用 010editor 查看。需要先下载插件：模板-&gt;模板库-&gt;安装 exe.bt 。alt+4 可以查看PE文件格式</p>
+<h3 id="DOS-头"><a href="#DOS-头" class="headerlink" title="DOS 头"></a>DOS 头</h3><p>两个重要的变量 <code>e_magic</code>(判断是否为DOS头，固定为<code>5a4d</code>) 和 <code>e_lfanew</code>(NT头的偏移) </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="title class_">_IMAGE_DOS_HEADER</span> &#123;      <span class="comment">// DOS .EXE header</span></span><br><span class="line">    WORD   e_magic;                     <span class="comment">// Magic number</span></span><br><span class="line">    WORD   e_cblp;                      <span class="comment">// Bytes on last page of file</span></span><br><span class="line">    WORD   e_cp;                        <span class="comment">// Pages in file</span></span><br><span class="line">    WORD   e_crlc;                      <span class="comment">// Relocations</span></span><br><span class="line">    WORD   e_cparhdr;                   <span class="comment">// Size of header in paragraphs</span></span><br><span class="line">    WORD   e_minalloc;                  <span class="comment">// Minimum extra paragraphs needed</span></span><br><span class="line">    WORD   e_maxalloc;                  <span class="comment">// Maximum extra paragraphs needed</span></span><br><span class="line">    WORD   e_ss;                        <span class="comment">// Initial (relative) SS value</span></span><br><span class="line">    WORD   e_sp;                        <span class="comment">// Initial SP value</span></span><br><span class="line">    WORD   e_csum;                      <span class="comment">// Checksum</span></span><br><span class="line">    WORD   e_ip;                        <span class="comment">// Initial IP value</span></span><br><span class="line">    WORD   e_cs;                        <span class="comment">// Initial (relative) CS value</span></span><br><span class="line">    WORD   e_lfarlc;                    <span class="comment">// File address of relocation table</span></span><br><span class="line">    WORD   e_ovno;                      <span class="comment">// Overlay number</span></span><br><span class="line">    WORD   e_res[<span class="number">4</span>];                    <span class="comment">// Reserved words</span></span><br><span class="line">    WORD   e_oemid;                     <span class="comment">// OEM identifier (for e_oeminfo)</span></span><br><span class="line">    WORD   e_oeminfo;                   <span class="comment">// OEM information; e_oemid specific</span></span><br><span class="line">    WORD   e_res2[<span class="number">10</span>];                  <span class="comment">// Reserved words</span></span><br><span class="line">    LONG   e_lfanew;                    <span class="comment">// File address of new exe header</span></span><br><span class="line">  &#125; IMAGE_DOS_HEADER, *PIMAGE_DOS_HEADER</span><br></pre></td></tr></table></figure>
+
+<h3 id="DOS-stub"><a href="#DOS-stub" class="headerlink" title="DOS stub"></a>DOS stub</h3><p>MS-DOS 存根是在 <em>MS-DOS 下运行的有效应用程序</em>。 它放置在 EXE 映像的前面。 链接器在此处放置一个默认存根，当映像在 MS-DOS 中运行时，该存根输出消息“此程序无法在 DOS 模式下运行”。</p>
+<h3 id="NT-头"><a href="#NT-头" class="headerlink" title="NT 头"></a>NT 头</h3><p><code>IMAGE_NT_HEADERS</code> 结构</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="title class_">_IMAGE_NT_HEADERS64</span> &#123;</span><br><span class="line">    DWORD Signature;</span><br><span class="line">    IMAGE_FILE_HEADER FileHeader;</span><br><span class="line">    IMAGE_OPTIONAL_HEADER64 OptionalHeader;</span><br><span class="line">&#125; IMAGE_NT_HEADERS64, *PIMAGE_NT_HEADERS64;</span><br></pre></td></tr></table></figure>
+
+<h4 id="签名"><a href="#签名" class="headerlink" title="签名"></a>签名</h4><p>签名是一个固定的值</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> IMAGE_NT_SIGNATURE                  0x00004550  <span class="comment">// PE00</span></span></span><br></pre></td></tr></table></figure>
+
+<h4 id="FileHeader"><a href="#FileHeader" class="headerlink" title="FileHeader"></a>FileHeader</h4><p>文件头包含了很多重要的属性</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="title class_">_IMAGE_FILE_HEADER</span> &#123;</span><br><span class="line">	WORD    Machine;					<span class="comment">// 取决于机器，ARM, x86...</span></span><br><span class="line">	WORD    NumberOfSections;			<span class="comment">// Section 数量</span></span><br><span class="line">	DWORD   TimeDateStamp;				<span class="comment">// 文件创建时间</span></span><br><span class="line">	DWORD   PointerToSymbolTable;		<span class="comment">// 指向符号表</span></span><br><span class="line">	DWORD   NumberOfSymbols;			<span class="comment">// 符号表中符号个数</span></span><br><span class="line">	WORD    SizeOfOptionalHeader;		<span class="comment">// 可选头的大小</span></span><br><span class="line">	WORD    Characteristics;			<span class="comment">// 文件属性，是否为DLL等</span></span><br><span class="line">&#125; IMAGE_FILE_HEADER, * PIMAGE_FILE_HEADER;</span><br></pre></td></tr></table></figure>
+
+<h4 id="OptionalHeader"><a href="#OptionalHeader" class="headerlink" title="OptionalHeader"></a>OptionalHeader</h4><p>可选头</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="title class_">_IMAGE_OPTIONAL_HEADER64</span> &#123;</span><br><span class="line">    WORD        Magic;                      <span class="comment">// 魔术字</span></span><br><span class="line">    BYTE        MajorLinkerVersion;         <span class="comment">// linker 版本号</span></span><br><span class="line">    BYTE        MinorLinkerVersion;     </span><br><span class="line">    DWORD       SizeOfCode;                </span><br><span class="line">    DWORD       SizeOfInitializedData;</span><br><span class="line">    DWORD       SizeOfUninitializedData;</span><br><span class="line">    DWORD       AddressOfEntryPoint;        <span class="comment">// 程序执行入口RVA</span></span><br><span class="line">    DWORD       BaseOfCode;                 <span class="comment">// 代码的节的起始RVA</span></span><br><span class="line">    ULONGLONG   ImageBase;                  <span class="comment">// 优先装载地址</span></span><br><span class="line">    DWORD       SectionAlignment;           <span class="comment">// 内存中的节的对齐</span></span><br><span class="line">    DWORD       FileAlignment;              <span class="comment">// 文件中的节的对齐</span></span><br><span class="line">    WORD        MajorOperatingSystemVersion;</span><br><span class="line">    WORD        MinorOperatingSystemVersion;</span><br><span class="line">    WORD        MajorImageVersion;</span><br><span class="line">    WORD        MinorImageVersion;</span><br><span class="line">    WORD        MajorSubsystemVersion;</span><br><span class="line">    WORD        MinorSubsystemVersion;</span><br><span class="line">    DWORD       Win32VersionValue;</span><br><span class="line">    DWORD       SizeOfImage;</span><br><span class="line">    DWORD       SizeOfHeaders;</span><br><span class="line">    DWORD       CheckSum;</span><br><span class="line">    WORD        Subsystem;</span><br><span class="line">    WORD        DllCharacteristics;         <span class="comment">// DLL文件特性</span></span><br><span class="line">    ULONGLONG   SizeOfStackReserve;</span><br><span class="line">    ULONGLONG   SizeOfStackCommit;</span><br><span class="line">    ULONGLONG   SizeOfHeapReserve;</span><br><span class="line">    ULONGLONG   SizeOfHeapCommit;</span><br><span class="line">    DWORD       LoaderFlags;                <span class="comment">// 与调试有关</span></span><br><span class="line">    DWORD       NumberOfRvaAndSizes;        <span class="comment">// 数据目录结构的项目数量</span></span><br><span class="line">    IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];</span><br><span class="line">&#125; IMAGE_OPTIONAL_HEADER64, * PIMAGE_OPTIONAL_HEADER64;</span><br></pre></td></tr></table></figure>
+
+<p>ImageBase: 文件在内存中的首选装入地址。如果有可能（也就是说，目前如果没有其他占据这块地址，它是正确对齐的并且是一个合法的地址，等等），加载器试图在这个地址装入PE文件。如果可执行文件是在这个地址装入的，那么加载器将跳过应用<em>基址重定位</em>的步骤。</p>
+<h3 id="Section"><a href="#Section" class="headerlink" title="Section"></a>Section</h3><p>节的初始化数据由简单的字节块组成。 但是，对于全部为零的节，不需要包含节数据。</p>
+<p>每个节的数据位于节头中的 PointerToRawData 字段给出的文件偏移量处。 文件中此数据的大小由 SizeOfRawData 字段指示。 如果 SizeOfRawData 小于 VirtualSize，则其余部分用零填充。</p>
+<p>这里的对齐和可选头的 <code>SectionAlignment</code>和 <code>FileAlignment</code> 相关</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="title class_">_IMAGE_SECTION_HEADER</span> &#123;</span><br><span class="line">	BYTE    Name[IMAGE_SIZEOF_SHORT_NAME];          <span class="comment">// 名称 .text .bss 等</span></span><br><span class="line">	<span class="keyword">union</span> &#123;</span><br><span class="line">		DWORD   PhysicalAddress;</span><br><span class="line">		DWORD   VirtualSize;</span><br><span class="line">	&#125; Misc;</span><br><span class="line">	DWORD   VirtualAddress;                         <span class="comment">// 节区的 RVA 地址</span></span><br><span class="line">	DWORD   SizeOfRawData;                          <span class="comment">// 文件对齐后的大小</span></span><br><span class="line">	DWORD   PointerToRawData;                       <span class="comment">// FOA</span></span><br><span class="line">	DWORD   PointerToRelocations;</span><br><span class="line">	DWORD   PointerToLinenumbers;</span><br><span class="line">	WORD    NumberOfRelocations;</span><br><span class="line">	WORD    NumberOfLinenumbers;</span><br><span class="line">	DWORD   Characteristics;                        <span class="comment">// 节属性如可读，可写，可执行等</span></span><br><span class="line">&#125; IMAGE_SECTION_HEADER, * PIMAGE_SECTION_HEADER;</span><br></pre></td></tr></table></figure>
+
+<h2 id="HelloWorld"><a href="#HelloWorld" class="headerlink" title="HelloWorld"></a>HelloWorld</h2><p>非常简单的源码</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">func</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b, <span class="type">int</span> c, <span class="type">int</span> d, <span class="type">int</span> e, <span class="type">int</span> f, <span class="type">int</span> g)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">int</span> a;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;hello world&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	a = <span class="number">10</span>;</span><br><span class="line">	std::cout &lt;&lt; <span class="built_in">func</span>(a, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>) &lt;&lt; std::endl;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>带符号表的反汇编</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">__int64 __fastcall <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  std::ostream *v0; <span class="comment">// rax</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> v1; <span class="comment">// eax</span></span><br><span class="line">  __int64 v2; <span class="comment">// rax</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">j___CheckForDebuggerJustMyCode</span>(&amp;_4C11826D_reverse_cpp);</span><br><span class="line">  v0 = std::<span class="keyword">operator</span>&lt;&lt;&lt;std::char_traits&lt;<span class="type">char</span>&gt;&gt;(std::cout, <span class="string">&quot;hello world&quot;</span>);</span><br><span class="line">  std::ostream::<span class="keyword">operator</span>&lt;&lt;(v0, std::endl&lt;<span class="type">char</span>,std::char_traits&lt;<span class="type">char</span>&gt;&gt;);</span><br><span class="line">  v1 = <span class="built_in">func</span>(<span class="number">10</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>);</span><br><span class="line">  v2 = std::ostream::<span class="keyword">operator</span>&lt;&lt;(std::cout, v1);</span><br><span class="line">  std::ostream::<span class="keyword">operator</span>&lt;&lt;(v2, std::endl&lt;<span class="type">char</span>,std::char_traits&lt;<span class="type">char</span>&gt;&gt;);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>i64;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="CALL-方式"><a href="#CALL-方式" class="headerlink" title="CALL 方式"></a>CALL 方式</h3><p>具体参考：<a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/cpp/cpp/argument-passing-and-naming-conventions?view=msvc-170">自变量传递和命名约定 | Microsoft Learn</a>****</p>
+<p><strong><code>__cdecl</code></strong> 是 C 和 C++ 程序的默认调用约定。 堆栈由<code>caller</code>清理,函数传递顺序 从右到左</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> __cdecl <span class="title">method</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong><code>__stdcall</code></strong> 调用约定用于调用 Win32 API 函数。<code>callee</code>清理堆栈，函数传递方式 从右到左。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> WINAPI __stdcall</span></span><br><span class="line"><span class="function"><span class="type">void</span> __stdcall <span class="title">method</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong><code>__fastcall</code></strong> 调用约定指定尽可能在寄存器中传递函数的自变量。 此调用约定仅适用于 x86 体系结构。参数传递</p>
+<ul>
+<li>x86 从左到右的顺序找到前两个 <code>DWORD</code> 或更小自变量将在 ECX 和 EDX 寄存器中传递；所有其他自变量在堆栈上从右向左传递。</li>
+<li>x64 下是 rcx, rdx, r8, r9</li>
+</ul>
+<p><strong><code>__thiscall</code></strong> 的调用约定用于 x86 体系结构上的 C++ 类成员函数，<strong>特定于 Microsoft</strong> </p>
+<p>比如说 call func 的 汇编代码，我在x64下是 fastcall</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">.text:<span class="number">0000000140011</span>CEE                 mov     [rbp+<span class="number">0F</span>0h+a], <span class="number">0</span>Ah</span><br><span class="line">.text:<span class="number">0000000140011</span>CF5                 mov     [rsp+<span class="number">130</span>h+g], <span class="number">7</span> ; g</span><br><span class="line">.text:<span class="number">0000000140011</span>CFD                 mov     [rsp+<span class="number">130</span>h+f], <span class="number">6</span> ; f</span><br><span class="line">.text:<span class="number">0000000140011</span>D05                 mov     [rsp+<span class="number">130</span>h+e], <span class="number">5</span> ; e</span><br><span class="line">.text:<span class="number">0000000140011</span>D0D                 mov     r9d, <span class="number">4</span>          ; d</span><br><span class="line">.text:<span class="number">0000000140011</span>D13                 mov     r8d, <span class="number">3</span>          ; c</span><br><span class="line">.text:<span class="number">0000000140011</span>D19                 mov     edx, <span class="number">2</span>          ; b</span><br><span class="line">.text:<span class="number">0000000140011</span>D1E                 mov     ecx, [rbp+<span class="number">0F</span>0h+a] ; a</span><br><span class="line">.text:<span class="number">0000000140011</span>D21                 call    j_?func@@YAHHHHHHHH@Z ; <span class="built_in">func</span>(<span class="type">int</span>,<span class="type">int</span>,<span class="type">int</span>,<span class="type">int</span>,<span class="type">int</span>,<span class="type">int</span>,<span class="type">int</span>)</span><br></pre></td></tr></table></figure>
+
+<p>但是在 x86 就是 cdecl call</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">.text:<span class="number">0041253</span>C                 push    <span class="number">7</span>               ; g</span><br><span class="line">.text:<span class="number">0041253</span>E                 push    <span class="number">6</span>               ; f</span><br><span class="line">.text:<span class="number">00412540</span>                 push    <span class="number">5</span>               ; e</span><br><span class="line">.text:<span class="number">00412542</span>                 push    <span class="number">4</span>               ; d</span><br><span class="line">.text:<span class="number">00412544</span>                 push    <span class="number">3</span>               ; c</span><br><span class="line">.text:<span class="number">00412546</span>                 push    <span class="number">2</span>               ; b</span><br><span class="line">.text:<span class="number">00412548</span>                 mov     eax, [ebp+a]</span><br><span class="line">.text:<span class="number">0041254B</span>                 push    eax             ; a</span><br><span class="line">.text:<span class="number">0041254</span>C                 call    j_?func@@YAHHHHHHHH@Z ; <span class="built_in">func</span>(<span class="type">int</span>,<span class="type">int</span>,<span class="type">int</span>,<span class="type">int</span>,<span class="type">int</span>,<span class="type">int</span>,<span class="type">int</span>)</span><br></pre></td></tr></table></figure>
+
+<p>但是不变的是 <code>rax</code> 为函数返回值</p>
+<h2 id="Class"><a href="#Class" class="headerlink" title="Class"></a>Class</h2><p>测试代码</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Person</span> &#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="type">int</span> _age;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">Person</span>() &#123;</span><br><span class="line">		_age = <span class="number">0</span>;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;person&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">virtual</span> ~<span class="built_in">Person</span>() &#123;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;~person&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">int</span> <span class="title">GetAge</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">SetAge</span><span class="params">(<span class="type">int</span> age)</span> </span>= <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Boy</span> : <span class="keyword">public</span> Person &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">Boy</span>() &#123;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;boy&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">virtual</span> ~<span class="built_in">Boy</span>() &#123;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;~boy&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="type">int</span> <span class="title">GetAge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;boy getage&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">114</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">SetAge</span><span class="params">(<span class="type">int</span> age)</span> </span>&#123;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;boy setage&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	std::vector&lt;Boy&gt; boys;</span><br><span class="line">	Boy b;</span><br><span class="line">	boys.<span class="built_in">push_back</span>(b);</span><br><span class="line">	<span class="keyword">auto</span> f = [](<span class="type">int</span> a, <span class="type">int</span> b) -&gt; <span class="type">int</span> &#123;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;lambda&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">		<span class="keyword">return</span> a + b;</span><br><span class="line">		&#125;;</span><br><span class="line">	std::cout &lt;&lt; <span class="built_in">f</span>(<span class="number">1</span>, <span class="number">2</span>) &lt;&lt; std::endl;</span><br><span class="line">	<span class="keyword">return</span> EXIT_SUCCESS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>C++ 名称粉碎机制：举个例子 <code>std::cout</code> 名字是 <code>__imp_?cout@std@@3V?$basic_ostream@DU?$char_traits@D@std@@@1@A:qword</code>。</p>
+<ul>
+<li>更好的重载</li>
+</ul>
+<p><code>MSVC</code> 反编译出来，优化比较严重，因此使用<code>g++</code></p>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><p>析构函数和构造函数</p>
+<p>构造函数调用：函数声明时；析构函数：生命周期结束时</p>
+<p>反汇编时，方法第一个参数一般是 <code>this</code> 指针</p>
+<h3 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h3><p>在构造时，构造顺序为先构造父类，后构造子类。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> __fastcall <span class="title">Boy::Boy</span><span class="params">(Boy *<span class="keyword">this</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  __int64 v1; <span class="comment">// rax</span></span><br><span class="line"></span><br><span class="line">  Person::<span class="built_in">Person</span>(<span class="keyword">this</span>);</span><br><span class="line">  *(_QWORD *)<span class="keyword">this</span> = off_4CC8;   <span class="comment">// 虚指针</span></span><br><span class="line">  v1 = std::<span class="keyword">operator</span>&lt;&lt;&lt;std::char_traits&lt;<span class="type">char</span>&gt;&gt;(&amp;std::cout, <span class="string">&quot;boy&quot;</span>);</span><br><span class="line">  std::ostream::<span class="keyword">operator</span>&lt;&lt;(v1, &amp;std::endl&lt;<span class="type">char</span>,std::char_traits&lt;<span class="type">char</span>&gt;&gt;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在析构时，析构顺序为先析构子类，后析构父类。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> __fastcall Boy::~<span class="built_in">Boy</span>(Boy *<span class="keyword">this</span>)</span><br><span class="line">&#123;</span><br><span class="line">  __int64 v1; <span class="comment">// rax</span></span><br><span class="line"></span><br><span class="line">  *(_QWORD *)<span class="keyword">this</span> = off_4CC8; <span class="comment">// vfptr</span></span><br><span class="line">  v1 = std::<span class="keyword">operator</span>&lt;&lt;&lt;std::char_traits&lt;<span class="type">char</span>&gt;&gt;(&amp;std::cout, <span class="string">&quot;~boy&quot;</span>);</span><br><span class="line">  std::ostream::<span class="keyword">operator</span>&lt;&lt;(v1, &amp;std::endl&lt;<span class="type">char</span>,std::char_traits&lt;<span class="type">char</span>&gt;&gt;);</span><br><span class="line">  Person::~<span class="built_in">Person</span>(<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="虚函数"><a href="#虚函数" class="headerlink" title="虚函数"></a>虚函数</h3><p>虚函数也是函数，体现了CPP的多态性。</p>
+<p>根据对象的实际类型来调用成员函数，而不是根据指针的类型来对该块内存进行解释并调用属于该指针类型所属的成员函数，简化代码实现多态性</p>
+<ul>
+<li>一个很好的解释：父类声明子类<code>Set&lt;String&gt; m = new HashMap&lt;String&gt;</code>，但是调用方法是子类的</li>
+</ul>
+<p>在<code>cpp</code>中使用一个指针和一个表格来进行实现的。这个表格称为虚表<code>vftable</code> ，这个指针称为虚表指针。</p>
+<ul>
+<li>如果一个类中有虚函数，编译器则会在对象的首部加入虚表指针，以存放所属于该对象的虚表</li>
+</ul>
+<p>虚表指针的填充时机：<strong>只有在构造函数和析构函数中会对虚表指针重新赋值，其他位置没有对该指针的操作</strong>。</p>
+<ul>
+<li>虚函数在类的首部</li>
+</ul>
+<p>其在构造函数和析构函数给<code>vfptr</code>赋值</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">.data.rel.ro:<span class="number">0000000000004</span>CC8 off_4CC8        dq offset _ZN3BoyD2Ev   ; DATA XREF: Boy::<span class="built_in">Boy</span>(<span class="type">void</span>)+<span class="number">1</span>D↑o</span><br><span class="line">.data.rel.ro:<span class="number">0000000000004</span>CC8                                         ; Boy::~<span class="built_in">Boy</span>()+<span class="number">10</span>↑o ...</span><br><span class="line">.data.rel.ro:<span class="number">0000000000004</span>CC8                                         ; Boy::~<span class="built_in">Boy</span>()</span><br><span class="line">.data.rel.ro:<span class="number">0000000000004</span>CD0                 dq offset _ZN3BoyD0Ev   ; Boy::~<span class="built_in">Boy</span>()</span><br><span class="line">.data.rel.ro:<span class="number">0000000000004</span>CD8                 dq offset _ZN3Boy6GetAgeEv ; Boy::<span class="built_in">GetAge</span>(<span class="type">void</span>)</span><br><span class="line">.data.rel.ro:<span class="number">0000000000004</span>CE0                 dq offset _ZN3Boy6SetAgeEi ; Boy::<span class="built_in">SetAge</span>(<span class="type">int</span>)</span><br><span class="line">.data.rel.ro:<span class="number">0000000000004</span>CE8                 <span class="keyword">public</span> _ZTV6Person ; weak</span><br></pre></td></tr></table></figure>
+
+<p><strong>析构函数为什么也要重新给虚表赋值呢？</strong></p>
+<ul>
+<li>编译器无法预知这个子类以后是否会被其他类继承，如果被继承，就成了父类，在执行析构函数时会先执行当前对象的析构函数，然后向祖父类的方向按继承线路逐层调用各类析构函数，当前对象的析构函数开始执行时，其虚表也是当前对象的，所以执行到父类的析构函数时，虚表必须改写为父类的虚表</li>
+</ul>
+<h2 id="lambda-表达式"><a href="#lambda-表达式" class="headerlink" title="lambda 表达式"></a>lambda 表达式</h2><p>比较简单的lambda 可以看出来其参数类型与个数</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">v3 = main::&#123;<span class="built_in">lambda</span>(<span class="type">int</span>,<span class="type">int</span>)#<span class="number">1</span>&#125;::<span class="built_in">operator</span>()(&amp;v6, <span class="number">1LL</span>, <span class="number">2LL</span>);</span><br><span class="line"> </span><br><span class="line">__int64 __fastcall main::&#123;<span class="built_in">lambda</span>(<span class="type">int</span>,<span class="type">int</span>)#<span class="number">1</span>&#125;::<span class="built_in">operator</span>()(__int64 a1, <span class="type">int</span> a2, <span class="type">int</span> a3)</span><br><span class="line">&#123;</span><br><span class="line">  __int64 v3; <span class="comment">// rax</span></span><br><span class="line"></span><br><span class="line">  v3 = std::<span class="keyword">operator</span>&lt;&lt;&lt;std::char_traits&lt;<span class="type">char</span>&gt;&gt;(&amp;std::cout, <span class="string">&quot;lambda&quot;</span>);</span><br><span class="line">  std::ostream::<span class="keyword">operator</span>&lt;&lt;(v3, &amp;std::endl&lt;<span class="type">char</span>,std::char_traits&lt;<span class="type">char</span>&gt;&gt;);</span><br><span class="line">  <span class="keyword">return</span> (<span class="type">unsigned</span> <span class="type">int</span>)(a2 + a3);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="debugger"><a href="#debugger" class="headerlink" title="debugger"></a>debugger</h2><p>WinDbg 命令：<a target="_blank" rel="noopener" href="http://windbg.info/doc/1-common-cmds.html">Common WinDbg Commands </a><br>x64dbg 文档：<a target="_blank" rel="noopener" href="https://help.x64dbg.com/en/latest/">  x64dbg documentation</a> 基本操作可以使用鼠标和右键😋</p>
+<p>windbg 常见命令，感觉 preview 更加好看</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 断点 b</span></span><br><span class="line">bp: 断点</span><br><span class="line">bl: list</span><br><span class="line">bc: clear</span><br><span class="line"></span><br><span class="line"><span class="comment">// 查看 display/dump</span></span><br><span class="line">d&#123;a|b|c|d|D|f|p|q|u|w|W&#125; [Options] [Range]</span><br><span class="line">db: dump byte</span><br><span class="line">dw: word</span><br><span class="line">dd: dword</span><br><span class="line">dq: qword</span><br><span class="line">dt: type</span><br><span class="line"></span><br><span class="line"><span class="comment">// 单步执行</span></span><br><span class="line">g: go</span><br><span class="line">t: trace，步入</span><br><span class="line">p: 步过</span><br><span class="line"></span><br><span class="line"><span class="comment">// 查看寄存器</span></span><br><span class="line">r: <span class="keyword">register</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用栈</span></span><br><span class="line">k: dump stack</span><br><span class="line">.frame</span><br><span class="line"></span><br><span class="line"><span class="comment">// 搜索</span></span><br><span class="line">s: search</span><br><span class="line"></span><br><span class="line"><span class="comment">// 修改</span></span><br><span class="line">e: edit</span><br></pre></td></tr></table></figure>
+
+<p>命令</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.echo </span><br><span class="line">.reboot</span><br><span class="line">.reload</span><br><span class="line">.cls: 清屏幕</span><br><span class="line">.help</span><br></pre></td></tr></table></figure>
+
+<p>WinDbg 也可以双机调试内核。</p>
+<ul>
+<li>虚拟机添加一个串行端口，并且替换如下的uuid为自己的</li>
+<li>windbg 选择 attach to kernel</li>
+</ul>
+<p>待调试机器：添加一个串口设备，使用命名的管道；开机后管理员开启cmd</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">bcdedit /dbgsettings serial baudrate:115200 debugport:1</span><br><span class="line">bcdedit /copy &#123;current&#125; /d DEBUG        # 这一步成功会生成一个引导项，打印出其uuid</span><br><span class="line">bcdedit /displayorder &#123;current&#125; &#123;uuid&#125;  # 指定开机进入上一步的引导项</span><br><span class="line">bcdedit /debug &#123;uuid&#125; ON                # 开启debug</span><br></pre></td></tr></table></figure>
+
+<p>调试机器：windbg attach kernel，填内容</p>
+<ul>
+<li>波特率：115200</li>
+<li>管道：待调试机器的命名管道</li>
+<li>resets: 0</li>
+</ul>
+<p>这个命名管道形式如：<code>\\.\pipe\com1</code></p>
+<p>参考：<a target="_blank" rel="noopener" href="https://bbs.kanxue.com/thread-261326.htm">双机内核调试</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/reverse/" rel="tag"># reverse</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/11/20/git%20work-flow/" rel="prev" title="git work-flows">
+      <i class="fa fa-chevron-left"></i> git work-flows
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#PE-%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">PE 文件格式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DOS-%E5%A4%B4"><span class="nav-number">1.1.</span> <span class="nav-text">DOS 头</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DOS-stub"><span class="nav-number">1.2.</span> <span class="nav-text">DOS stub</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NT-%E5%A4%B4"><span class="nav-number">1.3.</span> <span class="nav-text">NT 头</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AD%BE%E5%90%8D"><span class="nav-number">1.3.1.</span> <span class="nav-text">签名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#FileHeader"><span class="nav-number">1.3.2.</span> <span class="nav-text">FileHeader</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#OptionalHeader"><span class="nav-number">1.3.3.</span> <span class="nav-text">OptionalHeader</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Section"><span class="nav-number">1.4.</span> <span class="nav-text">Section</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HelloWorld"><span class="nav-number">2.</span> <span class="nav-text">HelloWorld</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CALL-%E6%96%B9%E5%BC%8F"><span class="nav-number">2.1.</span> <span class="nav-text">CALL 方式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Class"><span class="nav-number">3.</span> <span class="nav-text">Class</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-number">3.1.</span> <span class="nav-text">方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%A7%E6%89%BF"><span class="nav-number">3.2.</span> <span class="nav-text">继承</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%99%9A%E5%87%BD%E6%95%B0"><span class="nav-number">3.3.</span> <span class="nav-text">虚函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lambda-%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">4.</span> <span class="nav-text">lambda 表达式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#debugger"><span class="nav-number">5.</span> <span class="nav-text">debugger</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ha0Y</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Ha0-Y" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Ha0-Y" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ha0Y</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">162k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">4:54</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
