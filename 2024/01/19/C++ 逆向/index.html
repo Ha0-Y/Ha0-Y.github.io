@@ -28,7 +28,7 @@
 <meta property="og:description" content="什么？对象，虚？">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-01-18T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-01-19T15:12:07.041Z">
+<meta property="article:modified_time" content="2024-01-21T12:36:08.035Z">
 <meta property="article:author" content="Ha0Y">
 <meta property="article:tag" content="C++">
 <meta property="article:tag" content="reverse">
@@ -205,10 +205,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2024-01-19 00:00:00 / 修改时间：23:12:07" itemprop="dateCreated datePublished" datetime="2024-01-19T00:00:00+08:00">2024-01-19</time>
+              <time title="创建时间：2024-01-19 00:00:00" itemprop="dateCreated datePublished" datetime="2024-01-19T00:00:00+08:00">2024-01-19</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-01-21 20:36:08" itemprop="dateModified" datetime="2024-01-21T20:36:08+08:00">2024-01-21</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -225,14 +231,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>9.2k</span>
+              <span>8.9k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>17 分钟</span>
+              <span>16 分钟</span>
             </span>
 
         </div>
@@ -279,7 +285,7 @@
 <h2 id="HelloWorld"><a href="#HelloWorld" class="headerlink" title="HelloWorld"></a>HelloWorld</h2><p>非常简单的源码</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">func</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b, <span class="type">int</span> c, <span class="type">int</span> d, <span class="type">int</span> e, <span class="type">int</span> f, <span class="type">int</span> g)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">int</span> a;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;hello world&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	a = <span class="number">10</span>;</span><br><span class="line">	std::cout &lt;&lt; <span class="built_in">func</span>(a, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>) &lt;&lt; std::endl;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>带符号表的反汇编</p>
+<p>带符号表的反汇编，可以看出其比较长的 namespace 和 函数</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">__int64 __fastcall <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  std::ostream *v0; <span class="comment">// rax</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> v1; <span class="comment">// eax</span></span><br><span class="line">  __int64 v2; <span class="comment">// rax</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">j___CheckForDebuggerJustMyCode</span>(&amp;_4C11826D_reverse_cpp);</span><br><span class="line">  v0 = std::<span class="keyword">operator</span>&lt;&lt;&lt;std::char_traits&lt;<span class="type">char</span>&gt;&gt;(std::cout, <span class="string">&quot;hello world&quot;</span>);</span><br><span class="line">  std::ostream::<span class="keyword">operator</span>&lt;&lt;(v0, std::endl&lt;<span class="type">char</span>,std::char_traits&lt;<span class="type">char</span>&gt;&gt;);</span><br><span class="line">  v1 = <span class="built_in">func</span>(<span class="number">10</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>);</span><br><span class="line">  v2 = std::ostream::<span class="keyword">operator</span>&lt;&lt;(std::cout, v1);</span><br><span class="line">  std::ostream::<span class="keyword">operator</span>&lt;&lt;(v2, std::endl&lt;<span class="type">char</span>,std::char_traits&lt;<span class="type">char</span>&gt;&gt;);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>i64;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="CALL-方式"><a href="#CALL-方式" class="headerlink" title="CALL 方式"></a>CALL 方式</h3><p>具体参考：<a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/cpp/cpp/argument-passing-and-naming-conventions?view=msvc-170">自变量传递和命名约定 | Microsoft Learn</a>****</p>
@@ -342,29 +348,15 @@
 <h2 id="lambda-表达式"><a href="#lambda-表达式" class="headerlink" title="lambda 表达式"></a>lambda 表达式</h2><p>比较简单的lambda 可以看出来其参数类型与个数</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">v3 = main::&#123;<span class="built_in">lambda</span>(<span class="type">int</span>,<span class="type">int</span>)#<span class="number">1</span>&#125;::<span class="built_in">operator</span>()(&amp;v6, <span class="number">1LL</span>, <span class="number">2LL</span>);</span><br><span class="line"> </span><br><span class="line">__int64 __fastcall main::&#123;<span class="built_in">lambda</span>(<span class="type">int</span>,<span class="type">int</span>)#<span class="number">1</span>&#125;::<span class="built_in">operator</span>()(__int64 a1, <span class="type">int</span> a2, <span class="type">int</span> a3)</span><br><span class="line">&#123;</span><br><span class="line">  __int64 v3; <span class="comment">// rax</span></span><br><span class="line"></span><br><span class="line">  v3 = std::<span class="keyword">operator</span>&lt;&lt;&lt;std::char_traits&lt;<span class="type">char</span>&gt;&gt;(&amp;std::cout, <span class="string">&quot;lambda&quot;</span>);</span><br><span class="line">  std::ostream::<span class="keyword">operator</span>&lt;&lt;(v3, &amp;std::endl&lt;<span class="type">char</span>,std::char_traits&lt;<span class="type">char</span>&gt;&gt;);</span><br><span class="line">  <span class="keyword">return</span> (<span class="type">unsigned</span> <span class="type">int</span>)(a2 + a3);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="debugger"><a href="#debugger" class="headerlink" title="debugger"></a>debugger</h2><p>WinDbg 命令：<a target="_blank" rel="noopener" href="http://windbg.info/doc/1-common-cmds.html">Common WinDbg Commands </a><br>x64dbg 文档：<a target="_blank" rel="noopener" href="https://help.x64dbg.com/en/latest/">  x64dbg documentation</a> 基本操作可以使用鼠标和右键😋</p>
+<h2 id="debugger"><a href="#debugger" class="headerlink" title="debugger"></a>debugger</h2><p>WinDbg 命令：<a target="_blank" rel="noopener" href="http://windbg.info/doc/1-common-cmds.html">Common WinDbg Commands </a><br>x64dbg 文档：<a target="_blank" rel="noopener" href="https://help.x64dbg.com/en/latest/">  x64dbg documentation</a> </p>
 <p>windbg 常见命令，感觉 preview 更加好看</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 断点 b</span></span><br><span class="line">bp: 断点</span><br><span class="line">bl: list</span><br><span class="line">bc: clear</span><br><span class="line"></span><br><span class="line"><span class="comment">// 查看 display/dump</span></span><br><span class="line">d&#123;a|b|c|d|D|f|p|q|u|w|W&#125; [Options] [Range]</span><br><span class="line">db: dump byte</span><br><span class="line">dw: word</span><br><span class="line">dd: dword</span><br><span class="line">dq: qword</span><br><span class="line">dt: type</span><br><span class="line"></span><br><span class="line"><span class="comment">// 单步执行</span></span><br><span class="line">g: go</span><br><span class="line">t: trace，步入</span><br><span class="line">p: 步过</span><br><span class="line"></span><br><span class="line"><span class="comment">// 查看寄存器</span></span><br><span class="line">r: <span class="keyword">register</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用栈</span></span><br><span class="line">k: dump stack</span><br><span class="line">.frame</span><br><span class="line"></span><br><span class="line"><span class="comment">// 搜索</span></span><br><span class="line">s: search</span><br><span class="line"></span><br><span class="line"><span class="comment">// 修改</span></span><br><span class="line">e: edit</span><br></pre></td></tr></table></figure>
 
-<p>命令</p>
+<p>某些命令</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.echo </span><br><span class="line">.reboot</span><br><span class="line">.reload</span><br><span class="line">.cls: 清屏幕</span><br><span class="line">.help</span><br></pre></td></tr></table></figure>
 
-<p>WinDbg 也可以双机调试内核。</p>
-<ul>
-<li>虚拟机添加一个串行端口，并且替换如下的uuid为自己的</li>
-<li>windbg 选择 attach to kernel</li>
-</ul>
-<p>待调试机器：添加一个串口设备，使用命名的管道；开机后管理员开启cmd</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">bcdedit /dbgsettings serial baudrate:115200 debugport:1</span><br><span class="line">bcdedit /copy &#123;current&#125; /d DEBUG        # 这一步成功会生成一个引导项，打印出其uuid</span><br><span class="line">bcdedit /displayorder &#123;current&#125; &#123;uuid&#125;  # 指定开机进入上一步的引导项</span><br><span class="line">bcdedit /debug &#123;uuid&#125; ON                # 开启debug</span><br></pre></td></tr></table></figure>
 
-<p>调试机器：windbg attach kernel，填内容</p>
-<ul>
-<li>波特率：115200</li>
-<li>管道：待调试机器的命名管道</li>
-<li>resets: 0</li>
-</ul>
-<p>这个命名管道形式如：<code>\\.\pipe\com1</code></p>
-<p>参考：<a target="_blank" rel="noopener" href="https://bbs.kanxue.com/thread-261326.htm">双机内核调试</a></p>
+<p>x64dbg 操作起来比较容易，可以使用鼠标和右键😋。除了某些命令</p>
 
     </div>
 
@@ -384,8 +376,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2023/11/20/git%20work-flow/" rel="prev" title="git work-flows">
-      <i class="fa fa-chevron-left"></i> git work-flows
+    <a href="/2024/01/18/Windows%20%E5%8F%8C%E6%9C%BA%E8%B0%83%E8%AF%95/" rel="prev" title="windows 双机调试">
+      <i class="fa fa-chevron-left"></i> windows 双机调试
     </a></div>
       <div class="post-nav-item"></div>
     </div>
@@ -460,7 +452,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-count">19</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -469,7 +461,7 @@
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-count">19</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -514,12 +506,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">162k</span>
+    <span title="站点总字数">163k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">4:54</span>
+    <span title="站点阅读时长">4:56</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>
