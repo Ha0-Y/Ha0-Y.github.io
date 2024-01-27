@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ha0-y.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":18,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Window Driver Module">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WDM">
+<meta property="og:url" content="https://ha0-y.github.io/2024/01/27/WDM/index.html">
+<meta property="og:site_name" content="personal blog">
+<meta property="og:description" content="Window Driver Module">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-01-26T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-01-27T14:16:13.620Z">
+<meta property="article:author" content="Ha0Y">
+<meta property="article:tag" content="Windows">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://ha0-y.github.io/2024/01/27/WDM/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>WDM | personal blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">personal blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">I'm possible</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ha0-y.github.io/2024/01/27/WDM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ha0Y">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="personal blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          WDM
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-01-27 00:00:00 / 修改时间：22:16:13" itemprop="dateCreated datePublished" datetime="2024-01-27T00:00:00+08:00">2024-01-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categorievariants/CS/" itemprop="url" rel="index"><span itemprop="name">CS</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>10k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>19 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>Window Driver Module</p>
+</blockquote>
+<span id="more"></span>
+<h2 id="WDK"><a href="#WDK" class="headerlink" title="WDK"></a>WDK</h2><p>VS中没有找到单个组件的这些选项，因此使用官方的方法下载，单独下载sdk和wdk</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_44240304/article/details/127549383">window10+vs2022配置window驱动开发环境</a></li>
+<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows-hardware/drivers/download-the-wdk">下载 Windows 驱动程序工具包 (WDK) - Windows drivers</a></li>
+</ul>
+<p>然后会有一个 <code>VSIX Installer</code>，下载好之后，我们的VS就可以开发了</p>
+<p>新建项目，应该可以看到 <code>Driver</code> 选项</p>
+<h2 id="驱动开发"><a href="#驱动开发" class="headerlink" title="驱动开发"></a>驱动开发</h2><p>windows驱动分两类，NT式驱动和WDM驱动，后者支持即插即用；</p>
+<p>因此选择 <code>WDM(Windows Driver Model)</code>， 提供一个驱动入口 <code>DriverEntry</code> 和 驱动卸载 <code>DriverOnload</code> 函数。需要注意C++ 的名称粉碎机制</p>
+<p>右键，属性，Driver Setting</p>
+<ul>
+<li>target OS 在VS2022 + win11 已经不能成功生成win7版本</li>
+<li>target paltform:<a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows-hardware/drivers/develop/target-platforms">驱动程序参考页上的“目标平台”</a></li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;ntddk.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function">EXTERN_C VOID <span class="title">DriverUnload</span><span class="params">(PDRIVER_OBJECT DriverObject)</span> </span>&#123;</span><br><span class="line">	<span class="built_in">DbgPrint</span>(<span class="string">&quot;Unload Module Demo\r\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">EXTERN_C NTSTATUS <span class="title">DriverEntry</span><span class="params">(PDRIVER_OBJECT DriverObject, PUNICODE_STRING RigisterEntry)</span> </span>&#123;</span><br><span class="line">	DriverObject-&gt;DriverUnload = DriverUnload;</span><br><span class="line">	<span class="built_in">DbgPrint</span>(<span class="string">&quot;Load Module Demo\r\n&quot;</span>);</span><br><span class="line">	<span class="keyword">return</span> STATUS_SUCCESS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>官方案例不像 helloworld 的样子。<a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows-hardware/drivers/gettingstarted/writing-your-first-driver">制作你的第一个驱动程序 </a></p>
+<ul>
+<li>KMDF是由微软提供的一个高级抽象层，它建立在WDM（Windows Driver Model）之上，并提供了一些额外的功能和简化驱动程序开发的接口。KMDF旨在使驱动程序开发人员能够更轻松地编写和维护可靠的内核模式驱动程序。</li>
+</ul>
+<h3 id="驱动安装"><a href="#驱动安装" class="headerlink" title="驱动安装"></a>驱动安装</h3><p>OSRDriverLoader: <a target="_blank" rel="noopener" href="https://www.osronline.com/article.cfm%5earticle=157.htm">Downloads:Driver Loader (osronline.com)</a></p>
+<ul>
+<li>使用里面的 <code>AMD64 OSRLOADER</code></li>
+</ul>
+<h3 id="DEbug"><a href="#DEbug" class="headerlink" title="DEbug"></a>DEbug</h3><p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/sysinternals/downloads/debugview">DebugView - Sysinternals</a>: 它可以显示 DbgPrint 打印出来的log</p>
+<p>WinDbg: 需要设置一下,<a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows-hardware/drivers/debugger/debug-universal-drivers---step-by-step-lab--echo-kernel-mode-">回显内核模式调试 Windows 驱动 - Windows drivers</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 调试器中显示来自目标系统的所有调试消息</span></span><br><span class="line">ed nt!Kd_DEFAULT_MASK 0xFFFFFFFF</span><br><span class="line"></span><br><span class="line"><span class="comment"># 所有调试信息有点多，打印调试字符串</span></span><br><span class="line">ed nt!Kd_Default_Mask 8</span><br></pre></td></tr></table></figure>
+
+<h3 id="R0-与-R3-通信"><a href="#R0-与-R3-通信" class="headerlink" title="R0 与 R3 通信"></a>R0 与 R3 通信</h3><p>驱动程序的主要功能也就是负责处理IO请求，其中大部分IO请求是在派遣函数中处理的。</p>
+<h4 id="R0"><a href="#R0" class="headerlink" title="R0"></a>R0</h4><p>创建设备对象：使用IoCreateDevice必须管理员才能打开 而使用IoCreateDeviceSecure 则可以普通权限打开</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">NTSTATUS <span class="title">IoCreateDevice</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">  [in]           PDRIVER_OBJECT  DriverObject,</span></span></span><br><span class="line"><span class="params"><span class="function">  [in]           ULONG           DeviceExtensionSize,</span></span></span><br><span class="line"><span class="params"><span class="function">  [in, optional] PUNICODE_STRING DeviceName,</span></span></span><br><span class="line"><span class="params"><span class="function">  [in]           DEVICE_TYPE     DeviceType,</span></span></span><br><span class="line"><span class="params"><span class="function">  [in]           ULONG           DeviceCharacteristics,</span></span></span><br><span class="line"><span class="params"><span class="function">  [in]           BOOLEAN         Exclusive,</span></span></span><br><span class="line"><span class="params"><span class="function">  [out]          PDEVICE_OBJECT  *DeviceObject</span></span></span><br><span class="line"><span class="params"><span class="function">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>设备名：符号链接</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">NTSTATUS <span class="title">IoCreateSymbolicLink</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">  [in] PUNICODE_STRING SymbolicLinkName,</span></span></span><br><span class="line"><span class="params"><span class="function">  [in] PUNICODE_STRING DeviceName</span></span></span><br><span class="line"><span class="params"><span class="function">)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// MS-DOS 命名规范</span></span><br><span class="line">UNICODE_STRING DeviceName;</span><br><span class="line">UNICODE_STRING DosDeviceName;</span><br><span class="line">NTSTATUS status;</span><br><span class="line"></span><br><span class="line"><span class="built_in">RtlInitUnicodeString</span>(&amp;DeviceName, <span class="string">L&quot;\\Device\\DeviceName&quot;</span>);</span><br><span class="line"><span class="built_in">RtlInitUnicodeString</span>(&amp;DosDeviceName, <span class="string">L&quot;\\DosDevices\\DosDeviceName&quot;</span>);</span><br><span class="line">status = <span class="built_in">IoCreateSymbolicLink</span>(&amp;DosDeviceName, &amp;DeviceName);</span><br><span class="line"><span class="keyword">if</span> (!<span class="built_in">NT_SUCCESS</span>(status)) &#123;</span><br><span class="line">  <span class="comment">/* Symbolic link creation failed.  Handle error appropriately. */</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// NT规范：每个设备接口类都与 GUID 相关联。KMDF 给的代码</span></span><br></pre></td></tr></table></figure>
+
+<p>注册回调函数 <code>MajorFunction[IDX](IDX 代表注册读写函数，宏函数，不要超过最大值</code> ；IRP (I&#x2F;O Request Packet)；<a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows-hardware/drivers/ddi/wdm/ns-wdm-_driver_object">DRIVER_OBJECT (wdm.h) - Windows drivers </a>。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">_Use_decl_annotations_</span></span><br><span class="line"><span class="function">NTSTATUS</span></span><br><span class="line"><span class="function">  <span class="title">DispatchXxx</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="keyword">struct</span> _DEVICE_OBJECT  *DeviceObject,</span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="keyword">struct</span> _IRP  *Irp</span></span></span><br><span class="line"><span class="params"><span class="function">    )</span></span></span><br><span class="line"><span class="function">  </span>&#123;</span><br><span class="line">      <span class="comment">// Function body</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>删除符号</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">NTSTATUS <span class="title">IoDeleteSymbolicLink</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">  [in] PUNICODE_STRING SymbolicLinkName</span></span></span><br><span class="line"><span class="params"><span class="function">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>删除设备</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">IoDeleteDevice</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">  [in] PDEVICE_OBJECT DeviceObject</span></span></span><br><span class="line"><span class="params"><span class="function">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>IO框架</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;ntddk.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DRIVER_NAME <span class="string">L&quot;\\Device\\Demo&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> LINK_NAME <span class="string">L&quot;\\DosDevices\\Demo&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">IOCTL 控制码：</span></span><br><span class="line"><span class="comment">	I/O 控制代码是由多个字段组成的 32 位值。</span></span><br><span class="line"><span class="comment">	#define IOCTL_Device_Function CTL_CODE(DeviceType, Function, Method, Access)</span></span><br><span class="line"><span class="comment">		DeviceType: 标识设备类型。 此值必须与在驱动程序DEVICE_OBJECT结构的 DeviceType 成员中设置的值匹配</span></span><br><span class="line"><span class="comment">		FunctionCode： 标识驱动程序要执行的函数。 小于 0x800 的值是为 Microsoft 保留的。 供应商可以使用 0x800 和更高值</span></span><br><span class="line"><span class="comment">	#define CTL_CODE(DeviceType, Function, Method, Access) (</span></span><br><span class="line"><span class="comment">				(DeviceType) &lt;&lt; 16) | ((Access) &lt;&lt; 14) | ((Function) &lt;&lt; 2) | (Method)</span></span><br><span class="line"><span class="comment">			)</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> IOCTRL_BASE 0x800</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> MYIOCTRL_CODE(i)	\</span></span><br><span class="line"><span class="meta">	CTL_CODE(FILE_DEVICE_UNKNOWN, IOCTRL_BASE + i, METHOD_BUFFERED, FILE_ANY_ACCESS)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CTL_HELLO MYIOCTRL_CODE( 0 )</span></span><br><span class="line"></span><br><span class="line"><span class="function">EXTERN_C VOID <span class="title">DriverUnload</span><span class="params">(PDRIVER_OBJECT pDriverObject)</span> </span>&#123;</span><br><span class="line">	<span class="built_in">DbgPrintEx</span>(DPFLTR_IHVDRIVER_ID, DPFLTR_INFO_LEVEL, <span class="string">&quot;Unload Driver\r\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 返回值并不代表成功，而是 pIrp-&gt;IoStatus.Status 代表IO是否成功</span></span><br><span class="line"><span class="function">NTSTATUS <span class="title">DispatchCommon</span><span class="params">(PDEVICE_OBJECT pDeviceObject, PIRP pIrp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	pIrp-&gt;IoStatus.Status = STATUS_SUCCESS; <span class="comment">// IRP记录这次操作是否成功</span></span><br><span class="line">	pIrp-&gt;IoStatus.Information = <span class="number">0</span>;         <span class="comment">// Information用来记录实际传输的字节数的.</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">//提交请求.</span></span><br><span class="line">	<span class="built_in">IoCompleteRequest</span>(pIrp, IO_NO_INCREMENT);</span><br><span class="line">	<span class="built_in">KdPrintEx</span>((DPFLTR_IHVDRIVER_ID, DPFLTR_INFO_LEVEL, <span class="string">&quot;DispatchCommon\r\n&quot;</span>));</span><br><span class="line">	<span class="keyword">return</span> STATUS_SUCCESS;                  <span class="comment">// 上面的 STATUS_SUCCESS是给R3看的.现在的返回时给IO管理器系统的</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">NTSTATUS <span class="title">DispatchRead</span><span class="params">(PDEVICE_OBJECT pDeviceObject, PIRP pIrp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	PVOID pReadBuffer = <span class="literal">NULL</span>;</span><br><span class="line">	ULONG uReadLength = <span class="number">0</span>;</span><br><span class="line">	PIO_STACK_LOCATION pStack = <span class="literal">NULL</span>;</span><br><span class="line">	ULONG uMin = <span class="number">0</span>;</span><br><span class="line">	ULONG uHelloStr = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	uHelloStr = (<span class="built_in">wcslen</span>(<span class="string">L&quot;Hello World&quot;</span>) + <span class="number">1</span>) * <span class="built_in">sizeof</span>(WCHAR);</span><br><span class="line">	pReadBuffer = pIrp-&gt;AssociatedIrp.SystemBuffer; <span class="comment">//缓冲区</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">//获取IRP堆栈.我们说过3环调用0环.需要封装在IRP结构中.windows是分层驱动.所以IRP头部是共用的.其余的是栈传递.</span></span><br><span class="line">	pStack = <span class="built_in">IoGetCurrentIrpStackLocation</span>(pIrp);</span><br><span class="line">	uReadLength = pStack-&gt;Parameters.Read.Length;</span><br><span class="line">	uMin = uReadLength &gt; uHelloStr ? uHelloStr : uReadLength;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">RtlCopyMemory</span>(pReadBuffer, <span class="string">L&quot;Hello World&quot;</span>, uMin); <span class="comment">//拷贝到缓冲区中给3环.</span></span><br><span class="line"></span><br><span class="line">	pIrp-&gt;IoStatus.Status = STATUS_SUCCESS;</span><br><span class="line">	pIrp-&gt;IoStatus.Information = uMin;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//提交请求.</span></span><br><span class="line">	<span class="built_in">IoCompleteRequest</span>(pIrp, IO_NO_INCREMENT);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> STATUS_SUCCESS;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">NTSTATUS <span class="title">DispatchWrite</span><span class="params">(PDEVICE_OBJECT pDeviceObject, PIRP pIrp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	PVOID pWriteBuffer = <span class="literal">NULL</span>;</span><br><span class="line">	ULONG uWriteLength = <span class="number">0</span>;</span><br><span class="line">	PIO_STACK_LOCATION pIrpStack = <span class="literal">NULL</span>;</span><br><span class="line">	PVOID pBuffer = <span class="literal">NULL</span>;</span><br><span class="line">	<span class="comment">//获取IRP堆栈</span></span><br><span class="line">	pIrpStack = <span class="built_in">IoGetCurrentIrpStackLocation</span>(pIrp);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//获取写的长度.</span></span><br><span class="line">	uWriteLength = pIrpStack-&gt;Parameters.Write.Length;</span><br><span class="line">	pIrp-&gt;IoStatus.Status = STATUS_SUCCESS;</span><br><span class="line">	pIrp-&gt;IoStatus.Information = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	pWriteBuffer = pIrp-&gt;AssociatedIrp.SystemBuffer;</span><br><span class="line">	<span class="comment">//申请内存.</span></span><br><span class="line">	pBuffer = <span class="built_in">ExAllocatePoolWithTag</span>(PagedPool, uWriteLength, <span class="string">&#x27;DEMO&#x27;</span>);</span><br><span class="line">	<span class="keyword">if</span> (<span class="literal">NULL</span> == pBuffer)</span><br><span class="line">	&#123;</span><br><span class="line">		pIrp-&gt;IoStatus.Status = STATUS_INSUFFICIENT_RESOURCES;</span><br><span class="line">		pIrp-&gt;IoStatus.Information = <span class="number">0</span>;</span><br><span class="line">		<span class="built_in">IoCompleteRequest</span>(pIrp, IO_NO_INCREMENT);</span><br><span class="line">		<span class="keyword">return</span> STATUS_INSUFFICIENT_RESOURCES;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//提交请求.</span></span><br><span class="line"></span><br><span class="line">	<span class="built_in">RtlZeroMemory</span>(pBuffer, uWriteLength);</span><br><span class="line">	<span class="comment">//拷贝到0环缓冲区</span></span><br><span class="line">	<span class="built_in">RtlCopyMemory</span>(pBuffer, pWriteBuffer, uWriteLength);</span><br><span class="line">	<span class="built_in">KdPrintEx</span>((DPFLTR_IHVDRIVER_ID, DPFLTR_INFO_LEVEL, <span class="string">&quot;Write %s\r\n&quot;</span>, (PCHAR)pBuffer));</span><br><span class="line">	<span class="built_in">ExFreePool</span>(pBuffer);</span><br><span class="line">	pBuffer = <span class="literal">NULL</span>;</span><br><span class="line">	pIrp-&gt;IoStatus.Status = STATUS_SUCCESS;</span><br><span class="line">	pIrp-&gt;IoStatus.Information = uWriteLength;</span><br><span class="line">	<span class="built_in">IoCompleteRequest</span>(pIrp, IO_NO_INCREMENT);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> STATUS_SUCCESS;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">NTSTATUS <span class="title">DispatchControl</span><span class="params">(PDEVICE_OBJECT pDeviceObject, PIRP pIrp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">//内核中共享 SystemBuffer 有时间差.先读在写.</span></span><br><span class="line">	PIO_STACK_LOCATION pIrpStack;</span><br><span class="line">	PVOID InPutBuffer = <span class="literal">NULL</span>;</span><br><span class="line">	PVOID OutPutBuffer = <span class="literal">NULL</span>;</span><br><span class="line">	ULONG uInPutLength = <span class="number">0</span>;</span><br><span class="line">	ULONG uOutPutBufferLength = <span class="number">0</span>;</span><br><span class="line">	ULONG IoCtrl = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	InPutBuffer = OutPutBuffer = pIrp-&gt;AssociatedIrp.SystemBuffer;</span><br><span class="line">	pIrpStack = <span class="built_in">IoGetCurrentIrpStackLocation</span>(pIrp);</span><br><span class="line"></span><br><span class="line">	IoCtrl = pIrpStack-&gt;Parameters.DeviceIoControl.IoControlCode;  <span class="comment">//获取控制码.</span></span><br><span class="line"></span><br><span class="line">	</span><br><span class="line">	<span class="keyword">switch</span>(IoCtrl)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">case</span> CTL_HELLO:</span><br><span class="line">			<span class="built_in">KdPrintEx</span>((DPFLTR_IHVDRIVER_ID, DPFLTR_INFO_LEVEL, <span class="string">&quot;IOCTL HelloWorld\r\n&quot;</span>));</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">default</span>:</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	pIrp-&gt;IoStatus.Status = STATUS_SUCCESS;</span><br><span class="line">	pIrp-&gt;IoStatus.Information = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//提交请求.</span></span><br><span class="line">	<span class="built_in">IoCompleteRequest</span>(pIrp, IO_NO_INCREMENT);</span><br><span class="line">	<span class="keyword">return</span> STATUS_SUCCESS;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">EXTERN_C NTSTATUS <span class="title">DriverEntry</span><span class="params">(PDRIVER_OBJECT pDriverObject, PUNICODE_STRING pRigisterEntry)</span> </span>&#123;</span><br><span class="line">	UNICODE_STRING uDevName = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">	UNICODE_STRING uLinkName = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">	NTSTATUS status;</span><br><span class="line">	PDEVICE_OBJECT pDevObj;</span><br><span class="line">	<span class="built_in">RtlInitUnicodeString</span>(&amp;uDevName, DRIVER_NAME);</span><br><span class="line">	<span class="built_in">RtlInitUnicodeString</span>(&amp;uLinkName, LINK_NAME);</span><br><span class="line">	</span><br><span class="line">	<span class="built_in">DbgPrintEx</span>(DPFLTR_IHVDRIVER_ID, DPFLTR_INFO_LEVEL, <span class="string">&quot;Init Driver\r\n&quot;</span>);</span><br><span class="line">	</span><br><span class="line">	pDriverObject-&gt;DriverUnload = DriverUnload;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 创建设备</span></span><br><span class="line">	status = <span class="built_in">IoCreateDevice</span>(pDriverObject, <span class="number">0</span>, &amp;uDevName, FILE_DEVICE_UNKNOWN, <span class="number">0</span>, FALSE, &amp;pDevObj);</span><br><span class="line">	<span class="keyword">if</span> (!<span class="built_in">NT_SUCCESS</span>(status))</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">DbgPrintEx</span>(DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, <span class="string">&quot;[-] Error IoCreateDevice\r\n&quot;</span>);</span><br><span class="line">		<span class="keyword">return</span> status;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 不是这个=&gt;蓝屏</span></span><br><span class="line">	pDevObj-&gt;Flags |= DO_BUFFERED_IO;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 创建符号链接</span></span><br><span class="line">	status = <span class="built_in">IoCreateSymbolicLink</span>(&amp;uLinkName, &amp;uDevName);</span><br><span class="line">	<span class="keyword">if</span> (!<span class="built_in">NT_SUCCESS</span>(status))</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">DbgPrintEx</span>(DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, <span class="string">&quot;[-] Error IoCreateSymbolicLink\r\n&quot;</span>);</span><br><span class="line">		<span class="built_in">IoDeleteDevice</span>(pDevObj);</span><br><span class="line">		<span class="keyword">return</span> status;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// IO </span></span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; IRP_MJ_MAXIMUM_FUNCTION; i++) </span><br><span class="line">	&#123;</span><br><span class="line">		pDriverObject-&gt;MajorFunction[i] = DispatchCommon;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Read Write IOCTL</span></span><br><span class="line">	pDriverObject-&gt;MajorFunction[IRP_MJ_READ] = DispatchRead;</span><br><span class="line">	pDriverObject-&gt;MajorFunction[IRP_MJ_WRITE] = DispatchWrite;</span><br><span class="line">	pDriverObject-&gt;MajorFunction[IRP_MJ_DEVICE_CONTROL] = DispatchControl;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">DbgPrintEx</span>(DPFLTR_IHVDRIVER_ID, DPFLTR_INFO_LEVEL, <span class="string">&quot;[+] Create Driver Success\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> STATUS_SUCCESS;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="R3"><a href="#R3" class="headerlink" title="R3"></a>R3</h4><p>在用户模式下打开 <code>\\DosDevices\\DosDeviceName</code> 设备，请在打开文件名时指定 <code>\\.\</code>，需要转义符</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">file = <span class="built_in">CreateFileW</span>(<span class="string">L&quot;\\\\.\\DosDeviceName&quot;</span>,</span><br><span class="line">	GENERIC_READ | GENERIC_WRITE,</span><br><span class="line">    <span class="number">0</span>,</span><br><span class="line">    <span class="literal">NULL</span>,</span><br><span class="line">    OPEN_EXISTING,</span><br><span class="line">    <span class="number">0</span>,</span><br><span class="line">    <span class="literal">NULL</span>);</span><br></pre></td></tr></table></figure>
+
+
+<p>通过<code>ReadFile</code>和 <code>WriteFile</code> 系统调用进行读写，ioctl使用</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">DeviceIoControl</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">  [in]                HANDLE       hDevice,</span></span></span><br><span class="line"><span class="params"><span class="function">  [in]                DWORD        dwIoControlCode,</span></span></span><br><span class="line"><span class="params"><span class="function">  [in, optional]      LPVOID       lpInBuffer,</span></span></span><br><span class="line"><span class="params"><span class="function">  [in]                DWORD        nInBufferSize,</span></span></span><br><span class="line"><span class="params"><span class="function">  [out, optional]     LPVOID       lpOutBuffer,</span></span></span><br><span class="line"><span class="params"><span class="function">  [in]                DWORD        nOutBufferSize,</span></span></span><br><span class="line"><span class="params"><span class="function">  [out, optional]     LPDWORD      lpBytesReturned,</span></span></span><br><span class="line"><span class="params"><span class="function">  [in, out, optional] LPOVERLAPPED lpOverlapped</span></span></span><br><span class="line"><span class="params"><span class="function">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>交互</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> IOCTRL_BASE 0x800</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> MYIOCTRL_CODE(i)	\</span></span><br><span class="line"><span class="meta">	CTL_CODE(FILE_DEVICE_UNKNOWN, IOCTRL_BASE + i, METHOD_BUFFERED, FILE_ANY_ACCESS)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CTL_HELLO MYIOCTRL_CODE( 0 )</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span>* argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	HANDLE hFile = <span class="built_in">CreateFileW</span>(<span class="built_in">TEXT</span>(<span class="string">&quot;\\\\.\\Demo&quot;</span>),</span><br><span class="line">		GENERIC_WRITE | GENERIC_READ,</span><br><span class="line">		<span class="number">0</span>,</span><br><span class="line">		<span class="literal">NULL</span>,</span><br><span class="line">		OPEN_EXISTING,</span><br><span class="line">		FILE_ATTRIBUTE_NORMAL,</span><br><span class="line">		<span class="literal">NULL</span>);</span><br><span class="line">	<span class="keyword">if</span> (hFile == INVALID_HANDLE_VALUE)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;CreateFile ErrorCode:%d\n&quot;</span>, <span class="built_in">GetLastError</span>());</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">system</span>(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line">	TCHAR szBuff[<span class="number">0X100</span>];</span><br><span class="line">	DWORD dwBytes = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">if</span> (!<span class="built_in">ReadFile</span>(hFile, szBuff, <span class="built_in">sizeof</span>(szBuff) / <span class="built_in">sizeof</span>(szBuff[<span class="number">0</span>]), &amp;dwBytes, <span class="literal">NULL</span>))</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">CloseHandle</span>(hFile);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;ReadFile ErrorCode:%d\n&quot;</span>, <span class="built_in">GetLastError</span>());</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;bytes:%d data:%ls\n&quot;</span>, dwBytes, szBuff);</span><br><span class="line">	<span class="built_in">system</span>(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line">	<span class="built_in">DeviceIoControl</span>(</span><br><span class="line">		hFile,</span><br><span class="line">		CTL_HELLO,</span><br><span class="line">		<span class="literal">NULL</span>,</span><br><span class="line">		<span class="number">0</span>,</span><br><span class="line">		<span class="literal">NULL</span>,</span><br><span class="line">		<span class="number">0</span>,</span><br><span class="line">		<span class="literal">NULL</span>, </span><br><span class="line">		<span class="literal">NULL</span></span><br><span class="line">	);</span><br><span class="line">	<span class="built_in">CloseHandle</span>(hFile);</span><br><span class="line">	<span class="built_in">system</span>(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="more"><a href="#more" class="headerlink" title="more"></a>more</h4><p>关于 DEBUG 问题，常见 <code>DbgPrint</code>, <code>DbgPrintEx</code>。<code>KdPrintEx</code>这种是宏表示。Ex 函数为了更好的打印出调试信息（消息过滤机制：<a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows-hardware/drivers/debugger/reading-and-filtering-debugging-messages">读取和筛选调试消息 - Windows drivers</a></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> KdPrintEx(_x_) DbgPrintEx _x_ </span></span><br><span class="line"><span class="function">NTSYSAPI ULONG <span class="title">DbgPrintEx</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">  [in] ULONG ComponentId,      <span class="comment">// 避免将驱动程序的输出与 Windows 组件的输出混合</span></span></span></span><br><span class="line"><span class="params"><span class="function">  [in] ULONG Level,            <span class="comment">// 指定要发送的消息的严重性</span></span></span></span><br><span class="line"><span class="params"><span class="function">  [in] PCSTR Format,</span></span></span><br><span class="line"><span class="params"><span class="function">       ...   </span></span></span><br><span class="line"><span class="params"><span class="function">)</span></span>;</span><br><span class="line"><span class="comment">// DPF: Debug Print Filter</span></span><br><span class="line"><span class="comment">// IHV: Independent Hardware Vendor</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">KdPrintEx</span>((DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, <span class="string">&quot;DPFLTR_ERROR_LEVEL\n&quot;</span>));  <span class="comment">// 需要双括号</span></span><br><span class="line"><span class="built_in">DbgPrintEx</span>(DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, <span class="string">&quot;DPFLTR_ERROR_LEVEL\n&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+
+<p>WDF…</p>
+<p>驱动写出BUG直接蓝屏😢</p>
+<h2 id="Library"><a href="#Library" class="headerlink" title="Library"></a>Library</h2><h3 id="Rtl"><a href="#Rtl" class="headerlink" title="Rtl"></a>Rtl</h3><p>Windows的Runtime Library（Rtl）函数是一组供Windows操作系统内部使用的函数。它们是由微软提供的低级别函数，用于执行操作系统管理功能，如内存管理、进程和线程管理、文件操作、设备驱动程序和底层交互等。</p>
+<p>这些Rtl函数主要用于Windows内核和系统级驱动程序开发，不是普通应用程序开发人员常用的函数库。它们提供了一些高级别函数和抽象层，以方便开发人员与底层操作系统交互和管理。</p>
+<h3 id="nt"><a href="#nt" class="headerlink" title="nt"></a>nt</h3><p>Windows NT是一个基于内核的操作系统系列，最初由微软公司在20世纪90年代开发和推出。NT代表”New Technology”（新技术），它的设计目标是提供一种稳定、可靠、安全的操作系统平台。</p>
+<p>一些常见的Windows NT库：</p>
+<ol>
+<li>Kernel32.lib：这是Windows NT内核库，提供了许多系统级别的函数和工具，包括内存管理、进程和线程管理、文件和I&#x2F;O操作、时间和日期处理等。</li>
+<li>User32.lib：这是用户界面库，提供了与用户界面相关的函数，如窗口管理、消息处理、菜单操作、图形设备接口等。</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Windows/" rel="tag"># Windows</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/01/19/C++%20%E9%80%86%E5%90%91/" rel="prev" title="C++ 逆向">
+      <i class="fa fa-chevron-left"></i> C++ 逆向
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#WDK"><span class="nav-number">1.</span> <span class="nav-text">WDK</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91"><span class="nav-number">2.</span> <span class="nav-text">驱动开发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A9%B1%E5%8A%A8%E5%AE%89%E8%A3%85"><span class="nav-number">2.1.</span> <span class="nav-text">驱动安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DEbug"><span class="nav-number">2.2.</span> <span class="nav-text">DEbug</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#R0-%E4%B8%8E-R3-%E9%80%9A%E4%BF%A1"><span class="nav-number">2.3.</span> <span class="nav-text">R0 与 R3 通信</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#R0"><span class="nav-number">2.3.1.</span> <span class="nav-text">R0</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#R3"><span class="nav-number">2.3.2.</span> <span class="nav-text">R3</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#more"><span class="nav-number">2.3.3.</span> <span class="nav-text">more</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Library"><span class="nav-number">3.</span> <span class="nav-text">Library</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Rtl"><span class="nav-number">3.1.</span> <span class="nav-text">Rtl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nt"><span class="nav-number">3.2.</span> <span class="nav-text">nt</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ha0Y</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Ha0-Y" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Ha0-Y" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ha0Y</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">173k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:14</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
