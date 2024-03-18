@@ -28,7 +28,7 @@
 <meta property="og:description" content="怎么出题部署环境？">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-09-16T10:37:49.041Z">
-<meta property="article:modified_time" content="2024-02-19T11:15:06.876Z">
+<meta property="article:modified_time" content="2024-03-18T15:24:25.339Z">
 <meta property="article:author" content="ham5ter">
 <meta property="article:tag" content="ctf">
 <meta name="twitter:card" content="summary">
@@ -273,30 +273,21 @@
 </ol>
 <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;3&#x27;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">vuln:</span>                       <span class="comment"># change name</span></span><br><span class="line">    <span class="attr">build:</span> <span class="string">.</span></span><br><span class="line">    <span class="attr">ulimits:</span></span><br><span class="line">      <span class="attr">nproc:</span> <span class="number">65535</span></span><br><span class="line">      <span class="attr">core:</span> <span class="number">0</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;1234:9999&quot;</span>           <span class="comment"># change port</span></span><br><span class="line">    <span class="attr">entrypoint:</span> <span class="string">/etc/init.sh</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">unless-stopped</span></span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>启动</li>
-</ul>
+<p>启动</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose up</span><br></pre></td></tr></table></figure>
 
 <p><strong>坑点</strong>：docker部署题目时，在程序里必须将缓冲器置为0，否则不会显示？</p>
-<h3 id="ctf-xinetd"><a href="#ctf-xinetd" class="headerlink" title="ctf_xinetd"></a>ctf_xinetd</h3><ul>
-<li><p>下载这个链接 <a target="_blank" rel="noopener" href="https://github.com/Eadom/ctf_xinetd">ctf_xinetd</a>，部署比较简单。</p>
-</li>
-<li><p>修改 bin目录 里的 二进制文件和 flag 文件</p>
-</li>
-<li><p>dockerfile 修改一行</p>
-</li>
+<h3 id="ctf-xinetd"><a href="#ctf-xinetd" class="headerlink" title="ctf_xinetd"></a>ctf_xinetd</h3><p>下载这个链接 <a target="_blank" rel="noopener" href="https://github.com/Eadom/ctf_xinetd">ctf_xinetd</a>，部署比较简单。</p>
+<ul>
+<li>修改 bin目录 里的 二进制文件和 flag 文件</li>
+<li>dockerfile 修改一行</li>
 </ul>
 <figure class="highlight docker"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">cp</span> -R /lib* /home/ctf &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    <span class="built_in">cp</span> -R /usr/lib* /home/ctf</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 改为</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">cp</span> -R /usr/lib* /home/ctf</span></span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>ctf.xinetd 修改</li>
-</ul>
+<p>ctf.xinetd 修改</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">server_args = --userspec=1000:1000 /home/ctf ./helloworld</span><br><span class="line"></span><br><span class="line"># 修改</span><br><span class="line">server_args = --userspec=1000:1000 /home/ctf 自己的漏洞程序</span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>最后执行README 里的 两条命令就行，比如</li>
-</ul>
+<p>最后执行README 里的 两条命令就行，比如</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker build -t <span class="string">&quot;vuln&quot;</span> .</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将pub_port 自己想要的端口</span></span><br><span class="line">docker run -d -p <span class="string">&quot;0.0.0.0:pub_port:9999&quot;</span> -h <span class="string">&quot;vuln&quot;</span> --name=<span class="string">&quot;vuln&quot;</span> vuln</span><br></pre></td></tr></table></figure>
 
 
@@ -311,14 +302,10 @@
 </ul>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">chall  </span><br><span class="line">├── ctf.xinetd  </span><br><span class="line">├── Dockerfile  </span><br><span class="line">├── bin  </span><br><span class="line">│ ├── run.sh  </span><br><span class="line">│ ├── bzImage  </span><br><span class="line">│ └── rootfs.cpio  </span><br><span class="line">├── README.md</span><br><span class="line">└── start.sh </span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>docker 安装环境</li>
-</ul>
+<p>docker 安装环境</p>
 <figure class="highlight docker"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> ubuntu:<span class="number">20.04</span>  </span><br><span class="line"></span><br><span class="line">DEBIAN_FRONTEND=noninteractive</span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> sed -i <span class="string">&quot;s/http:\/\/archive.ubuntu.com/http:\/\/mirrors.tuna.tsinghua.edu.cn/g&quot;</span> /etc/apt/sources.list &amp;&amp; \  </span></span><br><span class="line">	apt-get update &amp;&amp; apt-get -y dist-upgrade &amp;&amp; \  </span><br><span class="line">	apt-get install -y lib32z1 xinetd git libglib2.<span class="number">0</span>-dev libfdt-dev \</span><br><span class="line">	libpixman-<span class="number">1</span>-dev zlib1g-dev qemu qemu-system-x86  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> useradd -m pwn</span></span><br><span class="line">  </span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /</span></span><br><span class="line">  </span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> ./ctf.xinetd /etc/xinetd.d/ctf</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> ./start.sh /start.sh </span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">echo</span> <span class="string">&quot;Blocked by ctf_xinetd&quot;</span> &gt; /etc/banner_fail</span></span><br><span class="line">  </span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">chmod</span> +x /start.sh  </span></span><br><span class="line">  </span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> ./chall/ /  </span></span><br><span class="line">  </span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [<span class="string">&quot;/run.sh&quot;</span>]  </span></span><br><span class="line">  </span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">25000</span></span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>重要的是修改 ctf.xinetd  文件</li>
-</ul>
+<p>重要的是修改 ctf.xinetd  文件</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">service ctf  </span><br><span class="line">&#123;  </span><br><span class="line"><span class="built_in">disable</span> = no  </span><br><span class="line">socket_type = stream  </span><br><span class="line">protocol = tcp  </span><br><span class="line"><span class="built_in">wait</span> = no  </span><br><span class="line">user = pwn  </span><br><span class="line"><span class="built_in">type</span> = UNLISTED  </span><br><span class="line">port = 25000  </span><br><span class="line"><span class="built_in">bind</span> = 0.0.0.0  </span><br><span class="line">server = /run.sh    <span class="comment"># 修改处</span></span><br><span class="line"><span class="comment"># replace helloworld to your program  </span></span><br><span class="line">banner_fail = /etc/banner_fail  </span><br><span class="line"><span class="comment"># safety options  </span></span><br><span class="line">per_source = 10 <span class="comment"># the maximum instances of this service per source IP address  </span></span><br><span class="line">rlimit_cpu = 20 <span class="comment"># the maximum number of CPU seconds that the service may use  </span></span><br><span class="line"><span class="comment">#rlimit_as = 1024M # the Address Space resource limit for the service  </span></span><br><span class="line"><span class="comment">#access_times = 2:00-9:00 12:00-24:00  </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
     </div>
 
@@ -470,12 +457,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">292k</span>
+    <span title="站点总字数">295k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">8:50</span>
+    <span title="站点阅读时长">8:56</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>

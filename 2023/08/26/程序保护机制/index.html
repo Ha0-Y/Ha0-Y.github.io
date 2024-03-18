@@ -28,7 +28,7 @@
 <meta property="og:description" content="程序保护机制学习">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-08-26T00:41:07.061Z">
-<meta property="article:modified_time" content="2024-02-19T11:16:14.722Z">
+<meta property="article:modified_time" content="2024-03-18T15:15:05.266Z">
 <meta property="article:author" content="ham5ter">
 <meta property="article:tag" content="程序缓解机制">
 <meta name="twitter:card" content="summary">
@@ -223,14 +223,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>4.3k</span>
+              <span>5.9k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>8 分钟</span>
+              <span>11 分钟</span>
             </span>
 
         </div>
@@ -271,7 +271,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-z execstack    <span class="comment"># 栈可执行</span></span><br><span class="line">-z noexecstack  <span class="comment"># 开启</span></span><br></pre></td></tr></table></figure>
 
 <p>bypass: 杜绝了一定写shellcode的利用，但是可以使用**ROP(Return-oriented programming)**来bypass，造成我们想要的攻击效果。</p>
-<h4 id="pie"><a href="#pie" class="headerlink" title="pie"></a>pie</h4><p>Position independent code, 位置无关代码，默认开启。<br>针对代码段.text, 数据段，.data，.bss等固定地址的一个防护技术。同ASLR一样，应用了PIE的程序会在每次加载时都变换加载基址，从而使位于程序本身的gadget也失效</p>
+<h4 id="PIE"><a href="#PIE" class="headerlink" title="PIE"></a>PIE</h4><p>Position independent code, 位置无关代码，默认开启。<br>针对代码段.text, 数据段，.data，.bss等固定地址的一个防护技术。同ASLR一样，应用了PIE的程序会在每次加载时都变换加载基址，从而使位于程序本身的gadget也失效</p>
 <p>没有PIE保护的程序，每次加载的基址都是固定的，64位上一般是0x400000。</p>
 <p>gcc 参数</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-no-pie    <span class="comment"># 关闭pie</span></span><br><span class="line">-pie       <span class="comment"># 开启pie</span></span><br></pre></td></tr></table></figure>
@@ -294,34 +294,35 @@
 <p>gcc 开启和关闭的参数</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-fno-stack-protector   <span class="comment"># 关闭，默认没有canary</span></span><br><span class="line"></span><br><span class="line">-fstack-protector          <span class="comment"># 保护函数中通过alloca()分配缓存以及存在大于8字节的buffer。保护能力有限，不会保护所有的函数</span></span><br><span class="line">-fstack-protector-all      <span class="comment"># 启用堆栈保护，为所有函数插入保护代码</span></span><br><span class="line">-fstack-protector-strong   <span class="comment"># 编译参数让保护的范围更广</span></span><br></pre></td></tr></table></figure>
 
+<p>可以看这系列文章。加深对canary理解：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/434821566">Linux内核的FSGSBASE特性</a></p>
+<p>Linux x86-64下的fs&#x2F;gs段寄存器？</p>
+<ul>
+<li><strong>用户态使用fs寄存器引用线程的glibc TLS(TLS全称Thread Local Storage)和线程在用户态的stack canary；用户态的glibc不使用gs寄存器；应用可以自行决定是否使用该寄存器。</strong></li>
+<li><strong>内核态使用gs寄存器引用percpu变量和进程在内核态的stack canary；内核态不使用fs寄存器。</strong></li>
+</ul>
+<p>默认stack canary使用全局符号变量 __stack_chk_guard(fs:0x28) 作为原始的canary, 在gcc&#x2F;clang中均使用相同的名字</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">void</span> *tcb;		<span class="comment">/* Pointer to the TCB.  Not necessarily the</span></span><br><span class="line"><span class="comment">			   thread descriptor used by libpthread.  */</span></span><br><span class="line">  <span class="type">dtv_t</span> *dtv;</span><br><span class="line">  <span class="type">void</span> *self;		<span class="comment">/* Pointer to the thread descriptor.  */</span></span><br><span class="line">  <span class="type">int</span> multiple_threads;</span><br><span class="line">  <span class="type">int</span> gscope_flag;</span><br><span class="line">  <span class="type">uintptr_t</span> sysinfo;</span><br><span class="line">  <span class="type">uintptr_t</span> stack_guard;</span><br><span class="line">  <span class="type">uintptr_t</span> pointer_guard;</span><br><span class="line">  <span class="type">unsigned</span> <span class="type">long</span> <span class="type">int</span> unused_vgetcpu_cache[<span class="number">2</span>];</span><br><span class="line">  <span class="comment">/* Bit 0: X86_FEATURE_1_IBT.</span></span><br><span class="line"><span class="comment">     Bit 1: X86_FEATURE_1_SHSTK.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> feature_1;</span><br><span class="line">  <span class="type">int</span> __glibc_unused1;</span><br><span class="line">  <span class="comment">/* Reservation of some values for the TM ABI.  */</span></span><br><span class="line">  <span class="type">void</span> *__private_tm[<span class="number">4</span>];</span><br><span class="line">  <span class="comment">/* GCC split stack support.  */</span></span><br><span class="line">  <span class="type">void</span> *__private_ss;</span><br><span class="line">  <span class="comment">/* The marker for the current shadow stack.  */</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> <span class="type">int</span> ssp_base;</span><br><span class="line">  <span class="comment">/* Must be kept even if it is no longer used by glibc since programs,</span></span><br><span class="line"><span class="comment">     like AddressSanitizer, depend on the size of tcbhead_t.  */</span></span><br><span class="line">  __128bits __glibc_unused2[<span class="number">8</span>][<span class="number">4</span>] __attribute__ ((<span class="built_in">aligned</span> (<span class="number">32</span>)));</span><br><span class="line"></span><br><span class="line">  <span class="type">void</span> *__padding[<span class="number">8</span>];</span><br><span class="line">&#125; <span class="type">tcbhead_t</span>;</span><br></pre></td></tr></table></figure>
+
+<p>per-cpu 变量的引入是为了实现per-task的stack canary, 每个cpu上同时只能运行一个进程&#x2F;线程, per cpu变量可以随进程的切换而切换，故通过一个per-cpu变量完全可以为每个进程&#x2F;线程解引用到不同的canary地址(后续称为per-cpu canary),以实现per-task的canary.</p>
 <h3 id="kernel"><a href="#kernel" class="headerlink" title="kernel"></a>kernel</h3><h4 id="kaslr"><a href="#kaslr" class="headerlink" title="kaslr"></a>kaslr</h4><p>kernel address space layout randomize</p>
 <p>在开启了 KASLR 的内核中，内核的代码段基地址等地址会整体偏移。</p>
 <h4 id="smap"><a href="#smap" class="headerlink" title="smap"></a>smap</h4><p>Supervisor Mode Access Prevention，管理模式访问保护。</p>
 <p>如果内核态可以访问用户态的数据，也会出现问题。比如在劫持控制流后，攻击者可以通过栈迁移将栈迁移(pop rsp类似的指令)到用户态，然后进行 ROP，进一步达到提权的目的。</p>
 <p>在 Linux 内核中，这个防御措施的实现是与<strong>指令集架构相关</strong>的。x86 下对应的保护机制的名字为 SMAP。CR4 寄存器中的第 21 位用来标记是否开启 SMEP 保护。</p>
-<ul>
-<li>bypass: 修改cr4</li>
-</ul>
+<p>x86CPU的特性，需要CPU和操作系统支持。bypass: 修改cr4</p>
 <h4 id="smep"><a href="#smep" class="headerlink" title="smep"></a>smep</h4><p>Supervisor Mode Execution Prevention，管理模式执行保护。</p>
 <p>在内核态执行代码时，可以直接执行用户态的代码。那如果攻击者<strong>控制了内核中的执行流，就可以执行处于用户态的代码</strong>。由于用户态的代码是攻击者可控的，所以更容易实施攻击。为了防范这种攻击，研究者提出当位于内核态时，不能执行用户态的代码。</p>
 <p>在 Linux 内核中，这个防御措施的实现是与<strong>指令集架构相关</strong>的(ARM PXN)。x86下 <code>CR4</code> 寄存器中的第 20 位用来标记是否开启 SMEP 保护。</p>
 <p>查看是否开启</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep smap /proc/cpuinfo  <span class="comment"># 如果出现结果，说明开启</span></span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>bypass: 修改cr4</li>
-</ul>
+<p>bypass: 修改cr4</p>
 <h4 id="kpti"><a href="#kpti" class="headerlink" title="kpti"></a>kpti</h4><p>Kernel Page Table Isolation，内核页表隔离</p>
 <p>在 x86_64 的 PTI 机制中，<strong>内核态的用户空间内存映射部分被全部标记为不可执行</strong>。也就是说，之前不具有 SMEP 特性的硬件，如果开启了 KPTI 保护，也具有了类似于 SMEP 的特性。此外，SMAP 模拟也可以以类似的方式引入，只是现在还没有引入。因此，在目前开启了 KPTI 保护的内核中，如果没有开启 SMAP 保护，那么内核仍然可以访问用户态空间的内存，只是不能跳转到用户态空间执行 Shellcode。</p>
+<p>bypass</p>
 <ul>
-<li>bypass<ul>
 <li>signal handler</li>
-<li>change cr3<ul>
 <li>swapgs_restore_regs_and_return_to_usermode 函数中存在可以改变 cr3 的gadget</li>
-</ul>
-</li>
-</ul>
-</li>
 </ul>
 <h4 id="fgkaslr"><a href="#fgkaslr" class="headerlink" title="fgkaslr"></a>fgkaslr</h4><p>FGKASLR 在 KASLR 基地址随机化的基础上，在加载时刻，以函数粒度重新排布内核代码。目前，FGKASLR 只支持 <strong>x86_64</strong> 架构。</p>
 <p>FGKASLR 利用 gcc 的编译选项 <code>-ffunction-sections</code> 把内核中不同的函数放到不同的 section 中。 在编译的过程中，任何使用 C 语言编写的函数以及不在特殊输入节的函数都会单独作为一个节；使用汇编编写的代码会位于一个统一的节中。</p>
@@ -333,20 +334,24 @@
 </blockquote>
 <h3 id="pxn"><a href="#pxn" class="headerlink" title="pxn"></a>pxn</h3><p>Privileged Execute-Never。内核安全特性，用来阻止内核直接执行用户空间的代码，能够极大地提升漏洞利用的难度。</p>
 <p>和 smep 一个性质</p>
+<p>armv8及以上版本的PXN特性由硬件支持，Android 5 arm64后开启，Android通过页表来开启PXN。</p>
 <h3 id="pan"><a href="#pan" class="headerlink" title="pan"></a>pan</h3><p>smap 类似的性质</p>
 <h3 id="cfi"><a href="#cfi" class="headerlink" title="cfi"></a>cfi</h3><p>Control-Flow Integrity 控制流完整性</p>
 <p>其核心思想是<strong>限制程序运行中的控制转移，使之始终处于原有的控制流图所限定的范围内</strong>。具体做法是通过分析程序的控制流图，获取间接转移指令（包括间接跳转、间接调用、和函数返回指令）目标的白名单，并在运行过程中，核对间接转移指令的目标是否在白名单中。控制流劫持攻击往往会违背原有的控制流图，CFI使得这种攻击行为难以实现，从而保障软件系统的安全。</p>
 <p>内核 CFI 手动启用，x86通过此开启</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CONFIG_CFI_CLANG=y</span><br></pre></td></tr></table></figure>
 
-
+<h3 id="SELinux"><a href="#SELinux" class="headerlink" title="SELinux"></a>SELinux</h3><p>Android 8.0之后推出厂商升级成本大大降低，8.0之后增加vendor.img镜像 ，攻击面大大减少， 很多厂商的代码不与应用层直接交互， 增加了应用和厂商代码的SELinux限制</p>
 <h2 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h2><h3 id="ASLR"><a href="#ASLR" class="headerlink" title="ASLR"></a>ASLR</h3><p>与 Linux 相同，ASLR 保护指的是地址随机化技术(Address Space Layout Randomization)，这项技术将在程序启动时将 DLL 随机的加载到内存中的位置，这将缓解恶意程序的加载。ASLR 自 Windows 10 开始已经在系统中被配置为默认启用。</p>
 <h3 id="DEP"><a href="#DEP" class="headerlink" title="DEP"></a>DEP</h3><p>Data Execute Protector</p>
+<p><code>VirtualAlloc()</code>可以设置权限，设置为&#96;</p>
 <h3 id="GS"><a href="#GS" class="headerlink" title="GS"></a>GS</h3><p>这个保护类似于 Linux 中的 Canary 保护，一旦开启，会在返回地址和 BP 之前压入一个额外的 <strong>Security Cookie</strong>。系统会比较栈中的这个值和原先存放在 .data 中的值做一个比较。如果两者不吻合，说法栈中发生了溢出。</p>
 <h3 id="NET"><a href="#NET" class="headerlink" title=".NET"></a>.NET</h3><p>DLL 混淆级保护。</p>
 <h3 id="Isolation"><a href="#Isolation" class="headerlink" title="Isolation"></a>Isolation</h3><p>被称为隔离保护，一旦开启，表示此程序加载时将会在一个相对独立的隔离环境中被加载，从而阻止攻击者过度提升权限。</p>
 <h3 id="SEH"><a href="#SEH" class="headerlink" title="SEH"></a>SEH</h3><p>结构化异常处理（Structured Exception Handling，简称 SEH）是一种 <code>Windows</code> 操作系统对错误或异常提供的处理技术。为Windows 的程序设计者提供了程序错误或异常的处理途径，使得系统更加健壮。</p>
 <h3 id="SafeSEH"><a href="#SafeSEH" class="headerlink" title="SafeSEH"></a>SafeSEH</h3><p>安全结构化异常处理函数，即白名单安全沙箱，事先定义一些异常处理程序，并基于此构造安全结构化异常处理表，程序正式运行后，安全结构化异常处理表之外的异常处理程序将会被阻止运行。</p>
+<h3 id="SMEP-SMAP"><a href="#SMEP-SMAP" class="headerlink" title="SMEP SMAP"></a>SMEP SMAP</h3><p>windows10 之后引入 SMEP和SMAP</p>
+<h3 id="KVAS"><a href="#KVAS" class="headerlink" title="KVAS"></a>KVAS</h3><p>内核虚拟地址影子（Kernel Virtual Address Shadow，由微软提出的一个术语，简称KVAS），由于该特性仅允许用户模式代码访问有限的内核内存，因此能有效防范Meltdown攻击。是微软在Windows系统上对KPTI的具体实现方式</p>
 <h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><ul>
 <li><a target="_blank" rel="noopener" href="https://ctf-wiki.org/pwn/linux/kernel-mode/defense/readme/">CTF-wili</a></li>
 <li><a target="_blank" rel="noopener" href="https://source.android.google.cn/docs/security/test/cfi?hl=zh-cn">android CFI</a></li>
@@ -437,7 +442,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux"><span class="nav-number">1.</span> <span class="nav-text">Linux</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ELF"><span class="nav-number">1.1.</span> <span class="nav-text">ELF</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#relro"><span class="nav-number">1.1.1.</span> <span class="nav-text">relro</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#aslr"><span class="nav-number">1.1.2.</span> <span class="nav-text">aslr</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#NX"><span class="nav-number">1.1.3.</span> <span class="nav-text">NX</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pie"><span class="nav-number">1.1.4.</span> <span class="nav-text">pie</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#stack-canary"><span class="nav-number">1.1.5.</span> <span class="nav-text">stack canary</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kernel"><span class="nav-number">1.2.</span> <span class="nav-text">kernel</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#kaslr"><span class="nav-number">1.2.1.</span> <span class="nav-text">kaslr</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#smap"><span class="nav-number">1.2.2.</span> <span class="nav-text">smap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#smep"><span class="nav-number">1.2.3.</span> <span class="nav-text">smep</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#kpti"><span class="nav-number">1.2.4.</span> <span class="nav-text">kpti</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#fgkaslr"><span class="nav-number">1.2.5.</span> <span class="nav-text">fgkaslr</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Kernel-Stack-Canary"><span class="nav-number">1.2.6.</span> <span class="nav-text">Kernel Stack Canary</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android"><span class="nav-number">2.</span> <span class="nav-text">Android</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pxn"><span class="nav-number">2.1.</span> <span class="nav-text">pxn</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pan"><span class="nav-number">2.2.</span> <span class="nav-text">pan</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cfi"><span class="nav-number">2.3.</span> <span class="nav-text">cfi</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Windows"><span class="nav-number">3.</span> <span class="nav-text">Windows</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ASLR"><span class="nav-number">3.1.</span> <span class="nav-text">ASLR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DEP"><span class="nav-number">3.2.</span> <span class="nav-text">DEP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GS"><span class="nav-number">3.3.</span> <span class="nav-text">GS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NET"><span class="nav-number">3.4.</span> <span class="nav-text">.NET</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Isolation"><span class="nav-number">3.5.</span> <span class="nav-text">Isolation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SEH"><span class="nav-number">3.6.</span> <span class="nav-text">SEH</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SafeSEH"><span class="nav-number">3.7.</span> <span class="nav-text">SafeSEH</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-number">4.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux"><span class="nav-number">1.</span> <span class="nav-text">Linux</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ELF"><span class="nav-number">1.1.</span> <span class="nav-text">ELF</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#relro"><span class="nav-number">1.1.1.</span> <span class="nav-text">relro</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#aslr"><span class="nav-number">1.1.2.</span> <span class="nav-text">aslr</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#NX"><span class="nav-number">1.1.3.</span> <span class="nav-text">NX</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PIE"><span class="nav-number">1.1.4.</span> <span class="nav-text">PIE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#stack-canary"><span class="nav-number">1.1.5.</span> <span class="nav-text">stack canary</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kernel"><span class="nav-number">1.2.</span> <span class="nav-text">kernel</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#kaslr"><span class="nav-number">1.2.1.</span> <span class="nav-text">kaslr</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#smap"><span class="nav-number">1.2.2.</span> <span class="nav-text">smap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#smep"><span class="nav-number">1.2.3.</span> <span class="nav-text">smep</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#kpti"><span class="nav-number">1.2.4.</span> <span class="nav-text">kpti</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#fgkaslr"><span class="nav-number">1.2.5.</span> <span class="nav-text">fgkaslr</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Kernel-Stack-Canary"><span class="nav-number">1.2.6.</span> <span class="nav-text">Kernel Stack Canary</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android"><span class="nav-number">2.</span> <span class="nav-text">Android</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pxn"><span class="nav-number">2.1.</span> <span class="nav-text">pxn</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pan"><span class="nav-number">2.2.</span> <span class="nav-text">pan</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cfi"><span class="nav-number">2.3.</span> <span class="nav-text">cfi</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SELinux"><span class="nav-number">2.4.</span> <span class="nav-text">SELinux</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Windows"><span class="nav-number">3.</span> <span class="nav-text">Windows</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ASLR"><span class="nav-number">3.1.</span> <span class="nav-text">ASLR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DEP"><span class="nav-number">3.2.</span> <span class="nav-text">DEP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GS"><span class="nav-number">3.3.</span> <span class="nav-text">GS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NET"><span class="nav-number">3.4.</span> <span class="nav-text">.NET</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Isolation"><span class="nav-number">3.5.</span> <span class="nav-text">Isolation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SEH"><span class="nav-number">3.6.</span> <span class="nav-text">SEH</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SafeSEH"><span class="nav-number">3.7.</span> <span class="nav-text">SafeSEH</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SMEP-SMAP"><span class="nav-number">3.8.</span> <span class="nav-text">SMEP SMAP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#KVAS"><span class="nav-number">3.9.</span> <span class="nav-text">KVAS</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-number">4.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -505,12 +510,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">292k</span>
+    <span title="站点总字数">295k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">8:50</span>
+    <span title="站点阅读时长">8:56</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>

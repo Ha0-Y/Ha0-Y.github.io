@@ -28,7 +28,7 @@
 <meta property="og:description" content="编写自动化构建脚本">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-09-09T06:58:12.260Z">
-<meta property="article:modified_time" content="2024-02-19T11:15:03.353Z">
+<meta property="article:modified_time" content="2024-03-18T15:23:45.660Z">
 <meta property="article:author" content="ham5ter">
 <meta property="article:tag" content="cmake">
 <meta name="twitter:card" content="summary">
@@ -247,27 +247,16 @@
 </blockquote>
 <span id="more"></span>
 
-<h2 id="Makefile"><a href="#Makefile" class="headerlink" title="Makefile"></a>Makefile</h2><ul>
-<li><p>应该叫 GNU Make，在Linux 平台常用</p>
-</li>
-<li><p>打印信息</p>
-</li>
-</ul>
+<h2 id="Makefile"><a href="#Makefile" class="headerlink" title="Makefile"></a>Makefile</h2><p>应该叫 GNU Make，在Linux 平台常用</p>
+<p>打印信息</p>
 <figure class="highlight make"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 不显示中间过程以及命令</span></span><br><span class="line">@echo <span class="string">&quot;begin make&quot;</span></span><br><span class="line">@<span class="variable">$(CXX)</span>  <span class="variable">$^</span> -o <span class="variable">$(TARGET)</span></span><br><span class="line">@echo <span class="string">&quot;build success&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 报错处理, 报错后不会向下执行，我们在前面加上一个 `-` 符号就行</span></span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>项目结构</li>
-</ul>
+<p>项目结构</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">hello/</span><br><span class="line">├── main.cpp</span><br><span class="line">├── factorial.cpp</span><br><span class="line">├── printhello.cpp</span><br><span class="line">└── functions.h</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>朴素版</li>
-</ul>
+<p>朴素版</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">g++ main.cpp factorial.cpp printhello.cpp -o main</span><br><span class="line">./main</span><br></pre></td></tr></table></figure>
 
-<h3 id="version1"><a href="#version1" class="headerlink" title="version1"></a>version1</h3><ul>
-<li>tab而不是空格</li>
-</ul>
+<h3 id="version1"><a href="#version1" class="headerlink" title="version1"></a>version1</h3><p>tab而不是空格</p>
 <figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">hello: main.cpp printhello.cpp factorial.cpp</span></span><br><span class="line">	g++ -o hello main.cpp printhello.cpp factorial.cpp</span><br></pre></td></tr></table></figure>
 
 <h3 id="version2"><a href="#version2" class="headerlink" title="version2"></a>version2</h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">CXX = g++</span><br><span class="line">TARGET = hello </span><br><span class="line">OBJ = main.o printhello.o factorial.o</span><br><span class="line"></span><br><span class="line"><span class="variable">$(TARGET)</span>: <span class="variable">$(OBJ)</span></span><br><span class="line">	<span class="variable">$(CXX)</span> -o <span class="variable">$(TARGET)</span> <span class="variable">$(OBJ)</span></span><br><span class="line"></span><br><span class="line"><span class="section">main.o: main.cpp</span></span><br><span class="line">	<span class="variable">$(CXX)</span> -c main.cpp</span><br><span class="line"></span><br><span class="line"><span class="section">printhello.o: printhello.cpp</span></span><br><span class="line">	<span class="variable">$(CXX)</span> -c printhello.cpp</span><br><span class="line"></span><br><span class="line"><span class="section">factorial.o: factorial.cpp</span></span><br><span class="line">	<span class="variable">$(CXX)</span> -c factorial.cpp</span><br></pre></td></tr></table></figure>
@@ -275,106 +264,66 @@
 <h3 id="version3"><a href="#version3" class="headerlink" title="version3"></a>version3</h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">CXX = g++</span><br><span class="line">TARGET = hello </span><br><span class="line">OBJ = main.o printhello.o factorial.o</span><br><span class="line"></span><br><span class="line"><span class="comment"># Wall warning all</span></span><br><span class="line">CXXFLAGS = -c -Wall</span><br><span class="line"></span><br><span class="line"><span class="variable">$(TARGET)</span>: <span class="variable">$(OBJ)</span></span><br><span class="line">	<span class="variable">$(CXX)</span> -o <span class="variable">$@</span> <span class="variable">$^</span></span><br><span class="line"></span><br><span class="line"><span class="section">%.o: %.cpp</span></span><br><span class="line">	<span class="variable">$(CXX)</span> <span class="variable">$(CXXFLAGS)</span> <span class="variable">$&lt;</span> -o <span class="variable">$@</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># PHONY 避免冲突。比如有一个 clean 的可执行文件？</span></span><br><span class="line"><span class="meta"><span class="keyword">.PHONY</span>: clean</span></span><br><span class="line"><span class="section">clean:</span></span><br><span class="line">	rm -f *.o <span class="variable">$(TARGET)</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="version4"><a href="#version4" class="headerlink" title="version4"></a>version4</h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">CXX = g++</span><br><span class="line">TARGET = hello </span><br><span class="line"></span><br><span class="line"><span class="comment"># 文件下所有的cpp</span></span><br><span class="line">SRC = <span class="variable">$(<span class="built_in">wildcard</span> *.cpp)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 意思为 SRC中的.cpp替换为.o</span></span><br><span class="line">OBJ = <span class="variable">$(<span class="built_in">patsubst</span> %.cpp, %.o, <span class="variable">$(SRC)</span>)</span></span><br><span class="line"></span><br><span class="line">CXXFLAGS = -c -Wall</span><br><span class="line"></span><br><span class="line"><span class="variable">$(TARGET)</span>: <span class="variable">$(OBJ)</span></span><br><span class="line">	<span class="variable">$(CXX)</span> -o <span class="variable">$@</span> <span class="variable">$^</span></span><br><span class="line"></span><br><span class="line"><span class="section">%.o: %.cpp</span></span><br><span class="line">	<span class="variable">$(CXX)</span> <span class="variable">$(CXXFLAGS)</span> <span class="variable">$&lt;</span> -o <span class="variable">$@</span></span><br><span class="line"></span><br><span class="line"><span class="meta"><span class="keyword">.PHONY</span>: clean</span></span><br><span class="line"><span class="section">clean:</span></span><br><span class="line">	rm -f *.o <span class="variable">$(TARGET)</span></span><br></pre></td></tr></table></figure>
-<h2 id="CMake"><a href="#CMake" class="headerlink" title="CMake"></a>CMake</h2><ul>
-<li>Linux 命令行，cmake <strong>生成 makefile</strong>，然后在 make 生成可执行文件</li>
-</ul>
+<h2 id="CMake"><a href="#CMake" class="headerlink" title="CMake"></a>CMake</h2><p>Linux 命令行，cmake <strong>生成 makefile</strong>，然后在 make 生成可执行文件</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cmake .</span><br><span class="line">$ make</span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>Windows 命令行</li>
-</ul>
+<p>Windows 命令行</p>
 <ol>
-<li>MinGW 环境，不是我的选择，因为由 MSVC</li>
+<li>MinGW 环境，不是我的选择， MSVC</li>
 <li>CMake，首先生成缓存，最后编译</li>
 </ol>
 <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cmake <span class="literal">-B</span> build</span><br><span class="line">cmake <span class="literal">--build</span> build</span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>配合 VsCode 使用</li>
-</ul>
+<p>配合 VsCode 使用</p>
 <p>Ctrl + shift + p 进入命令 ： cmake build 就能生成build 目录，出现我们的需要的exe文件</p>
-<h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><ul>
-<li>最简单的 CmakeLists</li>
-</ul>
+<h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><p>最简单的 CmakeLists</p>
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#[[ cmake 版本要求 ]]</span></span><br><span class="line"><span class="keyword">cmake_minimum_required</span> (VERSION <span class="number">3.0</span>) </span><br><span class="line"></span><br><span class="line"><span class="comment">#[[ 工程名 ]]</span></span><br><span class="line"><span class="keyword">project</span> (<span class="keyword">test</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#[[ 可执行文件 ]]</span></span><br><span class="line"><span class="keyword">add_executable</span> (main main.cpp)</span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>set 设置变量</li>
-</ul>
+<p>set 设置变量</p>
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SET</span>(SRC main.cpp)</span><br><span class="line"></span><br><span class="line"><span class="keyword">add_executable</span> (main <span class="variable">$&#123;SRC&#125;</span>)</span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>C&#x2F;C++ 标准 比如 <code>-std=c99</code></li>
-</ul>
+<p>C&#x2F;C++ 标准 比如 <code>-std=c99</code></p>
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span>(CMAKE_C_STANDARD <span class="number">11</span>)</span><br><span class="line"><span class="keyword">set</span>(CMAKE_CXX_STANDARD <span class="number">11</span>)</span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>file</li>
-</ul>
+<p>file</p>
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#[[ 匹配所有的文件名 ]]</span></span><br><span class="line"><span class="keyword">file</span>(GLOB &lt;variable&gt; [LIST_DIRECTORIES <span class="keyword">true</span>[<span class="keyword">false</span>]] [RELATIVE &lt;path&gt; ] [CONFIGURE_DEPENDS] [&lt;globbing-expression&gt; ...])</span><br><span class="line"></span><br><span class="line"><span class="comment">#[[ 将 /usr/lib/inlcude/ 下所有 c文件 赋值给 SRC ]]</span></span><br><span class="line"><span class="keyword">file</span>(GLOB SRC /usr/lib/inlcude/*.c)</span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>宏</li>
-</ul>
+<p>宏</p>
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#[[ 当前CMakeLists所在文件夹 ]]</span></span><br><span class="line">CMAKE_CURRENT_SOURCE_DIR </span><br><span class="line"></span><br><span class="line"><span class="comment">#[[ 最外层CMakeLists.txt所在目录 ]]</span></span><br><span class="line">CMAKE_SOURCE_DIR</span><br><span class="line"></span><br><span class="line"><span class="comment">#[[ 离 CMakeLists.txt 最近的一层文件夹 ]]</span></span><br><span class="line">PROJECT_SOURCE_DIR</span><br><span class="line"></span><br><span class="line"><span class="comment">#[[ 二进制文件输出路径，可自行set ]]</span></span><br><span class="line">EXECUTABLE_OUTPUT_PATH</span><br><span class="line"></span><br><span class="line"><span class="comment">#[[ 库输出路径 ]]</span></span><br><span class="line">LIBRARY_OUTPUT_PATH</span><br><span class="line"></span><br><span class="line"><span class="comment">#[[ 编译器编译选项 ]]</span></span><br><span class="line">CMAKE_CXX_FLAGS</span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>打印信息</li>
-</ul>
+<p>打印信息</p>
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">message</span>()</span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>制作链接库</li>
-</ul>
+<p>制作链接库</p>
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">add_library</span>(&lt;name&gt; [STATIC | SHARED | MODULE]</span><br><span class="line">            [EXCLUDE_FROM_ALL]</span><br><span class="line">            [source1] [source2 ...])</span><br><span class="line"><span class="comment">#[[ STATIC(静态库) SHARED(动态库) MODULE(模块库) ]]</span></span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>添加库，类似于 <code>gcc -lpthread</code></li>
-</ul>
+<p>添加库，类似于 <code>gcc -lpthread</code></p>
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">target_link_libraries</span>(main pthread)</span><br></pre></td></tr></table></figure>
 
-<h3 id="多文件夹"><a href="#多文件夹" class="headerlink" title="多文件夹"></a>多文件夹</h3><ul>
-<li>包含头文件</li>
-</ul>
+<h3 id="多文件夹"><a href="#多文件夹" class="headerlink" title="多文件夹"></a>多文件夹</h3><p>包含头文件</p>
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">include_directories</span>(<span class="variable">$&#123;CMAKE_CURRENT_SOURCE_DIR&#125;</span>/<span class="keyword">include</span>/)</span><br></pre></td></tr></table></figure>
 
-<ul>
-<li><p>包含源文件：file</p>
-</li>
-<li><p>多个可执行文件，比如简单的 web 服务器</p>
-</li>
-</ul>
+<p>包含源文件：file</p>
+<p>多个可执行文件，比如简单的 web 服务器</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ tree</span><br><span class="line">server</span><br><span class="line">|-- client</span><br><span class="line">|	|-- client.c</span><br><span class="line">|	|-- CMakeLists.txt</span><br><span class="line">|-- server</span><br><span class="line">|	|-- server.c</span><br><span class="line">|	|-- CMakeLists.txt</span><br><span class="line">|-- CMakeLists.txt</span><br></pre></td></tr></table></figure>
 
 
-<ul>
-<li>添加子目录，要求子目录必须含有 CmakeLists.txt</li>
-</ul>
+<p>添加子目录，要求子目录必须含有 CmakeLists.txt</p>
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#[[ 包含子目录 ]]</span></span><br><span class="line"><span class="keyword">add_subdirectory</span>(client)</span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>最外层</li>
-</ul>
+<p>最外层</p>
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span> (VERSION <span class="number">3.0</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">project</span> (tftp)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">add_subdirectory</span>(client)                </span><br><span class="line"><span class="keyword">add_subdirectory</span>(server)</span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>clent &amp; server</li>
-</ul>
+<p>clent &amp; server</p>
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span> (VERSION <span class="number">3.0</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">project</span> (server)</span><br><span class="line"><span class="keyword">add_executable</span> (server server.cpp)</span><br><span class="line"></span><br><span class="line"><span class="comment">#[[-----------------------------]]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">cmake_minimum_required</span> (VERSION <span class="number">3.0</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">project</span> (client)</span><br><span class="line"><span class="keyword">add_executable</span> (client client.cpp)</span><br></pre></td></tr></table></figure>
 
-<h3 id="编译成库"><a href="#编译成库" class="headerlink" title="编译成库"></a>编译成库</h3><ul>
-<li>将include编译成库，然后在编译时指定库 (packet: 网络数据包，在client 和 server 都会使用)</li>
-</ul>
+<h3 id="编译成库"><a href="#编译成库" class="headerlink" title="编译成库"></a>编译成库</h3><p>将include编译成库，然后在编译时指定库 (packet: 网络数据包，在client 和 server 都会使用)</p>
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ADD_LIBRARY</span>(packet STATIC packet.cpp)</span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>项目添加动态链接库：包含库 + 二进制文件链接</li>
-</ul>
+<p>项目添加动态链接库：包含库 + 二进制文件链接</p>
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">link_directories</span>(</span><br><span class="line">    <span class="variable">$&#123;CMAKE_SOURCE_DIR&#125;</span>/lib</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">target_link_libraries</span>(client PUBLIC packet)</span><br></pre></td></tr></table></figure>
 
-<h3 id="添加cpp文件"><a href="#添加cpp文件" class="headerlink" title="添加cpp文件"></a>添加cpp文件</h3><ul>
-<li>或许最简单，我们也可以使用其他的宏和函数获取cpp文件添加</li>
-</ul>
+<h3 id="添加cpp文件"><a href="#添加cpp文件" class="headerlink" title="添加cpp文件"></a>添加cpp文件</h3><p>或许最简单，我们也可以使用其他的宏和函数获取cpp文件添加</p>
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">add_executable</span> (client client.cpp <span class="variable">$&#123;CMAKE_SOURCE_DIR&#125;</span>/packet/packet.cpp)</span><br></pre></td></tr></table></figure>
 
 <h2 id="debug"><a href="#debug" class="headerlink" title="debug"></a>debug</h2><blockquote>
@@ -387,9 +336,7 @@
 <p>f5 进行调试，需要文件夹下有一个 <code>.vscode</code> 文件夹，配置<code>launch.json</code>。其中有一个属性：<code>program</code> 修改为我们的生成的二进制文件就行</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="attr">&quot;configurations&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">       <span class="punctuation">&#123;</span></span><br><span class="line">           <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;lldb&quot;</span><span class="punctuation">,</span></span><br><span class="line">           <span class="attr">&quot;request&quot;</span><span class="punctuation">:</span> <span class="string">&quot;launch&quot;</span><span class="punctuation">,</span></span><br><span class="line">           <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;windows&quot;</span><span class="punctuation">,</span></span><br><span class="line">           <span class="attr">&quot;program&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;workspaceFolder&#125;/build/Debug/test.exe&quot;</span><span class="punctuation">,</span></span><br><span class="line">           <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">           <span class="attr">&quot;cwd&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;workspaceFolder&#125;&quot;</span></span><br><span class="line">       <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">   <span class="punctuation">]</span></span><br><span class="line">   ...</span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>lldb 指令和 gdb 类似，我们可以在下面的 debug 窗口 进行单步执行</li>
-</ul>
+<p>lldb 指令和 gdb 类似，我们可以在下面的 debug 窗口 进行单步执行</p>
 
     </div>
 
@@ -541,12 +488,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">292k</span>
+    <span title="站点总字数">295k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">8:50</span>
+    <span title="站点阅读时长">8:56</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>

