@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ha0-y.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":18,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Windows Driver Exploit">
+<meta property="og:type" content="website">
+<meta property="og:title" content="AliyunCTF SYSTEM">
+<meta property="og:url" content="https://ha0-y.github.io/todo/AliyunCTF%20SYSTEM.html">
+<meta property="og:site_name" content="ham5ter">
+<meta property="og:description" content="Windows Driver Exploit">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-03-26T12:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-25T09:17:47.351Z">
+<meta property="article:author" content="ham5ter">
+<meta property="article:tag" content="Windows">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://ha0-y.github.io/todo/AliyunCTF%20SYSTEM">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>AliyunCTF SYSTEM | ham5ter
+</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">ham5ter</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">I'm possible</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content page posts-expand">
+            
+
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">AliyunCTF SYSTEM
+</h1>
+
+<div class="post-meta">
+  
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <blockquote>
+<p>Windows Driver Exploit</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="Driver"><a href="#Driver" class="headerlink" title="Driver"></a>Driver</h2><p>是个驱动，内容比较少，稍微看一下逻辑</p>
+<p>驱动入口：DriverEntry，第一个函数是Windows给程序加了 <code>_security_cookie</code>，然后初始化DriverObject</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">NTSTATUS __stdcall <span class="title">DriverEntry</span><span class="params">(PDRIVER_OBJECT DriverObject, PUNICODE_STRING RegistryPath)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="built_in">sub_14000610C</span>();</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Init</span>(DriverObject);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>初始化DriverObject，DriverExtension 大小0x30，设备名。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">NTSTATUS __fastcall <span class="title">Init</span><span class="params">(PDRIVER_OBJECT DriverObject)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  NTSTATUS result; <span class="comment">// eax</span></span><br><span class="line">  NTSTATUS v3; <span class="comment">// ebx</span></span><br><span class="line">  _OWORD *DeviceExtension; <span class="comment">// rdx</span></span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">_UNICODE_STRING</span> DeviceName; <span class="comment">// [rsp+40h] [rbp-28h] BYREF</span></span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">_UNICODE_STRING</span> DestinationString; <span class="comment">// [rsp+50h] [rbp-18h] BYREF</span></span><br><span class="line">  PDEVICE_OBJECT DeviceObject; <span class="comment">// [rsp+80h] [rbp+18h] BYREF</span></span><br><span class="line"></span><br><span class="line">  DeviceObject = <span class="number">0</span>i64;</span><br><span class="line">  <span class="built_in">RtlInitUnicodeString</span>(&amp;DeviceName, <span class="string">L&quot;\\Device\\SIOCTL&quot;</span>);</span><br><span class="line">  result = <span class="built_in">IoCreateDevice</span>(DriverObject, <span class="number">0x30</span>u, &amp;DeviceName, <span class="number">0x22</span>u, <span class="number">0x100</span>u, <span class="number">0</span>, &amp;DeviceObject);</span><br><span class="line">  <span class="keyword">if</span> ( result &gt;= <span class="number">0</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    DriverObject-&gt;MajorFunction[<span class="number">0</span>] = (PDRIVER_DISPATCH)DispatchCommon;</span><br><span class="line">    DriverObject-&gt;MajorFunction[<span class="number">2</span>] = (PDRIVER_DISPATCH)DispatchCommon;</span><br><span class="line">    DriverObject-&gt;MajorFunction[<span class="number">14</span>] = (PDRIVER_DISPATCH)DispatchControl;</span><br><span class="line">    DriverObject-&gt;DriverUnload = (PDRIVER_UNLOAD)Unload;</span><br><span class="line">    <span class="built_in">RtlInitUnicodeString</span>(&amp;DestinationString, <span class="string">L&quot;\\DosDevices\\IoctlTest&quot;</span>);</span><br><span class="line">    v3 = <span class="built_in">IoCreateSymbolicLink</span>(&amp;DestinationString, &amp;DeviceName);</span><br><span class="line">    DeviceExtension = DeviceObject-&gt;DeviceExtension;</span><br><span class="line">    *DeviceExtension = <span class="number">0</span>i64;</span><br><span class="line">    DeviceExtension[<span class="number">1</span>] = <span class="number">0</span>i64;</span><br><span class="line">    DeviceExtension[<span class="number">2</span>] = <span class="number">0</span>i64;</span><br><span class="line">    <span class="keyword">if</span> ( v3 &lt; <span class="number">0</span> )</span><br><span class="line">      <span class="built_in">IoDeleteDevice</span>(DeviceObject);</span><br><span class="line">    <span class="keyword">return</span> v3;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">    _mm_lfence();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>DispatchCommon</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> IRP_MJ_CREATE                     0x00 </span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> IRP_MJ_CLOSE                      0x02 </span></span><br><span class="line"><span class="function">__int64 __fastcall <span class="title">DispatchCommon</span><span class="params">(__int64 a1, IRP *a2)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  a2-&gt;IoStatus.Status = <span class="number">0</span>;</span><br><span class="line">  a2-&gt;IoStatus.Information = <span class="number">0</span>i64;</span><br><span class="line">  <span class="built_in">IofCompleteRequest</span>(a2, <span class="number">0</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>i64;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>IOCTL：并且IRP存在union的部分，因此有的类型可能不对，需要修改一下。我们可以控制的是size的大小，并且这个size大小为0x1000的倍数，向上取整</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> IRP_MJ_DEVICE_CONTROL           0x0e</span></span><br><span class="line"><span class="function">__int64 __fastcall <span class="title">DispatchControl</span><span class="params">(PDEVICE_OBJECT pDeviceObject, IRP *irp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">_IO_STACK_LOCATION</span> *CurrentStackLocation; <span class="comment">// rax</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> v3; <span class="comment">// ebx</span></span><br><span class="line">  PVOID DeviceExtension; <span class="comment">// rdi</span></span><br><span class="line">  ULONG ulInputBufferLength; <span class="comment">// r8d</span></span><br><span class="line">  ULONG ulOutputBufferLength; <span class="comment">// edx</span></span><br><span class="line">  ULONG ulIoControlCode; <span class="comment">// eax</span></span><br><span class="line">  <span class="type">void</span> *__pStartAddr2; <span class="comment">// rcx</span></span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">_MDL</span> *__pMdl2; <span class="comment">// rdx</span></span><br><span class="line">  <span class="type">void</span> *__pVirtualAddress; <span class="comment">// rcx</span></span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">_MDL</span> *__pMdl; <span class="comment">// rdx</span></span><br><span class="line">  <span class="type">char</span> *buffer; <span class="comment">// r13</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> _usSize; <span class="comment">// r15d</span></span><br><span class="line">  PVOID ContiguousMemory; <span class="comment">// rax</span></span><br><span class="line">  <span class="type">void</span> *_pVirtualAddress; <span class="comment">// rbp</span></span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">_MDL</span> *Mdl; <span class="comment">// rax</span></span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">_MDL</span> *_pMdl; <span class="comment">// r14</span></span><br><span class="line">  PVOID pStartAddr2; <span class="comment">// rax</span></span><br><span class="line">  PVOID _pStartAddr2; <span class="comment">// r12</span></span><br><span class="line">  _DWORD *SystemBuffer; <span class="comment">// r13</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> usSize; <span class="comment">// r15d</span></span><br><span class="line">  PVOID pVirtualAddress; <span class="comment">// rax</span></span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">_MDL</span> *pMdl; <span class="comment">// rax</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> pMapAddr; <span class="comment">// eax</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> _pMapAddr; <span class="comment">// r12d</span></span><br><span class="line"></span><br><span class="line">  CurrentStackLocation = irp-&gt;Tail.Overlay.CurrentStackLocation;</span><br><span class="line">  v3 = <span class="number">0</span>;</span><br><span class="line">  DeviceExtension = pDeviceObject-&gt;DeviceExtension;</span><br><span class="line">  ulInputBufferLength = CurrentStackLocation-&gt;Parameters.DeviceIoControl.InputBufferLength;<span class="comment">// InputBufferLength</span></span><br><span class="line">  ulOutputBufferLength = CurrentStackLocation-&gt;Parameters.DeviceIoControl.OutputBufferLength;<span class="comment">// OutputBufferLength</span></span><br><span class="line">  <span class="keyword">if</span> ( !ulInputBufferLength || !ulOutputBufferLength )</span><br><span class="line">  &#123;</span><br><span class="line">    v3 = <span class="number">0xC000000D</span>;</span><br><span class="line">    <span class="keyword">goto</span> LABEL_34;</span><br><span class="line">  &#125;</span><br><span class="line">  ulIoControlCode = CurrentStackLocation-&gt;Parameters.DeviceIoControl.IoControlCode;<span class="comment">// IoControlCode</span></span><br><span class="line">  <span class="keyword">switch</span> ( ulIoControlCode )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">0x9C402400</span>:</span><br><span class="line">      <span class="keyword">if</span> ( ulInputBufferLength != <span class="number">4</span> || ulOutputBufferLength != <span class="number">8</span> )</span><br><span class="line">        <span class="keyword">goto</span> LABEL_34;</span><br><span class="line">      SystemBuffer = irp-&gt;AssociatedIrp.SystemBuffer;</span><br><span class="line">      usSize = (*SystemBuffer + <span class="number">0xFFF</span>) &amp; <span class="number">0xFFFFF000</span>;</span><br><span class="line">      pVirtualAddress = <span class="built_in">MmAllocateContiguousMemory</span>(usSize, (PHYSICAL_ADDRESS)<span class="number">0xFFFFFFFFFFFFFFFF</span>ui64);<span class="comment">// </span></span><br><span class="line">                                                <span class="comment">// PVOID MmAllocateContiguousMemory(</span></span><br><span class="line">                                                <span class="comment">//   [in] SIZE_T           NumberOfBytes,</span></span><br><span class="line">                                                <span class="comment">//   [in] PHYSICAL_ADDRESS HighestAcceptableAddress</span></span><br><span class="line">                                                <span class="comment">// );</span></span><br><span class="line">      _pVirtualAddress = pVirtualAddress;</span><br><span class="line">      <span class="keyword">if</span> ( pVirtualAddress )</span><br><span class="line">      &#123;</span><br><span class="line">        pMdl = <span class="built_in">IoAllocateMdl</span>(pVirtualAddress, usSize, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>i64);<span class="comment">// </span></span><br><span class="line">                                                <span class="comment">// PMDL IoAllocateMdl(</span></span><br><span class="line">                                                <span class="comment">//   [in, optional]      __drv_aliasesMem PVOID VirtualAddress,</span></span><br><span class="line">                                                <span class="comment">//   [in]                ULONG                  Length,</span></span><br><span class="line">                                                <span class="comment">//   [in]                BOOLEAN                SecondaryBuffer,</span></span><br><span class="line">                                                <span class="comment">//   [in]                BOOLEAN                ChargeQuota,</span></span><br><span class="line">                                                <span class="comment">//   [in, out, optional] PIRP                   Irp</span></span><br><span class="line">                                                <span class="comment">// );</span></span><br><span class="line">        _pMdl = pMdl;</span><br><span class="line">        <span class="keyword">if</span> ( pMdl )</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="built_in">MmBuildMdlForNonPagedPool</span>(pMdl);      <span class="comment">// </span></span><br><span class="line">                                                <span class="comment">// void MmBuildMdlForNonPagedPool(</span></span><br><span class="line">                                                <span class="comment">//   [in, out] PMDL MemoryDescriptorList</span></span><br><span class="line">                                                <span class="comment">// );</span></span><br><span class="line">          pMapAddr = (<span class="type">unsigned</span> <span class="type">int</span>)<span class="built_in">MmMapLockedPagesSpecifyCache</span>(_pMdl, <span class="number">1</span>, MmNonCached, <span class="number">0</span>i64, <span class="number">0</span>, <span class="number">0x10</span>u);<span class="comment">// </span></span><br><span class="line">                                                <span class="comment">// PVOID MmMapLockedPagesSpecifyCache(</span></span><br><span class="line">                                                <span class="comment">//   [in]           PMDL                                                                          MemoryDescriptorList,</span></span><br><span class="line">                                                <span class="comment">//   [in]           __drv_strictType(KPROCESSOR_MODE / enum _MODE,__drv_typeConst)KPROCESSOR_MODE AccessMode,</span></span><br><span class="line">                                                <span class="comment">//   [in]           __drv_strictTypeMatch(__drv_typeCond)MEMORY_CACHING_TYPE                      CacheType,</span></span><br><span class="line">                                                <span class="comment">//   [in, optional] PVOID                                                                         RequestedAddress,</span></span><br><span class="line">                                                <span class="comment">//   [in]           ULONG                                                                         BugCheckOnFailure,</span></span><br><span class="line">                                                <span class="comment">//   [in]           ULONG                                                                         Priority</span></span><br><span class="line">                                                <span class="comment">// );</span></span><br><span class="line">          _pMapAddr = pMapAddr;</span><br><span class="line">          <span class="keyword">if</span> ( pMapAddr )</span><br><span class="line">          &#123;</span><br><span class="line">            *(_QWORD *)DeviceExtension = pMapAddr;</span><br><span class="line">            *((_QWORD *)DeviceExtension + <span class="number">1</span>) = _pVirtualAddress;</span><br><span class="line">            *((_QWORD *)DeviceExtension + <span class="number">2</span>) = _pMdl;</span><br><span class="line">            <span class="comment">// 人工智能：这段代码是一个效率较高的内存填充函数，进行快速填充，同时处理了不同大小的内存区域，包括边界情况。</span></span><br><span class="line">            <span class="built_in">Memset</span>(<span class="type">void</span> *)pMapAddr, <span class="number">0xFF</span>, usSize);</span><br><span class="line">            *SystemBuffer = usSize;             <span class="comment">// Size</span></span><br><span class="line">            SystemBuffer[<span class="number">1</span>] = _pMapAddr;        <span class="comment">// </span></span><br><span class="line">                                                <span class="comment">// typedef struct _IRP &#123;</span></span><br><span class="line">                                                <span class="comment">//   CSHORT                    Type;</span></span><br><span class="line">                                                <span class="comment">//   USHORT                    Size;</span></span><br><span class="line">                                                <span class="comment">//   PMDL                      MdlAddress;</span></span><br><span class="line">            irp-&gt;IoStatus.Information = <span class="number">8</span>i64;</span><br><span class="line">            <span class="keyword">goto</span> LABEL_34;</span><br><span class="line">          &#125;</span><br><span class="line">LABEL_31:</span><br><span class="line">          <span class="built_in">IoFreeMdl</span>(_pMdl);</span><br><span class="line">        &#125;</span><br><span class="line">LABEL_29:</span><br><span class="line">        <span class="built_in">MmFreeContiguousMemory</span>(_pVirtualAddress);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> <span class="number">0xC000009A</span>i64;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">0x9C402404</span>:</span><br><span class="line">      <span class="keyword">if</span> ( ulInputBufferLength != <span class="number">4</span> || ulOutputBufferLength != <span class="number">12</span> )</span><br><span class="line">        <span class="keyword">goto</span> LABEL_34;</span><br><span class="line">      buffer = (<span class="type">char</span> *)irp-&gt;AssociatedIrp.SystemBuffer;</span><br><span class="line">      _usSize = (*(_DWORD *)buffer + <span class="number">0xFFF</span>) &amp; <span class="number">0xFFFFF000</span>;</span><br><span class="line">      ContiguousMemory = <span class="built_in">MmAllocateContiguousMemory</span>(_usSize, (PHYSICAL_ADDRESS)<span class="number">0xFFFFFFFFFFFFFFFF</span>ui64);</span><br><span class="line">      _pVirtualAddress = ContiguousMemory;</span><br><span class="line">      <span class="keyword">if</span> ( ContiguousMemory )</span><br><span class="line">      &#123;</span><br><span class="line">        Mdl = <span class="built_in">IoAllocateMdl</span>(ContiguousMemory, _usSize, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>i64);</span><br><span class="line">        _pMdl = Mdl;</span><br><span class="line">        <span class="keyword">if</span> ( Mdl )</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="built_in">MmBuildMdlForNonPagedPool</span>(Mdl);</span><br><span class="line">          pStartAddr2 = <span class="built_in">MmMapLockedPagesSpecifyCache</span>(_pMdl, <span class="number">1</span>, MmNonCached, <span class="number">0</span>i64, <span class="number">0</span>, <span class="number">0x10</span>u);</span><br><span class="line">          _pStartAddr2 = pStartAddr2;</span><br><span class="line">          <span class="keyword">if</span> ( pStartAddr2 )</span><br><span class="line">          &#123;</span><br><span class="line">            *((_QWORD *)DeviceExtension + <span class="number">4</span>) = _pVirtualAddress;</span><br><span class="line">            *((_QWORD *)DeviceExtension + <span class="number">3</span>) = pStartAddr2;</span><br><span class="line">            *((_QWORD *)DeviceExtension + <span class="number">5</span>) = _pMdl;</span><br><span class="line">            <span class="built_in">Memset</span>(pStartAddr2, <span class="number">0xFF</span>, _usSize);</span><br><span class="line">            *(_DWORD *)buffer = _usSize;</span><br><span class="line">            *(_QWORD *)(buffer + <span class="number">4</span>) = _pStartAddr2;</span><br><span class="line">            irp-&gt;IoStatus.Information = <span class="number">12</span>i64;</span><br><span class="line">            <span class="keyword">goto</span> LABEL_34;</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="keyword">goto</span> LABEL_31;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">goto</span> LABEL_29;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> <span class="number">0xC000009A</span>i64;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">0x9C402408</span>:</span><br><span class="line">      <span class="keyword">if</span> ( !*(_QWORD *)DeviceExtension )</span><br><span class="line">        <span class="keyword">goto</span> LABEL_17;</span><br><span class="line">      __pMdl = (<span class="keyword">struct</span> _MDL *)*((_QWORD *)DeviceExtension + <span class="number">2</span>);</span><br><span class="line">      <span class="keyword">if</span> ( !__pMdl || !*((_QWORD *)DeviceExtension + <span class="number">1</span>) )</span><br><span class="line">        <span class="keyword">goto</span> LABEL_17;</span><br><span class="line">      <span class="built_in">MmUnmapLockedPages</span>(*(PVOID *)DeviceExtension, __pMdl);</span><br><span class="line">      <span class="built_in">IoFreeMdl</span>(*((PMDL *)DeviceExtension + <span class="number">2</span>));</span><br><span class="line">      __pVirtualAddress = (<span class="type">void</span> *)*((_QWORD *)DeviceExtension + <span class="number">1</span>);</span><br><span class="line">      <span class="keyword">goto</span> LABEL_16;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">0x9C40240C</span>:</span><br><span class="line">      __pStartAddr2 = (<span class="type">void</span> *)*((_QWORD *)DeviceExtension + <span class="number">3</span>);</span><br><span class="line">      <span class="keyword">if</span> ( !__pStartAddr2 )</span><br><span class="line">        <span class="keyword">goto</span> LABEL_17;</span><br><span class="line">      __pMdl2 = (<span class="keyword">struct</span> _MDL *)*((_QWORD *)DeviceExtension + <span class="number">5</span>);</span><br><span class="line">      <span class="keyword">if</span> ( !__pMdl2 || !*((_QWORD *)DeviceExtension + <span class="number">4</span>) )</span><br><span class="line">        <span class="keyword">goto</span> LABEL_17;</span><br><span class="line">      <span class="built_in">MmUnmapLockedPages</span>(__pStartAddr2, __pMdl2);</span><br><span class="line">      <span class="built_in">IoFreeMdl</span>(*((PMDL *)DeviceExtension + <span class="number">5</span>));</span><br><span class="line">      __pVirtualAddress = (<span class="type">void</span> *)*((_QWORD *)DeviceExtension + <span class="number">4</span>);</span><br><span class="line">LABEL_16:</span><br><span class="line">      <span class="built_in">MmFreeContiguousMemory</span>(__pVirtualAddress);</span><br><span class="line">LABEL_17:</span><br><span class="line">      irp-&gt;IoStatus.Information = <span class="number">0</span>i64;</span><br><span class="line">      <span class="keyword">goto</span> LABEL_34;</span><br><span class="line">  &#125;</span><br><span class="line">  v3 = <span class="number">0xC0000010</span>;</span><br><span class="line">LABEL_34:</span><br><span class="line">  irp-&gt;IoStatus.Status = v3;</span><br><span class="line">  <span class="built_in">IofCompleteRequest</span>(irp, <span class="number">0</span>);</span><br><span class="line">  <span class="keyword">return</span> v3;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="MDL"><a href="#MDL" class="headerlink" title="MDL"></a>MDL</h3><p>memory descriptor list</p>
+<p>跨一系列连续虚拟内存地址的 I&#x2F;O 缓冲区可以分布在多个物理页中，并且这些页面可以是不连续的。 操作系统使用 <em>内存描述符列表</em> (MDL) 来描述虚拟内存缓冲区的物理页面布局。</p>
+<h3 id="API"><a href="#API" class="headerlink" title="API"></a>API</h3><p><strong>MmAllocateContiguousMemory</strong>：分配一系列连续的非分页物理内存，并将其映射到系统地址空间。<strong>MmAllocateContiguousMemory</strong>分配的内存未初始化</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 返回已分配内存的基虚拟地址。</span></span><br><span class="line"><span class="function">PVOID <span class="title">MmAllocateContiguousMemory</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">  [in] SIZE_T           NumberOfBytes,           <span class="comment">// 要分配的连续内存块的大小（以字节为单位）</span></span></span></span><br><span class="line"><span class="params"><span class="function">  [in] PHYSICAL_ADDRESS HighestAcceptableAddress <span class="comment">// 调用方可以使用的最高有效物理地址。</span></span></span></span><br><span class="line"><span class="params"><span class="function">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>释放由 <strong>MmAllocateContiguousMemoryXxx</strong> 例程分配的一系列物理连续内存。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">MmFreeContiguousMemory</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">  [in] PVOID BaseAddress</span></span></span><br><span class="line"><span class="params"><span class="function">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>给定缓冲区的起始地址和长度， <strong>IoAllocateMdl</strong> 分配内存描述符列表 (MDL) 足以映射缓冲区。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 返回指向 MDL 的指针</span></span><br><span class="line"><span class="function">PMDL <span class="title">IoAllocateMdl</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">  [in, optional]      __drv_aliasesMem PVOID VirtualAddress,   <span class="comment">// 指向 MDL 要描述的缓冲区的基虚拟地址的指针。</span></span></span></span><br><span class="line"><span class="params"><span class="function">  [in]                ULONG                  Length,           <span class="comment">// 指定 MDL 要描述的缓冲区的长度（以字节为单位）</span></span></span></span><br><span class="line"><span class="params"><span class="function">  [in]                BOOLEAN                SecondaryBuffer,  <span class="comment">// 指示缓冲区是主缓冲区还是辅助缓冲区。</span></span></span></span><br><span class="line"><span class="params"><span class="function">  [in]                BOOLEAN                ChargeQuota,      <span class="comment">// 预留给系统使用。 驱动程序必须将此参数设置为 **FALSE**。</span></span></span></span><br><span class="line"><span class="params"><span class="function">  [in, out, optional] PIRP                   Irp               <span class="comment">// 指向要与 MDL 关联的 IRP 的指针</span></span></span></span><br><span class="line"><span class="params"><span class="function">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>创建一个MDL结构体，而这个结构体描述给出的VurtualAddress</p>
+<ul>
+<li>StartVa：page开始的地址</li>
+<li>ByteOffset：在page内的偏移</li>
+<li>ByteCount: 大小</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span>: kd&gt; dt nt!_MDL</span><br><span class="line">   +<span class="number">0x000</span> Next             : Ptr64 _MDL</span><br><span class="line">   +<span class="number">0x008</span> Size             : Int2B</span><br><span class="line">   +<span class="number">0x00a</span> MdlFlags         : Int2B</span><br><span class="line">   +<span class="number">0x00c</span> AllocationProcessorNumber : Uint2B</span><br><span class="line">   +<span class="number">0x00e</span> Reserved         : Uint2B</span><br><span class="line">   +<span class="number">0x010</span> Process          : Ptr64 _EPROCESS</span><br><span class="line">   +<span class="number">0x018</span> MappedSystemVa   : Ptr64 Void</span><br><span class="line">   +<span class="number">0x020</span> StartVa          : Ptr64 Void</span><br><span class="line">   +<span class="number">0x028</span> ByteCount        : Uint4B</span><br><span class="line">   +<span class="number">0x02c</span> ByteOffset       : Uint4B</span><br></pre></td></tr></table></figure>
+
+<p><strong>IoFreeMdl</strong> 释放调用方分配的内存描述符列表 (MDL) 。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">IoFreeMdl</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">  [in] PMDL Mdl</span></span></span><br><span class="line"><span class="params"><span class="function">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+<p><strong>MmBuildMdlForNonPagedPool</strong> 接收指定非分页虚拟内存缓冲区的 MDL，并更新它以描述基础物理页。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">MmBuildMdlForNonPagedPool</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">  [in, out] PMDL MemoryDescriptorList    <span class="comment">// 指向 MDL 的指针</span></span></span></span><br><span class="line"><span class="params"><span class="function">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>MmMapLockedPagesSpecifyCache</strong> 将 MDL 描述的物理页面映射到虚拟地址，并使调用方能够指定用于创建映射的缓存属性。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">PVOID <span class="title">MmMapLockedPagesSpecifyCache</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">  [in]           PMDL                                                                          MemoryDescriptorList,</span></span></span><br><span class="line"><span class="params"><span class="function">  [in]           __drv_strictType(KPROCESSOR_MODE / <span class="keyword">enum</span> _MODE,__drv_typeConst)KPROCESSOR_MODE AccessMode,</span></span></span><br><span class="line"><span class="params"><span class="function">  [in]           __drv_strictTypeMatch(__drv_typeCond)MEMORY_CACHING_TYPE                      CacheType,</span></span></span><br><span class="line"><span class="params"><span class="function">  [in, optional] PVOID                                                                         RequestedAddress,</span></span></span><br><span class="line"><span class="params"><span class="function">  [in]           ULONG                                                                         BugCheckOnFailure,</span></span></span><br><span class="line"><span class="params"><span class="function">  [in]           ULONG                                                                         Priority</span></span></span><br><span class="line"><span class="params"><span class="function">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>AccessMode：<strong>KernelMode</strong> 或 <strong>UserMode</strong>。 几乎所有驱动程序都应使用 <strong>KernelMode</strong>。</p>
+<p><code>MmNonCached</code>：请求的内存不应由处理器缓存。</p>
+<h2 id="Exploit"><a href="#Exploit" class="headerlink" title="Exploit"></a>Exploit</h2><p><strong>MmMapLockedPagesSpecifyCache</strong> 地址映射 <code>AccessMode</code> 为 UserMode</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">enum</span> <span class="title class_">_MODE</span> &#123; </span><br><span class="line">    KernelMode, </span><br><span class="line">    UserMode, </span><br><span class="line">    MaximumMode </span><br><span class="line">&#125; MODE; </span><br></pre></td></tr></table></figure>
+
+<p>翻了几篇Windows的漏洞利用，寻找下这个函数相关：用户态可以访问内核内存，使用VirtualAlloc可以获得内存。</p>
+<p>调试，下断点</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span>: kd&gt; lm m s*</span><br><span class="line">Browse full <span class="keyword">module</span> list</span><br><span class="line"><span class="comment">// 查看start内存，PE文件格式</span></span><br><span class="line">start             end                 <span class="keyword">module</span> name</span><br><span class="line">fffff805`<span class="number">1b</span>010000 fffff805`<span class="number">1b</span>019000   <span class="built_in">sioctl</span>     (no symbols)</span><br><span class="line"><span class="comment">// IDA: 140005020 </span></span><br><span class="line"><span class="comment">// 偏移：0x5020 </span></span><br><span class="line"><span class="number">0</span>: kd&gt; ba e1 sioctl+<span class="number">0x5020</span>  <span class="comment">// ioctl</span></span><br><span class="line"></span><br><span class="line"><span class="number">1</span>: kd&gt; p</span><br></pre></td></tr></table></figure>
+
+<p>IoAllocateMdl</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>: kd&gt; </span><br><span class="line">sioctl+<span class="number">0x521e</span>:</span><br><span class="line">fffff80a`<span class="number">9852521</span>e ff150cceffff    call    qword ptr [sioctl+<span class="number">0x2030</span> (fffff80a`<span class="number">98522030</span>)]</span><br><span class="line"></span><br><span class="line"><span class="number">1</span>: kd&gt; dt nt!_MDL @rax</span><br><span class="line">   +<span class="number">0x000</span> Next             : (null) </span><br><span class="line">   +<span class="number">0x008</span> Size             : <span class="number">0</span>n56</span><br><span class="line">   +<span class="number">0x00a</span> MdlFlags         : <span class="number">0</span>n8</span><br><span class="line">   +<span class="number">0x00c</span> AllocationProcessorNumber : <span class="number">1</span></span><br><span class="line">   +<span class="number">0x00e</span> Reserved         : <span class="number">0</span></span><br><span class="line">   +<span class="number">0x010</span> Process          : <span class="number">0xffffa804</span>`<span class="number">2b</span>db3080 _EPROCESS</span><br><span class="line">   +<span class="number">0x018</span> MappedSystemVa   : <span class="number">0xffffbf01</span>`f1dc6f38 Void</span><br><span class="line">   +<span class="number">0x020</span> StartVa          : <span class="number">0xffffbf01</span>`f1dd1000 Void</span><br><span class="line">   +<span class="number">0x028</span> ByteCount        : <span class="number">0x1000</span></span><br><span class="line">   +<span class="number">0x02c</span> ByteOffset       : <span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<p>但是程序走到Memset会报错？</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://voidsec.com/windows-drivers-reverse-engineering-methodology/">windows-drivers-reverse-engineering-methodology</a>a</li>
+<li><a target="_blank" rel="noopener" href="https://exploitreversing.files.wordpress.com/2023/04/exploit_reversing_01-1.pdf">exploit_reversing_01</a></li>
+<li><a target="_blank" rel="noopener" href="https://exploitreversing.files.wordpress.com/2024/01/exploit_reversing_02.pdf">exploit_reversing_02</a></li>
+</ul>
+
+      </div>
+      
+      
+      
+    </div>
+    
+
+    
+    
+    
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Driver"><span class="nav-number">1.</span> <span class="nav-text">Driver</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MDL"><span class="nav-number">1.1.</span> <span class="nav-text">MDL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#API"><span class="nav-number">1.2.</span> <span class="nav-text">API</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Exploit"><span class="nav-number">2.</span> <span class="nav-text">Exploit</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ham5ter</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Ha0-Y" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Ha0-Y" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ham5ter</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">346k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">10:29</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
