@@ -28,7 +28,7 @@
 <meta property="og:description" content="Windows Kernel NonPagedPool UAF">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-02-06T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-02-19T11:15:14.450Z">
+<meta property="article:modified_time" content="2024-03-28T14:29:09.219Z">
 <meta property="article:author" content="ham5ter">
 <meta property="article:tag" content="HEVD">
 <meta name="twitter:card" content="summary">
@@ -230,7 +230,7 @@
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>39 分钟</span>
+              <span>38 分钟</span>
             </span>
 
         </div>
@@ -358,13 +358,13 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0: kd&gt; ed nt!Kd_DEFAULT_MASK 0xFFFFFFFF</span><br></pre></td></tr></table></figure>
 
 <p>因为存在 <code>Tag</code> 可以寻找pool，比较花时间，可以在DebugView里寻找信息.<code>!poolfind</code> 命令不会计算头部，<code>!pool</code> 会计算</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">0: kd&gt; !poolused 2 Hack</span><br><span class="line">0: kd&gt; !poolfind Hack -nonpaged</span><br><span class="line">3: kd&gt; g</span><br><span class="line">***** HEVD_IOCTL_ALLOCATE_UAF_OBJECT_NON_PAGED_POOL ******</span><br><span class="line">[+] Allocating UaF Object</span><br><span class="line">[+] Pool Tag: &#x27;kcaH&#x27;</span><br><span class="line">[+] Pool Type: NonPagedPool</span><br><span class="line">[+] Pool Size: 0x60</span><br><span class="line">[+] Pool Chunk: 0xFFFFA78BEF702B50</span><br><span class="line">[+] UseAfterFree Object: 0xFFFFA78BEF702B50</span><br><span class="line">[+] g_UseAfterFreeObjectNonPagedPool: 0xFFFFA78BEF702B50</span><br><span class="line">[+] UseAfterFree-&gt;Callback: 0xFFFFF8012D287CD0</span><br><span class="line">****** HEVD_IOCTL_ALLOCATE_UAF_OBJECT_NON_PAGED_POOL ******</span><br><span class="line">Break instruction exception - code 80000003 (first chance)</span><br><span class="line">0033:00007ff9`b21bb6d2 cc              int     3</span><br><span class="line">1: kd&gt; !pool 0xFFFFA78BEF702B50</span><br><span class="line">Pool page ffffa78bef702b50 region is Nonpaged pool</span><br><span class="line"> ffffa78bef702000 size:   30 previous size:    0  (Free)       ....</span><br><span class="line"> ffffa78bef702040 size:   90 previous size:    0  (Allocated)  FSim</span><br><span class="line"> ffffa78bef7020e0 size:   90 previous size:    0  (Allocated)  FSim</span><br><span class="line"> ffffa78bef702180 size:   90 previous size:    0  (Allocated)  FSim</span><br><span class="line"> ffffa78bef702220 size:   90 previous size:    0  (Allocated)  FSim</span><br><span class="line"> ffffa78bef7022c0 size:   90 previous size:    0  (Allocated)  FSim</span><br><span class="line"> ffffa78bef702360 size:   90 previous size:    0  (Allocated)  FSim</span><br><span class="line"> ffffa78bef702400 size:   90 previous size:    0  (Allocated)  FSim</span><br><span class="line"> ffffa78bef7024a0 size:   90 previous size:    0  (Allocated)  FSim</span><br><span class="line"> ffffa78bef702540 size:   90 previous size:    0  (Allocated)  FSim</span><br><span class="line"> ffffa78bef7025e0 size:   90 previous size:    0  (Allocated)  FSim</span><br><span class="line"> ffffa78bef702680 size:   90 previous size:    0  (Allocated)  FSim</span><br><span class="line"> ffffa78bef702720 size:   90 previous size:    0  (Allocated)  FSim</span><br><span class="line"> ffffa78bef7027c0 size:   90 previous size:    0  (Allocated)  FSim</span><br><span class="line"> ffffa78bef702860 size:   90 previous size:    0  (Allocated)  FSim</span><br><span class="line"> ffffa78bef702900 size:   90 previous size:    0  (Allocated)  FSim</span><br><span class="line"> ffffa78bef7029a0 size:   90 previous size:    0  (Allocated)  FSim</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">0: kd&gt; !poolused 2 Hack</span><br><span class="line">0: kd&gt; !poolfind Hack -nonpaged</span><br><span class="line">3: kd&gt; g</span><br><span class="line">***** HEVD_IOCTL_ALLOCATE_UAF_OBJECT_NON_PAGED_POOL ******</span><br><span class="line">[+] Allocating UaF Object</span><br><span class="line">[+] Pool Tag: &#x27;kcaH&#x27;</span><br><span class="line">[+] Pool Type: NonPagedPool</span><br><span class="line">[+] Pool Size: 0x60</span><br><span class="line">[+] Pool Chunk: 0xFFFFA78BEF702B50</span><br><span class="line">[+] UseAfterFree Object: 0xFFFFA78BEF702B50</span><br><span class="line">[+] g_UseAfterFreeObjectNonPagedPool: 0xFFFFA78BEF702B50</span><br><span class="line">[+] UseAfterFree-&gt;Callback: 0xFFFFF8012D287CD0</span><br><span class="line">****** HEVD_IOCTL_ALLOCATE_UAF_OBJECT_NON_PAGED_POOL ******</span><br><span class="line">Break instruction exception - code 80000003 (first chance)</span><br><span class="line">0033:00007ff9`b21bb6d2 cc              int     3</span><br><span class="line">1: kd&gt; !pool 0xFFFFA78BEF702B50</span><br><span class="line">Pool page ffffa78bef702b50 region is Nonpaged pool</span><br><span class="line"> ffffa78bef702000 size:   30 previous size:    0  (Free)       ....</span><br><span class="line"> # ...</span><br><span class="line"> ffffa78bef7029a0 size:   90 previous size:    0  (Allocated)  FSim</span><br></pre></td></tr></table></figure>
 
 <p>查看内存信息</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1: kd&gt; dq 0xFFFFA78BEF702B50</span><br><span class="line">ffffa78b`ef702b50  fffff801`2d287cd0 41414141`41414141</span><br><span class="line">ffffa78b`ef702b60  41414141`41414141 41414141`41414141</span><br><span class="line">ffffa78b`ef702b70  41414141`41414141 41414141`41414141</span><br><span class="line">ffffa78b`ef702b80  41414141`41414141 41414141`41414141</span><br><span class="line">ffffa78b`ef702b90  41414141`41414141 41414141`41414141</span><br><span class="line">ffffa78b`ef702ba0  41414141`41414141 00000000`00414141</span><br><span class="line">ffffa78b`ef702bb0  fe8fc5c0`d7167489 00000000`00000000</span><br><span class="line">ffffa78b`ef702bc0  00000000`00000000 ffffa78b`ef714039</span><br></pre></td></tr></table></figure>
 
 
-<p>pool 实际大小，需要加入一个头部信息，可以从下面看出来，是一个 <code>_LIST_ENTRY</code></p>
+<p>pool 实际大小，需要加入一个头部信息，并且内存对齐。pool header</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"> ffffa78bef702900 size:   90 previous size:    0  (Allocated)  FSim</span><br><span class="line"> ffffa78bef7029a0 size:   90 previous size:    0  (Allocated)  FSim</span><br><span class="line"></span><br><span class="line">1: kd&gt; !poolused 2 Hack</span><br><span class="line">Using a machine size of 1ffe7e pages to configure the kd cache</span><br><span class="line">....</span><br><span class="line"> Sorting by NonPaged Pool Consumed</span><br><span class="line">               NonPaged                  Paged</span><br><span class="line"> Tag     Allocs         Used     Allocs         Used</span><br><span class="line"> Hack         1          112          0            0	UNKNOWN pooltag &#x27;Hack&#x27;, please update pooltag.txt</span><br><span class="line">TOTAL         1          112          0            0</span><br></pre></td></tr></table></figure>
 
 <p>因此实际获得的大小：0x70，内存对齐</p>
@@ -378,7 +378,7 @@
 <li><code>NtAllocateReserveObject</code> 布局，但是在x64下得到错误的</li>
 <li>x64下可以使用<code>CreatePipe</code>和<code>WriteFile</code>来进行NonPagedPool喷射，缓冲区大小：PoolSize-HeaderSize(0x48)，NpFr tag。<a target="_blank" rel="noopener" href="https://securityinsecurity.github.io/exploiting-hevd-use-after-free/">(4)</a>[(5)](<a target="_blank" rel="noopener" href="https://vulndev.io/2022/07/14/windows-kernel-exploitation-hevd-x64-use-after-free/">Windows Kernel Exploitation – HEVD x64 Use-After-Free • Vulndev</a>)</li>
 </ul>
-<p>free后被合并，因此提高成功率，就创建碎片</p>
+<p>free后被合并，因此为了提高成功率，就创建hole，然后使用漏洞对象进行占位</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*ffffa78bef702a30 size:  5b0 previous size:    0  (Free)      *...~</span><br></pre></td></tr></table></figure>
 
 <p>参考<a target="_blank" rel="noopener" href="https://vulndev.io/2022/07/14/windows-kernel-exploitation-hevd-x64-use-after-free/">(6)</a>，获得两个句柄 <code>0xac, 0xb0</code></p>
@@ -406,7 +406,7 @@
 <p>如果CR4寄存器的第20位被设置为1，那么就启用了SMEP；21位smap <a target="_blank" rel="noopener" href="https://www.cnblogs.com/HcyRcer/p/16559321.html">Cr0-Cr4</a>。这里看到smep，smap都存在。SMEP存在就可以执行用户态代码</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">2: kd&gt; r cr4</span><br><span class="line">cr4=0000000000350ef8</span><br><span class="line">2: kd&gt; .formats cr4</span><br><span class="line">Evaluate expression:</span><br><span class="line">  Hex:     00000000`00350ef8</span><br><span class="line">  Decimal: 3477240</span><br><span class="line">  Decimal (unsigned) : 3477240</span><br><span class="line">  Octal:   0000000000000015207370</span><br><span class="line">  Binary:  00000000 00000000 00000000 00000000 00000000 00110101 00001110 11111000</span><br><span class="line">  Chars:   .....5..</span><br><span class="line">  Time:    Tue Feb 10 13:54:00 1970</span><br><span class="line">  Float:   low 4.87265e-039 high 0</span><br><span class="line">  Double:  1.71798e-317</span><br></pre></td></tr></table></figure>
 
-<p>寻找ROP：仍然使用ropper&#x2F;ROPgadget工具，在 <code>ntoskrnl.exe</code> 寻找</p>
+<p>寻找ROP：使用ropper&#x2F;ROPgadget工具，在 <code>ntoskrnl.exe</code> 寻找</p>
 <ul>
 <li><code>C:\Windows\WinSxS\amd64_microsoft-windows-os-kernelxxx\ntoskrnl.exe</code></li>
 </ul>
@@ -433,7 +433,7 @@
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">CreatePipe</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">  [out]          PHANDLE               hReadPipe,</span></span></span><br><span class="line"><span class="params"><span class="function">  [out]          PHANDLE               hWritePipe,</span></span></span><br><span class="line"><span class="params"><span class="function">  [in, optional] LPSECURITY_ATTRIBUTES lpPipeAttributes,</span></span></span><br><span class="line"><span class="params"><span class="function">  [in]           DWORD                 nSize</span></span></span><br><span class="line"><span class="params"><span class="function">)</span></span>;</span><br></pre></td></tr></table></figure>
 
 <p>会在内核空间创建 <code>PipeAttribute</code>，PipeAttribute结构是在<code>PagedPool</code>中分配的内核空间中属性的表示，构造后可以造成任意地址的读写</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">PipeAttribute</span> &#123;</span><br><span class="line">    LIST_ENTRY list ;</span><br><span class="line">    <span class="type">char</span> * AttributeName;</span><br><span class="line">    <span class="type">uint64_t</span> AttributeValueSize;</span><br><span class="line">    <span class="type">char</span> * AttributeValue;</span><br><span class="line">    <span class="type">char</span> data [<span class="number">0</span>];</span><br><span class="line"> &#125;;</span><br><span class="line">  <span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="title class_">_LIST_ENTRY</span> &#123;</span><br><span class="line">   <span class="keyword">struct</span> <span class="title class_">_LIST_ENTRY</span> *Flink;</span><br><span class="line">   <span class="keyword">struct</span> <span class="title class_">_LIST_ENTRY</span> *Blink;</span><br><span class="line"> &#125; LIST_ENTRY, *PLIST_ENTRY, PRLIST_ENTRY;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">PipeAttribute</span> &#123;</span><br><span class="line">    LIST_ENTRY list ;</span><br><span class="line">    <span class="type">char</span> * AttributeName;</span><br><span class="line">    <span class="type">uint64_t</span> AttributeValueSize;</span><br><span class="line">    <span class="type">char</span> * AttributeValue;</span><br><span class="line">    <span class="type">char</span> data [<span class="number">0</span>];</span><br><span class="line"> &#125;;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="title class_">_LIST_ENTRY</span> &#123;</span><br><span class="line">   <span class="keyword">struct</span> <span class="title class_">_LIST_ENTRY</span> *Flink;</span><br><span class="line">   <span class="keyword">struct</span> <span class="title class_">_LIST_ENTRY</span> *Blink;</span><br><span class="line"> &#125; LIST_ENTRY, *PLIST_ENTRY, PRLIST_ENTRY;</span><br></pre></td></tr></table></figure>
 
 <p>因此可以不写汇编而达到steal token 的目的</p>
 <ul>
@@ -545,7 +545,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-count">31</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -554,7 +554,7 @@
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-count">28</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -599,12 +599,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">346k</span>
+    <span title="站点总字数">347k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">10:29</span>
+    <span title="站点阅读时长">10:31</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>
