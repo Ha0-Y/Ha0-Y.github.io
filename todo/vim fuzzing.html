@@ -22,18 +22,18 @@
 
   <meta name="description" content="尝试Fuzz">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Fuzz尝试">
-<meta property="og:url" content="https://ha0-y.github.io/todo/Fuzz%E5%B0%9D%E8%AF%95.html">
+<meta property="og:title" content="vim fuzzing">
+<meta property="og:url" content="https://ha0-y.github.io/todo/vim%20fuzzing.html">
 <meta property="og:site_name" content="ham5ter">
 <meta property="og:description" content="尝试Fuzz">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-03-26T12:00:00.000Z">
-<meta property="article:modified_time" content="2024-03-31T09:31:23.176Z">
+<meta property="article:modified_time" content="2024-04-03T01:37:26.343Z">
 <meta property="article:author" content="ham5ter">
 <meta property="article:tag" content="Fuzz">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://ha0-y.github.io/todo/Fuzz%E5%B0%9D%E8%AF%95">
+<link rel="canonical" href="https://ha0-y.github.io/todo/vim%20fuzzing">
 
 
 <script id="page-configurations">
@@ -46,7 +46,7 @@
   };
 </script>
 
-  <title>Fuzz尝试 | ham5ter
+  <title>vim fuzzing | ham5ter
 </title>
   
 
@@ -187,7 +187,7 @@
     <div class="post-block" lang="zh-CN">
       <header class="post-header">
 
-<h1 class="post-title" itemprop="name headline">Fuzz尝试
+<h1 class="post-title" itemprop="name headline">vim fuzzing
 </h1>
 
 <div class="post-meta">
@@ -206,8 +206,8 @@
 </blockquote>
 <span id="more"></span>
 
-<p>根据<a target="_blank" rel="noopener" href="https://aflplus.plus/">The AFL++ fuzzing framework</a>案例，寻找一个熟悉的软件测测 – <code>vim</code></p>
-<p>先寻找一下vim的历史漏洞吧</p>
+<p>在<a target="_blank" rel="noopener" href="https://aflplus.plus/">The AFL++ fuzzing framework</a>看到了一个熟悉的软件– <code>vim</code>，自己尝试一下</p>
+<h2 id="fuzzing"><a href="#fuzzing" class="headerlink" title="fuzzing"></a>fuzzing</h2><p>先寻找一下vim的历史漏洞吧</p>
 <ul>
 <li><a target="_blank" rel="noopener" href="https://github.com/vim/vim/issues/5041">UAF:vim</a></li>
 <li><a target="_blank" rel="noopener" href="https://security.snyk.io/vuln/SNYK-UNMANAGED-VIMVIM-2840621">CVE-2022-1735：Buffer Overflow in vim</a></li>
@@ -230,8 +230,8 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./vim -u NONE -i NONE -n -m -X -Z -e -s -S /mnt/share/max/fuzz/poc/vim/poc_h8_s.dat -c :qa!</span><br></pre></td></tr></table></figure>
 
 
-<p>思路一下就明确了一点，vim加载脚本。</p>
-<p>操作系统：在vultr开了一个云主机</p>
+<p>思路明确了一点，vim加载脚本，corpus选择脚本进行。</p>
+<p>操作系统：便宜的云主机</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@debain:~<span class="comment"># uname -a</span></span><br><span class="line">Linux debain 6.1.0-17-amd64 <span class="comment">#1 SMP PREEMPT_DYNAMIC Debian 6.1.69-1 (2023-12-30) x86_64 GNU/Linux</span></span><br></pre></td></tr></table></figure>
 
 <p>安装afl</p>
@@ -250,25 +250,31 @@
 <p>精简样本库，但是可能去除掉一些很好的样本，因此不执行了😋</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ afl-tmin -i /fuzz/corpus -o /fuzz/cmin_corpus ./vim</span><br></pre></td></tr></table></figure>
 
-<p>tmux 持久化，防止退出ssh后直接杀死进程</p>
-<p>FUZZ：一个开启变异，一个不开启变异。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">root@debain:~<span class="comment"># lscpu</span></span><br><span class="line">CPU(s):                  1</span><br><span class="line"></span><br><span class="line">$ <span class="built_in">echo</span> core &gt; /proc/sys/kernel/core_pattern</span><br><span class="line">$ <span class="built_in">echo</span> 0 &gt; /proc/sys/kernel/randomize_va_space</span><br><span class="line">$ swapoff -a</span><br><span class="line">$ afl-fuzz -m none -i /fuzz/corpus -o /fuzz/out -M Master -D -- ./vim -u NONE -n -m -X -Z -e -s -S @@ -c :qa!</span><br><span class="line">afl-fuzz -m none -i /fuzz/corpus -o /fuzz/out -s slave -- ./vim -u NONE -n -m -X -Z -e -s -S @@ -c :qa!</span><br></pre></td></tr></table></figure>
+<p>使用 <code>tmux</code>，防止退出ssh后直接杀死进程</p>
+<p>fuzzer: 一个开启变异，一个不开启变异。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">root@debain:~<span class="comment"># lscpu</span></span><br><span class="line">CPU(s):                  1</span><br><span class="line"></span><br><span class="line">$ <span class="built_in">echo</span> core &gt; /proc/sys/kernel/core_pattern</span><br><span class="line">$ <span class="built_in">echo</span> 0 &gt; /proc/sys/kernel/randomize_va_space</span><br><span class="line">$ swapoff -a</span><br><span class="line">$ afl-fuzz -m none -i /fuzz/corpus -o /fuzz/out -M Master -D -- ./vim -u NONE -n -m -X -Z -e -s -S @@ -c :qa!</span><br><span class="line">$ afl-fuzz -m none -i /fuzz/corpus -o /fuzz/out -s slave -- ./vim -u NONE -n -m -X -Z -e -s -S @@ -c :qa!</span><br></pre></td></tr></table></figure>
 
-<p>有的样本直接报错，解决方式就是删除。</p>
-<p>发现了三四个crash，显示heap-buffer-overflow，调试倒是没发现问题</p>
-<p>需要使用非ASAN在编译一份，漏洞出现的地方在这里。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">  <span class="number">501</span>     <span class="type">void</span></span><br><span class="line">  <span class="number">502</span> <span class="built_in">vim_strncpy</span>(char_u *to, char_u *from, <span class="type">size_t</span> len)</span><br><span class="line">  <span class="number">503</span> &#123;</span><br><span class="line">  <span class="number">504</span>     <span class="built_in">STRNCPY</span>(to, from, len);</span><br><span class="line">► <span class="number">505</span>     to[len] = NUL;</span><br><span class="line">  <span class="number">506</span> &#125;</span><br></pre></td></tr></table></figure>
-
+<p>有的样本直接报错，但是afl要求必须能跑通，因此删除掉这些样本。</p>
+<p>结果：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p>使用gdb调试，看看能不能进行漏洞利用</p>
 <p><a target="_blank" rel="noopener" href="https://github.com/vim/vim/security">vim security</a>：直接发送一个邮件。</p>
 <p>后来聊的，没有crash，因此我试一试</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="keyword">export</span> CFLAGS=<span class="string">&quot;-fsanitize=address -fno-omit-frame-pointer&quot;</span> </span><br><span class="line">$ <span class="keyword">export</span> LDFLAGS=<span class="string">&quot;-fsanitize=address&quot;</span></span><br></pre></td></tr></table></figure>
 
+<h2 id="More"><a href="#More" class="headerlink" title="More"></a>More</h2><p>目标程序可能经常有常量的比较和验证，而这些环节通常会使得fuzzing停滞在此，因为模糊器的变异策略通常对应常量的猜测是非常低效的。我们可以收集目标程序中使用到的常量，定义为一个字典提供给模糊器。但目前对于AFL++来说有更好的方法解决这种需求，而无需定义字典</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 模糊器默认的变异策略通常难以命中if分支为true的情况，因为input做为64位，其值的空间太大了，根本难以猜测。</span></span><br><span class="line"><span class="keyword">if</span> (input = <span class="number">0x1122336644587</span>) &#123;</span><br><span class="line">	<span class="built_in">crash</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> &#123;</span><br><span class="line">	<span class="built_in">OK</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Laf-Intel：能够拆分程序中整数、字符串、浮点数等固定常量的比较和检测。考虑下面一个情况<code>assert x == 0x11223344</code>，Laf-Intel会拆分为<code>assert (x &amp; 0xff) == 0x44 &amp;&amp; ((x &gt;&gt; 8) &amp; 0xff) == 0x33 ....</code>这样形式，每一次只会进行单字节的比较，这样AFL就可以逐个字节的猜测，每当确定一个字节时，就会发现一个新的路径，进而继续在第一个字节的基础上猜测第二个字节，如此使得模糊器可以快速猜出<code>0x11223344</code>。如果你没有自己制作好的字典、丰富的语料库，这个功能会非常有用，通常建议至少有一个AFL++实例运行Laf-Intel插件。在编译前设置如下环境使用：<code>export AFL_LLVM_LAF_ALL=1</code></p>
+<h3 id="LLVM-Persistent-Mode"><a href="#LLVM-Persistent-Mode" class="headerlink" title="## LLVM Persistent Mode"></a>## LLVM Persistent Mode</h3><p>In-process fuzzing是一个强大功能，通常比默认常规编译fuzzing的速度快得多，大概快10-20倍，并且基本没有任何缺点。如果可以，请毫不犹豫的使用Persistent mode。</p>
+<p>AFL使用ForkServer来进行每次fuzzing，然而即便不用execve这种巨大的开销，但fork仍然是一笔不小的开。而Persistent fuzzing即一次fork进程种进行多次fuzzing，而无需每次都fork。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;what_you_need_for_your_target.h&quot;</span></span></span><br><span class="line"></span><br><span class="line">__AFL_FUZZ_INIT();</span><br><span class="line"></span><br><span class="line"><span class="built_in">main</span>() &#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// anything else here, e.g. command line arguments, initialization, etc.</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> __AFL_HAVE_MANUAL_CONTROL</span></span><br><span class="line">  __AFL_INIT();</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">char</span> *buf = __AFL_FUZZ_TESTCASE_BUF;  <span class="comment">// must be after __AFL_INIT</span></span><br><span class="line">                                                 <span class="comment">// and before __AFL_LOOP!</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span> (__AFL_LOOP(<span class="number">10000</span>)) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> len = __AFL_FUZZ_TESTCASE_LEN;  <span class="comment">// don&#x27;t use the macro directly in a</span></span><br><span class="line">                                        <span class="comment">// call!</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (len &lt; <span class="number">8</span>) <span class="keyword">continue</span>;  <span class="comment">// check for a required/useful minimum input length</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Setup function call, e.g. struct target *tmp = libtarget_init() */</span></span><br><span class="line">    <span class="comment">/* Call function to be fuzzed, e.g.: */</span></span><br><span class="line">    <span class="built_in">target_function</span>(buf, len);</span><br><span class="line">    <span class="comment">/* Reset state. e.g. libtarget_free(tmp) */</span></span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a target="_blank" rel="noopener" href="https://github.com/RootUp/fuzzingvim">Fuzzing VIM</a></li>
 <li><a target="_blank" rel="noopener" href="https://github.com/Eli2k765/FuzzingVim">FuzzingVim: Just to make fuzzing vim easier</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/cx1ng/p/17589798.html">浅谈AFL++ fuzzing（上）：如何用进行有效且规整的fuzzing</a></li>
 </ul>
 
       </div>
@@ -331,7 +337,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">1.</span> <span class="nav-text">参考</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#fuzzing"><span class="nav-number">1.</span> <span class="nav-text">fuzzing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#More"><span class="nav-number">2.</span> <span class="nav-text">More</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LLVM-Persistent-Mode"><span class="nav-number">2.1.</span> <span class="nav-text">## LLVM Persistent Mode</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -345,7 +351,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-count">32</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -399,12 +405,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">347k</span>
+    <span title="站点总字数">360k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">10:31</span>
+    <span title="站点阅读时长">10:54</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>
