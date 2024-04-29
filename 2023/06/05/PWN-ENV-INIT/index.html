@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="搭建一个pwn环境。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PWN-INIT">
+<meta property="og:url" content="https://ha0-y.github.io/2023/06/05/PWN-ENV-INIT/index.html">
+<meta property="og:site_name" content="h4m5ter">
+<meta property="og:description" content="搭建一个pwn环境。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-06-05T02:16:53.446Z">
+<meta property="article:modified_time" content="2024-04-29T09:36:00.600Z">
+<meta property="article:author" content="h4m5ter">
+<meta property="article:tag" content="pwn">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>PWN-INIT</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/Ha0-Y">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2023/06/10/%E6%B1%87%E7%BC%96%E5%AD%A6%E4%B9%A0/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2023/03/19/init-blog/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://ha0-y.github.io/2023/06/05/PWN-ENV-INIT/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://ha0-y.github.io/2023/06/05/PWN-ENV-INIT/&text=PWN-INIT"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://ha0-y.github.io/2023/06/05/PWN-ENV-INIT/&title=PWN-INIT"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://ha0-y.github.io/2023/06/05/PWN-ENV-INIT/&is_video=false&description=PWN-INIT"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=PWN-INIT&body=Check out this article: https://ha0-y.github.io/2023/06/05/PWN-ENV-INIT/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://ha0-y.github.io/2023/06/05/PWN-ENV-INIT/&title=PWN-INIT"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://ha0-y.github.io/2023/06/05/PWN-ENV-INIT/&title=PWN-INIT"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://ha0-y.github.io/2023/06/05/PWN-ENV-INIT/&title=PWN-INIT"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://ha0-y.github.io/2023/06/05/PWN-ENV-INIT/&title=PWN-INIT"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://ha0-y.github.io/2023/06/05/PWN-ENV-INIT/&name=PWN-INIT&description=&lt;blockquote&gt;
+&lt;p&gt;搭建一个pwn环境。&lt;/p&gt;
+&lt;/blockquote&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://ha0-y.github.io/2023/06/05/PWN-ENV-INIT/&t=PWN-INIT"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#VM-or-WSL"><span class="toc-number">1.</span> <span class="toc-text">VM or WSL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Docker"><span class="toc-number">2.</span> <span class="toc-text">Docker</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8A%A5%E9%94%99%E5%A4%84%E7%90%86"><span class="toc-number">2.1.</span> <span class="toc-text">报错处理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#docker-compose"><span class="toc-number">2.2.</span> <span class="toc-text">docker-compose</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        PWN-INIT
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">h4m5ter</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-06-05T02:16:53.446Z" class="dt-published" itemprop="datePublished">2023-06-05</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categorievariants/PWN/">PWN</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/pwn/" rel="tag">pwn</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <blockquote>
+<p>搭建一个pwn环境。</p>
+</blockquote>
+<span id="more"></span>
+
+<ul>
+<li><code>apt</code> or <code>apt-get</code>? 虽然我使用apt出现warning,但是依然能用<ul>
+<li>在脚本中，更加推荐 <code>apt-get</code></li>
+<li><code>-y</code> yes 避免交互而产生错误</li>
+</ul>
+</li>
+</ul>
+<h3 id="VM-or-WSL"><a href="#VM-or-WSL" class="headerlink" title="VM or WSL"></a>VM or WSL</h3><blockquote>
+<p>安装必备的应用</p>
+</blockquote>
+<p>root下使用，但是普通用户无法使用<code>gdb插件</code>功能，因为gdbinit文件的位置，我们可以复制一份到自己的用户目录下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> ~</span><br><span class="line"></span><br><span class="line">apt-get update &amp;&amp; apt-get upgrade</span><br><span class="line"></span><br><span class="line">apt-get install -y patchelf</span><br><span class="line">apt-get install -y wget</span><br><span class="line">apt-get install -y zip</span><br><span class="line">apt-get install -y tzdata</span><br><span class="line">apt-get install -y libncursesw5-dev libgdbm-dev libc6-dev openssl</span><br><span class="line">apt-get install -y --fix-missing python3 python3-pip python3-dev lib32z1 \</span><br><span class="line"> xinetd curl gcc gdb gdbserver g++ git libssl-dev libffi-dev build-essential tmux \</span><br><span class="line"> vim netcat iputils-ping cpio file net-tools socat ruby ruby-dev locales \</span><br><span class="line"> autoconf automake libtool make zsh openssh-server openssh-client \</span><br><span class="line"> gdb-multiarch bison clang</span><br><span class="line"></span><br><span class="line"><span class="comment"># python工具</span></span><br><span class="line">python3 -m pip install capstone filebytes unicorn keystone-engine ropper z3-solver angr</span><br><span class="line"></span><br><span class="line"><span class="comment"># pwntools</span></span><br><span class="line"><span class="comment"># 换源，可选</span></span><br><span class="line"><span class="comment"># pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple</span></span><br><span class="line">python3 -m pip install --upgrade pip </span><br><span class="line">python3 -m pip install --upgrade pwntools</span><br><span class="line"></span><br><span class="line"><span class="comment"># ROPgadget</span></span><br><span class="line">python3 -m pip install ROPgadget</span><br><span class="line"></span><br><span class="line"><span class="comment"># pwndbg</span></span><br><span class="line"><span class="built_in">cd</span> ~</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/pwndbg/pwndbg </span><br><span class="line"><span class="built_in">cd</span> pwndbg </span><br><span class="line">./setup.sh</span><br><span class="line"></span><br><span class="line"><span class="comment"># pwngdb</span></span><br><span class="line"><span class="built_in">cd</span> ~</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/scwuapt-getx/Pwngdb.git </span><br><span class="line"></span><br><span class="line"><span class="built_in">cat</span> ~/Pwngdb/.gdbinit &gt;&gt; ~/.gdbinit</span><br><span class="line"></span><br><span class="line"><span class="comment"># gem源</span></span><br><span class="line">gem sources --add https://mirrors.tuna.tsinghua.edu.cn/rubygems/ --remove https://rubygems.org/</span><br><span class="line"></span><br><span class="line"><span class="comment"># seccomp-tools</span></span><br><span class="line">gem install seccomp-tools</span><br><span class="line"></span><br><span class="line"><span class="comment"># one_gadget</span></span><br><span class="line">gem install one_gadget</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># pwninit</span></span><br><span class="line">apt-get install liblzma-dev pkgconf</span><br><span class="line">apt-get install cargo</span><br><span class="line">cargo install pwninit</span><br><span class="line"></span><br><span class="line"><span class="comment"># docker 自己选择</span></span><br><span class="line"><span class="comment"># apt-get install docker.io</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># qemu 自己选择</span></span><br><span class="line"><span class="comment"># apt-get install qemu qemu-system qemu-user-static binfmt-support</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Docker"><a href="#Docker" class="headerlink" title="Docker"></a>Docker</h3><p>搭建更加容易</p>
+<p>由于某些题目没有Libc版本，而是给出了Dockerfile。或者说，不想下载虚拟机。</p>
+<ul>
+<li>glibc-all-in-one 下载一个libc 进行patch(但是<code>patchelf</code>容易导致程序破坏).</li>
+<li>自己的docker环境</li>
+</ul>
+<p>docker环境搭建: 更改VERSION就行，禁止交互。</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ARG</span> VERSION=<span class="number">20.04</span></span><br><span class="line"><span class="keyword">FROM</span> ubuntu:$VERSION</span><br><span class="line"></span><br><span class="line"><span class="keyword">ARG</span> DEBIAN_FRONTEND noninteractive </span><br><span class="line"><span class="comment"># ENV TZ=Asia/Shanghai</span></span><br><span class="line"><span class="comment">########## solve some error ##############</span></span><br><span class="line"><span class="comment"># 定义时区参数</span></span><br><span class="line"><span class="keyword">ENV</span> TZ=Asia/Shanghai</span><br><span class="line"><span class="comment"># 设置时区</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">ln</span> -snf /usr/share/zoneinfo/<span class="variable">$TZ</span> /etc/localtime &amp;&amp; <span class="built_in">echo</span> <span class="string">&#x27;$TZ&#x27;</span> &gt; /etc/timezone</span></span><br><span class="line"><span class="comment"># 设置编码</span></span><br><span class="line"><span class="keyword">ENV</span> LANG C.UTF-<span class="number">8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">USER</span> root</span><br><span class="line"></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /root</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> ./pwninit.sh /root</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">chmod</span> +x /root/pwninit.sh &amp;&amp; /root/pwninit</span></span><br></pre></td></tr></table></figure>
+
+<p>pwninit: 只需要安装部分工具</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"><span class="built_in">cd</span> ~</span><br><span class="line">apt-get update &amp;&amp; apt-get upgrade</span><br><span class="line">apt-get install -y libncursesw5-dev libgdbm-dev libc6-dev openssl</span><br><span class="line">apt-get install -y python3 python3-pip python3-dev lib32z1 \</span><br><span class="line"> curl gcc gdb gdbserver g++ git libssl-dev libffi-dev build-essential tmux \</span><br><span class="line"> vim netcat iputils-ping cpio file net-tools locales \</span><br><span class="line"> autoconf automake libtool make zsh openssh-server openssh-client \</span><br><span class="line"> gdb-multiarch bison clang</span><br><span class="line"></span><br><span class="line"><span class="comment"># others</span></span><br><span class="line">python3 -m pip install capstone filebytes unicorn keystone-engine ropper</span><br><span class="line"></span><br><span class="line"><span class="comment"># pwntools</span></span><br><span class="line"><span class="comment"># 换源，可选</span></span><br><span class="line"><span class="comment"># pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple</span></span><br><span class="line">python3 -m pip install --upgrade pip </span><br><span class="line">python3 -m pip install --upgrade pwntools</span><br><span class="line"></span><br><span class="line"><span class="comment"># ROPgadget</span></span><br><span class="line">python3 -m pip install ROPgadget</span><br><span class="line"></span><br><span class="line"><span class="comment"># pwndbg</span></span><br><span class="line"><span class="built_in">cd</span> ~</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/pwndbg/pwndbg </span><br><span class="line"><span class="built_in">cd</span> pwndbg </span><br><span class="line">./setup.sh</span><br></pre></td></tr></table></figure>
+
+<p>创建一个容器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker build -h &lt;repo&gt;:&lt;tag&gt; .</span><br><span class="line"><span class="comment"># -f 指定dockerfile</span></span><br><span class="line"><span class="comment"># repo 形式 xxx/xxx</span></span><br><span class="line">docker ps -a</span><br></pre></td></tr></table></figure>
+
+<p>进入docker</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker run -it ubuntu:VERSION /bin/bash</span><br><span class="line"><span class="comment"># -v dir:dir 共享文件夹</span></span><br></pre></td></tr></table></figure>
+
+<p>docker 命令</p>
+<ul>
+<li>-i: 交互式</li>
+<li>-t: terminl</li>
+<li>-v hostDir:dockerDir 共享文件夹</li>
+<li>ps -a: 查看所有的容器</li>
+</ul>
+<p>停止后重新计入容器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker start &lt;ID&gt;</span><br><span class="line">docker attach &lt;ID&gt;</span><br></pre></td></tr></table></figure>
+
+<p>停止容器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker stop &lt;ID&gt;</span><br></pre></td></tr></table></figure>
+
+<p>删除容器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">rm</span> &lt;ID&gt;</span><br></pre></td></tr></table></figure>
+
+<p>删除镜像</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rmi &lt;ID&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="报错处理"><a href="#报错处理" class="headerlink" title="报错处理"></a>报错处理</h4><p>error 1</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">******</span><br><span class="line">Your encoding (ANSI_X3.4-1968) is different than UTF-8. pwndbg might not work properly.</span><br><span class="line">You might try launching gdb with:</span><br><span class="line">    LC_ALL=en_US.UTF-8 PYTHONIOENCODING=UTF-8 gdb</span><br><span class="line">Make sure that en_US.UTF-8 is activated <span class="keyword">in</span> /etc/locale.gen and you called locale-gen</span><br><span class="line">******</span><br></pre></td></tr></table></figure>
+
+<p>error 2</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;/root/pwndbg/gdbinit.py&quot;</span>, line 58, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    import pwndbg  <span class="comment"># noqa: F401</span></span><br><span class="line">  File <span class="string">&quot;/root/pwndbg/pwndbg/__init__.py&quot;</span>, line 86, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    config_mod.init_params()</span><br><span class="line">  File <span class="string">&quot;/root/pwndbg/pwndbg/gdblib/config.py&quot;</span>, line 159, <span class="keyword">in</span> init_params</span><br><span class="line">    Parameter(p)</span><br><span class="line">  File <span class="string">&quot;/root/pwndbg/pwndbg/gdblib/config.py&quot;</span>, line 45, <span class="keyword">in</span> __init__</span><br><span class="line">    self.value = param.value</span><br><span class="line">UnicodeEncodeError: <span class="string">&#x27;ascii&#x27;</span> codec can<span class="string">&#x27;t encode characters in position 0-1: ordinal not in range(128)</span></span><br><span class="line"><span class="string">------- tip of the day (disable with set show-tips off) -------</span></span><br></pre></td></tr></table></figure>
+
+<p>出现了如上错误。寻找到一个<a target="_blank" rel="noopener" href="https://github.com/pwndbg/pwndbg/issues/1539">issue</a></p>
+<ul>
+<li>error1，修改dockerfile的类似如下变量。选择中国</li>
+<li>error2  也解决了。</li>
+</ul>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ENV LANG en_US.utf8</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 我们的设置</span></span><br><span class="line"><span class="comment"># 定义时区参数</span></span><br><span class="line"><span class="keyword">ENV</span> TZ=Asia/Shanghai</span><br><span class="line"><span class="comment"># 设置时区</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">ln</span> -snf /usr/share/zoneinfo/<span class="variable">$TZ</span> /etc/localtime &amp;&amp; <span class="built_in">echo</span> <span class="string">&#x27;$TZ&#x27;</span> &gt; /etc/timezone</span></span><br><span class="line"><span class="comment"># 设置编码</span></span><br><span class="line"><span class="keyword">ENV</span> LANG C.UTF-<span class="number">8</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="docker-compose"><a href="#docker-compose" class="headerlink" title="docker-compose"></a>docker-compose</h4><p>创建多个docker。</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="https://github.com/Ha0-Y">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#VM-or-WSL"><span class="toc-number">1.</span> <span class="toc-text">VM or WSL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Docker"><span class="toc-number">2.</span> <span class="toc-text">Docker</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8A%A5%E9%94%99%E5%A4%84%E7%90%86"><span class="toc-number">2.1.</span> <span class="toc-text">报错处理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#docker-compose"><span class="toc-number">2.2.</span> <span class="toc-text">docker-compose</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://ha0-y.github.io/2023/06/05/PWN-ENV-INIT/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://ha0-y.github.io/2023/06/05/PWN-ENV-INIT/&text=PWN-INIT"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://ha0-y.github.io/2023/06/05/PWN-ENV-INIT/&title=PWN-INIT"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://ha0-y.github.io/2023/06/05/PWN-ENV-INIT/&is_video=false&description=PWN-INIT"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=PWN-INIT&body=Check out this article: https://ha0-y.github.io/2023/06/05/PWN-ENV-INIT/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://ha0-y.github.io/2023/06/05/PWN-ENV-INIT/&title=PWN-INIT"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://ha0-y.github.io/2023/06/05/PWN-ENV-INIT/&title=PWN-INIT"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://ha0-y.github.io/2023/06/05/PWN-ENV-INIT/&title=PWN-INIT"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://ha0-y.github.io/2023/06/05/PWN-ENV-INIT/&title=PWN-INIT"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://ha0-y.github.io/2023/06/05/PWN-ENV-INIT/&name=PWN-INIT&description=&lt;blockquote&gt;
+&lt;p&gt;搭建一个pwn环境。&lt;/p&gt;
+&lt;/blockquote&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://ha0-y.github.io/2023/06/05/PWN-ENV-INIT/&t=PWN-INIT"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2022-2024
+    h4m5ter
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/Ha0-Y">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
