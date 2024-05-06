@@ -14,7 +14,7 @@
 <meta property="og:description" content="程序保护机制学习">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-08-26T00:41:07.061Z">
-<meta property="article:modified_time" content="2024-04-29T09:36:00.628Z">
+<meta property="article:modified_time" content="2024-05-04T11:15:59.679Z">
 <meta property="article:author" content="h4m5ter">
 <meta property="article:tag" content="程序缓解机制">
 <meta name="twitter:card" content="summary">
@@ -268,6 +268,7 @@
 
 <h3 id="SELinux"><a href="#SELinux" class="headerlink" title="SELinux"></a>SELinux</h3><p>Android 8.0之后推出厂商升级成本大大降低，8.0之后增加vendor.img镜像 ，攻击面大大减少， 很多厂商的代码不与应用层直接交互， 增加了应用和厂商代码的SELinux限制</p>
 <h2 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h2><h3 id="ASLR"><a href="#ASLR" class="headerlink" title="ASLR"></a>ASLR</h3><p>与 Linux 相同，ASLR 保护指的是地址随机化技术(Address Space Layout Randomization)，这项技术将在程序启动时将 DLL 随机的加载到内存中的位置，这将缓解恶意程序的加载。ASLR 自 Windows 10 开始已经在系统中被配置为默认启用。</p>
+<p>不同于linux的是，windows下的ASLR基地址在每次开机后都是一致的，关机后改变</p>
 <h3 id="DEP"><a href="#DEP" class="headerlink" title="DEP"></a>DEP</h3><p>Data Execute Protector</p>
 <p><code>VirtualAlloc()</code>可以设置权限，设置为&#96;</p>
 <h3 id="GS"><a href="#GS" class="headerlink" title="GS"></a>GS</h3><p>这个保护类似于 Linux 中的 Canary 保护，一旦开启，会在返回地址和 BP 之前压入一个额外的 <strong>Security Cookie</strong>。系统会比较栈中的这个值和原先存放在 .data 中的值做一个比较。如果两者不吻合，说法栈中发生了溢出。</p>

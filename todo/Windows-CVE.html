@@ -13,8 +13,8 @@
 <meta property="og:site_name" content="h4m5ter">
 <meta property="og:description" content="Learn Windows CVE">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2024-04-30T07:19:58.305Z">
-<meta property="article:modified_time" content="2024-04-30T07:19:58.305Z">
+<meta property="article:published_time" content="2024-05-04T03:27:36.987Z">
+<meta property="article:modified_time" content="2024-05-04T03:27:36.987Z">
 <meta property="article:author" content="h4m5ter">
 <meta property="article:tag" content="Blog">
 <meta name="twitter:card" content="summary">
@@ -102,8 +102,6 @@
 </blockquote>
 <span id="more"></span>
 
-
-
 <h2 id="CVE-2023-21768"><a href="#CVE-2023-21768" class="headerlink" title="CVE-2023-21768"></a>CVE-2023-21768</h2><p>AFD.sys 在Win11结合IORing进行提权</p>
 <p>Windows AFD.sys驱动是Windows操作系统中的一个核心驱动程序，它主要负责处理套接字（socket）相关的网络通信。具体来说，AFD.sys驱动的主要作用包括：</p>
 <ol>
@@ -114,7 +112,6 @@
 </ol>
 <p>i&#x2F;o ring 是Windows 11(22H2)新出现的一种机制</p>
 <p>其相关结构：<a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows/win32/api/ioringapi/">ioringapi - Win32 apps</a></p>
-<h2 id="CVE-2022-26809"><a href="#CVE-2022-26809" class="headerlink" title="CVE-2022-26809"></a>CVE-2022-26809</h2><p>Windows RPC的漏洞获得 9.8 的 CVSS 分数并非没有原因，因为攻击不需要身份验证并且可以通过网络远程执行，并且可能导致远程代码执行 ( RCE) 具有 RPC 服务的权限，这取决于托管 RPC 运行时的进程。</p>
 <h2 id="CVE-2022-37969"><a href="#CVE-2022-37969" class="headerlink" title="CVE-2022-37969"></a>CVE-2022-37969</h2><p>Windows通用日志文件系统驱动程序（<code>CLFS.sys</code>）是一个Windows内核组件，用于管理日志文件。在Windows系统中，日志文件是记录系统事件和错误信息的关键组成部分。</p>
 <p>CVE-2022-37969通过构造BLF文件利用越界写（OOB）漏洞：BLF日志块头的SignaturesOffset字段在分配Symbol时可导致越界写，并破坏某些对象的虚拟函数表指针。攻击者可利用此漏洞来实现本地权限提升。</p>
 <h2 id="CVE-2024-21338"><a href="#CVE-2024-21338" class="headerlink" title="CVE-2024-21338"></a>CVE-2024-21338</h2><p><code>appid.sys</code> 驱动程序中的一个漏洞，该驱动程序是 Windows AppLocker 组件，主要提供应用程序白名单功能。</p>
@@ -122,6 +119,8 @@
 <ul>
 <li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows-hardware/drivers/kernel/previousmode">PreviousMode</a></li>
 </ul>
+<h2 id="CVE-2023-29360"><a href="#CVE-2023-29360" class="headerlink" title="CVE-2023-29360"></a>CVE-2023-29360</h2><p><code>mskssrv.sys</code> 用户可控的地址，MDL设备，经过MmMap返回给用户，导致用户态可以修改内核态内存信息</p>
+<h2 id="CVE-2022-26809"><a href="#CVE-2022-26809" class="headerlink" title="CVE-2022-26809"></a>CVE-2022-26809</h2><p>Windows RPC的漏洞获得 9.8 的 CVSS 分数并非没有原因，因为攻击不需要身份验证并且可以通过网络远程执行，并且可能导致远程代码执行 ( RCE) 具有 RPC 服务的权限，这取决于托管 RPC 运行时的进程。</p>
 
         
   </div>
