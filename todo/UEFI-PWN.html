@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="UEFI-devUEFI有着一套标准，简化开发流程: Specifications | Unified Extensible Firmware Interface Forum 启动流程SECPEIDXEBDSTLSRT UEFI, BIOSedk2开发环境 123$ sudo apt install git build-essential make \	gcc make iasl nasm  \">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ham5t3r">
+<meta property="og:url" content="https://ha0-y.github.io/todo/UEFI-PWN.html">
+<meta property="og:site_name" content="ham5t3r">
+<meta property="og:description" content="UEFI-devUEFI有着一套标准，简化开发流程: Specifications | Unified Extensible Firmware Interface Forum 启动流程SECPEIDXEBDSTLSRT UEFI, BIOSedk2开发环境 123$ sudo apt install git build-essential make \	gcc make iasl nasm  \">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-07-21T15:02:04.375Z">
+<meta property="article:modified_time" content="2024-07-21T15:02:04.375Z">
+<meta property="article:author" content="ham5t3r">
+<meta property="article:tag" content="Blog">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>ham5t3r</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+    <div class="content index py4 ">
+        
+          <header id="header">
+  <a class="u-url u-uid" href="/">
+  
+    
+      <img id="logo" alt class="u-logo" src="/images/logo.png" />
+    
+  
+    <div id="title">
+      <h1 class="p-name">ham5t3r</h1>
+    </div>
+  </a>
+  <div id="nav">
+    <ul>
+      <li class="icon">
+        <a href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-2x"></i></a>
+      </li>
+      <!--
+     --><li><a href="/">Home</a></li><!--
+   --><!--
+     --><li><a href="/about/">About</a></li><!--
+   --><!--
+     --><li><a href="/archives/">Writing</a></li><!--
+   --><!--
+     --><li><a target="_blank" rel="noopener" href="https://github.com/Ha0-Y">Projects</a></li><!--
+   -->
+    </ul>
+  </div>
+</header>
+
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  
+
+  <div class="content" itemprop="articleBody">
+      
+          <h2 id="UEFI-dev"><a href="#UEFI-dev" class="headerlink" title="UEFI-dev"></a>UEFI-dev</h2><h3 id="UEFI"><a href="#UEFI" class="headerlink" title="UEFI"></a>UEFI</h3><p>有着一套标准，简化开发流程: <a target="_blank" rel="noopener" href="https://uefi.org/specifications">Specifications | Unified Extensible Firmware Interface Forum</a></p>
+<h3 id="启动流程"><a href="#启动流程" class="headerlink" title="启动流程"></a>启动流程</h3><p>SEC<br>PEI<br>DXE<br>BDS<br>TLS<br>RT</p>
+<h3 id="UEFI-BIOS"><a href="#UEFI-BIOS" class="headerlink" title="UEFI, BIOS"></a>UEFI, BIOS</h3><h3 id="edk2"><a href="#edk2" class="headerlink" title="edk2"></a>edk2</h3><p>开发环境</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt install git build-essential make \</span><br><span class="line">	gcc make iasl nasm  \</span><br><span class="line">	uuid-dev xorg-dev</span><br></pre></td></tr></table></figure>
+
+<p>源码</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> https://github.com/tianocore/edk2.git</span><br><span class="line">$ <span class="built_in">cd</span> edk2</span><br><span class="line">$ git submodule update --init</span><br></pre></td></tr></table></figure>
+
+<p>拥有自己的工具链，而不是系统工具链</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ make -C edk2/BaseTools</span><br></pre></td></tr></table></figure>
+
+<p>需要设置环境变量，才能执行build</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">source</span> edksetup.sh</span><br></pre></td></tr></table></figure>
+
+<p>很多package，每个package是由module组成</p>
+<ul>
+<li>MdePkg &amp;&amp; MdeModulePkg : 很多开发都需要依赖这两个Pkg</li>
+<li>OvmfPkg : Open VM Firmware 生成OVMF.fd</li>
+</ul>
+<p><code>Conf/target.txt</code> 编译目标配置</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 编译的目标</span></span><br><span class="line"><span class="attr">ACTIVE_PLATFORM</span>       = EmulatorPkg/EmulatorPkg.dsc</span><br><span class="line"><span class="comment"># DEBUG/RELEASE</span></span><br><span class="line"><span class="attr">TARGET</span>                = DEBUG</span><br><span class="line"><span class="comment"># 架构: X64 注意大写</span></span><br><span class="line"><span class="attr">TARGET_ARCH</span>           = IA32</span><br><span class="line"><span class="comment"># 工具链: GCC5 为linux下工具链</span></span><br><span class="line"><span class="attr">TOOL_CHAIN_TAG</span>        = VS2019</span><br></pre></td></tr></table></figure>
+
+<p>也可以使用命令行，最终结果在 <code>Build</code> 目录下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># a: arch</span></span><br><span class="line"><span class="comment"># t: toolchain</span></span><br><span class="line"><span class="comment"># p: package</span></span><br><span class="line">$ build -a X64 -t GCC5 -p EmulatorPkg/EmulatorPkg.dsc</span><br></pre></td></tr></table></figure>
+
+
+<p>一个pkg内</p>
+<ul>
+<li>dsc: platform description file，对整个包的描述</li>
+<li>dec: package declaration file，定义公开的数据和接口，其余的包可以调用</li>
+<li>Module: 最小的可生成单元</li>
+</ul>
+<p>一个Module内部包含 inf 和 源码</p>
+<p>Protocol: UEFI提供者和使用者之间的协议</p>
+<h3 id="hello-world"><a href="#hello-world" class="headerlink" title="hello-world"></a>hello-world</h3><p>MdeMudulePkg下存在一个 <code>Application/HelloWorld</code> 文件，我们可以编译运行</p>
+<ul>
+<li>修改 <code>ACTIVE_PLATFORM       = MdeModulePkg/MdeModulePkg.dsc</code>，直接build</li>
+</ul>
+<p>从网上找一个别人如何运行的脚本</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os, subprocess</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        ret = subprocess.call([</span><br><span class="line">            <span class="string">&quot;qemu-system-x86_64&quot;</span>,</span><br><span class="line">            <span class="string">&quot;-m&quot;</span>, <span class="string">f&quot;<span class="subst">&#123;<span class="number">256</span>+random.randint(<span class="number">0</span>, <span class="number">512</span>)&#125;</span>&quot;</span>,</span><br><span class="line">            <span class="string">&quot;-drive&quot;</span>, <span class="string">f&quot;if=pflash,format=raw,file=OVMF.fd&quot;</span>,</span><br><span class="line">            <span class="string">&quot;-drive&quot;</span>, <span class="string">&quot;file=fat:rw:contents,format=raw&quot;</span>,</span><br><span class="line">            <span class="string">&quot;-net&quot;</span>, <span class="string">&quot;none&quot;</span>,</span><br><span class="line">            <span class="string">&quot;-monitor&quot;</span>, <span class="string">&quot;/dev/null&quot;</span>,</span><br><span class="line">            <span class="string">&quot;-nographic&quot;</span></span><br><span class="line">        ], stderr=subprocess.DEVNULL)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Return:&quot;</span>, ret)</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Error!&quot;</span>)</span><br><span class="line">    <span class="keyword">finally</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Done.&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>因此使用QEMU运行，首先安装qemu，然后生成 <code>OVME.fd</code> 固件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt install qemu-system-x86_64</span><br><span class="line">$ build -p OvmfPkg/OvmfPkgX64.dsc</span><br></pre></td></tr></table></figure>
+
+<p>一个fat格式的驱动器 contents，包含 <code>bzImage; rootfs.img; startup.nsh</code> 等文件</p>
+<blockquote>
+<p>在UEFI（Unified Extensible Firmware Interface）环境中，<code>.nsh</code> 文件通常指的是 EFI Shell 脚本文件。EFI Shell 是一个基于 UEFI 规范的命令行接口，允许用户在系统引导前阶段执行各种命令和脚本。<br><code>startup.nsh</code>是一个用于启动操作系统的脚本文件，它位于EFI系统分区中，通常由UEFI Shell执行。用户可以按下 <code>ESC</code> 键来跳过 <code>startup.nsh</code> 的执行</p>
+</blockquote>
+<p>startup.nsh 中需要内核启动参数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bzImage console=ttyS0 initrd=rootfs.img rdinit=/init quiet</span><br></pre></td></tr></table></figure>
+
+<p>但是正常情况下，edk2会提供UI和EFI SHELL两种交互方式让用户运行EFI程序或者进行Boot参数的相关设置。</p>
+<h4 id="Pkg"><a href="#Pkg" class="headerlink" title="Pkg"></a>Pkg</h4><p>创建一个Pkg：写 <code>hello world</code> 最难受的一次</p>
+<p>创建一个HelloWorldPkg</p>
+<p>入口： <code>UefiMain</code></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// file: HelloWorld.c</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Uefi.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Library/UefiLib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function">EFI_STATUS</span></span><br><span class="line"><span class="function">EFIAPI</span></span><br><span class="line"><span class="function"><span class="title">UefiMain</span> <span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">  IN EFI_HANDLE        ImageHandle,</span></span></span><br><span class="line"><span class="params"><span class="function">  IN EFI_SYSTEM_TABLE  *SystemTable</span></span></span><br><span class="line"><span class="params"><span class="function">  )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="built_in">Print</span>(<span class="string">L&quot;Hello, UEFI!\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> EFI_SUCCESS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>INF文件，内容可以参考其余的INF文件</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 定义</span></span><br><span class="line"><span class="section">[Defines]</span></span><br><span class="line">  <span class="attr">INF_VERSION</span>                    = <span class="number">0</span>x00010005</span><br><span class="line">  <span class="attr">BASE_NAME</span>                      = HelloWorld</span><br><span class="line">  <span class="attr">FILE_GUID</span>                      = <span class="number">8</span>f3328bf-acc2-<span class="number">4067</span>-bd16-<span class="number">83937</span>bd84d30</span><br><span class="line">  <span class="attr">MODULE_TYPE</span>                    = UEFI_APPLICATION</span><br><span class="line">  <span class="attr">VERSION_STRING</span>                 = <span class="number">1.0</span></span><br><span class="line">  <span class="attr">ENTRY_POINT</span>                    = UefiMain</span><br><span class="line"></span><br><span class="line"><span class="section">[Sources]</span></span><br><span class="line">  HelloWorld.c</span><br><span class="line"></span><br><span class="line"><span class="comment"># 需要引入的包</span></span><br><span class="line"><span class="section">[Packages]</span></span><br><span class="line">  MdePkg/MdePkg.dec</span><br><span class="line">  MdeModulePkg/MdeModulePkg.dec</span><br><span class="line"></span><br><span class="line"><span class="comment"># 需要的lib</span></span><br><span class="line"><span class="section">[LibraryClasses]</span></span><br><span class="line">  UefiApplicationEntryPoint</span><br><span class="line">  UefiLib</span><br></pre></td></tr></table></figure>
+
+<p>DSC文件，出错问题在于 <code>LibraryClasses</code> 的 <code>LibraryClasses</code> 我们也需要包含</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[Defines]</span></span><br><span class="line">  <span class="attr">PLATFORM_NAME</span>                  = MdeModule</span><br><span class="line">  <span class="attr">PLATFORM_GUID</span>                  = f58d1ee1-f4d0-<span class="number">47</span>d7-<span class="number">9</span>ff3-<span class="number">72</span>d5fe97d342</span><br><span class="line">  <span class="attr">PLATFORM_VERSION</span>               = <span class="number">0.1</span></span><br><span class="line">  <span class="attr">DSC_SPECIFICATION</span>              = <span class="number">0</span>x00010005</span><br><span class="line">  <span class="attr">OUTPUT_DIRECTORY</span>               = Build/MdeModule</span><br><span class="line">  <span class="attr">SUPPORTED_ARCHITECTURES</span>        = X64</span><br><span class="line">  <span class="attr">BUILD_TARGETS</span>                  = DEBUG|RELEASE</span><br><span class="line">  <span class="attr">SKUID_IDENTIFIER</span>               = DEFAULT</span><br><span class="line"></span><br><span class="line">!include MdePkg/MdeLibs.dsc.inc</span><br><span class="line"></span><br><span class="line"><span class="section">[LibraryClasses]</span></span><br><span class="line">  UefiApplicationEntryPoint|MdePkg/Library/UefiApplicationEntryPoint/UefiApplicationEntryPoint.inf</span><br><span class="line">  UefiLib|MdePkg/Library/UefiLib/UefiLib.inf</span><br><span class="line">  PrintLib|MdePkg/Library/BasePrintLib/BasePrintLib.inf</span><br><span class="line">  PcdLib|MdePkg/Library/BasePcdLibNull/BasePcdLibNull.inf</span><br><span class="line">  DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf</span><br><span class="line">  BaseMemoryLib|MdePkg/Library/BaseMemoryLib/BaseMemoryLib.inf</span><br><span class="line">  BaseLib|MdePkg/Library/BaseLib/BaseLib.inf</span><br><span class="line">  UefiBootServicesTableLib|MdePkg/Library/UefiBootServicesTableLib/UefiBootServicesTableLib.inf</span><br><span class="line">  DevicePathLib|MdePkg/Library/UefiDevicePathLib/UefiDevicePathLib.inf</span><br><span class="line">  UefiRuntimeServicesTableLib|MdePkg/Library/UefiRuntimeServicesTableLib/UefiRuntimeServicesTableLib.inf</span><br><span class="line">  MemoryAllocationLib|MdePkg/Library/UefiMemoryAllocationLib/UefiMemoryAllocationLib.inf</span><br><span class="line"></span><br><span class="line"><span class="section">[Components]</span></span><br><span class="line">  HelloWorldPkg/HelloWorld.inf</span><br></pre></td></tr></table></figure>
+
+<p>没有Module，也就没有 dec 文件</p>
+<p>修改 <code>Conf/target.txt</code>，修改如下的一行，就可以执行build</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ACTIVE_PLATFORM       = HelloWorldPkg/HelloWorld.dsc</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="SMM"><a href="#SMM" class="headerlink" title="SMM"></a>SMM</h3><h3 id="keycode"><a href="#keycode" class="headerlink" title="keycode"></a>keycode</h3><p>keycode</p>
+<ul>
+<li>f1-f12 keycode: f1 -&gt; 0x70(112) … </li>
+<li>esc keycode: 0x1b(27)</li>
+<li>keycode不区分 <code>Q/q</code> 这种大小写</li>
+</ul>
+<h2 id="reverse-uefi"><a href="#reverse-uefi" class="headerlink" title="reverse-uefi"></a>reverse-uefi</h2><p>了解点开发，才能逆向</p>
+<p>入口点 : <code>_ModuleEntryPoint</code></p>
+<p>SystemTable: </p>
+<p>一个重要的结构体 : <code>EFI_BOOT_SERVICES *gBS = SystemTable-&gt;BootServices;</code> </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;MdePkg/Include/Uefi/UefiSpec.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">///</span></span><br><span class="line"><span class="comment">/// EFI Boot Services Table.</span></span><br><span class="line"><span class="comment">///</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">  <span class="comment">///</span></span><br><span class="line">  <span class="comment">/// The table header for the EFI Boot Services Table.</span></span><br><span class="line">  <span class="comment">///</span></span><br><span class="line">  EFI_TABLE_HEADER                              Hdr;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  <span class="comment">// Task Priority Services</span></span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  EFI_RAISE_TPL                                 RaiseTPL;</span><br><span class="line">  EFI_RESTORE_TPL                               RestoreTPL;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  <span class="comment">// Memory Services</span></span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  EFI_ALLOCATE_PAGES                            AllocatePages;</span><br><span class="line">  EFI_FREE_PAGES                                FreePages;</span><br><span class="line">  EFI_GET_MEMORY_MAP                            GetMemoryMap;</span><br><span class="line">  EFI_ALLOCATE_POOL                             AllocatePool;</span><br><span class="line">  EFI_FREE_POOL                                 FreePool;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  <span class="comment">// Event &amp; Timer Services</span></span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  EFI_CREATE_EVENT                              CreateEvent;</span><br><span class="line">  EFI_SET_TIMER                                 SetTimer;</span><br><span class="line">  EFI_WAIT_FOR_EVENT                            WaitForEvent;</span><br><span class="line">  EFI_SIGNAL_EVENT                              SignalEvent;</span><br><span class="line">  EFI_CLOSE_EVENT                               CloseEvent;</span><br><span class="line">  EFI_CHECK_EVENT                               CheckEvent;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  <span class="comment">// Protocol Handler Services</span></span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  EFI_INSTALL_PROTOCOL_INTERFACE                InstallProtocolInterface;</span><br><span class="line">  EFI_REINSTALL_PROTOCOL_INTERFACE              ReinstallProtocolInterface;</span><br><span class="line">  EFI_UNINSTALL_PROTOCOL_INTERFACE              UninstallProtocolInterface;</span><br><span class="line">  EFI_HANDLE_PROTOCOL                           HandleProtocol;</span><br><span class="line">  VOID                                          *Reserved;</span><br><span class="line">  EFI_REGISTER_PROTOCOL_NOTIFY                  RegisterProtocolNotify;</span><br><span class="line">  EFI_LOCATE_HANDLE                             LocateHandle;</span><br><span class="line">  EFI_LOCATE_DEVICE_PATH                        LocateDevicePath;</span><br><span class="line">  EFI_INSTALL_CONFIGURATION_TABLE               InstallConfigurationTable;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  <span class="comment">// Image Services</span></span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  EFI_IMAGE_LOAD                                LoadImage;</span><br><span class="line">  EFI_IMAGE_START                               StartImage;</span><br><span class="line">  EFI_EXIT                                      Exit;</span><br><span class="line">  EFI_IMAGE_UNLOAD                              UnloadImage;</span><br><span class="line">  EFI_EXIT_BOOT_SERVICES                        ExitBootServices;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  <span class="comment">// Miscellaneous Services</span></span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  EFI_GET_NEXT_MONOTONIC_COUNT                  GetNextMonotonicCount;</span><br><span class="line">  EFI_STALL                                     Stall;</span><br><span class="line">  EFI_SET_WATCHDOG_TIMER                        SetWatchdogTimer;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  <span class="comment">// DriverSupport Services</span></span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  EFI_CONNECT_CONTROLLER                        ConnectController;</span><br><span class="line">  EFI_DISCONNECT_CONTROLLER                     DisconnectController;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  <span class="comment">// Open and Close Protocol Services</span></span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  EFI_OPEN_PROTOCOL                             OpenProtocol;</span><br><span class="line">  EFI_CLOSE_PROTOCOL                            CloseProtocol;</span><br><span class="line">  EFI_OPEN_PROTOCOL_INFORMATION                 OpenProtocolInformation;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  <span class="comment">// Library Services</span></span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  EFI_PROTOCOLS_PER_HANDLE                      ProtocolsPerHandle;</span><br><span class="line">  EFI_LOCATE_HANDLE_BUFFER                      LocateHandleBuffer;</span><br><span class="line">  EFI_LOCATE_PROTOCOL                           LocateProtocol;</span><br><span class="line">  EFI_INSTALL_MULTIPLE_PROTOCOL_INTERFACES      InstallMultipleProtocolInterfaces;</span><br><span class="line">  EFI_UNINSTALL_MULTIPLE_PROTOCOL_INTERFACES    UninstallMultipleProtocolInterfaces;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  <span class="comment">// 32-bit CRC Services</span></span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  EFI_CALCULATE_CRC32                           CalculateCrc32;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  <span class="comment">// Miscellaneous Services</span></span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  EFI_COPY_MEM                                  CopyMem;</span><br><span class="line">  EFI_SET_MEM                                   SetMem;</span><br><span class="line">  EFI_CREATE_EVENT_EX                           CreateEventEx;</span><br><span class="line">&#125; EFI_BOOT_SERVICES;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Pwn2Win-Accessing-the-Truth"><a href="#Pwn2Win-Accessing-the-Truth" class="headerlink" title="Pwn2Win Accessing-the-Truth"></a>Pwn2Win Accessing-the-Truth</h2><p>附件下载：<a target="_blank" rel="noopener" href="https://github.com/epicleet/write-ups/tree/master/2021/Pwn2Win/pwn-Accessing_the_Truth">Pwn2Win CTF 2021 Accessing the Truth</a></p>
+<p>逆向工具：<a target="_blank" rel="noopener" href="https://github.com/theopolis/uefi-firmware-parser">uefi-firmware-parser: Parse BIOS&#x2F;Intel ME&#x2F;UEFI</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">$ sudo python3 -m pip install uefi_firmware</span><br><span class="line"><span class="comment"># 参数含义</span></span><br><span class="line">$ uefi-firmware-parser -h</span><br><span class="line">usage: uefi-firmware-parser [-h] [-b] [--superbrute] [-q] [-o OUTPUT] [-O]</span><br><span class="line">                            [-c] [-e] [-g GENERATE] [--<span class="built_in">test</span>]</span><br><span class="line">                            file [file ...]</span><br><span class="line"></span><br><span class="line">Parse, and optionally output, details and data on UEFI-related firmware.</span><br><span class="line"></span><br><span class="line">positional arguments:</span><br><span class="line">  file                  The file(s) to work on</span><br><span class="line"></span><br><span class="line">optional arguments:</span><br><span class="line">  -h, --<span class="built_in">help</span>            show this <span class="built_in">help</span> message and <span class="built_in">exit</span></span><br><span class="line">  -b, --brute           The input is a blob and may contain FV headers.</span><br><span class="line">  --superbrute          The input is a blob and may contain any <span class="built_in">sort</span> of</span><br><span class="line">                        firmware object</span><br><span class="line">  -q, --quiet           Do not show info.</span><br><span class="line">  -o OUTPUT, --output OUTPUT</span><br><span class="line">                        Dump firmware objects to this folder.</span><br><span class="line">  -O, --outputfolder    Dump firmware objects to a folder based on filename</span><br><span class="line">                        <span class="variable">$&#123;FILENAME&#125;</span>_output/</span><br><span class="line">  -c, --<span class="built_in">echo</span>            Echo the filename before parsing or extracting.</span><br><span class="line">  -e, --extract         Extract all files/sections/volumes.</span><br><span class="line">  -g GENERATE, --generate GENERATE</span><br><span class="line">                        Generate a FDF, implies extraction (volumes only)</span><br><span class="line">  --<span class="built_in">test</span>                Test file parsing, output name/success.</span><br></pre></td></tr></table></figure>
+
+<p>解包 OVMF.fd</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ uefi-firmware-parser -ecO ./OVMF.fd</span><br></pre></td></tr></table></figure>
+
+<p>寻找到指定的efi: 启动时按 <code>f2/f12</code> 进入bios界面</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">BdsDxe: loading Boot0000 <span class="string">&quot;UiApp&quot;</span> <span class="function">from <span class="title">Fv</span><span class="params">(<span class="number">7</span>CB8BDC9-F8EB<span class="number">-4F</span>34-AAEA<span class="number">-3</span>EE4AF6516A1)</span>/<span class="title">FvFile</span><span class="params">(<span class="number">462</span>CAA21<span class="number">-7614</span><span class="number">-4503</span><span class="number">-836E-8</span>AB6F4662331)</span></span></span><br><span class="line"><span class="function">BdsDxe: starting Boot0000 <span class="string">&quot;UiApp&quot;</span> from Fv(<span class="number">7</span>CB8BDC9-F8EB<span class="number">-4F</span>34-AAEA<span class="number">-3</span>EE4AF6516A1)/FvFile(<span class="number">462</span>CAA21<span class="number">-7614</span><span class="number">-4503</span><span class="number">-836E-8</span>AB6F4662331)</span></span><br><span class="line"><span class="function">Setup Utility</span></span><br><span class="line"><span class="function">Enter Password:</span></span><br></pre></td></tr></table></figure>
+
+<p>根据对应的UUID进行寻找</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ find . -iname &quot;*462CAA21-7614-4503-836E-8AB6F4662331*&quot;</span><br><span class="line">./file-9e21fd93-9c72-4c15-8c4b-e77f1db2d792/section0/section3/volume-ee4e5898-3914-4259-9d6e-dc7bd79403cf/file-462caa21-7614-4503-836e-8ab6f4662331</span><br></pre></td></tr></table></figure>
+
+<p>可以找到 <code>section0.pe</code> 文件，使用IDA打开</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ file section0.pe </span><br><span class="line">section0.pe: MS-DOS executable PE32+ executable (EFI application) x86-64, <span class="keyword">for</span> MS Windows</span><br></pre></td></tr></table></figure>
+
+<p>关键字符定位，需要把IDA的字符串修改UTF-16</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.text:<span class="number">0000000000013990</span> aEnterPassword:                         ; DATA XREF: sub_240+F5↑o</span><br><span class="line">.text:<span class="number">0000000000013990</span>                 text <span class="string">&quot;UTF-16LE&quot;</span>, <span class="string">&#x27;Enter Password: &#x27;</span>,<span class="number">0</span>Ah,<span class="number">0</span></span><br><span class="line"></span><br><span class="line"># 交叉引用</span><br><span class="line">_ModuleEntryPoint</span><br></pre></td></tr></table></figure>
+
+<p>一个不错的IDA插件：<a target="_blank" rel="noopener" href="https://github.com/binarly-io/efiXplorer">efiXplorer: IDA plugin for UEFI firmware analysis and reverse engineering automation</a></p>
+<p>出现漏洞的逻辑：没有处理 <code>\n</code> 如果我们一直输入 <code>\n</code> 就产生类似栈溢出的效果。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> ( count_try &lt;= <span class="number">2</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">Memset</span>(buffer, length, <span class="number">0</span>);</span><br><span class="line">    idx = <span class="number">-1</span>i64;</span><br><span class="line">    <span class="built_in">Print</span>(<span class="string">L&quot;Enter Password: \n&quot;</span>);</span><br><span class="line">    <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      Char = <span class="built_in">GetChar</span>();</span><br><span class="line">      ++idx;</span><br><span class="line">      <span class="keyword">if</span> ( Char == <span class="string">&#x27;\r&#x27;</span> )</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">if</span> ( Char != <span class="string">&#x27;\n&#x27;</span> )</span><br><span class="line">      &#123;</span><br><span class="line">        buffer[idx] = Char;</span><br><span class="line">        <span class="built_in">Print</span>(<span class="string">L&quot;*&quot;</span>);</span><br><span class="line">        size = <span class="built_in">GetLength</span>(buffer);</span><br><span class="line">        <span class="keyword">if</span> ( size &gt;= length - <span class="number">1</span> )</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">Print</span>(<span class="string">L&quot;\n&quot;</span>);</span><br><span class="line">    <span class="built_in">sub_A68</span>(buffer, idx, (__int64)v8);</span><br><span class="line">    <span class="keyword">if</span> ( !<span class="built_in">MemCmp</span>(v8, aV, length) )   <span class="comment">// ???</span></span><br><span class="line">      <span class="keyword">return</span> <span class="number">1</span>i64;</span><br><span class="line">    <span class="built_in">Print</span>(<span class="string">L&quot;Wrong!!\n&quot;</span>);</span><br><span class="line">    ++count_try;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="修改启动参数"><a href="#修改启动参数" class="headerlink" title="修改启动参数"></a>修改启动参数</h3><h3 id="shellcode"><a href="#shellcode" class="headerlink" title="shellcode"></a>shellcode</h3><p>在 UEFI 阶段：</p>
+<ul>
+<li>大部分内存默认是可执行的</li>
+<li>UEFI 规范并未强制要求加入栈保护（canary），这取决于编译器的支持</li>
+<li>ASLR 需要操作系统的支持，但是 UEFI 运行于操作系统之前，故 UEFI pwn 中不太需要考虑内存随机</li>
+</ul>
+<h2 id="d3guard"><a href="#d3guard" class="headerlink" title="d3guard"></a>d3guard</h2><p><a target="_blank" rel="noopener" href="https://github.com/yikesoftware/d3ctf-2022-pwn-d3guard">d3ctf-2022-pwn-d3guard</a></p>
+<h2 id="SMMCowsay"><a href="#SMMCowsay" class="headerlink" title="SMMCowsay"></a>SMMCowsay</h2><p>附件下载：<a target="_blank" rel="noopener" href="https://2022.uiuc.tf/challenges">UIUCTF 2022</a></p>
+<h2 id="corCTF-smm-diary"><a href="#corCTF-smm-diary" class="headerlink" title="corCTF-smm-diary"></a>corCTF-smm-diary</h2><h2 id="Dubhectf-ToySMM"><a href="#Dubhectf-ToySMM" class="headerlink" title="Dubhectf-ToySMM"></a>Dubhectf-ToySMM</h2><h2 id="more"><a href="#more" class="headerlink" title="more"></a>more</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/river-li/awesome-uefi-security">awesome-uefi-security: 👓A collection of papers&#x2F;tools&#x2F;exploits for UEFI security</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/mytbk/firmware_notes/blob/master/uefi/reverse-uefi.md">reverse-uefi</a></li>
+</ul>
+
+        
+  </div>
+</article>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2022-2024
+    ham5t3r
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/Ha0-Y">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

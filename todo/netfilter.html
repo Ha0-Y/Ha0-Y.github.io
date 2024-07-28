@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Linux netfilter">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{title}}">
+<meta property="og:url" content="https://ha0-y.github.io/todo/netfilter.html">
+<meta property="og:site_name" content="ham5t3r">
+<meta property="og:description" content="Linux netfilter">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-07-28T14:20:25.391Z">
+<meta property="article:modified_time" content="2024-06-07T02:28:07.684Z">
+<meta property="article:author" content="ham5t3r">
+<meta property="article:tag" content="Blog">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>{{title}}</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+    <div class="content index py4 ">
+        
+          <header id="header">
+  <a class="u-url u-uid" href="/">
+  
+    
+      <img id="logo" alt class="u-logo" src="/images/logo.png" />
+    
+  
+    <div id="title">
+      <h1 class="p-name">ham5t3r</h1>
+    </div>
+  </a>
+  <div id="nav">
+    <ul>
+      <li class="icon">
+        <a href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-2x"></i></a>
+      </li>
+      <!--
+     --><li><a href="/">Home</a></li><!--
+   --><!--
+     --><li><a href="/about/">About</a></li><!--
+   --><!--
+     --><li><a href="/archives/">Writing</a></li><!--
+   --><!--
+     --><li><a target="_blank" rel="noopener" href="https://github.com/Ha0-Y">Projects</a></li><!--
+   -->
+    </ul>
+  </div>
+</header>
+
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  
+
+  <div class="content" itemprop="articleBody">
+      
+          <blockquote>
+<p>Linux netfilter</p>
+</blockquote>
+<span id="more"></span>
+
+
+<h2 id="netfilter"><a href="#netfilter" class="headerlink" title="netfilter"></a>netfilter</h2><p>net&#x2F;netfilter subsystem。<code>/net/netfilter</code></p>
+<ul>
+<li>NF_QUEUE</li>
+<li>CT: connection track</li>
+<li>NAT: network address translate</li>
+<li>NFT: netfilter tables</li>
+<li>XT: iptables, ip6tables, arptables and ebtables…</li>
+</ul>
+<p>hook注册各种handler</p>
+<h3 id="nf-tables"><a href="#nf-tables" class="headerlink" title="nf_tables"></a>nf_tables</h3><p>定义rule，然后处理相应的数据包</p>
+<h4 id="Architecture"><a href="#Architecture" class="headerlink" title="Architecture"></a>Architecture</h4><p>nft_table: 注释中存在各个成员的意义</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *	struct nft_table - nf_tables table</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *	@list: used internally</span></span><br><span class="line"><span class="comment"> *	@chains_ht: chains in the table</span></span><br><span class="line"><span class="comment"> *	@chains: same, for stable walks</span></span><br><span class="line"><span class="comment"> *	@sets: sets in the table</span></span><br><span class="line"><span class="comment"> *	@objects: stateful objects in the table</span></span><br><span class="line"><span class="comment"> *	@flowtables: flow tables in the table</span></span><br><span class="line"><span class="comment"> *	@hgenerator: handle generator state</span></span><br><span class="line"><span class="comment"> *	@handle: table handle</span></span><br><span class="line"><span class="comment"> *	@use: number of chain references to this table</span></span><br><span class="line"><span class="comment"> *	@family:address family</span></span><br><span class="line"><span class="comment"> *	@flags: table flag (see enum nft_table_flags)</span></span><br><span class="line"><span class="comment"> *	@genmask: generation mask</span></span><br><span class="line"><span class="comment"> *	@nlpid: netlink port ID</span></span><br><span class="line"><span class="comment"> *	@name: name of the table</span></span><br><span class="line"><span class="comment"> *	@udlen: length of the user data</span></span><br><span class="line"><span class="comment"> *	@udata: user data</span></span><br><span class="line"><span class="comment"> *	@validate_state: internal, set when transaction adds jumps</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">nft_table</span> &#123;</span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">list_head</span> list;</span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">rhltable</span> chains_ht;    <span class="comment">// resizable hash list table</span></span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">list_head</span> chains;</span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">list_head</span> sets;</span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">list_head</span> objects;</span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">list_head</span> flowtables;</span><br><span class="line">  u64 hgenerator;</span><br><span class="line">  u64 handle;</span><br><span class="line">  u32 use;</span><br><span class="line">  u16 family : <span class="number">6</span>, flags : <span class="number">8</span>, genmask : <span class="number">2</span>;</span><br><span class="line">  u32 nlpid;</span><br><span class="line">  <span class="type">char</span> *name;</span><br><span class="line">  u16 udlen;</span><br><span class="line">  u8 *udata;</span><br><span class="line">  u8 validate_state;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>我们可以向这个table里面加入一些chain：nft_chain</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *	struct nft_chain - nf_tables chain</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *	@blob_gen_0: rule blob pointer to the current generation</span></span><br><span class="line"><span class="comment"> *	@blob_gen_1: rule blob pointer to the future generation</span></span><br><span class="line"><span class="comment"> *	@rules: list of rules in the chain</span></span><br><span class="line"><span class="comment"> *	@list: used internally</span></span><br><span class="line"><span class="comment"> *	@rhlhead: used internally</span></span><br><span class="line"><span class="comment"> *	@table: table that this chain belongs to</span></span><br><span class="line"><span class="comment"> *	@handle: chain handle</span></span><br><span class="line"><span class="comment"> *	@use: number of jump references to this chain</span></span><br><span class="line"><span class="comment"> *	@flags: bitmask of enum NFTA_CHAIN_FLAGS</span></span><br><span class="line"><span class="comment"> *	@bound: bind or not</span></span><br><span class="line"><span class="comment"> *	@genmask: generation mask</span></span><br><span class="line"><span class="comment"> *	@name: name of the chain</span></span><br><span class="line"><span class="comment"> *	@udlen: user data length</span></span><br><span class="line"><span class="comment"> *	@udata: user data in the chain</span></span><br><span class="line"><span class="comment"> *	@blob_next: rule blob pointer to the next in the chain</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">nft_chain</span> &#123;</span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">nft_rule_blob</span> __rcu *blob_gen_0;</span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">nft_rule_blob</span> __rcu *blob_gen_1;</span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">list_head</span> rules;</span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">list_head</span> list;</span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">rhlist_head</span> rhlhead;</span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">nft_table</span> *table;</span><br><span class="line">  u64 handle;</span><br><span class="line">  u32 use;</span><br><span class="line">  u8 flags : <span class="number">5</span>, bound : <span class="number">1</span>, genmask : <span class="number">2</span>;</span><br><span class="line">  <span class="type">char</span> *name;</span><br><span class="line">  u16 udlen;</span><br><span class="line">  u8 *udata;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/* Only used during control plane commit phase: */</span></span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">nft_rule_blob</span> *blob_next;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>chain定义规则：nft_rule</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *	struct nft_rule - nf_tables rule</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *	@list: used internally</span></span><br><span class="line"><span class="comment"> *	@handle: rule handle</span></span><br><span class="line"><span class="comment"> *	@genmask: generation mask</span></span><br><span class="line"><span class="comment"> *	@dlen: length of expression data</span></span><br><span class="line"><span class="comment"> *	@udata: user data is appended to the rule</span></span><br><span class="line"><span class="comment"> *	@data: expression data</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">nft_rule</span> &#123;</span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">list_head</span> list;</span><br><span class="line">  u64 handle : <span class="number">42</span>, genmask : <span class="number">2</span>, dlen : <span class="number">12</span>, udata : <span class="number">1</span>;</span><br><span class="line">  <span class="type">unsigned</span> <span class="type">char</span> data[] __attribute__((<span class="built_in">aligned</span>(__alignof__(<span class="keyword">struct</span> nft_expr))));</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>如何执行这些规则：nft_expr</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *	struct nft_expr - nf_tables expression</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *	@ops: expression ops</span></span><br><span class="line"><span class="comment"> *	@data: expression private data</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">nft_expr</span> &#123;</span><br><span class="line">  <span class="type">const</span> <span class="keyword">struct</span> <span class="title class_">nft_expr_ops</span> *ops;</span><br><span class="line">  <span class="type">unsigned</span> <span class="type">char</span> data[] __attribute__((<span class="built_in">aligned</span>(__alignof__(u64))));</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><code>net/netfilter/nft_immediate</code> 中的例子，</p>
+<ul>
+<li><code>nft_expr-&gt;data</code> 是我们需要操作的 <code>nft_immediate_expr</code> 结构体</li>
+<li><code>nft_expr_ops-&gt;size</code> 是 <code>NFT_EXPR_SIZE(sizeof(struct nft_immediate_expr)),</code></li>
+</ul>
+<h4 id="state-machine"><a href="#state-machine" class="headerlink" title="state machine"></a>state machine</h4><p>nft_do_chain</p>
+<h2 id="More"><a href="#More" class="headerlink" title="More"></a>More</h2><h3 id="libnftnl"><a href="#libnftnl" class="headerlink" title="libnftnl"></a>libnftnl</h3><p>netfilter.org有一个简化 netfilter netlink 开发的库</p>
+<ul>
+<li>libnftnl: <a target="_blank" rel="noopener" href="https://www.netfilter.org/projects/libnftnl/index.html">The netfilter.org “libnftnl” project</a></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install libnftnl-dev</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://blog.dbouman.nl/2022/04/02/How-The-Tables-Have-Turned-CVE-2022-1015-1016/">How The Tables Have Turned: An analysis of two new Linux vulnerabilities in nf_tables</a></li>
+</ul>
+
+        
+  </div>
+</article>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2022-2024
+    ham5t3r
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/Ha0-Y">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
