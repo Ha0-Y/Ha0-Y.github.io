@@ -8,14 +8,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
     <meta name="description" content="UEFI-devUEFI有着一套标准，简化开发流程: Specifications | Unified Extensible Firmware Interface Forum 启动流程SECPEIDXEBDSTLSRT UEFI, BIOSedk2开发环境 123$ sudo apt install git build-essential make \	gcc make iasl nasm  \">
 <meta property="og:type" content="website">
-<meta property="og:title" content="ham5t3r">
+<meta property="og:title" content="chips">
 <meta property="og:url" content="https://ha0-y.github.io/todo/UEFI-PWN.html">
-<meta property="og:site_name" content="ham5t3r">
+<meta property="og:site_name" content="chips">
 <meta property="og:description" content="UEFI-devUEFI有着一套标准，简化开发流程: Specifications | Unified Extensible Firmware Interface Forum 启动流程SECPEIDXEBDSTLSRT UEFI, BIOSedk2开发环境 123$ sudo apt install git build-essential make \	gcc make iasl nasm  \">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2024-07-21T15:02:04.375Z">
-<meta property="article:modified_time" content="2024-07-21T15:02:04.375Z">
-<meta property="article:author" content="ham5t3r">
+<meta property="article:published_time" content="2024-08-04T03:35:12.601Z">
+<meta property="article:modified_time" content="2024-08-04T03:35:12.601Z">
+<meta property="article:author" content="chips">
 <meta property="article:tag" content="Blog">
 <meta name="twitter:card" content="summary">
     
@@ -37,7 +37,7 @@
       
     
     <!-- title -->
-    <title>ham5t3r</title>
+    <title>chips</title>
     <!-- async scripts -->
     <!-- Google Analytics -->
 
@@ -70,7 +70,7 @@
     
   
     <div id="title">
-      <h1 class="p-name">ham5t3r</h1>
+      <h1 class="p-name">chips</h1>
     </div>
   </a>
   <div id="nav">
@@ -190,7 +190,7 @@
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">BdsDxe: loading Boot0000 <span class="string">&quot;UiApp&quot;</span> <span class="function">from <span class="title">Fv</span><span class="params">(<span class="number">7</span>CB8BDC9-F8EB<span class="number">-4F</span>34-AAEA<span class="number">-3</span>EE4AF6516A1)</span>/<span class="title">FvFile</span><span class="params">(<span class="number">462</span>CAA21<span class="number">-7614</span><span class="number">-4503</span><span class="number">-836E-8</span>AB6F4662331)</span></span></span><br><span class="line"><span class="function">BdsDxe: starting Boot0000 <span class="string">&quot;UiApp&quot;</span> from Fv(<span class="number">7</span>CB8BDC9-F8EB<span class="number">-4F</span>34-AAEA<span class="number">-3</span>EE4AF6516A1)/FvFile(<span class="number">462</span>CAA21<span class="number">-7614</span><span class="number">-4503</span><span class="number">-836E-8</span>AB6F4662331)</span></span><br><span class="line"><span class="function">Setup Utility</span></span><br><span class="line"><span class="function">Enter Password:</span></span><br></pre></td></tr></table></figure>
 
 <p>根据对应的UUID进行寻找</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ find . -iname &quot;*462CAA21-7614-4503-836E-8AB6F4662331*&quot;</span><br><span class="line">./file-9e21fd93-9c72-4c15-8c4b-e77f1db2d792/section0/section3/volume-ee4e5898-3914-4259-9d6e-dc7bd79403cf/file-462caa21-7614-4503-836e-8ab6f4662331</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ find . -iname <span class="string">&quot;*462CAA21-7614-4503-836E-8AB6F4662331*&quot;</span></span><br><span class="line">./file-9e21fd93-9c72-4c15-8c4b-e77f1db2d792/section0/section3/volume-ee4e5898-3914-4259-9d6e-dc7bd79403cf/file-462caa21-7614-4503-836e-8ab6f4662331</span><br></pre></td></tr></table></figure>
 
 <p>可以找到 <code>section0.pe</code> 文件，使用IDA打开</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ file section0.pe </span><br><span class="line">section0.pe: MS-DOS executable PE32+ executable (EFI application) x86-64, <span class="keyword">for</span> MS Windows</span><br></pre></td></tr></table></figure>
@@ -226,7 +226,7 @@
     
     
     2022-2024
-    ham5t3r
+    chips
   </div>
   <div class="footer-right">
     <nav>

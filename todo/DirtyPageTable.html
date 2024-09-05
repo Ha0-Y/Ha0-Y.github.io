@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="页表🥵  原理一个漏洞利用方法  Dirty_Pagetable Dirty Pagetable-一种新的内核漏洞利用技术  page tablepid uaffile uafLPE练习m0leCon Finals 2023 kEASYUnderstanding Dirty Pagetable - m0leCon Finals 2023 CTF L3HCTF2024 kpidL3HCTF202">
+<meta property="og:type" content="website">
+<meta property="og:title" content="DirtyPageTable">
+<meta property="og:url" content="https://ha0-y.github.io/todo/DirtyPageTable.html">
+<meta property="og:site_name" content="chips">
+<meta property="og:description" content="页表🥵  原理一个漏洞利用方法  Dirty_Pagetable Dirty Pagetable-一种新的内核漏洞利用技术  page tablepid uaffile uafLPE练习m0leCon Finals 2023 kEASYUnderstanding Dirty Pagetable - m0leCon Finals 2023 CTF L3HCTF2024 kpidL3HCTF202">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-08-30T15:15:25.667Z">
+<meta property="article:modified_time" content="2024-08-30T15:15:25.667Z">
+<meta property="article:author" content="chips">
+<meta property="article:tag" content="Blog">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>DirtyPageTable</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+    <div class="content index py4 ">
+        
+          <header id="header">
+  <a class="u-url u-uid" href="/">
+  
+    
+      <img id="logo" alt class="u-logo" src="/images/logo.png" />
+    
+  
+    <div id="title">
+      <h1 class="p-name">chips</h1>
+    </div>
+  </a>
+  <div id="nav">
+    <ul>
+      <li class="icon">
+        <a href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-2x"></i></a>
+      </li>
+      <!--
+     --><li><a href="/">Home</a></li><!--
+   --><!--
+     --><li><a href="/about/">About</a></li><!--
+   --><!--
+     --><li><a href="/archives/">Writing</a></li><!--
+   --><!--
+     --><li><a target="_blank" rel="noopener" href="https://github.com/Ha0-Y">Projects</a></li><!--
+   -->
+    </ul>
+  </div>
+</header>
+
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  
+
+  <div class="content" itemprop="articleBody">
+      
+          <blockquote>
+<p>页表🥵</p>
+</blockquote>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>一个漏洞利用方法</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://yanglingxi1993.github.io/dirty_pagetable/dirty_pagetable.html">Dirty_Pagetable</a></li>
+<li><a target="_blank" rel="noopener" href="https://bsauce.github.io/2024/04/25/Dirty-Pagetable/">Dirty Pagetable-一种新的内核漏洞利用技术</a></li>
+</ul>
+<h3 id="page-table"><a href="#page-table" class="headerlink" title="page table"></a>page table</h3><h3 id="pid-uaf"><a href="#pid-uaf" class="headerlink" title="pid uaf"></a>pid uaf</h3><h3 id="file-uaf"><a href="#file-uaf" class="headerlink" title="file uaf"></a>file uaf</h3><h3 id="LPE"><a href="#LPE" class="headerlink" title="LPE"></a>LPE</h3><h2 id="练习"><a href="#练习" class="headerlink" title="练习"></a>练习</h2><h3 id="m0leCon-Finals-2023-kEASY"><a href="#m0leCon-Finals-2023-kEASY" class="headerlink" title="m0leCon Finals 2023 kEASY"></a>m0leCon Finals 2023 kEASY</h3><p><a target="_blank" rel="noopener" href="https://ptr-yudai.hatenablog.com/entry/2023/12/08/093606">Understanding Dirty Pagetable - m0leCon Finals 2023 CTF</a></p>
+<h3 id="L3HCTF2024-kpid"><a href="#L3HCTF2024-kpid" class="headerlink" title="L3HCTF2024 kpid"></a>L3HCTF2024 kpid</h3><p><a target="_blank" rel="noopener" href="https://ywhkkx.github.io/2024/03/29/L3HCTF2024/">L3HCTF2024</a></p>
+<h3 id="cves"><a href="#cves" class="headerlink" title="cves"></a>cves</h3><p><a target="_blank" rel="noopener" href="https://github.com/Lotuhu/Page-UAF">Lotuhu&#x2F;Page-UAF: Linux kernel privilege escalation techniques (github.com)</a></p>
+
+        
+  </div>
+</article>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2022-2024
+    chips
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/Ha0-Y">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

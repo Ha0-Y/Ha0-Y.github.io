@@ -6,16 +6,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="chroot常见逃逸  fd &#x2F;proc 目录 mount socket  ACTF:YoungManesCApe参考 earthquake&#x2F;chw00t: chw00t writeups&#x2F;TCTF2023">
+    <meta name="description" content="chroot jailbreak  chroot常见逃逸方式  fd &#x2F;proc 目录 mount socket  ACTF:YoungManesCApe原理是 mount proc，但是是借助新的syscall 参考 earthquake&#x2F;chw00t: chw00t writeups&#x2F;TCTF2023">
 <meta property="og:type" content="website">
 <meta property="og:title" content="chroot-jailbreak">
 <meta property="og:url" content="https://ha0-y.github.io/todo/chroot-jailbreak.html">
-<meta property="og:site_name" content="ham5t3r">
-<meta property="og:description" content="chroot常见逃逸  fd &#x2F;proc 目录 mount socket  ACTF:YoungManesCApe参考 earthquake&#x2F;chw00t: chw00t writeups&#x2F;TCTF2023">
+<meta property="og:site_name" content="chips">
+<meta property="og:description" content="chroot jailbreak  chroot常见逃逸方式  fd &#x2F;proc 目录 mount socket  ACTF:YoungManesCApe原理是 mount proc，但是是借助新的syscall 参考 earthquake&#x2F;chw00t: chw00t writeups&#x2F;TCTF2023">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2024-06-26T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-07-20T03:34:49.387Z">
-<meta property="article:author" content="ham5t3r">
+<meta property="article:modified_time" content="2024-08-04T13:51:33.627Z">
+<meta property="article:author" content="chips">
 <meta property="article:tag" content="Linux">
 <meta name="twitter:card" content="summary">
     
@@ -70,7 +70,7 @@
     
   
     <div id="title">
-      <h1 class="p-name">ham5t3r</h1>
+      <h1 class="p-name">chips</h1>
     </div>
   </a>
   <div id="nav">
@@ -97,14 +97,18 @@
 
   <div class="content" itemprop="articleBody">
       
-          <h2 id="chroot"><a href="#chroot" class="headerlink" title="chroot"></a>chroot</h2><p>常见逃逸</p>
+          <blockquote>
+<p>chroot jailbreak</p>
+</blockquote>
+<h2 id="chroot"><a href="#chroot" class="headerlink" title="chroot"></a>chroot</h2><p>常见逃逸方式</p>
 <ul>
 <li>fd</li>
 <li><code>/proc</code> 目录</li>
 <li><code>mount</code></li>
 <li>socket</li>
 </ul>
-<h2 id="ACTF-YoungManesCApe"><a href="#ACTF-YoungManesCApe" class="headerlink" title="ACTF:YoungManesCApe"></a>ACTF:YoungManesCApe</h2><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<h2 id="ACTF-YoungManesCApe"><a href="#ACTF-YoungManesCApe" class="headerlink" title="ACTF:YoungManesCApe"></a>ACTF:YoungManesCApe</h2><p>原理是 <code>mount proc</code>，但是是借助新的syscall</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a target="_blank" rel="noopener" href="https://github.com/earthquake/chw00t">earthquake&#x2F;chw00t: chw00t</a></li>
 <li><a target="_blank" rel="noopener" href="https://github.com/StrawHatCTF/writeups/blob/main/TCTF2023/TCTF%202023%20%20by%20Straw%20Hat.pdf">writeups&#x2F;TCTF2023</a></li>
 </ul>
@@ -120,7 +124,7 @@
     
     
     2022-2024
-    ham5t3r
+    chips
   </div>
   <div class="footer-right">
     <nav>
