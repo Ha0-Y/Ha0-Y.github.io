@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html><head lang="en"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>hypervisor-in-rust-0 - ldrx30</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="
+hypervisors and high-performance fuzzing.
+" />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="hypervisor-in-rust-0" />
+<meta property="og:description" content="
+hypervisors and high-performance fuzzing.
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/hypervisor-in-rust-0/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-07-28T00:00:00+00:00" />
+<meta property="article:modified_time" content="2024-07-28T00:00:00+00:00" />
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="hypervisor-in-rust-0"/>
+<meta name="twitter:description" content="
+hypervisors and high-performance fuzzing.
+"/>
+<script src="http://localhost:1313/js/feather.min.js"></script>
+	
+	
+        <link href="http://localhost:1313/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="http://localhost:1313/css/main.5cebd7d4fb2b97856af8d32a6def16164fcf7d844e98e236fcb3559655020373.css" />
+		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="http://localhost:1313/css/dark.d22e2a2879d933a4b781535fc4c4c716e9f9d35ea4986dd0cbabda82effc4bdd.css"  disabled />
+	
+
+	
+	
+		<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+		</script>
+
+		
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			tex2jax: {
+				inlineMath: [['$','$'], ['\\(','\\)']],
+				displayMath: [['$$','$$'], ['\[','\]']],
+				processEscapes: true,
+				processEnvironments: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+				TeX: { equationNumbers: { autoNumber: "AMS" },
+						 extensions: ["AMSmath.js", "AMSsymbols.js"] }
+			}
+		});
+		</script>
+	
+
+	
+	
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css">
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js"></script>
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+					renderMathInElement(document.body, {
+							delimiters: [
+									{left: "$$", right: "$$", display: true},
+									{left: "$", right: "$", display: false}
+							]
+					});
+			});
+			</script>
+	
+
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="http://localhost:1313/">ldrx30</a>
+	</div>
+	<nav>
+		
+		<a href="/">Home</a>
+		
+		<a href="/posts">All posts</a>
+		
+		<a href="/about">About</a>
+		
+		| <span id="dark-mode-toggle" onclick="toggleTheme()"></span>
+		<script src="http://localhost:1313/js/themetoggle.js"></script>
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">hypervisor-in-rust-0</h1>
+			<div class="meta">Posted on Jul 28, 2024</div>
+		</div>
+		
+
+		
+
+		<section class="body">
+			<blockquote>
+<p>hypervisors and high-performance fuzzing.</p>
+</blockquote>
+<p>最近学习模糊测试，一些fuzzer借助硬件辅助来提高效率，在找资料时找到了不错的教程，因此学习~~（CV~~一下 : <a href="https://tandasat.github.io/Hypervisor-101-in-Rust/">Hypervisor 101 in Rust</a></p>
+<h2 id="介绍">介绍</h2>
+<p><a href="https://gcc.ac/gcc_2023/">Global Cybersecurity Camp 2023 Singapore</a>.</p>
+<p>硬件辅助的高性能fuzzer开发，Fuzzing UEFI + 配套练习</p>
+<h3 id="课程前提">课程前提</h3>
+<ol>
+<li>熟悉x86_64架构</li>
+</ol>
+<ul>
+<li>如果不熟悉，推荐了课程：<a href="https://p.ost2.fyi/courses/course-v1:OpenSecurityTraining2+Arch2001_x86-64_OS_Internals+2021_v1/course/">Course | Arch2001 | OpenSecurityTraining2 (ost2.fyi)</a></li>
+</ul>
+<ol start="2">
+<li>Rust经历有用，但是不是必要的</li>
+<li>下载相关文档</li>
+</ol>
+<ul>
+<li><a href="https://www.intel.com/sdm/">Intel 64 and IA-32 Architectures Software Developer’s Manual Volume 3</a></li>
+<li><a href="https://developer.amd.com/resources/developer-guides-manuals/">AMD64 Architecture Programmer’s Manual Volume 2: System Programming</a></li>
+</ul>
+<ol start="4">
+<li>需要一台能支持Intel-VT/AMD-V的电脑</li>
+</ol>
+<h3 id="课程目标">课程目标</h3>
+<ul>
+<li>理解x86_64硬件辅助虚拟化技术</li>
+<li>熟悉如何将虚拟化技术应用到高性能fuzzing中</li>
+</ul>
+<h3 id="动机">动机</h3>
+<p>Hypervisor</p>
+<ul>
+<li>cool: 云服务的基础，KVM, hyper-V, Xen, Nitro Hypervisor</li>
+<li>有趣的:
+<ul>
+<li>主要的安全特性基础, Virtualization Based Security, Secured-core PC</li>
+<li>安全研究,  <a href="https://github.com/matsu/bitvisor/tree/master/core">BitVisor</a>, Intel&rsquo;s <a href="https://github.com/intel/vbh">Virtualization Based Hardening</a></li>
+</ul>
+</li>
+<li>方便:
+<ul>
+<li>系统级隔离: VMware Workstation/Fusion, <a href="https://github.com/projectacrn/acrn-hypervisor">ACRN</a>, Nitro Hypervisor, <a href="https://www.qubes-os.org/">Qubes OS</a></li>
+<li>系统级监视:  <a href="https://github.com/AsahiLinux/m1n1">Asahi Linux m1n1 Hypervisor</a>, <a href="https://cuckoosandbox.org/">Cuckoo Sandbox</a>, <a href="https://github.com/hvmi">HVMI</a>, <a href="https://nyx-fuzz.com/">kAFL/Nyx</a>, <a href="https://github.com/cheat-engine/cheat-engine/">Cheat Engine DBVM</a>, <a href="https://en.wikipedia.org/wiki/Blue_Pill_(software)">Blue Pill</a>, antivirus-hypervisors</li>
+</ul>
+</li>
+</ul>
+<h3 id="如何完成">如何完成</h3>
+<p>我无法创造的，我就不理解。&ndash; 费曼</p>
+<p>熟悉相关的特性，引用开源的实现</p>
+<ul>
+<li>看文档 + 看代码，知道如何实现或者CV</li>
+</ul>
+<h3 id="可以学习到什么">可以学习到什么</h3>
+<ul>
+<li>一个可以运行并且fuzz目标的hypervisor</li>
+<li>跨平台的hypervisor开发和debug</li>
+<li>为自己的测试扩展功能</li>
+<li>更好的理解/阅读现存的hypervisor相关实现的代码</li>
+<li>开发自己的hypervisor</li>
+</ul>
+<h3 id="fuzzer设计">fuzzer设计</h3>
+<p>灰盒测试，基于变异，边覆盖率引导
+快照功能
+输入：快照文件，样本库，patch 文件</p>
+<h3 id="hypervisor设计">hypervisor设计</h3>
+<p>从快照创建一个虚拟机
+开始fuzzing</p>
+<ul>
+<li>向内存注入变异的输入</li>
+<li>VM运行</li>
+<li>观察/收集可能的BUG
+一次迭代后恢复快照
+运行尽可能多的VM
+使用Rust书写的UEFI
+在Bochs/VMware测试，选择裸机型号（应该时选择Intel or AMD?）</li>
+</ul>
+<h3 id="不是如下的课程类型">不是如下的课程类型</h3>
+<ul>
+<li>Rust编程课</li>
+<li>模糊测试课程
+<ul>
+<li>可以在这里寻求相关建议: <a href="https://discord.com/invite/QxxTBCw">Awesome Fuzzing</a></li>
+</ul>
+</li>
+<li>学习已经存在的软件相关原理</li>
+<li>比较详细提供代码的细节，一些注释可能过于简单并且可能是不正确的</li>
+</ul>
+<h3 id="demo">Demo</h3>
+<p>应该是作者现场演示，我们可以clone下来代码仓库运行</p>
+<h3 id="为什么是hypervisor">为什么是Hypervisor</h3>
+<p>优点</p>
+<ul>
+<li>不局限于用户态的fuzzing</li>
+<li>比模拟器块</li>
+</ul>
+<p>比较优秀的案例</p>
+<ul>
+<li>Customized hypervisors: <a href="https://github.com/intel/kernel-fuzzer-for-xen-project">KF/x</a> (Xen), <a href="https://nyx-fuzz.com/">kAFL/Nyx</a> (KVM), <a href="https://www.microsoft.com/en-us/research/publication/hyperfuzzer-an-efficient-hybrid-fuzzer-for-virtual-cpus/">HyperFuzzer</a> (Hyper-V)</li>
+<li>Using hypervisor API: <a href="https://github.com/0vercl0k/wtf">What The Fuzz</a>, <a href="https://github.com/quarkslab/rewind">Rewind</a>, <a href="https://github.com/Impalabs/hyperpom">Hyperpom</a>, <a href="https://aws.amazon.com/blogs/opensource/announcing-snapchange-an-open-source-kvm-backed-snapshot-fuzzing-framework/">Snapchange</a></li>
+<li>Original hypervisors: <a href="https://github.com/gamozolabs/falkervisor_grilled_cheese">FalkVisor</a>, <a href="https://github.com/Cisco-Talos/Barbervisor">Barbervisor</a></li>
+</ul>
+<h3 id="uefi-应用">UEFI 应用</h3>
+<p>先于操作系统启动，更快的BIOS</p>
+<p><a href="https://uefi.org/">Unified Extensible Firmware Interface Forum</a></p>
+<p>UEFI好处</p>
+<ul>
+<li>减少系统资源的浪费</li>
+<li>与操作系统无关的设计和开发环境</li>
+<li>兼容性好</li>
+<li>比较容易访问硬件特性</li>
+<li>文档比较齐全</li>
+</ul>
+<h3 id="rust">Rust</h3>
+<p>为什么选择了rust</p>
+<ul>
+<li>相对与C/C++来说，更方便的UEFI</li>
+<li>更多的lib和crate</li>
+<li>编译器比较严格，减少BUG</li>
+<li>具有安全意识的工程师，现如今应该选择Rust</li>
+</ul>
+<p>hypervisor&hellip;</p>
+<h2 id="hypervisor">Hypervisor</h2>
+<p>VMM: Virtual Machine Monitor，和 hypervisor 等价。</p>
+<p>两类虚拟化技术：</p>
+<ul>
+<li>直接运行在硬件上：VMware ESXi, Windows Hyper-V&hellip;</li>
+<li>运行在操作系统上：VMware Workstation，VirtualBox，QEMU&hellip;</li>
+</ul>
+<p>虚拟化主要分为几大类：</p>
+<ul>
+<li><strong>计算虚拟化</strong>，针对CPU和内存资源虚拟化技术。</li>
+<li><strong>网络虚拟化</strong>，针对网络链路资源虚拟化技术。</li>
+<li><strong>IO虚拟化</strong>，针对IO资源虚拟化技术。</li>
+<li><strong>存储虚拟化</strong>，针对磁盘存储资源虚拟化技术。</li>
+</ul>
+<h2 id="intel-vt">Intel-VT</h2>
+<p>虽然说本机电脑时AMD CPU，但是网上Intel-VT内容比较多，有问题也好解决，因此首先学习了部分知识。<del>并且知识都是相通的</del></p>
+<p>因此介绍不会很细😋，毕竟有了源码也不能用😭</p>
+<p>不错的学习资源，因为是AMD的CPU，主要还是了解概念以及思路</p>
+<ul>
+<li><a href="https://space.bilibili.com/3493135044840333/channel/collectiondetail?sid=1118442">rust-hypervisor-x86</a></li>
+<li><a href="https://blog.csdn.net/qq_41988448/category_11624333.html">Intel-VT</a></li>
+<li><a href="https://bbs.kanxue.com/thread-281142.htm">Hypervisor From Scratch 翻译</a></li>
+</ul>
+<p>在<a href="https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html">Intel® 64 and IA-32 Architectures Software Developer Manuals</a>搜索<code>Intel 64 and IA-32 Architectures Software Developer’s Manual Volume 3</code></p>
+<p>部分一些专业术语</p>
+<ul>
+<li>Intel VT-X: Virtualization Technology for x86</li>
+<li>guest-mode: VMX non-root operation</li>
+<li>host-mode: VMX root operation</li>
+<li>VMX: Virtual-Machine eXtensions</li>
+<li>VMCS: virtual-machine control data structures</li>
+<li>EPT: Extend Page Table</li>
+<li>VT-D: Virtualization Technology for Directed I/O</li>
+<li>GPA: Guest Physical Address</li>
+<li>HPA: Host Physical Address</li>
+</ul>
+<h3 id="vmx">VMX</h3>
+<p><strong>VMM host-guest</strong></p>
+<ul>
+<li>VMM通过执行<code>VMXON</code>指令进入VMX操作，然后就是类似一个操作系统的启动过程。</li>
+<li><code>VM Entry</code>：VMM 可以进入 guest。 VMM使用指令<code>VMLAUNCH</code>和<code>VMRESUME</code>进行VM切换（可以有很多guest）；使用 <code>VM Exit</code> 返回host。</li>
+<li><code>VM Exit</code>: 将控制转移到VMM指定的入口点。 VMM可以针对<code>VM Exit</code>的原因采取适当的操作</li>
+<li>最终，VMM 可能决定自行关闭并离开 VMX 操作。 它通过执行 VMXOFF 指令来实现这一点。</li>
+</ul>
+<p><strong>VMCS 组成:</strong>（VMCS 区域是4 KB（位 11:0 必须为零），必须与 4KB 边界对齐）</p>
+<ul>
+<li>guest state area：在 VM-entry时，处理器的状态信息从guest-state区域中加载。在VM-exit时，处理器的当前状态信息保存在guest-state区域。</li>
+<li>host state area：在VM-exit时，处理器的状态信息从host-state区域中加载。</li>
+<li>VM-execution control field：在进入VM后，处理器的行为由VM-execution控制区域中的字段提供控制。</li>
+<li>VM-EXIT control field：控制处理器在处理VM-exit时的行为，也影响返回VMM后处理器的某些状态。</li>
+<li>VM-ENTRY control field：控制处理器在处理VM-entry时的行为，也决定进入VM后处理器的某些状态。</li>
+<li>VM-EXIT infomation field：记录引起VM-exit事件的原因及相关的明细信息。</li>
+</ul>
+<p><strong>一个大致的框架：</strong></p>
+<ol>
+<li>检查硬件是否支持VMX: <code>CPUID.1:ECX.VMX[bit 5] = 1</code></li>
+<li>启用VMX: 令<code>CR4.VMXE[bit 13] = 1</code>，然后通过执行VMXON指令进入VMX操作。</li>
+<li>检查内核中的VMX支持情况:  <strong>IA32_FEATURE_CONTROL</strong> MSR（MSR 地址 3AH）以查看 <strong>锁定位</strong> 是否已设置</li>
+<li>分配VMXON区域: 物理地址并使用分配区域的指针执行VMXON指令，并且查询 <code>MSR_IA32_VMX_BASIC</code>。（Intel 手册：在执行 VMXON 之前，软件应将 VMCS 修订标识符写入 VMXON 区域。 具体来说，它应该将 31 位 VMCS 修订标识符写入 VMXON 区域前 4 个字节的位 30:0；位 31 应清除为 0。）</li>
+<li>分配VMCS区域: VMPTRLD，处理器中可能同时存在多个 VMCS，但当前只有其中一个处于活动状态，并且 VMLAUNCH、VMREAD、VMRESUME 和 VMWRITE 指令仅在当前 VMCS 上运行。</li>
+<li>终止VMX并释放我们之前分配的所有内存: VMOFF，并且释放分配的内存（将<code>VMXON</code>和<code>VMCS Region</code>转换为虚拟地址</li>
+</ol>
+<h4 id="for-example">for example</h4>
+<p>阅读一下 <a href="https://github.com/tandasat/HyperPlatform">Intel VT-x based hypervisor aiming to provide a thin VM-exit filtering platform on Windows</a></p>
+<p><strong>一个框架，而不是具体应用</strong>。因此可能缺少一点逻辑</p>
+<h5 id="driverentry">DriverEntry</h5>
+<p>DriverEntry() 调用了 VmInitialization()</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#6272a4">// Checks if a VMM can be installed, and so, installs it
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>_Use_decl_annotations_ NTSTATUS <span style="color:#50fa7b">VmInitialization</span>() {
+</span></span><span style="display:flex;"><span>  PAGED_CODE()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (VmpIsHyperPlatformInstalled()) {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> STATUS_CANCELLED;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>VmpIsVmxAvailable()) {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> STATUS_HV_FEATURE_UNAVAILABLE;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">const</span> <span style="color:#ff79c6">auto</span> shared_data <span style="color:#ff79c6">=</span> VmpInitializeSharedData();
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>shared_data) {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> STATUS_MEMORY_NOT_ALLOCATED;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// Read and store all MTRRs to set a correct memory type for EPT
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  EptInitializeMtrrEntries();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// Virtualize all processors
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#ff79c6">auto</span> status <span style="color:#ff79c6">=</span> UtilForEachProcessor(VmpStartVm, shared_data);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>NT_SUCCESS(status)) {
+</span></span><span style="display:flex;"><span>    UtilForEachProcessor(VmpStopVm, <span style="color:#ff79c6">nullptr</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> status;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> status;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>首先检查是否之前安装过</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#8be9fd">void</span> <span style="color:#50fa7b">__cpuid</span>( 
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd">int</span> cpuInfo[<span style="color:#bd93f9">4</span>],   <span style="color:#6272a4">// 包含在 EAX、EBX、ECX 和 EDX 中返回的有关 CPU 支持的功能的信息。
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#8be9fd">int</span> function_id   <span style="color:#6272a4">// 在 EAX 中传递的指定要检索的信息的代码
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// Tests if HyperPlatform is already installed
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>_Use_decl_annotations_ <span style="color:#ff79c6">static</span> <span style="color:#8be9fd">bool</span> <span style="color:#50fa7b">VmpIsHyperPlatformInstalled</span>() {
+</span></span><span style="display:flex;"><span>  PAGED_CODE()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">int</span> cpu_info[<span style="color:#bd93f9">4</span>] <span style="color:#ff79c6">=</span> {};
+</span></span><span style="display:flex;"><span>  __cpuid(cpu_info, <span style="color:#bd93f9">1</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">const</span> CpuFeaturesEcx cpu_features <span style="color:#ff79c6">=</span> {<span style="color:#ff79c6">static_cast</span><span style="color:#ff79c6">&lt;</span>ULONG32<span style="color:#ff79c6">&gt;</span>(cpu_info[<span style="color:#bd93f9">2</span>])};
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>cpu_features.fields.not_used) {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> <span style="color:#8be9fd;font-style:italic">false</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  __cpuid(cpu_info, kHyperVCpuidInterface);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> cpu_info[<span style="color:#bd93f9">0</span>] <span style="color:#ff79c6">==</span> &#39;PpyH&#39;;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>检查CPU和操作系统支持</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#6272a4">// Checks if the system supports virtualization
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>_Use_decl_annotations_ <span style="color:#ff79c6">static</span> <span style="color:#8be9fd">bool</span> <span style="color:#50fa7b">VmpIsVmxAvailable</span>() {
+</span></span><span style="display:flex;"><span>  PAGED_CODE()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// See: DISCOVERING SUPPORT FOR VMX
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#6272a4">// If CPUID.1:ECX.VMX[bit 5]=1, then VMX operation is supported.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#8be9fd">int</span> cpu_info[<span style="color:#bd93f9">4</span>] <span style="color:#ff79c6">=</span> {};
+</span></span><span style="display:flex;"><span>  __cpuid(cpu_info, <span style="color:#bd93f9">1</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">const</span> CpuFeaturesEcx cpu_features <span style="color:#ff79c6">=</span> {<span style="color:#ff79c6">static_cast</span><span style="color:#ff79c6">&lt;</span>ULONG32<span style="color:#ff79c6">&gt;</span>(cpu_info[<span style="color:#bd93f9">2</span>])};
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>cpu_features.fields.vmx) {
+</span></span><span style="display:flex;"><span>    HYPERPLATFORM_LOG_ERROR(<span style="color:#f1fa8c">&#34;VMX features are not supported.&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> <span style="color:#8be9fd;font-style:italic">false</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// See: BASIC VMX INFORMATION
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#6272a4">// The first processors to support VMX operation use the write-back type.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#ff79c6">const</span> Ia32VmxBasicMsr vmx_basic_msr <span style="color:#ff79c6">=</span> {UtilReadMsr64(Msr<span style="color:#ff79c6">::</span>kIa32VmxBasic)};
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">static_cast</span><span style="color:#ff79c6">&lt;</span>memory_type<span style="color:#ff79c6">&gt;</span>(vmx_basic_msr.fields.memory_type) <span style="color:#ff79c6">!=</span>
+</span></span><span style="display:flex;"><span>      memory_type<span style="color:#ff79c6">::</span>kWriteBack) {
+</span></span><span style="display:flex;"><span>    HYPERPLATFORM_LOG_ERROR(<span style="color:#f1fa8c">&#34;Write-back cache type is not supported.&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> <span style="color:#8be9fd;font-style:italic">false</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// See: ENABLING AND ENTERING VMX OPERATION
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  Ia32FeatureControlMsr vmx_feature_control <span style="color:#ff79c6">=</span> {
+</span></span><span style="display:flex;"><span>      UtilReadMsr64(Msr<span style="color:#ff79c6">::</span>kIa32FeatureControl)};
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>vmx_feature_control.fields.lock) {
+</span></span><span style="display:flex;"><span>    HYPERPLATFORM_LOG_INFO(<span style="color:#f1fa8c">&#34;The lock bit is clear. Attempting to set 1.&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">const</span> <span style="color:#ff79c6">auto</span> status <span style="color:#ff79c6">=</span> UtilForEachProcessor(VmpSetLockBitCallback, <span style="color:#ff79c6">nullptr</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>NT_SUCCESS(status)) {
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">return</span> <span style="color:#8be9fd;font-style:italic">false</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>vmx_feature_control.fields.enable_vmxon) {
+</span></span><span style="display:flex;"><span>    HYPERPLATFORM_LOG_ERROR(<span style="color:#f1fa8c">&#34;VMX features are not enabled.&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> <span style="color:#8be9fd;font-style:italic">false</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>EptIsEptAvailable()) {
+</span></span><span style="display:flex;"><span>    HYPERPLATFORM_LOG_ERROR(<span style="color:#f1fa8c">&#34;EPT features are not fully supported.&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> <span style="color:#8be9fd;font-style:italic">false</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> <span style="color:#8be9fd;font-style:italic">true</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h5 id="driverunload">DriverUnload</h5>
+<p>调用VmTermination关闭VMM</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#6272a4">// Terminates VM
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>_Use_decl_annotations_ <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">VmTermination</span>() {
+</span></span><span style="display:flex;"><span>  PAGED_CODE()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  HYPERPLATFORM_LOG_INFO(<span style="color:#f1fa8c">&#34;Uninstalling VMM.&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">auto</span> status <span style="color:#ff79c6">=</span> UtilForEachProcessor(VmpStopVm, <span style="color:#ff79c6">nullptr</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (NT_SUCCESS(status)) {
+</span></span><span style="display:flex;"><span>    HYPERPLATFORM_LOG_INFO(<span style="color:#f1fa8c">&#34;The VMM has been uninstalled.&#34;</span>);
+</span></span><span style="display:flex;"><span>  } <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>    HYPERPLATFORM_LOG_WARN(<span style="color:#f1fa8c">&#34;The VMM has not been uninstalled (%08x).&#34;</span>, status);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  NT_ASSERT(<span style="color:#ff79c6">!</span>VmpIsHyperPlatformInstalled());
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>回调函数，调用<code>VmpStopVm</code>，使用Cr4 disable <code>VMX</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#6272a4">// Stops virtualization through a hypercall and frees all related memory
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>_Use_decl_annotations_ <span style="color:#ff79c6">static</span> NTSTATUS <span style="color:#50fa7b">VmpStopVm</span>(<span style="color:#8be9fd">void</span> <span style="color:#ff79c6">*</span>context) {
+</span></span><span style="display:flex;"><span>  UNREFERENCED_PARAMETER(context);
+</span></span><span style="display:flex;"><span>  PAGED_CODE()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  HYPERPLATFORM_LOG_INFO(<span style="color:#f1fa8c">&#34;Terminating VMX for the processor %lu.&#34;</span>,
+</span></span><span style="display:flex;"><span>                         KeGetCurrentProcessorNumberEx(<span style="color:#ff79c6">nullptr</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// Stop virtualization and get an address of the management structure
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  ProcessorData <span style="color:#ff79c6">*</span>processor_data <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">nullptr</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">auto</span> status <span style="color:#ff79c6">=</span> UtilVmCall(HypercallNumber<span style="color:#ff79c6">::</span>kTerminateVmm, <span style="color:#ff79c6">&amp;</span>processor_data);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>NT_SUCCESS(status)) {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> status;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// Clear CR4.VMXE, as there is no reason to leave the bit after vmxoff
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  Cr4 cr4 <span style="color:#ff79c6">=</span> {__readcr4()};
+</span></span><span style="display:flex;"><span>  cr4.fields.vmxe <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">false</span>;
+</span></span><span style="display:flex;"><span>  __writecr4(cr4.all);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  VmpFreeProcessorData(processor_data);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> STATUS_SUCCESS;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>UtilVmCall调用AsmVmxCall，最后是如下</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>; <span style="color:#8be9fd">unsigned</span> <span style="color:#8be9fd">char</span> <span style="color:#ff79c6">__stdcall</span> AsmVmxCall(_In_ ULONG_PTR hypercall_number,
+</span></span><span style="display:flex;"><span>;                                    _In_opt_ <span style="color:#8be9fd">void</span> <span style="color:#ff79c6">*</span>context);
+</span></span><span style="display:flex;"><span>AsmVmxCall PROC
+</span></span><span style="display:flex;"><span>    vmcall                  ; vmcall(hypercall_number, context)
+</span></span><span style="display:flex;"><span>    jz errorWithCode        ; <span style="color:#ff79c6">if</span> (ZF) jmp
+</span></span><span style="display:flex;"><span>    jc errorWithoutCode     ; <span style="color:#ff79c6">if</span> (CF) jmp
+</span></span><span style="display:flex;"><span>    xor rax, rax            ; <span style="color:#ff79c6">return</span> VMX_OK
+</span></span><span style="display:flex;"><span>    ret
+</span></span></code></pre></div><h5 id="vmm--vm">VMM &amp;&amp; VM</h5>
+<p>核心功能</p>
+<p>VMM是host主要负责的功能，各种行为的handler，处理vmcall</p>
+<ul>
+<li>ring -1 掌控着真正的硬件资源</li>
+</ul>
+<p>vmcall/hypercall</p>
+<ul>
+<li>类似syscall，但是guest OS</li>
+<li>vmcall 会 vmexit 进入host，因此我们需要相应的Exit Handler来处理</li>
+</ul>
+<p>VM Exit: 存在一个reason，我们需要进行分别的处理</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">switch</span> (exit_reason.fields.reason) {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">case</span> VmxExitReason<span style="color:#ff79c6">::</span><span style="color:#8be9fd;font-style:italic">kExceptionOrNmi</span>:
+</span></span><span style="display:flex;"><span>      VmmpHandleException(guest_context);
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">break</span>;
+</span></span><span style="display:flex;"><span>      ...
+</span></span></code></pre></div><p>VM是guest OS，类似一个操作系统的启动流程</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#6272a4">// 初始化VM
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>VmpInitializeVm()
+</span></span><span style="display:flex;"><span>	VmpEnterVmxMode()
+</span></span><span style="display:flex;"><span>		__vmx_on()
+</span></span><span style="display:flex;"><span>	VmpInitializeVmcs()  <span style="color:#6272a4">// 初始化 VMCS
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		__vmx_clear()
+</span></span><span style="display:flex;"><span>		__vmx_vmptrld()
+</span></span><span style="display:flex;"><span>	VmpSetupVmcs()   <span style="color:#6272a4">// VMCS 成员
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		_sgdt()
+</span></span><span style="display:flex;"><span>		_sidt()
+</span></span><span style="display:flex;"><span>		UtilVmWrite()
+</span></span><span style="display:flex;"><span>	VmpLaunchVm()    <span style="color:#6272a4">// 启动
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		UtilVmRead()
+</span></span><span style="display:flex;"><span>	__vmx_off();
+</span></span></code></pre></div><h3 id="ept">EPT</h3>
+<p>内存虚拟化</p>
+<p>Shadow paging，不需要硬件支持</p>
+<ul>
+<li>直接将 gva -&gt; hpa</li>
+<li>运行guest时，切换 host CR3 到 shadow paging （hypervisor 拦截 guest 对 CR3的修改</li>
+</ul>
+<p>EPT, nested paging, 嵌套页表</p>
+<ul>
+<li>guest操作系统维护一张页表，用于生成guest的物理地址。CR3/EPTP</li>
+<li>另一个页表由 VMM 维护，它将 guest 的物理地址映射到 host 的物理地址。</li>
+</ul>
+<p>Windows 四级页表：9-9-9-9-12 <a href="https://www.cnblogs.com/lanrenxinxin/p/4735027.html">(1)</a></p>
+<ul>
+<li>PML4T: page map level4 table</li>
+<li>PDPT: page directory pointer table</li>
+<li>PD: page directory</li>
+<li>PT: page table</li>
+<li>entry + offset</li>
+</ul>
+<p><code>Physical Address Extension</code>: PAE物理地址扩展，处理器功能，使 x86 处理器能够在支持访问超过 4 GB 的物理内存。
+<code>Page Size Extension</code>: PSE，是在IA32架构中，实现大于传统的4KB的页面</p>
+<h2 id="amd-v">AMD-V</h2>
+<p>在<a href="https://www.amd.com/en/developer/browse-by-resource-type/documentation.html">AMD Developer Documentation</a>中搜索<code>AMD64 Architecture Programmer’s Manual Volume 2: System Programming</code>，第15章</p>
+<p>因为笔者的机器是AMD CPU，因此主要学习AMD-V。下一篇文章😋</p>
+<h2 id="more">More</h2>
+<p>不错的项目文章：<a href="https://memn0ps.github.io/hypervisor-development-in-rust-part-1/">Hypervisor Development in Rust Part 1 - memN0ps</a></p>
+<p>Cr8：Irql权限等级。CPU的当前优先级。当中断挂起时，将中断向量号的7:4位与CR8进行比较。如果向量更大，它将被服务，否则它将被挂起，直到CR8被设置为较低的值</p>
+<p>Windows hype-V 可以开启嵌套虚拟化。</p>
+<p>kAFL: 借助Intel PT 和 VT-x 的硬件反馈fuzzer</p>
+<ul>
+<li>PT: Processor tracer, 跟踪信息</li>
+</ul>
+<p>Ring -1: Intel VT</p>
+		</section>
+
+		<div class="post-tags">
+			
+			
+			<nav class="nav tags">
+				<ul class="tags">
+					
+					<li><a href="/tags/fuzz">Fuzz</a></li>
+					
+				</ul>
+			</nav>
+			
+			
+		</div>
+		<div id="disqus_thread"></div>
+<script type="text/javascript">
+    (function () {
+        
+        
+        if (window.location.hostname == "localhost")
+            return;
+
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        var disqus_shortname = 'ldrx30';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+
+</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/ldrx30" rel="me" title="GitHub"><i data-feather="github"></i></a>
+    <a class="border"></a></div>
+  <div class="footer-info">
+    2024  © ldrx30 |  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>

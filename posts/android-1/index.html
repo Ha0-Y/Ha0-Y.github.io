@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html><head lang="en"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Android-1 - ldrx30</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="
+不该点开那一篇推文。
+" />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="Android-1" />
+<meta property="og:description" content="
+不该点开那一篇推文。
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/android-1/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-10-08T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-10-08T00:00:00+00:00" />
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Android-1"/>
+<meta name="twitter:description" content="
+不该点开那一篇推文。
+"/>
+<script src="http://localhost:1313/js/feather.min.js"></script>
+	
+	
+        <link href="http://localhost:1313/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="http://localhost:1313/css/main.5cebd7d4fb2b97856af8d32a6def16164fcf7d844e98e236fcb3559655020373.css" />
+		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="http://localhost:1313/css/dark.d22e2a2879d933a4b781535fc4c4c716e9f9d35ea4986dd0cbabda82effc4bdd.css"  disabled />
+	
+
+	
+	
+		<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+		</script>
+
+		
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			tex2jax: {
+				inlineMath: [['$','$'], ['\\(','\\)']],
+				displayMath: [['$$','$$'], ['\[','\]']],
+				processEscapes: true,
+				processEnvironments: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+				TeX: { equationNumbers: { autoNumber: "AMS" },
+						 extensions: ["AMSmath.js", "AMSsymbols.js"] }
+			}
+		});
+		</script>
+	
+
+	
+	
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css">
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js"></script>
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+					renderMathInElement(document.body, {
+							delimiters: [
+									{left: "$$", right: "$$", display: true},
+									{left: "$", right: "$", display: false}
+							]
+					});
+			});
+			</script>
+	
+
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="http://localhost:1313/">ldrx30</a>
+	</div>
+	<nav>
+		
+		<a href="/">Home</a>
+		
+		<a href="/posts">All posts</a>
+		
+		<a href="/about">About</a>
+		
+		| <span id="dark-mode-toggle" onclick="toggleTheme()"></span>
+		<script src="http://localhost:1313/js/themetoggle.js"></script>
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">Android-1</h1>
+			<div class="meta">Posted on Oct 8, 2023</div>
+		</div>
+		
+
+		
+
+		<section class="body">
+			<blockquote>
+<p>不该点开那一篇推文。</p>
+</blockquote>
+<p>腾讯玄武实验室一篇关于ARM 的文章：<a href="https://8ksec.io/arm64-reversing-and-exploitation-part-7-bypassing-aslr-and-nx/">ARM64 Reversing And Exploitation Part 7 – Bypassing ASLR and NX - 8kSec</a></p>
+<p>看了这篇文章，突然想学一学安卓安全相关的内容</p>
+<h2 id="android-环境搭建">Android 环境搭建</h2>
+<h3 id="sdk">SDK</h3>
+<p>在windows 和 Linux 下搭建。比较简单的方式：使用Android Studio</p>
+<ol>
+<li>下载 Java，配置环境变量。</li>
+</ol>
+<p>Linux 使用包管理器进行安装</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># linux</span>
+</span></span><span style="display:flex;"><span>sudo apt install openjdk-17-jdk
+</span></span></code></pre></div><p>windows 下在oracle下载 <a href="https://www.oracle.com/java/technologies/downloads/">Java Downloads | Oracle</a>，然后配置</p>
+<ol start="2">
+<li>下载android studio，使用<a href="https://www.jetbrains.com/zh-cn/lp/toolbox/">JetBrains Toolbox</a></li>
+<li>下载 Android SDK，Android studio 打开后如果没有sdk会自行下载，但是有墙，不一定会下载成功，但是总有解决问题的方法（</li>
+<li>path: 下载sdk后，将 <code>xxx\platform-tools</code> 加入环境变量，就可以使用adb。翻翻下载的目录，可能有其余有趣的工具，比如qemu</li>
+</ol>
+<h3 id="运行apk">运行apk</h3>
+<ol>
+<li>模拟器</li>
+</ol>
+<p>安装 WSL2 后导致大部分模拟器不能使用，<del>可以安装WSA</del>(WSA在2024年3月宣布停止支持)，但是万一存在 恶意软件 就会很难搞</p>
+<p><a href="https://www.bluestacks.cn/">BlueStacks安卓模拟器</a>，配置后，以<strong>管理员运行</strong>，不会失败</p>
+<ul>
+<li>root：我在修改了配置文件后就成功了。<a href="https://appuals.com/root-bluestacks/">How to Root Bluestacks on Windows Easily?</a></li>
+</ul>
+<p>但是现在存在对应的选项，只需要在设置里面勾选一下就行。</p>
+<ol>
+<li>root 真机，这个才是最好的方法。<del>但是买不起</del></li>
+</ol>
+<ul>
+<li>推荐，因为有的不给出x86的lib库</li>
+<li>可以在平台买个二手的手机（x鱼，pixel</li>
+</ul>
+<h2 id="逆向工具">逆向工具</h2>
+<h3 id="反编译">反编译</h3>
+<ul>
+<li><a href="https://github.com/skylot/jadx">jadx</a></li>
+<li><a href="https://www.pnfsoftware.com/jeb/">JEB Decompiler</a></li>
+<li><a href="https://hex-rays.com/IDA-pro/">IDA Pro</a></li>
+<li><a href="https://github.com/NationalSecurityAgency/ghidra">ghidra</a></li>
+</ul>
+<h3 id="hook">hook</h3>
+<ul>
+<li><a href="https://pypi.org/project/frida-tools/">frida-tools</a></li>
+<li><a href="https://github.com/frida/frida/releases">firda server</a></li>
+<li>xpose</li>
+</ul>
+<h3 id="抓包">抓包</h3>
+<h2 id="apk结构">APK结构</h2>
+<ul>
+<li>APK, 本质上是一个zip文件，我们可以修改文件后缀然后解压。</li>
+</ul>
+<h3 id="assert">assert</h3>
+<p>用于存放需要打包到APK中的静态文件</p>
+<p>assets目录<strong>支持任意深度的子目录</strong>，用户可以根据自己的需求任意部署文件夹架构。</p>
+<h3 id="meta-inf">META-INF</h3>
+<p>存放的是签名信息，用来保证apk包的完整性和系统的安全。</p>
+<p>在编译生成一个apk包时，会对所有要打包的文件做一个校验计算，并把计算结果放在META-INF目录下。在安装时，如果校验结果与META-INF下的内容不一致，系统就不会安装这个apk。从而保证了apk包里的文件不能被随意替换。</p>
+<p>META-INF目录下包含的文件有CERT.RSA，CERT.DSA，CERT.SF和MANIFEST.MF</p>
+<ul>
+<li>CERT.RSA：是开发者利用私钥对APK进行签名的签名文件</li>
+<li>CERT.SF，MANIFEST.MF：记录了文件中文件的哈希值</li>
+</ul>
+<h3 id="lib">lib</h3>
+<p>这里存放应用程序依赖的<strong>native库文件</strong>，一般是用C/C++编写，这里的lib库可能包含多种不同类型，大体可以分为ARM，X86等架构。</p>
+<h3 id="res">res</h3>
+<p>res是resource的缩写，这个目录存放资源文件，存在这个文件夹下的所有文件都会映射到Android工程的<code>.R</code>文件中，生成对应的ID，访问的时候直接使用资源ID即R.id.filename，res文件夹下可以包含多个文件夹。</p>
+<p><strong>res文件夹，存放的也是资源文件，与assets文件夹不同的是，这里是编译后的资源文件。</strong></p>
+<h3 id="androidmanifestxml">AndroidManifest.xml</h3>
+<p>是Android应用程序的配置文件，是一个用来描述Android应用“整体资讯”的设定文件， Android系统可以根据这个<strong>自我介绍</strong>完整地了解APK应用程序的资讯，每个Android应用程序都必须包含一个AndroidManifest.xml文件，且它的名字是固定的，不能修改。我们在开发Android应用程序的时候，一般都把代码中的每一个Activity，Service，Provider和Receiver在AndroidManifest.xml中注册，只有这样系统才能启动对应的组件，另外这个文件还包含一些权限声明以及使用的SDK版本信息等等。程序打包时，会把AndroidManifest.xml进行简单的编译，便于Android系统识别，编译之后的格式是AXML格式</p>
+<h3 id="classesdex">classes.dex</h3>
+<p>传统的Java程序，首先先把Java文件编译成class文件，字节码都保存在了class文件中，Java虚拟机可以通过解释执行这些class文件。</p>
+<p>而Dalvik虚拟机是在Java虚拟机进行了优化，执行的是Dalvik字节码，而这些Dalvik字节码是由Java字节码转换而来，一般情况下，Android应用在打包时通过AndroidSDK中的dx工具将Java字节码转换为Dalvik字节码。dx工具可以对多个class文件进行合并，重组，优化，可以达到减小体积，缩短运行时间的目的。</p>
+<p>dx工具把每个.class文件的每个区域的内容进行去重，重组，优化重排后生成dex文件，生成的dex文件可以在Dalvik虚拟机执行，且速度比较快</p>
+<h3 id="resourcesarsc">resources.arsc</h3>
+<p>用来记录资源文件和资源ID之间的映射关系，用来根据资源ID寻找资源。Android的开发是分模块的，res目录专门用来存放资源文件，当在代码中需要调用资源文件时，只需要调用findviewbyId()就可以得到资源文件，每当在res文件夹下放一个文件，aapt就会自动生成对应的ID保存在.R文件，我们调用这个ID就可以，但是只有这个ID还不够，.R文件只是保证编译程序不报错，实际上在程序运行时，系统要根据ID去寻找对应的资源路径，而resources.arsc文件就是用来记录这些ID和资源文件位置对应关系的文件。</p>
+<h3 id="kotlin">kotlin</h3>
+<p>kotlin 是一门编程语言，也可以直接运行在Java虚拟机中，这个目录存放kotlin资源</p>
+<h2 id="adb-简单使用">adb 简单使用</h2>
+<ul>
+<li>将文件放入android机器里</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>adb push xxx /data/local/tmp
+</span></span></code></pre></div><ul>
+<li>安装应用</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>adb install apk.apk
+</span></span></code></pre></div><ul>
+<li>卸载</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>adb uninstall com.xxx.xxx
+</span></span></code></pre></div><ul>
+<li>获得shell</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>adb connect &lt;ip&gt;:&lt;port&gt;
+</span></span><span style="display:flex;"><span>adb shell
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># exit</span>
+</span></span><span style="display:flex;"><span>adb disconnect &lt;ip&gt;:&lt;port&gt;
+</span></span></code></pre></div><ul>
+<li>启动指定的activity</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>am start -n &lt;package&gt;/&lt;activity&gt; 
+</span></span></code></pre></div><h2 id="frida-简单使用">frida 简单使用</h2>
+<ul>
+<li>
+<p>python 的 frida-tools 和 手机端的 server 必须保持一致的版本, 可以使用python venv</p>
+</li>
+<li>
+<p>CPU 信息</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>adb shell getprop ro.product.cpu.abi
+</span></span></code></pre></div><ul>
+<li>指向hook 脚本</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>frida -U -l hook.js -f com.package.name --no-pause
+</span></span></code></pre></div><ul>
+<li>使用python 执行</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">import</span> frida
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>device <span style="color:#ff79c6">=</span> frida<span style="color:#ff79c6">.</span>get_usb_device()
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># frida-ps -Ua 获得一个pid号</span>
+</span></span><span style="display:flex;"><span>process <span style="color:#ff79c6">=</span> device<span style="color:#ff79c6">.</span>attach(<span style="color:#bd93f9">8189</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>path <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;hook.js&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># send js</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">with</span> <span style="color:#8be9fd;font-style:italic">open</span>(path, encoding<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;UTF-8&#34;</span>) <span style="color:#ff79c6">as</span> f:
+</span></span><span style="display:flex;"><span>    jscode <span style="color:#ff79c6">=</span> f<span style="color:#ff79c6">.</span>readall()
+</span></span><span style="display:flex;"><span>    hook <span style="color:#ff79c6">=</span> process<span style="color:#ff79c6">.</span>create_script(jscode)
+</span></span><span style="display:flex;"><span>hook<span style="color:#ff79c6">.</span>load()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">input</span>()  <span style="color:#6272a4"># 可以操作Android软件并且进行hook</span>
+</span></span></code></pre></div><h3 id="hook-java">hook java</h3>
+<p>框架</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>Java.<span style="color:#50fa7b">perform</span>(() <span style="color:#ff79c6">=&gt;</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><p>获得类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">var</span> stringClass <span style="color:#ff79c6">=</span> Java.<span style="color:#50fa7b">use</span>(<span style="color:#f1fa8c">&#34;java.util.String&#34;</span>);
+</span></span></code></pre></div><p>实例化</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#6272a4">// 创建一个实例</span>
+</span></span><span style="display:flex;"><span>stringClass.<span style="color:#50fa7b">$new</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// 我们也可以查找一个实例</span>
+</span></span><span style="display:flex;"><span>Java.<span style="color:#50fa7b">choose</span>(&#39;java.<span style="color:#50fa7b">lang</span>.<span style="color:#50fa7b">String</span>&#39;, {  
+</span></span><span style="display:flex;"><span>        onMatch: function(instance){  
+</span></span><span style="display:flex;"><span>	        console.<span style="color:#50fa7b">log</span>(&#39;String instance is:&#39;, instance);  
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        onComplete: function(){
+</span></span><span style="display:flex;"><span>	        console.<span style="color:#50fa7b">log</span>(&#39;search complete<span style="color:#ff79c6">!</span>&#39;);
+</span></span><span style="display:flex;"><span>	    }  
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><p>方法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#6272a4">// 静态方法
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>className.<span style="color:#ff79c6">&lt;</span>method<span style="color:#ff79c6">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// 实例方法
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 1. 查找实例调用
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 2. new一个然后调用
+</span></span></span></code></pre></div><p>变量</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#6272a4">// static</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;</span><span style="color:#8be9fd;font-style:italic">class</span>&gt;.&lt;<span style="color:#50fa7b">var</span><span style="color:#ff79c6">&gt;</span>.<span style="color:#50fa7b">value</span> <span style="color:#ff79c6">=</span> xxx;
+</span></span></code></pre></div><p>hook java method</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#ff79c6">&lt;</span><span style="color:#8be9fd;font-style:italic">class</span>&gt;.&lt;<span style="color:#50fa7b">method</span><span style="color:#ff79c6">&gt;</span>.<span style="color:#50fa7b">implementation</span> <span style="color:#ff79c6">=</span> function(arg...) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// 重载: 当一个 class 两个名称相同的方法</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;</span><span style="color:#8be9fd;font-style:italic">class</span>&gt;.&lt;<span style="color:#50fa7b">method</span><span style="color:#ff79c6">&gt;</span>.<span style="color:#50fa7b">overload</span>(<span style="color:#ff79c6">[</span>TYPE<span style="color:#ff79c6">]</span>, <span style="color:#ff79c6">[</span>TYPE<span style="color:#ff79c6">]</span>).<span style="color:#50fa7b">implementation</span> <span style="color:#ff79c6">=</span> function(args...){ 
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// do sth </span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// 构造函数的 hook $init</span>
+</span></span><span style="display:flex;"><span>StringBuilder.<span style="color:#50fa7b">$init</span>.<span style="color:#50fa7b">overload</span>(&#39;java.<span style="color:#50fa7b">lang</span>.<span style="color:#50fa7b">String</span>&#39;).<span style="color:#50fa7b">implementation</span> <span style="color:#ff79c6">=</span> function (arg) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">var</span> partial <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">var</span> result <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">$init</span>(arg);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (arg <span style="color:#ff79c6">!==</span> <span style="color:#ff79c6">null</span>) {
+</span></span><span style="display:flex;"><span>         partial <span style="color:#ff79c6">=</span> arg.<span style="color:#50fa7b">toString</span>().<span style="color:#50fa7b">replace</span>(<span style="color:#f1fa8c">&#39;\n&#39;</span>, &#39;&#39;).<span style="color:#50fa7b">slice</span>(0,10);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// console.log(&#39;new StringBuilder(java.lang.String); =&gt; &#39; + result)</span>
+</span></span><span style="display:flex;"><span>    console.<span style="color:#50fa7b">log</span>(&#39;<span style="color:#ff79c6">new</span> StringBuilder(<span style="color:#f1fa8c">&#34;&#39; + partial + &#39;&#34;</span>);&#39;)
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> result;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="入门例子">入门例子</h2>
+<h3 id="newstartctf-2023-lazyactivity">newstartCTF 2023 lazyactivity</h3>
+<p>两个activity</p>
+<ul>
+<li>MainActivity</li>
+<li>FlagActivity</li>
+</ul>
+<p>模拟器打开时是MainActivity，但是我们需要运行FlagActivity</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>am start -n com.droidlearn.activity_travel/com.droidlearn.activity_travel.FlagActivit
+</span></span></code></pre></div><p>FlagActivity 逻辑：点击10000次，但是我们可以hook <code>access$004</code> 使其返回结果大于10000就行(原来的逻辑为点击一次，cnt+=1, hook后就是点击一次，返回10001)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">FlagActivity</span> <span style="color:#8be9fd;font-style:italic">extends</span> AppCompatActivity {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd">int</span> cnt <span style="color:#ff79c6">=</span> 0;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#6272a4">/* synthetic */</span> <span style="color:#8be9fd">int</span> <span style="color:#50fa7b">access$004</span>(FlagActivity flagActivity) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> flagActivity.<span style="color:#50fa7b">cnt</span> <span style="color:#ff79c6">+</span> 1;
+</span></span><span style="display:flex;"><span>        flagActivity.<span style="color:#50fa7b">cnt</span> <span style="color:#ff79c6">=</span> i;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> i;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">/* JADX INFO: Access modifiers changed from: protected */</span>
+</span></span><span style="display:flex;"><span>    @Override <span style="color:#6272a4">// androidx.fragment.app.FragmentActivity, androidx.activity.ComponentActivity, androidx.core.app.ComponentActivity, android.app.Activity</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">onCreate</span>(Bundle bundle) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">super</span>.<span style="color:#50fa7b">onCreate</span>(bundle);
+</span></span><span style="display:flex;"><span>        setContentView(C0535R.<span style="color:#50fa7b">layout</span>.<span style="color:#50fa7b">layout_2</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">final</span> TextView textView <span style="color:#ff79c6">=</span> (TextView) findViewById(C0535R.<span style="color:#50fa7b">C0538id</span>.<span style="color:#50fa7b">textView2</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">final</span> EditText editText <span style="color:#ff79c6">=</span> (EditText) findViewById(C0535R.<span style="color:#50fa7b">C0538id</span>.<span style="color:#50fa7b">editTextTextPersonName2</span>);
+</span></span><span style="display:flex;"><span>        ((Button) findViewById(C0535R.<span style="color:#50fa7b">C0538id</span>.<span style="color:#50fa7b">button</span>)).<span style="color:#50fa7b">setOnClickListener</span>(<span style="color:#ff79c6">new</span> View.<span style="color:#50fa7b">OnClickListener</span>() { <span style="color:#6272a4">// from class: com.droidlearn.activity_travel.FlagActivity.1</span>
+</span></span><span style="display:flex;"><span>            @Override <span style="color:#6272a4">// android.view.View.OnClickListener</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">onClick</span>(View view) {
+</span></span><span style="display:flex;"><span>                textView.<span style="color:#50fa7b">setText</span>(Integer.<span style="color:#50fa7b">toString</span>(FlagActivity.<span style="color:#50fa7b">access$004</span>(FlagActivity.<span style="color:#50fa7b">this</span>)));
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">if</span> (FlagActivity.<span style="color:#50fa7b">this</span>.<span style="color:#50fa7b">cnt</span> <span style="color:#ff79c6">&gt;=</span> 10000) {
+</span></span><span style="display:flex;"><span>                    Toast.<span style="color:#50fa7b">makeText</span>(FlagActivity.<span style="color:#50fa7b">this</span>, editText.<span style="color:#50fa7b">getText</span>().<span style="color:#50fa7b">toString</span>(), 0).<span style="color:#50fa7b">show</span>();
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><del>是男人就点击10000次（bushi</del></p>
+<p>hook.py</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">import</span> frida
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 连接安卓机上的frida-server</span>
+</span></span><span style="display:flex;"><span>device <span style="color:#ff79c6">=</span> frida<span style="color:#ff79c6">.</span>get_usb_device()
+</span></span><span style="display:flex;"><span>session <span style="color:#ff79c6">=</span> device<span style="color:#ff79c6">.</span>attach(<span style="color:#bd93f9">3157</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 加载hooook.js脚本</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">with</span> <span style="color:#8be9fd;font-style:italic">open</span>(<span style="color:#f1fa8c">&#34;lazy_activity.js&#34;</span>, encoding<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;UTF-8&#39;</span>) <span style="color:#ff79c6">as</span> f:
+</span></span><span style="display:flex;"><span>    script <span style="color:#ff79c6">=</span> session<span style="color:#ff79c6">.</span>create_script(f<span style="color:#ff79c6">.</span>read())
+</span></span><span style="display:flex;"><span>script<span style="color:#ff79c6">.</span>load()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">input</span>()
+</span></span></code></pre></div><p>hook.js</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>console.log(<span style="color:#f1fa8c">&#34;Script loaded successfully &#34;</span>);
+</span></span><span style="display:flex;"><span>Java.perform(() =&gt; {
+</span></span><span style="display:flex;"><span>    console.log(<span style="color:#f1fa8c">&#34;Inside java perform function&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">//定位类
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#8be9fd;font-style:italic">var</span> my_class <span style="color:#ff79c6">=</span> Java.use(<span style="color:#f1fa8c">&#34;com.droidlearn.activity_travel.FlagActivity&#34;</span>);
+</span></span><span style="display:flex;"><span>    console.log(<span style="color:#f1fa8c">&#34;Java.Use.Successfully!&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">//在这里更改类的方法的实现（implementation）
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    my_class.access$000.implementation <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">function</span>(x){
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">//打印替换前的参数
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>        console.log(<span style="color:#f1fa8c">&#34;Successfully!&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">10001</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><p>运行python脚本，然后在模拟器或者真机上点击一下就行。</p>
+		</section>
+
+		<div class="post-tags">
+			
+			
+			<nav class="nav tags">
+				<ul class="tags">
+					
+					<li><a href="/tags/android">Android</a></li>
+					
+				</ul>
+			</nav>
+			
+			
+		</div>
+		<div id="disqus_thread"></div>
+<script type="text/javascript">
+    (function () {
+        
+        
+        if (window.location.hostname == "localhost")
+            return;
+
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        var disqus_shortname = 'ldrx30';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+
+</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/ldrx30" rel="me" title="GitHub"><i data-feather="github"></i></a>
+    <a class="border"></a></div>
+  <div class="footer-info">
+    2024  © ldrx30 |  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>

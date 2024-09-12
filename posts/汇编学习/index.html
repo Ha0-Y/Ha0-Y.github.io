@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html><head lang="en"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>汇编学习 - ldrx30</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="
+基本的汇编学习。
+" />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="汇编学习" />
+<meta property="og:description" content="
+基本的汇编学习。
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/%E6%B1%87%E7%BC%96%E5%AD%A6%E4%B9%A0/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-06-10T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-06-10T00:00:00+00:00" />
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="汇编学习"/>
+<meta name="twitter:description" content="
+基本的汇编学习。
+"/>
+<script src="http://localhost:1313/js/feather.min.js"></script>
+	
+	
+        <link href="http://localhost:1313/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="http://localhost:1313/css/main.5cebd7d4fb2b97856af8d32a6def16164fcf7d844e98e236fcb3559655020373.css" />
+		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="http://localhost:1313/css/dark.d22e2a2879d933a4b781535fc4c4c716e9f9d35ea4986dd0cbabda82effc4bdd.css"  disabled />
+	
+
+	
+	
+		<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+		</script>
+
+		
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			tex2jax: {
+				inlineMath: [['$','$'], ['\\(','\\)']],
+				displayMath: [['$$','$$'], ['\[','\]']],
+				processEscapes: true,
+				processEnvironments: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+				TeX: { equationNumbers: { autoNumber: "AMS" },
+						 extensions: ["AMSmath.js", "AMSsymbols.js"] }
+			}
+		});
+		</script>
+	
+
+	
+	
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css">
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js"></script>
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+					renderMathInElement(document.body, {
+							delimiters: [
+									{left: "$$", right: "$$", display: true},
+									{left: "$", right: "$", display: false}
+							]
+					});
+			});
+			</script>
+	
+
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="http://localhost:1313/">ldrx30</a>
+	</div>
+	<nav>
+		
+		<a href="/">Home</a>
+		
+		<a href="/posts">All posts</a>
+		
+		<a href="/about">About</a>
+		
+		| <span id="dark-mode-toggle" onclick="toggleTheme()"></span>
+		<script src="http://localhost:1313/js/themetoggle.js"></script>
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">汇编学习</h1>
+			<div class="meta">Posted on Jun 10, 2023</div>
+		</div>
+		
+
+		
+
+		<section class="body">
+			<blockquote>
+<p>基本的汇编学习。</p>
+</blockquote>
+<p>学习目标：首先能看懂。然后尝试编写 <code>shellcode</code>。</p>
+<p>个人习惯小写指令。</p>
+<ul>
+<li><code>little-endian</code></li>
+</ul>
+<p>常见的汇编格式</p>
+<ul>
+<li>Intel格式。</li>
+<li>AT&amp;T，实际使用也很常见(Linux中默认的格式)</li>
+</ul>
+<p>部分名词</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>ISA: Instruction Set Architecture, 指令集架构
+</span></span><span style="display:flex;"><span>RISC: Reduced Instruction Set Computer, 精简指令集计算机
+</span></span><span style="display:flex;"><span>CISC: Complex Instruction Set Computer, 复杂指令集计算机
+</span></span><span style="display:flex;"><span>ABI: application binary interface
+</span></span></code></pre></div><h2 id="环境问题">环境问题</h2>
+<p>本机 linux: ubuntu &amp;&amp; kali virtual machine；CPU: AMD。</p>
+<ul>
+<li>无法直接运行 <code>arm</code> 和 <code>mips</code> 架构的程序</li>
+<li>arm可以使用手机终端 <a href="https://termux.dev/en/">Termux</a> 进行运行。或者购买云服务器?</li>
+</ul>
+<h3 id="环境安装">环境安装</h3>
+<p>基本环境 <code>user mode+kernel mode</code>。</p>
+<ul>
+<li>运行程序只需要一个<code>qemu-user</code> 就行，启动系统需要 <code>qemu-system-xxx</code></li>
+<li>甚至可以 <code>qemu-system</code> 跑kernel，然后跑程序😂</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># qemu user用户态 system启动内核镜像</span>
+</span></span><span style="display:flex;"><span>sudo apt install qemu-user
+</span></span></code></pre></div><p>arm 环境</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># gun 编译工具链 + 动态链接库</span>
+</span></span><span style="display:flex;"><span>sudo apt list gcc* | grep arm
+</span></span><span style="display:flex;"><span>sudo apt install gcc-arm-linux-gnueabi gcc-aarch64-linux-gnu
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># optional: qemu arm system mode</span>
+</span></span><span style="display:flex;"><span>sudo apt list  <span style="color:#f1fa8c">&#34;qemu*&#34;</span> <span style="color:#6272a4"># 寻找对用的arch</span>
+</span></span><span style="display:flex;"><span>sudo apt install qemu-system-arm qemu-system-aarch64
+</span></span></code></pre></div><p>mips 环境.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># gun 编译工具链</span>
+</span></span><span style="display:flex;"><span>sudo apt install gcc-mips-linux-gnu gcc-mips64-linux-gnuabi64 gcc-mipsel-linux-gnu gcc-mips64el-linux-gnuabi64
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># optional: qemu mips system mode, 目前没见过， user mode 应该够了</span>
+</span></span><span style="display:flex;"><span>sudo apt install qemu-system-mips
+</span></span></code></pre></div><p>gdb</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt install gdb gdb-multiarch
+</span></span></code></pre></div><h3 id="测试">测试</h3>
+<p>qemu-user 使用 <code>-g</code> gdb模式 确定gdb调试端口</p>
+<p>qemu-system 使用 <code>-s -S  或者 -gdb tcp:1234</code> gdbserver等待连接，默认端口 <code>1234</code></p>
+<p>编程测试</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;stdio.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#50fa7b">printf</span>(<span style="color:#f1fa8c">&#34;hello, world!&#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#50fa7b">getchar</span>();
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>寻找动态链接库。<code>lib-&gt;/usr/lib</code> 的链接</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ ls -al /usr/lib | grep arm  <span style="color:#6272a4"># aarch64 mips...</span>
+</span></span></code></pre></div><p>arm 测试，不知为什么，测试时 <code>-g</code>放前面才成功</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># 编译</span>
+</span></span><span style="display:flex;"><span>arm-linux-gnueabi-gcc hello.c -o helloarm -g
+</span></span><span style="display:flex;"><span>aarch64-linux-gnu-gcc hello.c -o helloaarch -g
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 运行</span>
+</span></span><span style="display:flex;"><span>$ qemu-arm -L /usr/arm-linux-gnueabi ./helloarm
+</span></span><span style="display:flex;"><span>$ qemu-aarch64
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 调试</span>
+</span></span><span style="display:flex;"><span>$ qemu-arm -g <span style="color:#bd93f9">1234</span> -L /usr/arm-linux-gnueabi ./helloarm 
+</span></span><span style="display:flex;"><span>$ gdb-multiarch
+</span></span><span style="display:flex;"><span>gdb&gt; <span style="color:#8be9fd;font-style:italic">set</span> arch arm <span style="color:#6272a4"># aarch64</span>
+</span></span><span style="display:flex;"><span>gdb&gt; target remote localhost:1234
+</span></span><span style="display:flex;"><span>xxx 
+</span></span></code></pre></div><p>mips 测试, 与arm类似</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>$ mips-linux-gnu-gcc hello.c -o hellomips -g
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div><h2 id="x86">x86</h2>
+<p>CISC</p>
+<h3 id="x86-1">x86</h3>
+<p>intel x86 通用寄存器</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#6272a4">; 通用
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">eax:</span> 累加器
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">ebx:</span> 一般基址寄存器，<span style="color:#50fa7b">base</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">ecx:</span> <span style="color:#50fa7b">counter</span>, 在loop时，默认计数
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">edx:</span> 一般用于存放<span style="color:#50fa7b">data</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">esi:</span> <span style="color:#50fa7b">source</span> index, 处理字符串常用
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">edi:</span> <span style="color:#50fa7b">destinatin</span> index, 处理字符串常用
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">esp:</span> <span style="color:#50fa7b">stack</span> pointer, 栈顶
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">ebp:</span> <span style="color:#50fa7b">base</span> pointer, 栈基址
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">eip:</span> 指向将要执行的指令。
+</span></span></code></pre></div><p>标志位 <code>eflags</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">CF:</span> <span style="color:#50fa7b">carry</span> flag, 进位
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">ZF:</span> <span style="color:#50fa7b">zero</span>, <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">SF:</span> <span style="color:#50fa7b">sign</span>, 符号
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">OF:</span> <span style="color:#50fa7b">overflow</span>, 溢出
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">TF:</span> <span style="color:#50fa7b">trap</span>, 跟踪
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">IF:</span> <span style="color:#50fa7b">interrupt</span>, 中断
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PF:</span> <span style="color:#50fa7b">parity</span>, 奇偶
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">...</span>
+</span></span></code></pre></div><p>段寄存器</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">cs:</span> <span style="color:#50fa7b">code</span> segment 代码段
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">ds:</span> <span style="color:#50fa7b">data</span> 数据段
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">ss:</span> <span style="color:#50fa7b">stack</span> 堆栈段
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">es:</span> <span style="color:#50fa7b">extend</span> 扩展段
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">fs:</span> 数据段
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">gs:</span> 数据段
+</span></span></code></pre></div><p>控制寄存器</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#6272a4">; 某些保护模式
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#50fa7b">cr0-cr4</span>
+</span></span></code></pre></div><p>寻址</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#50fa7b">mov</span>
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">lea</span>
+</span></span></code></pre></div><p>算术指令</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#6272a4">; 基本运算
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#50fa7b">add</span>
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">sub</span>
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">mul</span>
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">div</span>
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">inc</span>
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">dec</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">; 逻辑运算
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#50fa7b">cmp</span>
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">and</span>
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">or</span>
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">xor</span>
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">not</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">; 移位操作
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#50fa7b">shl</span>  <span style="color:#6272a4">; shift left
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#50fa7b">shr</span>
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">sal</span>  <span style="color:#6272a4">; shift arithmetic left 算数左移
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#50fa7b">sar</span>
+</span></span></code></pre></div><p>跳转</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#6272a4">; jmp 类
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#50fa7b">jmp</span>
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">jb</span>   <span style="color:#6272a4">; blow
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#50fa7b">jg</span>   <span style="color:#6272a4">; greater
+</span></span></span></code></pre></div><p>函数调用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#50fa7b">call</span> function
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">; call 执行时，保存 eip+4, 并跳转到对应地址
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">; 参数传递，使用栈传递参数
+</span></span></span></code></pre></div><p>栈帧</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#6272a4">; 在调用子程序时，会开辟子程序的栈帧。esp和ebp保存栈顶和栈底
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">; 在返回父程序需要还原esp, ebp指针。
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">; 栈 低地址生长
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">; sp自动变化
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#50fa7b">push</span> ebx  <span style="color:#6272a4">; sp-4
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#50fa7b">pop</span> rax   <span style="color:#6272a4">; sp+4
+</span></span></span></code></pre></div><p>系统调用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#6272a4">; 系统中断处理syscall
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#50fa7b">int</span> <span style="color:#bd93f9">0x80</span>            <span style="color:#6272a4">; eax系统调用号 ebx, ecx, edx对应函数前三个参数
+</span></span></span></code></pre></div><h3 id="x86-64">x86-64</h3>
+<p>实际上x86-64与AMD64基本是同一个ISA，现在我们使用购买的Intel或者AMD生产的CPU，都属于x86-64的ISA。</p>
+<p>x86-64: 64位，可寻址 <code>2^64</code>, 兼容x86</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#6272a4">; 32位 r-&gt;b比如 rax-&gt;eax
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#50fa7b">rax</span>, rbx, rcx, rdx
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">rsi</span>, rdi
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">rsp</span>, rbp
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">r8:</span> <span style="color:#50fa7b">r8d</span> <span style="color:#bd93f9">32</span>位 寄存器，低<span style="color:#bd93f9">32</span>位
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">r9:</span> <span style="color:#50fa7b">r9d</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">r10:</span> <span style="color:#50fa7b">...</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">r11:</span> <span style="color:#50fa7b">...</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">r12:</span> <span style="color:#50fa7b">...</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">r13:</span> <span style="color:#50fa7b">...</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">r14:</span> <span style="color:#50fa7b">...</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">r15:</span> <span style="color:#50fa7b">...</span>
+</span></span></code></pre></div><p>Linux下函数调用约定, 与x86相差较大</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#6272a4">; 函数参数
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#50fa7b">rdi</span>, rsi, rdx, rcx, r8, r9           <span style="color:#6272a4">; 传递前6个参数，第7个参数开始和x86一样使用栈传递
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">; 返回值
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#50fa7b">rax</span>
+</span></span></code></pre></div><p>系统调用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#6272a4">; syscall
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">rax:</span> 系统调用号
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">; 参数传递与函数一致， rdi, rsi...
+</span></span></span></code></pre></div><h2 id="arm">ARM</h2>
+<p>RISC</p>
+<p>ARM指令格式</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#50fa7b">label</span> op-code oprand1 oprand2 oprand3 ...        @commit
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>@ 更加学术 <span style="color:#8be9fd;font-style:italic">rd:</span> <span style="color:#50fa7b">destination</span><span style="color:#6272a4">; rn: 寄存器中用于算术运算的操作数; shifter_operand: 数据处理指令
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>&lt;<span style="color:#50fa7b">opcode</span>&gt; {&lt;cond&gt;} {S} &lt;rd&gt;,&lt;rn&gt;,&lt;shifter_operand&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>@ 注释  `@`, `<span style="color:#6272a4">//`  `/**/` `;`
+</span></span></span></code></pre></div><h3 id="armv7">ARMv7</h3>
+<p>32位指令集<code>A32</code>，兼容16位指令集<code>T16</code></p>
+<ul>
+<li>由于ARMv7 兼容 <code>ARM</code>和 <code>Thumb</code>指令集，区分两个指令集： <code>addr &amp; 1 == 1</code>代表<code>thumb</code>指令集</li>
+</ul>
+<p>ARMv7通用寄存器</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">r0-r3:</span> <span style="color:#50fa7b">args</span>, 函数前四个参数，返回值也会存入r0. 
+</span></span><span style="display:flex;"><span>r4-r10:  
+</span></span><span style="display:flex;"><span>r11: fp, frame pointer
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">r12:</span> <span style="color:#50fa7b">ip</span>, Intra-Procedure-call scratch register, 在新版本当作通用寄存器使用，会在bl时引发bug
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">r13:</span> <span style="color:#50fa7b">sp</span>, stack pointer
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">r14:</span> <span style="color:#50fa7b">lr</span>, link register
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">r15:</span> <span style="color:#50fa7b">pc</span>, program count, 指向下一条需要执行的指令
+</span></span></code></pre></div><p>标志位(CPSR: program status reg),如果想改变，需要在某些指令后加 <code>s</code> (sub -&gt; subs)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">N:</span> <span style="color:#50fa7b">negative</span>, 运算结果&gt;=<span style="color:#bd93f9">0</span> N=<span style="color:#bd93f9">0</span>, 负数，N=<span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">Z:</span> <span style="color:#50fa7b">zero</span>, 为<span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">C:</span> <span style="color:#50fa7b">carry</span>, 进位
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">V:</span> <span style="color:#50fa7b">overflow</span> 有溢出
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">; cmp 可以改变
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#50fa7b">cmp</span> r0, r1
+</span></span></code></pre></div><p>mov 立即数</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#50fa7b">mov</span> r0, <span style="color:#6272a4">#1     @ r0 &lt;- 1
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>@ 特殊寄存器 <span style="color:#50fa7b">cpsr</span> || spsr
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">mrs</span> r0, cpsr   @ r0 &lt;- cpsr
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">msr</span> cpsr, r1   @ cpsr &lt;- r1
+</span></span></code></pre></div><p>访问内存</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span>@ 不能直接像<span style="color:#50fa7b">intel</span> mov访问内存, 使用 load, store命令间接访问内存
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">ldr</span> rd, [rn , <span style="color:#6272a4">#offset]   @ load register
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#50fa7b">str</span> rd, [rn, <span style="color:#6272a4">#offset]
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#50fa7b">ldm</span>                      @ load multiple
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">stm</span>  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">; 例子
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#50fa7b">ldr</span> r0, =<span style="color:#bd93f9">0X20000002</span>  @ r0=<span style="color:#bd93f9">0X20000002</span>，加载地址到寄存器 
+</span></span><span style="display:flex;"><span>str r1, [r0]         @ r1 中的值写入到 r0 中所保存的地址中
+</span></span></code></pre></div><p>算术指令</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span>@ 基本算数运算
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">add</span> rd, rn, rm   @ rd = rn + rm
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">sub</span> rd, rn, rm   @ rd = rn - rm
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">mul</span> rd, rn, rm   @ rd = rn * rm
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">sdiv</span> rd, rn, rm  @ rd = rn / rm, s(ign)div u(nsign)div
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>@ 想改变标志位, 加 &#39;<span style="color:#50fa7b">s</span>&#39; =&gt; subs...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>@ 逻辑运算
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">and</span> rd, rn       @ rd = rd &amp; rn
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">and</span> rd, rn, <span style="color:#6272a4">#imm @ rd = rn &amp; #imm
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#50fa7b">orr</span> rd, rn       @ rd = rd | rn
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">eor</span> rd, rn       @ rd = rd ^ rn
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>@ 移位操作
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">lsl</span>   @ logic shift left 逻辑左移
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">lsr</span>   @ 逻辑右移
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">asr</span>   @ arithmetic shift right 算数右移
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">ror</span>   @ rotate right 循环右移
+</span></span></code></pre></div><p>程序跳转</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">b:</span> 直接跳到<span style="color:#50fa7b">label</span>。 branch
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">bx:</span> 跳转+状态切换    @ <span style="color:#50fa7b">ARM</span>/Thumb 模式(使用一次，切换一次)
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">bl:</span> <span style="color:#50fa7b">b</span> + link, 首先保存下一条指令地址到lr, 然后改变pc。
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">blx:</span> <span style="color:#50fa7b">bl</span>+bx
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>@ 条件跳转, 状态寄存器
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">eq:</span> <span style="color:#50fa7b">equal</span> 相等
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">ne:</span> <span style="color:#50fa7b">not</span> eq
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">lt:</span> <span style="color:#50fa7b">less</span> 
+</span></span><span style="display:flex;"><span>le: less equal
+</span></span></code></pre></div><p>函数调用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span>@ 仍然是使用 `<span style="color:#50fa7b">b</span>` 指令调用函数
+</span></span></code></pre></div><p>栈帧相关</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span>@ <span style="color:#50fa7b">sp</span>, fp 维护栈帧的状态, 栈向 低地址生长
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">fp</span> -&gt; +-------+
+</span></span><span style="display:flex;"><span>      | <span style="color:#50fa7b">frame</span> |
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">sp</span> -&gt; +-------+
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>@ <span style="color:#50fa7b">push</span>/pop 可以操作多个寄存器，甚至可以控制pc<span style="color:#6272a4">; sp自动变化
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>@ 下面是常见的函数调用出现出现的<span style="color:#50fa7b">gadget</span> 
+</span></span><span style="display:flex;"><span>push {r0-r4, lr}           @ 顺序是 push r12<span style="color:#6272a4">; push r4; push r3 ...
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#50fa7b">...</span>
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">pop</span> {r0-r4, pc}            @ 顺序是  pop r0<span style="color:#6272a4">; pop r1; ...
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>@ 等价于 <span style="color:#50fa7b">push</span>, 先计算sp的值?
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">stmfd</span> sp!, {r0-r4, r12}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>@ 等价于 <span style="color:#50fa7b">pop</span>
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">ldmfd</span> sp!, lr
+</span></span></code></pre></div><p>系统中断</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span>@ 通过<span style="color:#50fa7b">vector_swi</span>/svc 获得系统调用号
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">swi</span> <span style="color:#6272a4">#imm
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#50fa7b">svc</span> <span style="color:#6272a4">#imm
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>@ <span style="color:#50fa7b">O</span>(old)ABI 形式
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">mov</span> r0, <span style="color:#6272a4">#34
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#50fa7b">swi</span> <span style="color:#bd93f9">12</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>@ <span style="color:#50fa7b">E</span>(extended)ABI 形式，立即数 imm被忽略,由r0决定
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">mov</span> r0, <span style="color:#6272a4">#12
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#50fa7b">mov</span> r1, <span style="color:#6272a4">#34
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#50fa7b">swi</span> <span style="color:#bd93f9">0</span>
+</span></span></code></pre></div><h3 id="armv8">ARMv8</h3>
+<p>与 <code>armv7</code> 存在一定的区别</p>
+<p>64位指令集 <code>aarch64</code>, 兼容32位 <code>aarch32</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>aarch64: 64-bit registers and memory accesses, new instruction set；
+</span></span><span style="display:flex;"><span>aarch32: backwards compatible with ARMv7-A
+</span></span></code></pre></div><p>ARMv8 通用寄存器</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>x0-x31
+</span></span><span style="display:flex;"><span>x0-x7: 函数前8个参数值
+</span></span><span style="display:flex;"><span>x8: 函数返回值
+</span></span><span style="display:flex;"><span>x19-x28: 没特殊用途 
+</span></span><span style="display:flex;"><span>x29: fp frame pointer
+</span></span><span style="display:flex;"><span>x30: lr
+</span></span><span style="display:flex;"><span>x31: zr, zero register, 恒0
+</span></span><span style="display:flex;"><span>x32: pc, 不能像armv7一样被修改
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>@ 也可使用32位的 w0...寄存器, 可扩展使用
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>@ sp对应的物理寄存器有如下四个(某一时刻只能对应下面其中一个)
+</span></span><span style="display:flex;"><span>SP_EL0和SP_EL1
+</span></span><span style="display:flex;"><span>SP_EL2
+</span></span><span style="display:flex;"><span>SP_EL3
+</span></span></code></pre></div><p>SPSR 替代了 CPSR</p>
+<p>内存访问</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span>@ <span style="color:#50fa7b">load</span> &amp; store, 兼容armv7 ldr
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">ldp</span>  @ load pair 一对。
+</span></span><span style="display:flex;"><span>	<span style="color:#50fa7b">ldp</span> x8, x2, [x0, <span style="color:#6272a4">#0x10]   @ 将x8&lt;-(x0+0x10), x2&lt;-(x0+0x10+8)
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#50fa7b">stp</span>  @ store pair
+</span></span></code></pre></div><p>函数</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span>@ 参数传递
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">x0-x7:</span> 函数前8个参数值
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">x8:</span> 函数返回值
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>@ <span style="color:#50fa7b">aarch64没有push和pop</span> 指令
+</span></span></code></pre></div><p>系统调用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span>@ <span style="color:#50fa7b">supervisor</span> call
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">svc</span> <span style="color:#6272a4">#imm
+</span></span></span></code></pre></div><p>TrustZone 相关</p>
+<h3 id="armv9">ARMv9</h3>
+<p>xxx</p>
+<h2 id="mips">Mips</h2>
+<p>RISC， <code>Microprocessor without Interlocked Pipeline Stages</code></p>
+<p><code>mips</code> 是<code>big-endian</code>, mipsel是 <code>little-endian</code></p>
+<p>格式</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#6272a4"># 根据位数
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>31-26   25-21 20-16 15-11  10-6  5-0
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">op-code</span>   rs    rt   rd    shamt func
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 注释使用 `#`
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">rd:</span> <span style="color:#50fa7b">register</span> destination
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">rt:</span> <span style="color:#50fa7b">target</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">rs:</span> <span style="color:#50fa7b">source</span>
+</span></span></code></pre></div><p>通用寄存器， 32个</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>$0-$31          # 有各自的助记符，看汇编时多使用助记符
+</span></span><span style="display:flex;"><span>$0:    $zero    # 恒0
+</span></span><span style="display:flex;"><span>1:     $at      # 
+</span></span><span style="display:flex;"><span>2-3:   $v0-v1   # value 函数返回值
+</span></span><span style="display:flex;"><span>4-7:   $a0-a3   # arg  函数参数
+</span></span><span style="display:flex;"><span>8-15:  $t0-t7   # temp
+</span></span><span style="display:flex;"><span>16-23: $s0-s7   # save 保留
+</span></span><span style="display:flex;"><span>24-25: $t8-t9   # temp
+</span></span><span style="display:flex;"><span>16-27: $k0-k1   # 异常或中断
+</span></span><span style="display:flex;"><span>28:    $gp      # global pointer
+</span></span><span style="display:flex;"><span>29:    $sp      # stack pointer
+</span></span><span style="display:flex;"><span>30:    $fp, s8  # frame pointer 
+</span></span><span style="display:flex;"><span>31:    $ra      # ret addr
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>; 特殊
+</span></span><span style="display:flex;"><span>pc: program cunter
+</span></span></code></pre></div><p>指令格式</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>r: register format # 使用寄存器
+</span></span><span style="display:flex;"><span>i: immediate       # 使用立即数
+</span></span><span style="display:flex;"><span>j: jump
+</span></span></code></pre></div><p>寻址</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>move $a0, $zero    # a0&lt;-0
+</span></span></code></pre></div><p>访问内存</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-gdscript3" data-lang="gdscript3"><span style="display:flex;"><span><span style="color:#6272a4"># 仍然 load, store</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># b: byte; w: word; h: half word; ...</span>
+</span></span><span style="display:flex;"><span>sw: sw <span style="color:#ff79c6">$</span>ra, <span style="color:#bd93f9">0x38</span>(<span style="color:#ff79c6">$</span>sp)   <span style="color:#6272a4"># 将$ra存入栈中 $sp+38的地方</span>
+</span></span><span style="display:flex;"><span>sb: <span style="color:#ff79c6">...</span>
+</span></span><span style="display:flex;"><span>lw: <span style="color:#ff79c6">...</span>
+</span></span><span style="display:flex;"><span>lb: <span style="color:#ff79c6">...</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 例子</span>
+</span></span><span style="display:flex;"><span>sb r1, <span style="color:#bd93f9">0</span>(R2)
+</span></span><span style="display:flex;"><span>lb r1, <span style="color:#bd93f9">0</span>(r2)
+</span></span></code></pre></div><p>算术</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>; 基本算术
+</span></span><span style="display:flex;"><span>add
+</span></span><span style="display:flex;"><span>sub
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>; 逻辑
+</span></span><span style="display:flex;"><span>or
+</span></span><span style="display:flex;"><span>xor
+</span></span><span style="display:flex;"><span>nor
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>; 移位
+</span></span><span style="display:flex;"><span>sll
+</span></span><span style="display:flex;"><span>srl
+</span></span></code></pre></div><p>跳转</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>; jmp
+</span></span><span style="display:flex;"><span>j: jmp label
+</span></span><span style="display:flex;"><span>jr: 用法 jr $ra 等
+</span></span><span style="display:flex;"><span>jal: jmp and link, 保存 ret addr(pc+4) 到 $ra
+</span></span><span style="display:flex;"><span>jalr: 借用寄存器跳转，链接，常用
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>; branch, 后面需要跟操作
+</span></span><span style="display:flex;"><span>beq: beq $s, $t, offset   # $s=$t跳转
+</span></span><span style="display:flex;"><span>bne: b not eq
+</span></span><span style="display:flex;"><span>bltz: branch less than zero
+</span></span></code></pre></div><p>架构缓存</p>
+<ul>
+<li>有两个独立的cache: 指令 和 数据</li>
+</ul>
+<h2 id="risc-v">RISC-V</h2>
+<p>xxx</p>
+<h2 id="gcc-inline-assembly">GCC Inline Assembly</h2>
+<p>内联汇编，我的理解是直接写 汇编语句就行</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">asm</span>(<span style="color:#f1fa8c">&#34;mov $1, %eax&#34;</span>)
+</span></span></code></pre></div><p>扩展内链汇编，有点不同</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">asm</span> ( assembler <span style="color:#ff79c6">template</span>  
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">:</span> output operands                   <span style="color:#6272a4">/* optional 输出 */</span>  
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">:</span> input operands                    <span style="color:#6272a4">/* optional 输入*/</span>  
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">:</span> list of clobbered registers       <span style="color:#6272a4">/* optional 通知编译器可能造成寄存器或内存数据破坏，提前保护*/</span>  
+</span></span><span style="display:flex;"><span>);
+</span></span></code></pre></div><p>某些规则，主要</p>
+<ul>
+<li>r: register</li>
+<li>m:memory</li>
+<li>常用寄存器</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>a rax/eax/ax/al
+</span></span><span style="display:flex;"><span>b rbx
+</span></span><span style="display:flex;"><span>c rcx
+</span></span><span style="display:flex;"><span>d rdx
+</span></span><span style="display:flex;"><span>S rsi
+</span></span><span style="display:flex;"><span>D rdi
+</span></span><span style="display:flex;"><span>I 常数值
+</span></span><span style="display:flex;"><span>q,r 动态分配的寄存器
+</span></span><span style="display:flex;"><span>g eax,ebx,ecx,edx或内存变量
+</span></span><span style="display:flex;"><span>A 把eax和edx合成一个64位的寄存器(use long longs)
+</span></span></code></pre></div><ol>
+<li>使用 q 指示编译器从 eax, ebx, ecx, edx 分配寄存器。 使用 r 指示编译器从 eax, ebx, ecx, edx, esi, edi 分配寄存器。</li>
+<li>不必把编译器分配的寄存器放入改变的寄存器列表，因为寄存器已经记住了它们。</li>
+<li><code>&quot;=&quot;</code> 是标示输出寄存器，<strong>必须这样用</strong>。</li>
+<li>数字 <code>%n</code> 的用法：数字表示的寄存器是按照出现和从左到右的顺序映射到用&quot;r&quot;或&quot;q&quot;请求的寄存器．如果要重用&quot;r&quot;或&quot;q&quot;请求的寄存器的话，就可以使用它们。</li>
+</ol>
+<p>例子 1</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">asm</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#f1fa8c">&#34;cld/n/t&#34;</span>  
+</span></span><span style="display:flex;"><span>	<span style="color:#f1fa8c">&#34;rep/n/t&#34;</span>  
+</span></span><span style="display:flex;"><span>	<span style="color:#f1fa8c">&#34;stosl&#34;</span>  
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">:</span> <span style="color:#6272a4">/* no output registers */</span>  
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">:</span> <span style="color:#f1fa8c">&#34;c&#34;</span> (count), <span style="color:#f1fa8c">&#34;a&#34;</span> (fill_value), <span style="color:#f1fa8c">&#34;D&#34;</span> (dest)  
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">:</span> <span style="color:#f1fa8c">&#34;%edi&#34;</span> 
+</span></span><span style="display:flex;"><span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// intel 格式：count 等都是变量
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>push edi
+</span></span><span style="display:flex;"><span>mov ecx, count
+</span></span><span style="display:flex;"><span>mov eax, fill_value
+</span></span><span style="display:flex;"><span>mov edi, dest
+</span></span><span style="display:flex;"><span>cld
+</span></span><span style="display:flex;"><span>rep
+</span></span><span style="display:flex;"><span>stosl
+</span></span></code></pre></div><p>例子2：加入数字</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>__asm__ (
+</span></span><span style="display:flex;"><span>	<span style="color:#f1fa8c">&#34;push %%rax&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f1fa8c">&#34;pop %0&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">:</span> <span style="color:#f1fa8c">&#34;=m&#34;</span>(var)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">:</span> <span style="color:#f1fa8c">&#34;c&#34;</span>(count)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">:</span> memory
+</span></span><span style="display:flex;"><span>)
+</span></span></code></pre></div><h2 id="参考">参考</h2>
+<p><a href="https://learningos.cn/ucore_os_webdocs/lab0/lab0_2_3_1_3_gcc_inline_asm.html">GCC 基本内联汇编 · GitBook (learningos.cn)</a></p>
+		</section>
+
+		<div class="post-tags">
+			
+			
+			<nav class="nav tags">
+				<ul class="tags">
+					
+					<li><a href="/tags/asm">asm</a></li>
+					
+				</ul>
+			</nav>
+			
+			
+		</div>
+		<div id="disqus_thread"></div>
+<script type="text/javascript">
+    (function () {
+        
+        
+        if (window.location.hostname == "localhost")
+            return;
+
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        var disqus_shortname = 'ldrx30';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+
+</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/ldrx30" rel="me" title="GitHub"><i data-feather="github"></i></a>
+    <a class="border"></a></div>
+  <div class="footer-info">
+    2024  © ldrx30 |  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>

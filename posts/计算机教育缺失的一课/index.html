@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html><head lang="en"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>计算机教育缺失的一课 - ldrx30</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="
+the Missing Semester of your CS education
+" />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="计算机教育缺失的一课" />
+<meta property="og:description" content="
+the Missing Semester of your CS education
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%95%99%E8%82%B2%E7%BC%BA%E5%A4%B1%E7%9A%84%E4%B8%80%E8%AF%BE/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-06-19T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-06-19T00:00:00+00:00" />
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="计算机教育缺失的一课"/>
+<meta name="twitter:description" content="
+the Missing Semester of your CS education
+"/>
+<script src="http://localhost:1313/js/feather.min.js"></script>
+	
+	
+        <link href="http://localhost:1313/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="http://localhost:1313/css/main.5cebd7d4fb2b97856af8d32a6def16164fcf7d844e98e236fcb3559655020373.css" />
+		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="http://localhost:1313/css/dark.d22e2a2879d933a4b781535fc4c4c716e9f9d35ea4986dd0cbabda82effc4bdd.css"  disabled />
+	
+
+	
+	
+		<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+		</script>
+
+		
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			tex2jax: {
+				inlineMath: [['$','$'], ['\\(','\\)']],
+				displayMath: [['$$','$$'], ['\[','\]']],
+				processEscapes: true,
+				processEnvironments: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+				TeX: { equationNumbers: { autoNumber: "AMS" },
+						 extensions: ["AMSmath.js", "AMSsymbols.js"] }
+			}
+		});
+		</script>
+	
+
+	
+	
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css">
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js"></script>
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+					renderMathInElement(document.body, {
+							delimiters: [
+									{left: "$$", right: "$$", display: true},
+									{left: "$", right: "$", display: false}
+							]
+					});
+			});
+			</script>
+	
+
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="http://localhost:1313/">ldrx30</a>
+	</div>
+	<nav>
+		
+		<a href="/">Home</a>
+		
+		<a href="/posts">All posts</a>
+		
+		<a href="/about">About</a>
+		
+		| <span id="dark-mode-toggle" onclick="toggleTheme()"></span>
+		<script src="http://localhost:1313/js/themetoggle.js"></script>
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">计算机教育缺失的一课</h1>
+			<div class="meta">Posted on Jun 19, 2023</div>
+		</div>
+		
+
+		
+
+		<section class="body">
+			<blockquote>
+<p>the Missing Semester of your CS education</p>
+</blockquote>
+<p>The Missing Semester of your CS education，共<code>11</code>节课，每节课约1h。</p>
+<ul>
+<li><a href="https://www.bilibili.com/video/BV1uc411N7eK/?spm_id_from=333.999.0.0&amp;vd_source=ccaa27461534d3a4a5e9b964672f86d6">bilibili 双语字幕</a></li>
+<li><a href="https://www.youtube.com/playlist?list=PLyzOVJj3bHQuloKGG59rS43e29ro7I57J">Missing Semester IAP 2020</a></li>
+</ul>
+<p>确实不错，手敲命令+讲解。多使用Linux</p>
+<p>学校应该在大一教这个，而不是TM的大学物理</p>
+<p>课程网站</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>https://missing.csail.mit.edu/
+</span></span></code></pre></div><h2 id="lectrue1-overview--shell">lectrue1: overview &amp; shell</h2>
+<blockquote>
+<p>主要是 Linux 基本命令</p>
+</blockquote>
+<h3 id="overview">overview</h3>
+<ul>
+<li>如何利用存在的工具使我们开发更加高效，以及如何更好的利用我们的计算机，这是这门课主要解决的问题。</li>
+</ul>
+<h3 id="shell">shell</h3>
+<p>讲述了Linux Shell.主要是bash</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>shell是运行在终端中的文本互动程序，bash（GNU Bourne-Again Shell）是最常用的一种shell。是当前大多数Linux发行版的默认Shell。
+</span></span></code></pre></div><p>日期</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ date
+</span></span></code></pre></div><p>打印</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ <span style="color:#8be9fd;font-style:italic">echo</span> <span style="color:#f1fa8c">&#34;hello world&#34;</span>
+</span></span></code></pre></div><p>路径列表</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># 当我们执行一些命令时，会遍历PATH寻找；比如说使用 /bin/echo 时只需在终端输入 echo 就行</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># `:` 分隔</span>
+</span></span><span style="display:flex;"><span>$ <span style="color:#8be9fd;font-style:italic">echo</span> <span style="color:#8be9fd;font-style:italic">$PATH</span>
+</span></span></code></pre></div><p>寻找命令的路径</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ which <span style="color:#8be9fd;font-style:italic">echo</span>
+</span></span><span style="display:flex;"><span>/usr/bin/echo
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># whereis可以寻找到 原始代码、二进制文件，或是帮助文件</span>
+</span></span><span style="display:flex;"><span>$ whereis bash
+</span></span><span style="display:flex;"><span>bash: /usr/bin/bash /usr/share/man/man1/bash.1.gz
+</span></span></code></pre></div><p>目录</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># change dir</span>
+</span></span><span style="display:flex;"><span>$ <span style="color:#8be9fd;font-style:italic">cd</span> /home/username
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># `..` 代表上一级目录。`.` 代表当前目录 </span>
+</span></span><span style="display:flex;"><span>$ <span style="color:#8be9fd;font-style:italic">cd</span> ..
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># `-`  当前目录和之前目录下切换</span>
+</span></span><span style="display:flex;"><span>$ <span style="color:#8be9fd;font-style:italic">cd</span> /mnt
+</span></span><span style="display:flex;"><span>$ <span style="color:#8be9fd;font-style:italic">cd</span> /home
+</span></span><span style="display:flex;"><span>$ <span style="color:#8be9fd;font-style:italic">cd</span> -
+</span></span><span style="display:flex;"><span>/mnt
+</span></span><span style="display:flex;"><span>$ <span style="color:#8be9fd;font-style:italic">cd</span> -
+</span></span><span style="display:flex;"><span>/home
+</span></span><span style="display:flex;"><span>$ <span style="color:#8be9fd;font-style:italic">cd</span> -
+</span></span><span style="display:flex;"><span>/mnt
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ <span style="color:#8be9fd;font-style:italic">pwd</span>
+</span></span><span style="display:flex;"><span>/home/
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 有趣的一点是，`..`使用过多的情况。`/`目录没有上一级，最高只能到 `/`</span>
+</span></span><span style="display:flex;"><span>$ ../../../../../../bin/date
+</span></span><span style="display:flex;"><span>xxx
+</span></span></code></pre></div><p>文件操作</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4">#  list: 列出指定目录下所有的文件，默认当前目录</span>
+</span></span><span style="display:flex;"><span>$ ls 
+</span></span><span style="display:flex;"><span>test.txt
+</span></span><span style="display:flex;"><span>$ ls /
+</span></span><span style="display:flex;"><span>lib root home ...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 移动文件位置 move</span>
+</span></span><span style="display:flex;"><span>$ mov test.txt /tmp
+</span></span><span style="display:flex;"><span>$ ls /tmp
+</span></span><span style="display:flex;"><span>test.txt
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 重命名</span>
+</span></span><span style="display:flex;"><span>$ <span style="color:#8be9fd;font-style:italic">cd</span> /tmp
+</span></span><span style="display:flex;"><span>$ mov test.txt tmp.txt
+</span></span><span style="display:flex;"><span>$ ls 
+</span></span><span style="display:flex;"><span>tmp.txt
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 复制 copy</span>
+</span></span><span style="display:flex;"><span>$ cp tmp.txt tmp1.txt
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 删除</span>
+</span></span><span style="display:flex;"><span>$ rm tmp1.txt
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 创建一个文件</span>
+</span></span><span style="display:flex;"><span>$ touch tmp2.txt
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 创建文件夹</span>
+</span></span><span style="display:flex;"><span>$ mkdir tmpdir
+</span></span><span style="display:flex;"><span>$ rmdir <span style="color:#6272a4"># rm -r 也行</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 查看文件所有内容</span>
+</span></span><span style="display:flex;"><span>$ cat test.txt
+</span></span><span style="display:flex;"><span>hello world
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 查看文件开头结尾，默认10行</span>
+</span></span><span style="display:flex;"><span>$ head test.txt
+</span></span><span style="display:flex;"><span>$ tail test.txt
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># cat 重定向</span>
+</span></span><span style="display:flex;"><span>$ cat test.txt &gt; tmp.txt   <span style="color:#6272a4"># 如果没有就创建tmp.txt.</span>
+</span></span><span style="display:flex;"><span>$ cat &lt; text.txt &gt; tmp.txt <span style="color:#6272a4"># 同上</span>
+</span></span><span style="display:flex;"><span>$ cat test.txt &gt;&gt; tmp.txt  <span style="color:#6272a4"># &gt; 会清除原先内容。&gt;&gt; 代表append，追加而不清除</span>
+</span></span></code></pre></div><p>命令参数和帮助文档</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># 一般命令也存在参数，一般为 -?</span>
+</span></span><span style="display:flex;"><span>$ ls -l  /home
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># d: dir rwx: 权限Read, Write, eXecute(也代表是否能够访问此目录)。</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 从前到后: owner权限 group权限 其余用户权限 owner group size date dir_name</span>
+</span></span><span style="display:flex;"><span>drwxr-x--- <span style="color:#bd93f9">27</span> user user <span style="color:#bd93f9">4096</span> Jun <span style="color:#bd93f9">21</span> 14:42 user  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 查帮助文档，q退出。manual pages</span>
+</span></span><span style="display:flex;"><span>$ man ls 
+</span></span><span style="display:flex;"><span> -l     use a long listing format
+</span></span></code></pre></div><p>管道：左侧的输出作为右侧的输入</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ ls / | tail -n <span style="color:#bd93f9">1</span> <span style="color:#6272a4"># -n 1 最后一行</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 有时候给root权限文件写入时，比如sudo echo 123 &gt; tmp.txt会报错，可用以下命令</span>
+</span></span><span style="display:flex;"><span>$ <span style="color:#8be9fd;font-style:italic">echo</span> <span style="color:#bd93f9">123</span> | sudo tee tmp.txt
+</span></span></code></pre></div><p>root user: 超级管理员。尽量少用，在运行错误的程序时会破坏计算机。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># 用户使用root权限</span>
+</span></span><span style="display:flex;"><span>$ sudo &lt;commond&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ sudo su
+</span></span><span style="display:flex;"><span>password: xxx
+</span></span><span style="display:flex;"><span>root# <span style="color:#f1fa8c">`</span><span style="color:#6272a4">#` 代表root 权限 </span>
+</span></span></code></pre></div><p><code>/sys</code> 文件夹：各种内核参数，显示设备的状态。linux系统将其视为文件暴漏给用户，意味着我们可以操作从而控制某些设备</p>
+<p>有趣的命令</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># 删库跑路，无需确认强制删除所有的文件</span>
+</span></span><span style="display:flex;"><span>$ rm -rf /
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># fork 炸弹, 会耗尽电脑资源</span>
+</span></span><span style="display:flex;"><span>$ :<span style="color:#ff79c6">(){</span> :|:&amp; <span style="color:#ff79c6">}</span>;:  <span style="color:#6272a4"># 理解为一个函数递归调用 `:` 为函数名</span>
+</span></span><span style="display:flex;"><span>:<span style="color:#ff79c6">()</span> <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>	: | :&amp;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">}</span>;
+</span></span><span style="display:flex;"><span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 由于ls打错频率比较高，会出现一个动画(火车)</span>
+</span></span><span style="display:flex;"><span>sl
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># cowsay 打印一段话 cowthink 类似，但是think</span>
+</span></span><span style="display:flex;"><span>cowsay <span style="color:#f1fa8c">&#34;nb&#34;</span>
+</span></span><span style="display:flex;"><span>	-l 查看动物，需要安装
+</span></span><span style="display:flex;"><span>	-f 指定动物
+</span></span><span style="display:flex;"><span> ____
+</span></span><span style="display:flex;"><span>&lt; nb &gt;
+</span></span><span style="display:flex;"><span> ----
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">\ </span>  ^__^
+</span></span><span style="display:flex;"><span>         <span style="color:#f1fa8c">\ </span> <span style="color:#ff79c6">(</span>oo<span style="color:#ff79c6">)</span><span style="color:#f1fa8c">\_</span>______
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">(</span>__<span style="color:#ff79c6">)</span><span style="color:#f1fa8c">\ </span>      <span style="color:#ff79c6">)</span><span style="color:#f1fa8c">\/\
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>                <span style="color:#ff79c6">||</span>----w |
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">||</span>     <span style="color:#ff79c6">||</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># figlet 字符字  toilet类似 </span>
+</span></span><span style="display:flex;"><span>figlet love
+</span></span><span style="display:flex;"><span> <span style="color:#f1fa8c">&#34;&#34;</span><span style="color:#6272a4">#</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#6272a4">#     mmm   m   m   mmm</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#6272a4">#    #&#34; &#34;#  &#34;m m&#34;  #&#34;  #</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#6272a4">#    #   #   #m#   #&#34;&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f1fa8c">&#34;mm  &#34;</span><span style="color:#6272a4">#m#&#34;    #    &#34;#mm&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 打印一堆信息和logo，装b使用</span>
+</span></span><span style="display:flex;"><span>neofetch
+</span></span></code></pre></div><p>现代化的命令：开发者使用rust写了很多更加现代的命令，可以替代一些老命令</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">exa</span>  <span style="color:#ff79c6">=</span>&gt;  ls
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">bat</span>  <span style="color:#ff79c6">=</span>&gt;  cat 
+</span></span></code></pre></div><h4 id="qa">Q&amp;A</h4>
+<p>shell, console, terminal?</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>xxx
+</span></span></code></pre></div><h2 id="lectrue2-shell-script">lectrue2: shell script</h2>
+<blockquote>
+<p>Linux 脚本的使用</p>
+</blockquote>
+<p>语法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">$0</span>      运行文件名
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">$1</span>-<span style="color:#8be9fd;font-style:italic">$9</span>   参数
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">$?</span>      获取上一个运行的错误 0代表正确，1代表出错
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">$_</span>      存储上次运行的结果
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">$#</span>      参数个数
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">$$</span>      进程id
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">$@</span>      所有的参数组成，可迭代
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>!!      在执行时会替换为上一个执行的命令
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 变量</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">foo</span><span style="color:#ff79c6">=</span>bar
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">echo</span> <span style="color:#f1fa8c">&#34;</span><span style="color:#8be9fd;font-style:italic">$foo</span><span style="color:#f1fa8c">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 变量赋值为命令的结果</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">foo</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span><span style="color:#8be9fd;font-style:italic">pwd</span><span style="color:#ff79c6">)</span>
+</span></span></code></pre></div><p>循环</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#ff79c6">for</span> xxx; <span style="color:#ff79c6">do</span>... <span style="color:#ff79c6">done</span>
+</span></span></code></pre></div><p>条件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#ff79c6">if</span> xxx; <span style="color:#ff79c6">then</span>...fi
+</span></span></code></pre></div><p>编程脚本</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># 加入magic line 指定解析器</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 一个 称之为 `shebang` 的东西</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#!/usr/bin/pyton3</span>
+</span></span></code></pre></div><p><code>man</code> 命令的其余选择 <code>tldr</code> ，更加简洁(too long; don&rsquo;t read)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>tldr tar
+</span></span></code></pre></div><p>递归查询</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>find .     <span style="color:#6272a4"># . 代表当前路径，我们可以指定比如 `/` </span>
+</span></span><span style="display:flex;"><span>	-name  <span style="color:#6272a4"># 名称,可以使用通配符</span>
+</span></span><span style="display:flex;"><span>	-type  <span style="color:#6272a4"># 类型 d(dir) f(file)</span>
+</span></span><span style="display:flex;"><span>	-mtime -1 <span style="color:#6272a4"># 修改时间modify time， 1指1天</span>
+</span></span><span style="display:flex;"><span>	-exec rm <span style="color:#ff79c6">{}</span> <span style="color:#f1fa8c">\;</span>   <span style="color:#6272a4"># 对于寻找的文件执行命令 \; 不可缺少</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>fd  <span style="color:#6272a4"># 更加现代化的find</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>locate  <span style="color:#6272a4"># 默认查找整个计算机</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>grep  <span style="color:#6272a4"># 应用于查文件内容</span>
+</span></span><span style="display:flex;"><span>	-R  <span style="color:#6272a4">#  递归</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>rg  <span style="color:#6272a4"># ripgrep</span>
+</span></span></code></pre></div><p>查找使用过的命令</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>方向键的上
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>fzf
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>zsh 的一个插件，在输入时会显示曾经输入的类似命令
+</span></span></code></pre></div><p>更清晰的目录结构</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>tree
+</span></span><span style="display:flex;"><span>broot
+</span></span></code></pre></div><h2 id="lecture3-editor-vim">lecture3: editor VIM</h2>
+<p>vim</p>
+<ul>
+<li>normal mode: 可以控制光标，执行命令&hellip;</li>
+<li>insert mode: 就是文本编辑器。</li>
+<li>command mode: 在insert mode 输入 <code>:</code> 在输入命令</li>
+<li>visual mode: 有点像使用鼠标选中一块连续区域</li>
+<li>replace mode</li>
+</ul>
+<p>进入 insert mode</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span>i   insert， 在光标前插入
+</span></span><span style="display:flex;"><span>a   append，在光标后
+</span></span><span style="display:flex;"><span>I   行首
+</span></span><span style="display:flex;"><span>A   行尾
+</span></span><span style="display:flex;"><span>o   下一行 open a new line
+</span></span><span style="display:flex;"><span>O   上一行
+</span></span></code></pre></div><p>normal mode</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span>esc  也可以自行配置
+</span></span></code></pre></div><p>保存，退出</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span>-- write quit
+</span></span><span style="display:flex;"><span>normal mode 下 :wq
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>-- 加入 ! 代表强制执行
+</span></span></code></pre></div><p>normal mode 光标操作。</p>
+<ul>
+<li>所有的都可以在<code>前面加一个数字</code>，代表count</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span>h   左移
+</span></span><span style="display:flex;"><span>j   下
+</span></span><span style="display:flex;"><span>k   上
+</span></span><span style="display:flex;"><span>l   右
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>w   向前(后一个单词)移动一个 word, 也就是一个单词，标点或者空格分开。在单词第一个字母
+</span></span><span style="display:flex;"><span>b   向back移动 word      back of word
+</span></span><span style="display:flex;"><span>e   移动到单词末尾        end of word
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">0</span>   移动到行首
+</span></span><span style="display:flex;"><span>$   行尾
+</span></span><span style="display:flex;"><span>^   一行第一个非空字符
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ctrl-u     up类似鼠标向上滚动
+</span></span><span style="display:flex;"><span>ctrl-d     down 向下
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>H  highest  屏幕第一行
+</span></span><span style="display:flex;"><span>L  low      屏幕最后一行
+</span></span><span style="display:flex;"><span>M  mid      屏幕中间一行
+</span></span></code></pre></div><p>删除</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span>d  删除一个字符,配合移动光标使用
+</span></span><span style="display:flex;"><span>	dd 删除一行，可以使用p
+</span></span><span style="display:flex;"><span>	D 删除至末尾
+</span></span><span style="display:flex;"><span>	d1G 删除到第一行
+</span></span><span style="display:flex;"><span>	dG  删除到最后一行
+</span></span><span style="display:flex;"><span>	n1, n2d 删除n1-n2行
+</span></span><span style="display:flex;"><span>	-- 在这里 a around;  i inside
+</span></span><span style="display:flex;"><span>	di(  删除括号内的内容
+</span></span><span style="display:flex;"><span>	da(  删除包括括号的东西
+</span></span><span style="display:flex;"><span>c   change a word 删除(d 类似)并进入insert mode 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>x   删除后面一个字符
+</span></span><span style="display:flex;"><span>	&lt;num&gt;x 删除后面num个字符
+</span></span><span style="display:flex;"><span>s   删除字符进入insert mode
+</span></span><span style="display:flex;"><span>S   删除一行进入insert mode
+</span></span></code></pre></div><p>复制粘贴</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span>y   yank 
+</span></span><span style="display:flex;"><span>	yy 复制当前行
+</span></span><span style="display:flex;"><span>	y1G ...
+</span></span><span style="display:flex;"><span>p   paste在这一行后面
+</span></span><span style="display:flex;"><span>P   这一行前面
+</span></span></code></pre></div><p>跳转到某一行</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span>g
+</span></span><span style="display:flex;"><span>	gg 第一行
+</span></span><span style="display:flex;"><span>G   最后一行
+</span></span><span style="display:flex;"><span>	&lt;num&gt;G  跳转到num行
+</span></span><span style="display:flex;"><span>:&lt;num&gt;   跳到第num行
+</span></span></code></pre></div><p>撤销之前的操作</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span>u undo
+</span></span><span style="display:flex;"><span>ctrl + r   redo 恢复撤销的内容
+</span></span></code></pre></div><p>visual mode: 允许我们改变一列，整块复制等</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span>v   字符可视，开始和结束两个字符中间所有内容，退出按v
+</span></span><span style="display:flex;"><span>V   行可视行，光标所在行，退出 V
+</span></span><span style="display:flex;"><span>ctrl+v   块可视，开始和结束光标的矩阵，退出ctrl+v
+</span></span></code></pre></div><p>搜索</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span>f&lt;word&gt;  本行查找
+</span></span><span style="display:flex;"><span>/&lt;word&gt;  查内容,全文
+</span></span><span style="display:flex;"><span>n      继续向下继续找 next
+</span></span><span style="display:flex;"><span>N      继续向上找
+</span></span></code></pre></div><p>更改环境</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span>:<span style="color:#ff79c6">set</span> nu   显示行号
+</span></span></code></pre></div><p><code>~</code> 反转大小写</p>
+<p>括号匹配</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span>%   到匹配的另一个括号处
+</span></span></code></pre></div><p>tab, window, buffer</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>tab: 我理解为 在系统中打开vim这个软件两次，就是两个tab
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>window: vim 屏幕，可以分屏
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>buffer: 打开文件，文件具有buffer, 同一个文件同一个buffer,实时。
+</span></span></code></pre></div><p>配置，vim 在执行前会加载一个 <code>~/.vimrc</code> 文件。</p>
+<ul>
+<li>我们可以DIY自己的喜欢的按键。</li>
+<li>安装插件实现更多的功能</li>
+</ul>
+<h3 id="neovim">neovim</h3>
+<p><del>本人使用</del>(IDE不香吗？) <a href="https://neovim.io/">neovim</a> 配合 <a href="https://www.lazyvim.org/">LazyVim</a>。可DIY. 然后再 <code>VsCode</code> 安装neovim插件，同步使用。</p>
+<ul>
+<li>vim常用的操作，neovim也能用。</li>
+</ul>
+<h4 id="keymap">keymap</h4>
+<p>Leader 为 space 键，挺好用, 使用这些功能也需要安装对应插件</p>
+<p>打开终端</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span>&lt;leader&gt;ft   当前
+</span></span><span style="display:flex;"><span>&lt;leader&gt;fT   /
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ctrl-/    打开和关闭
+</span></span></code></pre></div><p>快速注释</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span>&lt;leader&gt;gc    但是需要指定的 LSP
+</span></span></code></pre></div><p>不同文件间(buffer)切换</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span>&lt;leader&gt;bb
+</span></span></code></pre></div><p>文件搜索 telescope</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span>-- 文件名
+</span></span><span style="display:flex;"><span>&lt;leader&gt;&lt;leader&gt;   &lt;esc&gt;&lt;esc&gt; 退出
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>-- 文件内容
+</span></span><span style="display:flex;"><span>&lt;leader&gt;sb
+</span></span></code></pre></div><p>文件内</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span>&lt;c-s&gt; 保存文件
+</span></span><span style="display:flex;"><span>&lt;leader&gt;fn  new file
+</span></span></code></pre></div><p>分屏</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span>&lt;leader&gt;w|  &lt;leader&gt;|  生动表示竖着
+</span></span><span style="display:flex;"><span>&lt;leader&gt;w-  &lt;leader&gt;-  横着
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>-- 切换，和normal mode 下的移动联系
+</span></span><span style="display:flex;"><span>&lt;C-h&gt; 左
+</span></span><span style="display:flex;"><span>&lt;C-j&gt; 下
+</span></span><span style="display:flex;"><span>&lt;C-k&gt; 上
+</span></span><span style="display:flex;"><span>&lt;C-l&gt; 右
+</span></span></code></pre></div><p>侧边栏 neo-tree</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span>&lt;leader&gt;fe   当前
+</span></span><span style="display:flex;"><span>&lt;leader&gt;fE   /
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;leader&gt;e   当前
+</span></span><span style="display:flex;"><span>&lt;leader&gt;E   /
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>-- 侧边栏进入文件后，在进入侧边栏
+</span></span><span style="display:flex;"><span>&lt;C-h&gt; 
+</span></span><span style="display:flex;"><span>&lt;C-l&gt; 
+</span></span></code></pre></div><p>lazy.nvim 插件管理非常受欢迎。作者开发的插件和配置。</p>
+<h2 id="lecture4-data-wrangling">lecture4: data wrangling</h2>
+<blockquote>
+<p>处理数据的某些手段</p>
+</blockquote>
+<p>grep，搜索</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>grep <span style="color:#f1fa8c">&#34;word&#34;</span> tmp.txt   <span style="color:#6272a4"># 查询</span>
+</span></span><span style="display:flex;"><span>	-R  <span style="color:#6272a4"># 递归，可以查找文件夹下的文件</span>
+</span></span></code></pre></div><p>sed，在搜索替换是一个好用的工具。需要学习一下正则表达式</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sed <span style="color:#f1fa8c">&#39;s/&lt;pattern&gt;/&lt;replace&gt;/&#39;</span>
+</span></span><span style="display:flex;"><span>pattern: 匹配模式，支持正则表达式
+</span></span><span style="display:flex;"><span>replace: 将匹配到的pattern 转换为 replace。当捕获时 <span style="color:#f1fa8c">\n</span>um 代表第num个捕获，打印
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># sed 默认支持很老的正则表达式，使用 `-E` 参数，支持现代化的正则</span>
+</span></span></code></pre></div><p>一些正则表达式使用，使用在线网站练习。regular expression</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#ff79c6">[</span>0-9<span style="color:#ff79c6">]</span>   0,1,2...9 其中一个数字
+</span></span><span style="display:flex;"><span>*       贪婪模式，1次或多次
+</span></span><span style="display:flex;"><span>?       <span style="color:#bd93f9">0</span> 或 <span style="color:#bd93f9">1</span> 次
+</span></span><span style="display:flex;"><span>.       任意字符
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">()</span>      捕获括号内的内容
+</span></span><span style="display:flex;"><span>^ 开头   $ 末尾
+</span></span></code></pre></div><p>wc</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>wc -l    word count,统计大小 -l line 几行
+</span></span></code></pre></div><p>排序，字典序。去重</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sort    默认字典序排序
+</span></span><span style="display:flex;"><span>	-n 按照数值的大小进行排序
+</span></span><span style="display:flex;"><span>	-k 指定排序的列数
+</span></span><span style="display:flex;"><span>uniq    可去除重复内容
+</span></span><span style="display:flex;"><span>	-c  记录出现次数
+</span></span></code></pre></div><p>awk，基于流的处理，是一门编程语言</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>awk <span style="color:#f1fa8c">&#39;script&#39;</span>  执行一个脚本
+</span></span><span style="display:flex;"><span>awk <span style="color:#f1fa8c">&#39;{print $0}&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	-F  指定分隔符
+</span></span></code></pre></div><p>cut，类似编程语言的split</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cut <span style="color:#ff79c6">[</span>option<span style="color:#ff79c6">]</span> filename
+</span></span><span style="display:flex;"><span>	-d   字节为单位分割  
+</span></span><span style="display:flex;"><span>		cut -d <span style="color:#bd93f9">3</span>  第三个字符  -d 3-9,12  第3-9,12个字符
+</span></span><span style="display:flex;"><span>	-f   fields 与-d一起使用，表示区域
+</span></span><span style="display:flex;"><span>		cut -d : -f2  第1-2个冒号之前的内容
+</span></span><span style="display:flex;"><span>	-c   character 字符为单位，处理中文好用
+</span></span><span style="display:flex;"><span>	-b   
+</span></span></code></pre></div><p>编程语言在命令行的使用? 各种管道，图片音频处理?</p>
+<h2 id="lecture5-command-line-environment">lecture5: command-line environment</h2>
+<blockquote>
+<p>优雅的使用命令行</p>
+</blockquote>
+<h3 id="job-control">job control</h3>
+<p>Linux 系统的 signal机制</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>man signal : 会看到不同的number 和 name
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ctrl-c   SIGINT   signal interrupt
+</span></span><span style="display:flex;"><span>ctrl-<span style="color:#f1fa8c">\ </span>  SIGQUIT
+</span></span></code></pre></div><p>ctrl+z</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># 暂停，可执行其他任务</span>
+</span></span><span style="display:flex;"><span>&amp;     在命令后加入，表示后台执行
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">jobs</span>  查看后台任务，暂停或者运行 pid
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">fg</span> %num / <span style="color:#8be9fd;font-style:italic">bg</span> %num  使暂停的任务继续运行，fg 恢复到前台。bg 恢复到后台执行。front back ground
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">kill</span> %num            停止
+</span></span></code></pre></div><h3 id="terminal-multiplexers">terminal multiplexers</h3>
+<ul>
+<li>
+<p>终端复用，在一个terminal window干很多事情。</p>
+</li>
+<li>
+<p>很多的终端都存在分屏等操作，但是课程介绍神器 <code>tmux</code>，更加神奇。</p>
+<ul>
+<li>不 kill session，其中的命令会一直执行下去。只需要开启一次终端。</li>
+<li>在ssh 服务器时非常的好用</li>
+</ul>
+</li>
+<li>
+<p>session, window, pune</p>
+<ul>
+<li>启动tmux, 会开启一个session, 明显的是下面会出现一行数据。</li>
+<li>window 创建一个新的shell 终端。</li>
+<li>pune 面板，一个窗口可以分很多的面板。</li>
+</ul>
+</li>
+</ul>
+<p>命令行操作</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>tmux
+</span></span><span style="display:flex;"><span>	下部会出现状态栏，分别是session window1 windiow2...     时间等
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>tmux a   <span style="color:#6272a4"># attach 进入session</span>
+</span></span><span style="display:flex;"><span>		-t name  指定名称
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>tmux new -t &lt;name&gt;       创建并指定名称
+</span></span><span style="display:flex;"><span>tmux kill-session -t &lt;num/name&gt;  杀死指定的session
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>tmux ls   查看所有的session
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>tmux splitw -h/-v   pane 横竖分割window
+</span></span></code></pre></div><p>默认快捷键。可以先按一下 <code>ctrl-b</code> 在按其余的，不需要同时按。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">prefix</span> <span style="color:#ff79c6">=</span> Ctrl-b
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># session prefix keymap</span>
+</span></span><span style="display:flex;"><span>prefix d   dettach session
+</span></span><span style="display:flex;"><span>prefix s   列出所有session vim快捷键下的选择
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># window</span>
+</span></span><span style="display:flex;"><span>prefix c   create a new window
+</span></span><span style="display:flex;"><span>prefix p   previous window
+</span></span><span style="display:flex;"><span>prefix n   next window
+</span></span><span style="display:flex;"><span>prefix &lt;n&gt; 第n个窗口,n是个数字
+</span></span><span style="display:flex;"><span>prefix w   列出window 和 session<span style="color:#ff79c6">(</span>s ?<span style="color:#ff79c6">)</span>,  jk 选择，enter进入
+</span></span><span style="display:flex;"><span>prefix ,   重命名
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># pune</span>
+</span></span><span style="display:flex;"><span>prefix x       关闭pune
+</span></span><span style="display:flex;"><span>prefix %       竖直切割
+</span></span><span style="display:flex;"><span>prefix <span style="color:#f1fa8c">&#34;       水平切割
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">prefix 方向键   选择 pune
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">prefix x       关闭pune
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">prefix z       最大化当前窗口，在按一次退出
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">prefix !       分离pune 进入window
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">持续按prefix 方向键  改变pune大小
+</span></span></span></code></pre></div><p>配置快捷键， <code>~/.tmux.conf</code>。我使用的是基于网上找的 <a href="https://www.debugpointer.com/linux/tmux-conf">tmux-conf</a>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>ctrl-b 距离非常有点阴间，因此需要改。ctrl-a 是qemu快捷键。因此选择ctrl-x
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>prefix I             install plugins
+</span></span><span style="display:flex;"><span>prefix alt I         uninstall
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>alt + 方向键，pune 移动
+</span></span></code></pre></div><ul>
+<li>插件管理 <a href="https://github.com/tmux-plugins/tpm">Tmux Plugin Manager</a></li>
+<li>美化+快捷键 系列操作参考。<a href="https://github.com/rothgar/awesome-tmux#themes">awesome-tmux: A list of awesome resources for tmux</a></li>
+</ul>
+<h3 id="aliases">aliases</h3>
+<p>给常用的命令设置别名</p>
+<ul>
+<li>bash 的<code>~/.bashrc</code> 文件</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># 注意，不要存在 ll = &#39;ls -l&#39; 因为在shell script中，空格是有意义的</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">alias</span> <span style="color:#8be9fd;font-style:italic">ll</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;ls -alF&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">alias</span> <span style="color:#8be9fd;font-style:italic">la</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;ls -A&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">alias</span> <span style="color:#8be9fd;font-style:italic">l</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;ls -CF&#39;</span>
+</span></span></code></pre></div><h3 id="dotfiles">dotfiles</h3>
+<p>各种配置文件。大部分是文件</p>
+<ul>
+<li>bash -&gt; <code>~/.bashrc</code></li>
+<li>zsh -&gt; <code>~/.zshrc</code>。我们的zsh美化也是修改此文件。</li>
+<li>vim -&gt; <code>~/.vimrc</code></li>
+<li>tmux -&gt; <code>~/tmux.conf</code></li>
+<li>neovim -&gt; <code>~/.config/nvim</code> 目录下的 <code>基于lua</code> 配置</li>
+<li>ssh -&gt; <code>~/.ssh</code> 这是一个目录。可以配置公私钥，免密登录。
+<ul>
+<li>自己的机器 <code>ssh-keygen</code> 命令生成公私钥</li>
+<li>将公钥放入服务器的 <code>authorized_keys</code>。权限一般是<code>600</code></li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ssh-copy-id -i ~/.ssh/id_rsa.pub  &lt;username&gt;@&lt;IP&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 常用的ssh 传输文件 scp  和cp命令差不多，给出路径</span>
+</span></span><span style="display:flex;"><span>scp tmp.txt &lt;user&gt;@&lt;IP&gt;:/tmp
+</span></span></code></pre></div><p>感兴趣的可以学习一下 <a href="https://nixos.org/">NixOS</a>, 一个基于配置文件的操作系统😋</p>
+<p>大部分配置都可在 github 查找到，如果不想自己配置，直接 <code>clone/fork</code> 一个其他人的。</p>
+<p>bash 前面的一串的修改</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">PS1</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;user&gt;&#34;</span>   我们shell 前面的一串
+</span></span></code></pre></div><blockquote>
+<p>问题：如何在本机和服务器同时使用tmux</p>
+</blockquote>
+<p>相同的配置会可能产生冲突，或者会使我们不知道操作的是哪一个，因此我们需要不同的配置文件。最简单的就是使用两个 <code>prefix</code> 。</p>
+<h2 id="lecture6-virsion-controlgit">lecture6: virsion control(git)</h2>
+<blockquote>
+<p>git版本控制</p>
+</blockquote>
+<p>开发项目，团队合作，文件损坏的回退。。。git都可以在很大程度上帮助我们，不需要删除在重新下载😘</p>
+<ul>
+<li>git 抽象建模。使用有向无环图进行抽象
+<ul>
+<li>顶层root，文件夹抽象为<code>tree</code>, 文件抽象为<code>blob</code></li>
+<li>commit: 每次commit 产生一个类似 <code>snapshot(快照)</code>的东西，保存当前的状态以及一些信息(作者，描述&hellip;)。</li>
+<li>通过 <code>mapping&lt;string, object&gt;</code> 进行管理.string指文件的哈希值(SHA-1)，object是我们文件保存的地址(&lsquo;snapshot&rsquo;在磁盘中的地址)。每次修改，commit会产生新的hash</li>
+</ul>
+</li>
+<li>reference: git需要的是文件的哈希值，对于人类毫无意义，因此存在另一个 <code>mapping&lt;string, string&gt;</code> 。我们使用可以人类方便阅读的字符串，映射到hash，然后在寻找到文件</li>
+<li>git 几个状态，可以看看 <a href="https://www.bilibili.com/video/BV1r3411F7kn/?spm_id_from=333.337.search-card.all.click&amp;vd_source=ccaa27461534d3a4a5e9b964672f86d6">Git工作流和核心原理</a>，非常有趣。在学习时，可以想象一下有向无环图进行理解。
+<ul>
+<li>工作区</li>
+<li>暂存区</li>
+<li>本地仓库</li>
+<li>远程仓库</li>
+</ul>
+</li>
+</ul>
+<p>git 的配置</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># 配置用户名，邮箱。自己的账户。</span>
+</span></span><span style="display:flex;"><span>git config --global user.name <span style="color:#f1fa8c">&#34;your name&#34;</span>
+</span></span><span style="display:flex;"><span>git config --global user.email <span style="color:#f1fa8c">&#34;your email&#34;</span>
+</span></span></code></pre></div><p>创建一个git仓库</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mkdir demo
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">cd</span> demo
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>git init   <span style="color:#6272a4"># 本地仓库初始化，出现一个 `.git` 的目录</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>git status <span style="color:#6272a4"># 查看仓库状态，非常常用</span>
+</span></span></code></pre></div><p>日志，查看提交的文件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># oneline 去除一定的信息</span>
+</span></span><span style="display:flex;"><span>git log --all --graph --decorate --oneline
+</span></span></code></pre></div><p>其中存在一个 <code>HEAD</code> 指针指向当前工作的分支。</p>
+<p>我们想忽略某些文件时</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># 使用 gitignore 文件配置</span>
+</span></span><span style="display:flex;"><span>touch .gitignore
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>*.jpg   <span style="color:#6272a4"># 忽略所有的 jpg文件</span>
+</span></span></code></pre></div><p>本地操作</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git init
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 写点新文件</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">echo</span> <span style="color:#f1fa8c">&#34;hello&#34;</span> &gt; readme.md  <span style="color:#6272a4"># 处于untracked 状态，使用git status 会存在提示</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 暂存区</span>
+</span></span><span style="display:flex;"><span>git add readme.txt       <span style="color:#6272a4"># 处于tracked 状态</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 提交到本地仓库</span>
+</span></span><span style="display:flex;"><span>git commit  <span style="color:#6272a4"># 进入文件，进行描述修改的内容</span>
+</span></span><span style="display:flex;"><span>	-m <span style="color:#f1fa8c">&#34;message&#34;</span>  <span style="color:#6272a4"># message 代表描述，简短描述可以这样使用</span>
+</span></span></code></pre></div><p>提交到远程代码仓库</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># 1. 远程创建后直接clone下来，然后再写内容</span>
+</span></span><span style="display:flex;"><span>git clone <span style="color:#f1fa8c">&#34;your-repo&#34;</span>
+</span></span><span style="display:flex;"><span>git remote -v   <span style="color:#6272a4"># 查看和那些仓库有联系</span>
+</span></span><span style="display:flex;"><span>git push        <span style="color:#6272a4"># 有.git文件夹，可以找到仓库提交</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 2. 我们在本地写了很多文件，但是中途想起来没有使用git，我们如何做？</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">## 还是需要先创建仓库</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">## 然后再本地</span>
+</span></span><span style="display:flex;"><span>git init
+</span></span><span style="display:flex;"><span>git add .
+</span></span><span style="display:flex;"><span>git commit
+</span></span><span style="display:flex;"><span>git remote add <span style="color:#f1fa8c">&#34;name&#34;</span> git@&lt;your-repo&gt;  <span style="color:#6272a4"># 关联远程仓库。</span>
+</span></span><span style="display:flex;"><span>							<span style="color:#6272a4"># name 自己取，可以关联很多仓库，根据名字区分</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">## 但是本地仓库一般是master，某些平台是main(也可以选，但是默认是main)，这一步可能出错，需要切换分支 `git checkout -b main`</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">## 远程分支不存在会创建一个</span>
+</span></span><span style="display:flex;"><span>git push <span style="color:#f1fa8c">&#34;仓库名称&#34;</span> <span style="color:#f1fa8c">&#34;本地分支名&#34;</span>:<span style="color:#f1fa8c">&#34;远程分支名&#34;</span>   <span style="color:#6272a4"># 如果本地分支名与远程分支名相同，则可以省略冒号</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">## 删除远程仓库</span>
+</span></span><span style="display:flex;"><span>git remote rm <span style="color:#f1fa8c">&#34;仓库名&#34;</span>
+</span></span></code></pre></div><p>从远程仓库到工作区。比如团队合作中，远程仓库更新了，我们需要先同步。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># 直接同步到本地，会直接更新本地文件</span>
+</span></span><span style="display:flex;"><span>git pull
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 由于pull 一步到位，也可分步进行</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">## 先更新到到本地仓库</span>
+</span></span><span style="display:flex;"><span>git fetch
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">## diff 对比区别</span>
+</span></span><span style="display:flex;"><span>git diff 
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># 查看本地仓库和工作区的区别</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">## pull 合并 = git fetch + git merge</span>
+</span></span><span style="display:flex;"><span>git pull
+</span></span></code></pre></div><p>分支操作。我们参与开源项目时，建议创建一个新分支push，由项目负责人决定是否合并(merge)。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git branch <span style="color:#f1fa8c">&#34;name&#34;</span>  <span style="color:#6272a4"># 创建一个分支 </span>
+</span></span><span style="display:flex;"><span>		-vv   <span style="color:#6272a4"># 查看分支信息</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>git checkout <span style="color:#f1fa8c">&#34;name&#34;</span>  <span style="color:#6272a4"># 切换分支</span>
+</span></span><span style="display:flex;"><span>		-d <span style="color:#f1fa8c">&#34;name&#34;</span>    <span style="color:#6272a4"># 删除分支</span>
+</span></span><span style="display:flex;"><span>		-D <span style="color:#f1fa8c">&#34;name&#34;</span>    <span style="color:#6272a4"># 暴力删除</span>
+</span></span><span style="display:flex;"><span>		-b <span style="color:#f1fa8c">&#34;name&#34;</span>    <span style="color:#6272a4"># 创建一个分支然后切换</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>git merge      <span style="color:#6272a4"># 将别的分支合并到 `当前分支` 中</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#6272a4"># 可能会存在冲突，在某一个相同的位置存在不同的内容.保存的话，自己决定然后修改冲突文件就行</span>
+</span></span></code></pre></div><p>git clone 会复制远程的所有文件，包含其所有的 <code>snapshot</code> 我们可以使用 <code>--shallow</code> 忽略这些</p>
+<p>git 回滚：当我们在一个分支中<code>commit</code>后发现一个巨大的错误，需要回退到之前的版本。改变 <code>HEAD</code> 指针</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git stash   <span style="color:#6272a4"># 回退到上一个commit 版本</span>
+</span></span><span style="display:flex;"><span>git bisect  <span style="color:#6272a4"># 比较强大的工具</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>git reset 
+</span></span><span style="display:flex;"><span>		--hard         <span style="color:#6272a4"># 会丢失最新的代码修改</span>
+</span></span><span style="display:flex;"><span>		--soft         <span style="color:#6272a4"># 将 HEAD 指针回退到指定提交，不改变暂存区和工作区的内容</span>
+</span></span><span style="display:flex;"><span>		
+</span></span><span style="display:flex;"><span>			HEAD^       <span style="color:#6272a4"># 上一个 版本</span>
+</span></span><span style="display:flex;"><span>			HEAD~&lt;num&gt;  <span style="color:#6272a4"># 回退num个版本</span>
+</span></span><span style="display:flex;"><span>			&lt;hash&gt;      <span style="color:#6272a4"># 回退到指定哈希值的版本</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>git revert -n <span style="color:#8be9fd;font-style:italic">hash</span>   <span style="color:#6272a4"># 将版本复制一份，不会销毁</span>
+</span></span></code></pre></div><p>现在的IDE中存在git相关的工具，也更加方便了我们的使用。</p>
+<p>也存在其余的版本控制工具，svn, repo&hellip;&hellip;</p>
+<h3 id="repo-使用">repo 使用</h3>
+<p><a href="https://source.android.google.cn/docs/setup/create/repo?hl=zh-cn#start">repo</a> 更适合多个仓库的管理，平常我们见的项目都是一个仓库。但是向Android这样的依赖上百个git仓库来说，依靠git并不是多么好使用，因此google 开发了repo工具，本质是一个python脚本，基于git。</p>
+<p>初始化</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>repo init
+</span></span><span style="display:flex;"><span>	-u git@&lt;repo&gt;/mainfest.git  <span style="color:#6272a4"># 默认为google的仓库 https://gerrit.googlesource.com/git-repo</span>
+</span></span><span style="display:flex;"><span>								<span style="color:#6272a4"># 这个目录下最简单只需要 default.xml</span>
+</span></span><span style="display:flex;"><span>	-b  <span style="color:#6272a4"># 指定branch</span>
+</span></span></code></pre></div><p>-u后的仓库, xml文件(默认<code>default.xml</code>, 我们可以自己选择)，然后我们拉取的时候会将所有的git仓库拉取下来</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>repo init -u &lt;repo&gt;
+</span></span><span style="display:flex;"><span>	-m 指定xml文件
+</span></span></code></pre></div><p>拉取代码到本地</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>repo sync -c
+</span></span></code></pre></div><p>分支</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>repo branch  <span style="color:#6272a4"># 查看分支</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>repo start &lt;branch_name&gt; --all <span style="color:#6272a4"># 创建分支并进入</span>
+</span></span></code></pre></div><h2 id="lecture7-debugging--profiling">lecture7: debugging &amp; profiling</h2>
+<blockquote>
+<p>调试程序以及性能分析</p>
+</blockquote>
+<p>查看日志，打印日志，制作日志</p>
+<p>调试器</p>
+<ul>
+<li>GNU gdb，可以调试几乎所有的二进制程序</li>
+<li>python pdb，python调试</li>
+<li>浏览器调试js</li>
+</ul>
+<p>性能测试</p>
+<ul>
+<li>测试一个程序运行 time</li>
+</ul>
+<h2 id="lecture8-metaprogramming">lecture8: metaprogramming</h2>
+<p>如何更高的管理项目、测试、依赖管理。使用 <code>makefile</code></p>
+<p>Makefile 的使用比较简单。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-makefile" data-lang="makefile"><span style="display:flex;"><span><span style="color:#50fa7b">目标</span><span style="color:#ff79c6">:</span> 依赖
+</span></span><span style="display:flex;"><span>	命令  //前面必须是tab键
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">main</span><span style="color:#ff79c6">:</span> main.c
+</span></span><span style="display:flex;"><span>	gcc main.c -o mian
+</span></span></code></pre></div><p>一些语法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-makefile" data-lang="makefile"><span style="display:flex;"><span>$^   所有的依赖项
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">$&lt;</span>   一个依赖项
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">$@</span>   目标文件
+</span></span><span style="display:flex;"><span>echo 打印
+</span></span><span style="display:flex;"><span>%    通配符
+</span></span><span style="display:flex;"><span>*    也是通配符
+</span></span></code></pre></div><p>我们编译某些开源项目时也会使用 <code>make</code> 命令，可以看看别人怎么写的。</p>
+<p>当然，还有其他的选择，比如 <code>cmake</code></p>
+<h2 id="lecture9-security--crypto">lecture9: security &amp; crypto</h2>
+<blockquote>
+<p>安全很多，也是一门专门的学科，想要深入就需要学专业课</p>
+</blockquote>
+<p>hash: 用作信息摘要，签名，检查文件的完整性。</p>
+<ul>
+<li>md5</li>
+<li>sha-1/2/3</li>
+</ul>
+<p>对称加密</p>
+<ul>
+<li>DES</li>
+<li>AES</li>
+</ul>
+<p>非对称加密</p>
+<ul>
+<li>RSA</li>
+<li>ECC</li>
+</ul>
+<p>数字签名</p>
+<h2 id="lecture10-potpourri">lecture10: potpourri</h2>
+<blockquote>
+<p>大杂烩：讲述一些概念，熟练还得在以后多练习</p>
+</blockquote>
+<p>键盘映射</p>
+<ul>
+<li>键盘上的<code>Caps Lock</code>几乎不怎么使用，我们可以重新配置一下(比如比较小的Esc)，让其发挥作用</li>
+<li>windows可以使用powertoy</li>
+</ul>
+<p>守护进程，daemon</p>
+<p>命令行参数</p>
+<ul>
+<li>我们使用的命令可以带有参数</li>
+</ul>
+<p>Window Manage</p>
+<p>VPN</p>
+<p>Jupyter Notebook: 交互式编程</p>
+<p>GitHub: 代码托管平台</p>
+<ul>
+<li>创建自己的仓库</li>
+<li>提issue，解决问题</li>
+<li>pr: pull request，自己写的提交给作者</li>
+<li>merge 别人的请求</li>
+</ul>
+<h2 id="lecture11-qa">lecture11: Q&amp;A</h2>
+<blockquote>
+<p>来自学生的问题</p>
+</blockquote>
+<p>如何进行操作系统的学习？</p>
+<ul>
+<li>learn by exercise: 学习比较出名的 OS 课程，完成相应的lab，实现自己的OS</li>
+</ul>
+<p>&hellip;&hellip; 自己看</p>
+		</section>
+
+		<div class="post-tags">
+			
+			
+			<nav class="nav tags">
+				<ul class="tags">
+					
+					<li><a href="/tags/shell">shell</a></li>
+					
+					<li><a href="/tags/vim">vim</a></li>
+					
+					<li><a href="/tags/terminal">terminal</a></li>
+					
+				</ul>
+			</nav>
+			
+			
+		</div>
+		<div id="disqus_thread"></div>
+<script type="text/javascript">
+    (function () {
+        
+        
+        if (window.location.hostname == "localhost")
+            return;
+
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        var disqus_shortname = 'ldrx30';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+
+</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/ldrx30" rel="me" title="GitHub"><i data-feather="github"></i></a>
+    <a class="border"></a></div>
+  <div class="footer-info">
+    2024  © ldrx30 |  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>

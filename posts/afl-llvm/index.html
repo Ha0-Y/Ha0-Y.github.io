@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html><head lang="en"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>afl-llvm - ldrx30</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="
+llvm mode
+" />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="afl-llvm" />
+<meta property="og:description" content="
+llvm mode
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/afl-llvm/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-05-06T00:00:00+00:00" />
+<meta property="article:modified_time" content="2024-05-06T00:00:00+00:00" />
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="afl-llvm"/>
+<meta name="twitter:description" content="
+llvm mode
+"/>
+<script src="http://localhost:1313/js/feather.min.js"></script>
+	
+	
+        <link href="http://localhost:1313/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="http://localhost:1313/css/main.5cebd7d4fb2b97856af8d32a6def16164fcf7d844e98e236fcb3559655020373.css" />
+		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="http://localhost:1313/css/dark.d22e2a2879d933a4b781535fc4c4c716e9f9d35ea4986dd0cbabda82effc4bdd.css"  disabled />
+	
+
+	
+	
+		<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+		</script>
+
+		
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			tex2jax: {
+				inlineMath: [['$','$'], ['\\(','\\)']],
+				displayMath: [['$$','$$'], ['\[','\]']],
+				processEscapes: true,
+				processEnvironments: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+				TeX: { equationNumbers: { autoNumber: "AMS" },
+						 extensions: ["AMSmath.js", "AMSsymbols.js"] }
+			}
+		});
+		</script>
+	
+
+	
+	
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css">
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js"></script>
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+					renderMathInElement(document.body, {
+							delimiters: [
+									{left: "$$", right: "$$", display: true},
+									{left: "$", right: "$", display: false}
+							]
+					});
+			});
+			</script>
+	
+
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="http://localhost:1313/">ldrx30</a>
+	</div>
+	<nav>
+		
+		<a href="/">Home</a>
+		
+		<a href="/posts">All posts</a>
+		
+		<a href="/about">About</a>
+		
+		| <span id="dark-mode-toggle" onclick="toggleTheme()"></span>
+		<script src="http://localhost:1313/js/themetoggle.js"></script>
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">afl-llvm</h1>
+			<div class="meta">Posted on May 6, 2024</div>
+		</div>
+		
+
+		
+
+		<section class="body">
+			<blockquote>
+<p>llvm mode</p>
+</blockquote>
+<h2 id="afl-llvm">afl-llvm</h2>
+<p>AFL的 <code>llvm_mode</code> 可以实现编译器级别的插桩，可以替代 <code>afl-gcc</code> 或 <code>afl-clang</code> 使用的比较<strong>粗暴</strong>的汇编级别的重写的方法，且具备如下几个优势：</p>
+<ol>
+<li>编译器可以进行很多优化以提升效率；</li>
+<li>可以实现CPU无关，可以在非 x86 架构上进行fuzz；</li>
+<li>可以更好地处理多线程目标。</li>
+</ol>
+<h3 id="afl-clang-fast">afl-clang-fast</h3>
+<p>整体实现思路和afl-gcc没什么太大的区别</p>
+<p><code>edit_param</code>将参数参数换成clang的</p>
+<p>加载so文件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ clang -Xclang load -Xclang afl-llvm-pass.so  ...
+</span></span></code></pre></div><p>然后环境变量和参数和 afl-gcc大差不差</p>
+<p>特性：<code>USE_TRACE_PC</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">-</span>fsanitize<span style="color:#ff79c6">-</span>coverage<span style="color:#ff79c6">=</span>trace<span style="color:#ff79c6">-</span>pc<span style="color:#ff79c6">-</span>guard <span style="color:#ff79c6">-</span>mllvm(only Android) <span style="color:#ff79c6">-</span>sanitizer<span style="color:#ff79c6">-</span>coverage<span style="color:#ff79c6">-</span>block<span style="color:#ff79c6">-</span>threshold<span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>(only Android)
+</span></span></code></pre></div><p>定义了两个比较重要的宏 <code>__AFL_LOOP(_A)</code> 和 <code>__AFL_INIT()</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>  cc_params[cc_par_cnt<span style="color:#ff79c6">++</span>] <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;-D__AFL_LOOP(_A)=&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;({ static volatile char *_B __attribute__((used)); &#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34; _B = (char*)</span><span style="color:#f1fa8c">\&#34;</span><span style="color:#f1fa8c">&#34;</span> PERSIST_SIG <span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\&#34;</span><span style="color:#f1fa8c">; &#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">#ifdef __APPLE__
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>    <span style="color:#f1fa8c">&#34;__attribute__((visibility(</span><span style="color:#f1fa8c">\&#34;</span><span style="color:#f1fa8c">default</span><span style="color:#f1fa8c">\&#34;</span><span style="color:#f1fa8c">))) &#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;int _L(unsigned int) __asm__(</span><span style="color:#f1fa8c">\&#34;</span><span style="color:#f1fa8c">___afl_persistent_loop</span><span style="color:#f1fa8c">\&#34;</span><span style="color:#f1fa8c">); &#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">#else
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>    <span style="color:#f1fa8c">&#34;__attribute__((visibility(</span><span style="color:#f1fa8c">\&#34;</span><span style="color:#f1fa8c">default</span><span style="color:#f1fa8c">\&#34;</span><span style="color:#f1fa8c">))) &#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;int _L(unsigned int) __asm__(</span><span style="color:#f1fa8c">\&#34;</span><span style="color:#f1fa8c">__afl_persistent_loop</span><span style="color:#f1fa8c">\&#34;</span><span style="color:#f1fa8c">); &#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">#endif </span><span style="color:#6272a4">/* ^__APPLE__ */</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>    <span style="color:#f1fa8c">&#34;_L(_A); })&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  cc_params[cc_par_cnt<span style="color:#ff79c6">++</span>] <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;-D__AFL_INIT()=&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;do { static volatile char *_A __attribute__((used)); &#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34; _A = (char*)</span><span style="color:#f1fa8c">\&#34;</span><span style="color:#f1fa8c">&#34;</span> DEFER_SIG <span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\&#34;</span><span style="color:#f1fa8c">; &#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">#ifdef __APPLE__
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>    <span style="color:#f1fa8c">&#34;__attribute__((visibility(</span><span style="color:#f1fa8c">\&#34;</span><span style="color:#f1fa8c">default</span><span style="color:#f1fa8c">\&#34;</span><span style="color:#f1fa8c">))) &#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;void _I(void) __asm__(</span><span style="color:#f1fa8c">\&#34;</span><span style="color:#f1fa8c">___afl_manual_init</span><span style="color:#f1fa8c">\&#34;</span><span style="color:#f1fa8c">); &#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">#else
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>    <span style="color:#f1fa8c">&#34;__attribute__((visibility(</span><span style="color:#f1fa8c">\&#34;</span><span style="color:#f1fa8c">default</span><span style="color:#f1fa8c">\&#34;</span><span style="color:#f1fa8c">))) &#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;void _I(void) __asm__(</span><span style="color:#f1fa8c">\&#34;</span><span style="color:#f1fa8c">__afl_manual_init</span><span style="color:#f1fa8c">\&#34;</span><span style="color:#f1fa8c">); &#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">#endif </span><span style="color:#6272a4">/* ^__APPLE__ */</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>    <span style="color:#f1fa8c">&#34;_I(); } while (0)&#34;</span>;
+</span></span></code></pre></div><h4 id="pass">Pass</h4>
+<p>LLVM Pass: 在Pass遍历LLVM IR的同时，自然就可以往里面插入新的代码。</p>
+<p>实现了一个pass，<code>AFLCoverage</code>，和插桩和覆盖率统计有关</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">namespace</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">class</span> <span style="color:#50fa7b">AFLCoverage</span> <span style="color:#ff79c6">:</span> <span style="color:#ff79c6">public</span> ModulePass {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">public</span><span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">static</span> <span style="color:#8be9fd">char</span> ID;
+</span></span><span style="display:flex;"><span>      AFLCoverage() <span style="color:#ff79c6">:</span> ModulePass(ID) { }
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>      <span style="color:#8be9fd">bool</span> <span style="color:#50fa7b">runOnModule</span>(Module <span style="color:#ff79c6">&amp;</span>M) <span style="color:#ff79c6">override</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4">// StringRef getPassName() const override {
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>      <span style="color:#6272a4">//  return &#34;American Fuzzy Lop Instrumentation&#34;;
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>      <span style="color:#6272a4">// }
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  };
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>获取全局变量，也就是<code>SHM</code>全局变量</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>  GlobalVariable <span style="color:#ff79c6">*</span>AFLMapPtr <span style="color:#ff79c6">=</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">new</span> GlobalVariable(M, PointerType<span style="color:#ff79c6">::</span>get(Int8Ty, <span style="color:#bd93f9">0</span>), <span style="color:#8be9fd;font-style:italic">false</span>,
+</span></span><span style="display:flex;"><span>                         GlobalValue<span style="color:#ff79c6">::</span>ExternalLinkage, <span style="color:#bd93f9">0</span>, <span style="color:#f1fa8c">&#34;__afl_area_ptr&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  GlobalVariable <span style="color:#ff79c6">*</span>AFLPrevLoc <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> GlobalVariable(
+</span></span><span style="display:flex;"><span>      M, Int32Ty, <span style="color:#8be9fd;font-style:italic">false</span>, GlobalValue<span style="color:#ff79c6">::</span>ExternalLinkage, <span style="color:#bd93f9">0</span>, <span style="color:#f1fa8c">&#34;__afl_prev_loc&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#bd93f9">0</span>, GlobalVariable<span style="color:#ff79c6">::</span>GeneralDynamicTLSModel, <span style="color:#bd93f9">0</span>, <span style="color:#8be9fd;font-style:italic">false</span>);
+</span></span></code></pre></div><p>pass ir每一个函数(Function)，每个基本块(Basic Block)，目的是为了插桩统计覆盖率</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>  <span style="color:#ff79c6">for</span> (<span style="color:#ff79c6">auto</span> <span style="color:#ff79c6">&amp;</span><span style="color:#8be9fd;font-style:italic">F</span> : M)
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> (<span style="color:#ff79c6">auto</span> <span style="color:#ff79c6">&amp;</span><span style="color:#8be9fd;font-style:italic">BB</span> : F) {
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>	  <span style="color:#6272a4">// 寻找BB中适合插入桩代码的位置，然后通过初始化 IRBuilder 实例执行插入；
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	  <span style="color:#6272a4">// getFirstInsertionPt 获得插入点
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>      BasicBlock<span style="color:#ff79c6">::</span>iterator IP <span style="color:#ff79c6">=</span> BB.getFirstInsertionPt();
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4">// IRBuild IR进行插桩
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>      IRBuilder<span style="color:#ff79c6">&lt;&gt;</span> IRB(<span style="color:#ff79c6">&amp;</span>(<span style="color:#ff79c6">*</span>IP));
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4">// 随机插桩
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>      <span style="color:#ff79c6">if</span> (AFL_R(<span style="color:#bd93f9">100</span>) <span style="color:#ff79c6">&gt;=</span> inst_ratio) <span style="color:#ff79c6">continue</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4">/* Make up cur_loc */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#8be9fd">unsigned</span> <span style="color:#8be9fd">int</span> cur_loc <span style="color:#ff79c6">=</span> AFL_R(MAP_SIZE);
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// 随机获取当前的基础块编号
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>      ConstantInt <span style="color:#ff79c6">*</span>CurLoc <span style="color:#ff79c6">=</span> ConstantInt<span style="color:#ff79c6">::</span>get(Int32Ty, cur_loc);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#6272a4">// 如下的3步就是更新SHM，之前位置，当前位置，更新map
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>      <span style="color:#6272a4">/* Load prev_loc */</span>
+</span></span><span style="display:flex;"><span>      LoadInst <span style="color:#ff79c6">*</span>PrevLoc <span style="color:#ff79c6">=</span> IRB.CreateLoad(AFLPrevLoc);
+</span></span><span style="display:flex;"><span>      PrevLoc<span style="color:#ff79c6">-&gt;</span>setMetadata(M.getMDKindID(<span style="color:#f1fa8c">&#34;nosanitize&#34;</span>), MDNode<span style="color:#ff79c6">::</span>get(C, None));
+</span></span><span style="display:flex;"><span>      Value <span style="color:#ff79c6">*</span>PrevLocCasted <span style="color:#ff79c6">=</span> IRB.CreateZExt(PrevLoc, IRB.getInt32Ty());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4">/* Load SHM pointer */</span>
+</span></span><span style="display:flex;"><span>      LoadInst <span style="color:#ff79c6">*</span>MapPtr <span style="color:#ff79c6">=</span> IRB.CreateLoad(AFLMapPtr);
+</span></span><span style="display:flex;"><span>      MapPtr<span style="color:#ff79c6">-&gt;</span>setMetadata(M.getMDKindID(<span style="color:#f1fa8c">&#34;nosanitize&#34;</span>), MDNode<span style="color:#ff79c6">::</span>get(C, None));
+</span></span><span style="display:flex;"><span>      Value <span style="color:#ff79c6">*</span>MapPtrIdx <span style="color:#ff79c6">=</span>
+</span></span><span style="display:flex;"><span>          IRB.CreateGEP(MapPtr, IRB.CreateXor(PrevLocCasted, CurLoc));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4">/* Update bitmap */</span>
+</span></span><span style="display:flex;"><span>      LoadInst <span style="color:#ff79c6">*</span>Counter <span style="color:#ff79c6">=</span> IRB.CreateLoad(MapPtrIdx);
+</span></span><span style="display:flex;"><span>      Counter<span style="color:#ff79c6">-&gt;</span>setMetadata(M.getMDKindID(<span style="color:#f1fa8c">&#34;nosanitize&#34;</span>), MDNode<span style="color:#ff79c6">::</span>get(C, None));
+</span></span><span style="display:flex;"><span>      Value <span style="color:#ff79c6">*</span>Incr <span style="color:#ff79c6">=</span> IRB.CreateAdd(Counter, ConstantInt<span style="color:#ff79c6">::</span>get(Int8Ty, <span style="color:#bd93f9">1</span>));
+</span></span><span style="display:flex;"><span>      IRB.CreateStore(Incr, MapPtrIdx)
+</span></span><span style="display:flex;"><span>          <span style="color:#ff79c6">-&gt;</span>setMetadata(M.getMDKindID(<span style="color:#f1fa8c">&#34;nosanitize&#34;</span>), MDNode<span style="color:#ff79c6">::</span>get(C, None));
+</span></span><span style="display:flex;"><span>	  <span style="color:#6272a4">// A-&gt;B != B-&gt;A
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>      <span style="color:#6272a4">/* Set prev_loc to cur_loc &gt;&gt; 1 */</span>
+</span></span><span style="display:flex;"><span>      StoreInst <span style="color:#ff79c6">*</span>Store <span style="color:#ff79c6">=</span>
+</span></span><span style="display:flex;"><span>          IRB.CreateStore(ConstantInt<span style="color:#ff79c6">::</span>get(Int32Ty, cur_loc <span style="color:#ff79c6">&gt;&gt;</span> <span style="color:#bd93f9">1</span>), AFLPrevLoc);
+</span></span><span style="display:flex;"><span>      Store<span style="color:#ff79c6">-&gt;</span>setMetadata(M.getMDKindID(<span style="color:#f1fa8c">&#34;nosanitize&#34;</span>), MDNode<span style="color:#ff79c6">::</span>get(C, None));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      inst_blocks<span style="color:#ff79c6">++</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">/* Say something nice. */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>be_quiet) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>inst_blocks) WARNF(<span style="color:#f1fa8c">&#34;No instrumentation targets found.&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">else</span> <span style="color:#50fa7b">OKF</span>(<span style="color:#f1fa8c">&#34;Instrumented %u locations (%s mode, ratio %u%%)</span>.<span style="color:#f1fa8c">&#34;,</span>
+</span></span><span style="display:flex;"><span>             inst_blocks, getenv(<span style="color:#f1fa8c">&#34;AFL_HARDEN&#34;</span>) <span style="color:#ff79c6">?</span> <span style="color:#f1fa8c">&#34;hardened&#34;</span> <span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>             ((getenv(<span style="color:#f1fa8c">&#34;AFL_USE_ASAN&#34;</span>) <span style="color:#ff79c6">||</span> getenv(<span style="color:#f1fa8c">&#34;AFL_USE_MSAN&#34;</span>)) <span style="color:#ff79c6">?</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f1fa8c">&#34;ASAN/MSAN&#34;</span> <span style="color:#ff79c6">:</span> <span style="color:#f1fa8c">&#34;non-hardened&#34;</span>), inst_ratio);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> <span style="color:#8be9fd;font-style:italic">true</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>插桩部分：IRBuilder</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>$ clang <span style="color:#ff79c6">-</span>Xclang load <span style="color:#ff79c6">-</span>Xclang afl<span style="color:#ff79c6">-</span>llvm<span style="color:#ff79c6">-</span>pass.so ...
+</span></span></code></pre></div><p>需要一点LLVM的知识</p>
+<ul>
+<li><a href="https://blog.csdn.net/Zhanglin_Wu/article/details/125955324">理解IRBuilder</a></li>
+<li><a href="https://bbs.kanxue.com/thread-271739.htm">LLVM常用插桩API示例</a></li>
+<li><a href="https://blogs.maikebuke.com/2023/02/18/03-LLVM-Pass-%E9%9D%99%E6%80%81%E6%8F%92%E6%A1%A9%E6%96%B9%E5%BC%8F/">LLVM Pass 静态插桩</a></li>
+</ul>
+<p>构建pass.so -&gt; 使用 so 编译样本 -&gt; 构建运行时（rt） -&gt; 链接生成可执行文件</p>
+<p><code>IRB.CreateXxx</code> 插入了 Xxx 类型的指令，类似汇编语言</p>
+<p>CreateLoad: load xxx 获取地址
+CreateXor: xor a1, a2</p>
+<h4 id="llvm-rt">llvm-rt</h4>
+<p>main函数执行<code>find_obj</code>，寻找runtime library，与afl-as功能类似</p>
+<p>该文件是运行时库文件，实现了 llvm-mode 的3个特殊功能：<code>deferred instrumentation</code>、<code>persistent mode</code>、<code>trace-pc-guard mode</code>。</p>
+<p>重要的变量</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>u8  __afl_area_initial[MAP_SIZE];
+</span></span><span style="display:flex;"><span>u8<span style="color:#ff79c6">*</span> __afl_area_ptr <span style="color:#ff79c6">=</span> __afl_area_initial;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>__thread u32 __afl_prev_loc;
+</span></span></code></pre></div><h5 id="deferred-instrumentation">deferred instrumentation</h5>
+<p>AFL会尝试通过只执行一次目标二进制文件来提升性能，在 <code>main()</code> 之前暂停程序，然后克隆“主”进程获得一个稳定的可进行持续fuzz的目标。简言之，<em>避免目标二进制文件的多次、重复的完整运行</em>，而是采取了一种<strong>类似快照</strong>的机制。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">#ifdef __AFL_HAVE_MANUAL_CONTROL
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>	__AFL_INIT();
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">#endif
+</span></span></span></code></pre></div><p>初始化</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>__attribute__((constructor(CONST_PRIO))) <span style="color:#8be9fd">void</span> __afl_auto_init(<span style="color:#8be9fd">void</span>) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  is_persistent <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">!!</span>getenv(PERSIST_ENV_VAR);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (getenv(DEFER_ENV_VAR)) <span style="color:#ff79c6">return</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  __afl_manual_init();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> <span style="color:#50fa7b">__afl_manual_init</span>(<span style="color:#8be9fd">void</span>) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">static</span> u8 init_done;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>init_done) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    __afl_map_shm();
+</span></span><span style="display:flex;"><span>    __afl_start_forkserver();
+</span></span><span style="display:flex;"><span>    init_done <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>获得fuzzer创建的共享内存</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">static</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">__afl_map_shm</span>(<span style="color:#8be9fd">void</span>) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  u8 <span style="color:#ff79c6">*</span>id_str <span style="color:#ff79c6">=</span> getenv(SHM_ENV_VAR);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">/* If we&#39;re running under AFL, attach to the appropriate region, replacing the
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">     early-stage __afl_area_initial region that is needed to allow some really
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">     hacky .init code to work correctly in projects such as OpenSSL. */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (id_str) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    u32 shm_id <span style="color:#ff79c6">=</span> atoi(id_str);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    __afl_area_ptr <span style="color:#ff79c6">=</span> shmat(shm_id, <span style="color:#8be9fd;font-style:italic">NULL</span>, <span style="color:#bd93f9">0</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">/* Whooooops. */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (__afl_area_ptr <span style="color:#ff79c6">==</span> (<span style="color:#8be9fd">void</span> <span style="color:#ff79c6">*</span>)<span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>) _exit(<span style="color:#bd93f9">1</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">/* Write something into the bitmap so that even with low AFL_INST_RATIO,
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">       our parent doesn&#39;t give up on us. */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    __afl_area_ptr[<span style="color:#bd93f9">0</span>] <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>forkserver：pipe与fuzzer进程进行通信，然后fork()，子进程运行测试程序，父进程监视，与fuzzer进行通信</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">static</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">__afl_start_forkserver</span>(<span style="color:#8be9fd">void</span>) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">static</span> u8 tmp[<span style="color:#bd93f9">4</span>];
+</span></span><span style="display:flex;"><span>  s32 child_pid;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  u8  child_stopped <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">/* Phone home and tell the parent that we&#39;re OK. If parent isn&#39;t there,
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">     assume we&#39;re not running in forkserver mode and just execute program. */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (write(FORKSRV_FD <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">1</span>, tmp, <span style="color:#bd93f9">4</span>) <span style="color:#ff79c6">!=</span> <span style="color:#bd93f9">4</span>) <span style="color:#ff79c6">return</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">while</span> (<span style="color:#bd93f9">1</span>) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    u32 was_killed;
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">int</span> status;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">/* Wait for parent by reading from the pipe. Abort if read fails. */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (read(FORKSRV_FD, <span style="color:#ff79c6">&amp;</span>was_killed, <span style="color:#bd93f9">4</span>) <span style="color:#ff79c6">!=</span> <span style="color:#bd93f9">4</span>) _exit(<span style="color:#bd93f9">1</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">/* If we stopped the child in persistent mode, but there was a race
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">       condition and afl-fuzz already issued SIGKILL, write off the old
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">       process. */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (child_stopped <span style="color:#ff79c6">&amp;&amp;</span> was_killed) {
+</span></span><span style="display:flex;"><span>      child_stopped <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">if</span> (waitpid(child_pid, <span style="color:#ff79c6">&amp;</span>status, <span style="color:#bd93f9">0</span>) <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0</span>) _exit(<span style="color:#bd93f9">1</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>child_stopped) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4">/* Once woken up, create a clone of our process. */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      child_pid <span style="color:#ff79c6">=</span> fork();
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">if</span> (child_pid <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0</span>) _exit(<span style="color:#bd93f9">1</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4">/* In child process: close fds, resume execution. */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>child_pid) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        close(FORKSRV_FD);
+</span></span><span style="display:flex;"><span>        close(FORKSRV_FD <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">1</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span>;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    } <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4">/* Special handling for persistent mode: if the child is alive but
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">         currently stopped, simply restart it with SIGCONT. */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      kill(child_pid, SIGCONT);
+</span></span><span style="display:flex;"><span>      child_stopped <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">/* In parent process: write PID to pipe, then wait for child. */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (write(FORKSRV_FD <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">1</span>, <span style="color:#ff79c6">&amp;</span>child_pid, <span style="color:#bd93f9">4</span>) <span style="color:#ff79c6">!=</span> <span style="color:#bd93f9">4</span>) _exit(<span style="color:#bd93f9">1</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (waitpid(child_pid, <span style="color:#ff79c6">&amp;</span>status, is_persistent <span style="color:#ff79c6">?</span> <span style="color:#8be9fd;font-style:italic">WUNTRACED</span> : <span style="color:#bd93f9">0</span>) <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0</span>)
+</span></span><span style="display:flex;"><span>      _exit(<span style="color:#bd93f9">1</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">/* In persistent mode, the child stops itself with SIGSTOP to indicate
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">       a successful run. In this case, we want to wake it up without forking
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">       again. */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (WIFSTOPPED(status)) child_stopped <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">/* Relay wait status to pipe, then loop back. */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (write(FORKSRV_FD <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">1</span>, <span style="color:#ff79c6">&amp;</span>status, <span style="color:#bd93f9">4</span>) <span style="color:#ff79c6">!=</span> <span style="color:#bd93f9">4</span>) _exit(<span style="color:#bd93f9">1</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h5 id="persistent-mode">persistent mode</h5>
+<p><code>persistent mode</code> 并没有通过fork子进程的方式来执行fuzz。一些库中提供的API是无状态的，或者可以在处理不同输入文件之间进行重置，恢复到之前的状态。执行此类重置时，可以使用一个长期存活的进程来测试多个用例，以这种方式来减少重复的 <code>fork()</code> 调用和操作系统的开销。</p>
+<p>一个基础的框架大概如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">while</span> (__AFL_LOOP(<span style="color:#bd93f9">1000</span>)) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">/* Read input data. */</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">/* Call library code to be fuzzed. */</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">/* Reset state. */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">/* Exit normally */</span>
+</span></span></code></pre></div><p>一个样例</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;stdio.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;stdlib.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;unistd.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;signal.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;string.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">/* Main entry point. */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> <span style="color:#50fa7b">main</span>(<span style="color:#8be9fd">int</span> argc, <span style="color:#8be9fd">char</span><span style="color:#ff79c6">**</span> argv) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">char</span> buf[<span style="color:#bd93f9">100</span>]; <span style="color:#6272a4">/* Example-only buffer, you&#39;d replace it with other global or
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">                    local variables appropriate for your use case. */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">while</span> (__AFL_LOOP(<span style="color:#bd93f9">1000</span>)) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">/*** PLACEHOLDER CODE ***/</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">/* STEP 1: 初始化所有变量 */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    memset(buf, <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">100</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">/* STEP 2: 读取输入数据，从文件读入时需要先关闭旧的fd然后重新打开文件*/</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    read(<span style="color:#bd93f9">0</span>, buf, <span style="color:#bd93f9">100</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">/* STEP 3: 调用待fuzz的code*/</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (buf[<span style="color:#bd93f9">0</span>] <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#39;f&#39;</span>) {
+</span></span><span style="display:flex;"><span>      printf(<span style="color:#f1fa8c">&#34;one</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>);
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">if</span> (buf[<span style="color:#bd93f9">1</span>] <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#39;o&#39;</span>) {
+</span></span><span style="display:flex;"><span>        printf(<span style="color:#f1fa8c">&#34;two</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> (buf[<span style="color:#bd93f9">2</span>] <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#39;o&#39;</span>) {
+</span></span><span style="display:flex;"><span>          printf(<span style="color:#f1fa8c">&#34;three</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>);
+</span></span><span style="display:flex;"><span>          <span style="color:#ff79c6">if</span> (buf[<span style="color:#bd93f9">3</span>] <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#39;!&#39;</span>) {
+</span></span><span style="display:flex;"><span>            printf(<span style="color:#f1fa8c">&#34;four</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>);
+</span></span><span style="display:flex;"><span>            abort();
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">/*** END PLACEHOLDER CODE ***/</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">/* 循环结束，正常结束。AFL会重启进程，并清理内存、剩余fd等 */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>主要的逻辑</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#6272a4">/* A simplified persistent mode handler, used as explained in README.llvm. */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> <span style="color:#50fa7b">__afl_persistent_loop</span>(<span style="color:#8be9fd">unsigned</span> <span style="color:#8be9fd">int</span> max_cnt) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">static</span> u8  first_pass <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">static</span> u32 cycle_cnt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (first_pass) {   <span style="color:#6272a4">// 第一次pass
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">/* Make sure that every iteration of __AFL_LOOP() starts with a clean slate.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">       On subsequent calls, the parent will take care of that, but on the first
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">       iteration, it&#39;s our job to erase any trace of whatever happened
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">       before the loop. */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (is_persistent) {   <span style="color:#6272a4">// 持续
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>      memset(__afl_area_ptr, <span style="color:#bd93f9">0</span>, MAP_SIZE);
+</span></span><span style="display:flex;"><span>      __afl_area_ptr[<span style="color:#bd93f9">0</span>] <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>      __afl_prev_loc <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    cycle_cnt  <span style="color:#ff79c6">=</span> max_cnt;
+</span></span><span style="display:flex;"><span>    first_pass <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;   <span style="color:#6272a4">// 设置为0
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// 不是第一次pass
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#ff79c6">if</span> (is_persistent) {   
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">--</span>cycle_cnt) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      raise(SIGSTOP);   <span style="color:#6272a4">// 让当前进程暂停
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>      __afl_area_ptr[<span style="color:#bd93f9">0</span>] <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>      __afl_prev_loc <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    } <span style="color:#ff79c6">else</span> {   <span style="color:#6272a4">// cycle_cnt 结束
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4">/* When exiting __AFL_LOOP(), make sure that the subsequent code that
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">         follows the loop is not traced. We do that by pivoting back to the
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">         dummy output region. */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      __afl_area_ptr <span style="color:#ff79c6">=</span> __afl_area_initial;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>逻辑</p>
+<ul>
+<li>第一次执行loop循环，进行初始化，然后返回1。</li>
+<li>执行一次fuzz，计数器cnt减1，抛出SIGSTOP信号暂停子进程；</li>
+<li>其余执行loop循环，恢复之前暂停的子进程继续执行（forkserver），并设置 <code>child_stopped</code> 为0。此时相当于重新执行了一次程序，重新对 <code>__afl_prev_loc</code> 进行设置，随后返回1，再次进入 <code>while(_AFL_LOOP(1000))</code> ，执行一次fuzz，计数器cnt减1，抛出SIGSTOP信号暂停子进程；</li>
+<li>第1000次执行，计数器cnt此时为0，不再暂停子进程，令 <code>__afl_area_ptr</code> 指向无关数组 <code>__afl_area_initial</code> ，随后子进程结束。</li>
+</ul>
+<h5 id="trace-pc">trace-pc</h5>
+<p>该模式需要先构建 <code>afl-clang-fast</code> 时指定 <code>AFL_TRACE_PC=1</code>，在使用 <code>afl-clang-fast</code> 时加上 <code>fsanitize-coverage=trace-pc-guard</code> 参数来开启该功能。这种模式下的插桩，会在每个 edge 处都进行插桩，而不再是基本块。</p>
+<h3 id="afl-clang-lto">afl-clang-lto</h3>
+<p>aflplusplus</p>
+<p>LTO（Link Time Optimization）链接时优化是链接期间的程序优化，多个中间文件通过链接器合并在一起，并将它们组合为一个程序，缩减代码体积，因此链接时优化是对整个程序的分析和跨模块的优化。</p>
+<p>源码安装<code>afl-clang-lto</code>，需要安装 <code>llvm</code> 和 <code>lld</code> （version &gt;= 11)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo apt install llvm lld
+</span></span></code></pre></div><p>然后根据<a href="https://github.com/AFLplusplus/AFLplusplus/blob/stable/instrumentation/README.lto.md">AFLplusplus/instrumentation/README.lto.md</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># 需要注意这个版本，需要先查看一下</span>
+</span></span><span style="display:flex;"><span>$ <span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">LLVM_CONFIG</span><span style="color:#ff79c6">=</span>llvm-config-16
+</span></span><span style="display:flex;"><span>$ make
+</span></span><span style="display:flex;"><span>$ sudo make install
+</span></span></code></pre></div><p>源码：todo</p>
+<h2 id="参考文章">参考文章</h2>
+<ul>
+<li><a href="https://www.v4ler1an.com/2021/01/afl%E4%BA%8C%E4%B8%89%E4%BA%8B4/#1-deferred-instrumentation">AFL二三事</a></li>
+</ul>
+		</section>
+
+		<div class="post-tags">
+			
+			
+			<nav class="nav tags">
+				<ul class="tags">
+					
+					<li><a href="/tags/fuzz">Fuzz</a></li>
+					
+				</ul>
+			</nav>
+			
+			
+		</div>
+		<div id="disqus_thread"></div>
+<script type="text/javascript">
+    (function () {
+        
+        
+        if (window.location.hostname == "localhost")
+            return;
+
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        var disqus_shortname = 'ldrx30';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+
+</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/ldrx30" rel="me" title="GitHub"><i data-feather="github"></i></a>
+    <a class="border"></a></div>
+  <div class="footer-info">
+    2024  © ldrx30 |  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>

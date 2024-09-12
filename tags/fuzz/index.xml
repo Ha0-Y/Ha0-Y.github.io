@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Fuzz on ldrx30</title>
+    <link>http://localhost:1313/tags/fuzz/</link>
+    <description>Recent content in Fuzz on ldrx30</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>© ldrx30</copyright>
+    <lastBuildDate>Sun, 28 Jul 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/fuzz/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>hypervisor-in-rust-0</title>
+      <link>http://localhost:1313/posts/hypervisor-in-rust-0/</link>
+      <pubDate>Sun, 28 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/hypervisor-in-rust-0/</guid>
+      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;hypervisors and high-performance fuzzing.&lt;/p&gt;&#xA;&lt;/blockquote&gt;</description>
+    </item>
+    <item>
+      <title>afl-llvm</title>
+      <link>http://localhost:1313/posts/afl-llvm/</link>
+      <pubDate>Mon, 06 May 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/afl-llvm/</guid>
+      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;llvm mode&lt;/p&gt;&#xA;&lt;/blockquote&gt;</description>
+    </item>
+    <item>
+      <title>afl-gcc</title>
+      <link>http://localhost:1313/posts/afl-gcc/</link>
+      <pubDate>Sat, 09 Mar 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/afl-gcc/</guid>
+      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;模糊测试插桩&lt;/p&gt;&#xA;&lt;/blockquote&gt;</description>
+    </item>
+  </channel>
+</rss>

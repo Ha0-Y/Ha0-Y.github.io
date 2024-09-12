@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html><head lang="en"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>ELFNote-leak-kernel-base - ldrx30</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="
+CVE-2024-26816
+" />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="ELFNote-leak-kernel-base" />
+<meta property="og:description" content="
+CVE-2024-26816
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/elfnote-leak-kernel-base/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-04-15T00:00:00+00:00" />
+<meta property="article:modified_time" content="2024-04-15T00:00:00+00:00" />
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="ELFNote-leak-kernel-base"/>
+<meta name="twitter:description" content="
+CVE-2024-26816
+"/>
+<script src="http://localhost:1313/js/feather.min.js"></script>
+	
+	
+        <link href="http://localhost:1313/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="http://localhost:1313/css/main.5cebd7d4fb2b97856af8d32a6def16164fcf7d844e98e236fcb3559655020373.css" />
+		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="http://localhost:1313/css/dark.d22e2a2879d933a4b781535fc4c4c716e9f9d35ea4986dd0cbabda82effc4bdd.css"  disabled />
+	
+
+	
+	
+		<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+		</script>
+
+		
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			tex2jax: {
+				inlineMath: [['$','$'], ['\\(','\\)']],
+				displayMath: [['$$','$$'], ['\[','\]']],
+				processEscapes: true,
+				processEnvironments: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+				TeX: { equationNumbers: { autoNumber: "AMS" },
+						 extensions: ["AMSmath.js", "AMSsymbols.js"] }
+			}
+		});
+		</script>
+	
+
+	
+	
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css">
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js"></script>
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+					renderMathInElement(document.body, {
+							delimiters: [
+									{left: "$$", right: "$$", display: true},
+									{left: "$", right: "$", display: false}
+							]
+					});
+			});
+			</script>
+	
+
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="http://localhost:1313/">ldrx30</a>
+	</div>
+	<nav>
+		
+		<a href="/">Home</a>
+		
+		<a href="/posts">All posts</a>
+		
+		<a href="/about">About</a>
+		
+		| <span id="dark-mode-toggle" onclick="toggleTheme()"></span>
+		<script src="http://localhost:1313/js/themetoggle.js"></script>
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">ELFNote-leak-kernel-base</h1>
+			<div class="meta">Posted on Apr 15, 2024</div>
+		</div>
+		
+
+		
+
+		<section class="body">
+			<blockquote>
+<p>CVE-2024-26816</p>
+</blockquote>
+<p>读取 <code>/sys/kernel/notes</code> 内容来进行泄露 <code>startup_xen</code> 的内容</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo grep startup_xen /proc/kallsyms
+</span></span><span style="display:flex;"><span>ffffffff9fa94430 T startup_xen
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ ls -al /sys/kernel/notes     
+</span></span><span style="display:flex;"><span>-r--r--r-- <span style="color:#bd93f9">1</span> root root <span style="color:#bd93f9">472</span> Apr <span style="color:#bd93f9">15</span> 12:15 /sys/kernel/notes
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ hexdump -C /sys/kernel/notes                                
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">00000000</span>  <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">14</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  <span style="color:#bd93f9">03</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">47</span> 4e <span style="color:#bd93f9">55</span> <span style="color:#bd93f9">00</span>  |............GNU.|
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">00000010</span>  <span style="color:#bd93f9">14</span> ef <span style="color:#bd93f9">14</span> <span style="color:#bd93f9">05</span> a3 aa ad c2  <span style="color:#bd93f9">53</span> c3 cc <span style="color:#bd93f9">95</span> <span style="color:#bd93f9">80</span> be <span style="color:#bd93f9">45</span> a7  |........S.....E.|
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">00000020</span>  <span style="color:#bd93f9">96</span> 1f b5 <span style="color:#bd93f9">51</span> <span style="color:#bd93f9">06</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">01</span> <span style="color:#bd93f9">01</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  |...Q............|
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">00000030</span>  4c <span style="color:#bd93f9">69</span> 6e <span style="color:#bd93f9">75</span> <span style="color:#bd93f9">78</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">06</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  |Linux...........|
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">00000040</span>  <span style="color:#bd93f9">01</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">01</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  4c <span style="color:#bd93f9">69</span> 6e <span style="color:#bd93f9">75</span> <span style="color:#bd93f9">78</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  |........Linux...|
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">00000050</span>  <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  <span style="color:#bd93f9">08</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">12</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  |................|
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">00000060</span>  <span style="color:#bd93f9">58</span> <span style="color:#bd93f9">65</span> 6e <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">40</span> 1d  <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  |Xen...@.........|
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">00000070</span>  <span style="color:#bd93f9">06</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">06</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  <span style="color:#bd93f9">58</span> <span style="color:#bd93f9">65</span> 6e <span style="color:#bd93f9">00</span> 6c <span style="color:#bd93f9">69</span> 6e <span style="color:#bd93f9">75</span>  |........Xen.linu|
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">00000080</span>  <span style="color:#bd93f9">78</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">07</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  |x...............|
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">00000090</span>  <span style="color:#bd93f9">58</span> <span style="color:#bd93f9">65</span> 6e <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">32</span> 2e <span style="color:#bd93f9">36</span> <span style="color:#bd93f9">00</span>  <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">08</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  |Xen.2.6.........|
+</span></span><span style="display:flex;"><span>000000a0  <span style="color:#bd93f9">05</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">58</span> <span style="color:#bd93f9">65</span> 6e <span style="color:#bd93f9">00</span>  <span style="color:#bd93f9">78</span> <span style="color:#bd93f9">65</span> 6e 2d <span style="color:#bd93f9">33</span> 2e <span style="color:#bd93f9">30</span> <span style="color:#bd93f9">00</span>  |....Xen.xen-3.0.|
+</span></span><span style="display:flex;"><span>000000b0  <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">08</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  <span style="color:#bd93f9">03</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">58</span> <span style="color:#bd93f9">65</span> 6e <span style="color:#bd93f9">00</span>  |............Xen.|
+</span></span><span style="display:flex;"><span>000000c0  <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">80</span> ff ff ff ff  <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">08</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  |................|
+</span></span><span style="display:flex;"><span>000000d0  0f <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">58</span> <span style="color:#bd93f9">65</span> 6e <span style="color:#bd93f9">00</span>  <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">80</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  |....Xen.........|
+</span></span><span style="display:flex;"><span>000000e0  <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">08</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  <span style="color:#bd93f9">01</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">58</span> <span style="color:#bd93f9">65</span> 6e <span style="color:#bd93f9">00</span>  |............Xen.|
+</span></span><span style="display:flex;"><span>000000f0  <span style="color:#bd93f9">30</span> <span style="color:#bd93f9">44</span> a9 9f ff ff ff ff  <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">15</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  |0D..............|
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">00000100</span>  0a <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">58</span> <span style="color:#bd93f9">65</span> 6e <span style="color:#bd93f9">00</span>  <span style="color:#bd93f9">21</span> <span style="color:#bd93f9">77</span> <span style="color:#bd93f9">72</span> <span style="color:#bd93f9">69</span> <span style="color:#bd93f9">74</span> <span style="color:#bd93f9">61</span> <span style="color:#bd93f9">62</span> 6c  |....Xen.!writabl|
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">00000110</span>  <span style="color:#bd93f9">65</span> 5f <span style="color:#bd93f9">70</span> <span style="color:#bd93f9">61</span> <span style="color:#bd93f9">67</span> <span style="color:#bd93f9">65</span> 5f <span style="color:#bd93f9">74</span>  <span style="color:#bd93f9">61</span> <span style="color:#bd93f9">62</span> 6c <span style="color:#bd93f9">65</span> <span style="color:#bd93f9">73</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  |e_page_tables...|
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">00000120</span>  <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  <span style="color:#bd93f9">09</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">58</span> <span style="color:#bd93f9">65</span> 6e <span style="color:#bd93f9">00</span>  |............Xen.|
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">00000130</span>  <span style="color:#bd93f9">79</span> <span style="color:#bd93f9">65</span> <span style="color:#bd93f9">73</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  <span style="color:#bd93f9">10</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> 0d <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  |yes.............|
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">00000140</span>  <span style="color:#bd93f9">58</span> <span style="color:#bd93f9">65</span> 6e <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">01</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">01</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  |Xen.............|
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">00000150</span>  <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">10</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  |................|
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">00000160</span>  <span style="color:#bd93f9">58</span> <span style="color:#bd93f9">65</span> 6e <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">01</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">08</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  |Xen.............|
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">00000170</span>  <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">58</span> <span style="color:#bd93f9">65</span> 6e <span style="color:#bd93f9">00</span>  <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  |....Xen.........|
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">00000180</span>  <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">08</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  <span style="color:#bd93f9">02</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">58</span> <span style="color:#bd93f9">65</span> 6e <span style="color:#bd93f9">00</span>  |............Xen.|
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">00000190</span>  <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">54</span> 9e ff ff ff ff  <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  |..T.............|
+</span></span><span style="display:flex;"><span>000001a0  <span style="color:#bd93f9">11</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">58</span> <span style="color:#bd93f9">65</span> 6e <span style="color:#bd93f9">00</span>  <span style="color:#bd93f9">01</span> <span style="color:#bd93f9">88</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  |....Xen.........|
+</span></span><span style="display:flex;"><span>000001b0  <span style="color:#bd93f9">08</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">08</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  <span style="color:#bd93f9">58</span> <span style="color:#bd93f9">65</span> 6e <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">67</span> <span style="color:#bd93f9">65</span> 6e <span style="color:#bd93f9">65</span>  |........Xen.gene|
+</span></span><span style="display:flex;"><span>000001c0  <span style="color:#bd93f9">72</span> <span style="color:#bd93f9">69</span> <span style="color:#bd93f9">63</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  <span style="color:#bd93f9">04</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> 0e <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>  |ric.............|
+</span></span><span style="display:flex;"><span>000001d0  <span style="color:#bd93f9">58</span> <span style="color:#bd93f9">65</span> 6e <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">01</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span> <span style="color:#bd93f9">00</span>                           |Xen.....|
+</span></span><span style="display:flex;"><span>000001d8
+</span></span></code></pre></div><p><code>arch/x86/xen/xen-head.S</code> 定义</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">#define XEN_ELFNOTE_ENTRY          1
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span>	ELFNOTE(Xen, XEN_ELFNOTE_GUEST_OS,       .asciz <span style="color:#f1fa8c">&#34;linux&#34;</span>)
+</span></span><span style="display:flex;"><span>	ELFNOTE(Xen, XEN_ELFNOTE_GUEST_VERSION,  .asciz <span style="color:#f1fa8c">&#34;2.6&#34;</span>)
+</span></span><span style="display:flex;"><span>	ELFNOTE(Xen, XEN_ELFNOTE_XEN_VERSION,    .asciz <span style="color:#f1fa8c">&#34;xen-3.0&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">#ifdef CONFIG_XEN_PV
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>	ELFNOTE(Xen, XEN_ELFNOTE_VIRT_BASE,      _ASM_PTR __START_KERNEL_map)
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">/* Map the p2m table to a 512GB-aligned user address. */</span>
+</span></span><span style="display:flex;"><span>	ELFNOTE(Xen, XEN_ELFNOTE_INIT_P2M,       .quad (PUD_SIZE <span style="color:#ff79c6">*</span> PTRS_PER_PUD))
+</span></span><span style="display:flex;"><span>	ELFNOTE(Xen, XEN_ELFNOTE_ENTRY,          _ASM_PTR startup_xen)
+</span></span><span style="display:flex;"><span>	ELFNOTE(Xen, XEN_ELFNOTE_FEATURES,       .ascii <span style="color:#f1fa8c">&#34;!writable_page_tables&#34;</span>)
+</span></span><span style="display:flex;"><span>	ELFNOTE(Xen, XEN_ELFNOTE_PAE_MODE,       .asciz <span style="color:#f1fa8c">&#34;yes&#34;</span>)
+</span></span><span style="display:flex;"><span>	ELFNOTE(Xen, XEN_ELFNOTE_L1_MFN_VALID,
+</span></span><span style="display:flex;"><span>		.quad _PAGE_PRESENT; .quad _PAGE_PRESENT)
+</span></span><span style="display:flex;"><span>	ELFNOTE(Xen, XEN_ELFNOTE_MOD_START_PFN,  .<span style="color:#8be9fd">long</span> <span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>	ELFNOTE(Xen, XEN_ELFNOTE_PADDR_OFFSET,   _ASM_PTR <span style="color:#bd93f9">0</span>)
+</span></span></code></pre></div><p>ELFNOTE:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">#ifdef __ASSEMBLER__
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span><span style="color:#6272a4">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * Generate a structure with the same shape as Elf{32,64}_Nhdr (which
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * turn out to be the same size and shape), followed by the name and
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * desc data with appropriate padding.  The &#39;desctype&#39; argument is the
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * assembler pseudo op defining the type of the data e.g. .asciz while
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * &#39;descdata&#39; is the data itself e.g.  &#34;hello, world&#34;.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> *
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * e.g. ELFNOTE(XYZCo, 42, .asciz, &#34;forty-two&#34;)
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> *      ELFNOTE(XYZCo, 12, .long, 0xdeadbeef)
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">#define ELFNOTE_START(name, type, flags)	\
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">.pushsection .note.name, flags,@note	;	\
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">  .balign 4				;	\
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">  .long 2f - 1f		</span><span style="color:#6272a4">/* namesz */</span><span style="color:#ff79c6">	;	\
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">  .long 4484f - 3f	</span><span style="color:#6272a4">/* descsz */</span><span style="color:#ff79c6">	;	\
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">  .long type				;	\
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">1:.asciz #name				;	\
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">2:.balign 4				;	\
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">3:
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">#define ELFNOTE_END				\
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">4484:.balign 4				;	\
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">.popsection				;
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">#define ELFNOTE(name, type, desc)		\
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">	ELFNOTE_START(name, type, &#34;a&#34;)		\
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">		desc			;	\
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">	ELFNOTE_END
+</span></span></span></code></pre></div><p>存在 <code>CONFIG_XEN_PV=y</code> 这一选项，会写入 <code>startup_xen</code> 的内容。\</p>
+<ul>
+<li>type: <code>1</code></li>
+<li>name: <code>Xen</code></li>
+</ul>
+<p>Notes (Nhdr)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">typedef</span> <span style="color:#ff79c6">struct</span> {
+</span></span><span style="display:flex;"><span>   Elf32_Word n_namesz;
+</span></span><span style="display:flex;"><span>   Elf32_Word n_descsz;
+</span></span><span style="display:flex;"><span>   Elf32_Word n_type;
+</span></span><span style="display:flex;"><span>} Elf32_Nhdr;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">typedef</span> <span style="color:#ff79c6">struct</span> {
+</span></span><span style="display:flex;"><span>   Elf64_Word n_namesz;
+</span></span><span style="display:flex;"><span>   Elf64_Word n_descsz;
+</span></span><span style="display:flex;"><span>   Elf64_Word n_type;
+</span></span><span style="display:flex;"><span>} Elf64_Nhdr;
+</span></span></code></pre></div><p>其结构</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>Nhdr
+</span></span><span style="display:flex;"><span>name
+</span></span><span style="display:flex;"><span>desc
+</span></span></code></pre></div><p>已经被patch，等待进入主线</p>
+<ul>
+<li><a href="https://lore.kernel.org/linux-hardening/202402180028.6DB512C50@keescook/">Re: [RESEND RFC] kernel/ksysfs.c: restrict /sys/kernel/notes to root access - Kees Cook</a></li>
+</ul>
+<p>这个问题被引入时，KASLR还没有出现🤣</p>
+<h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://github.com/advisories/GHSA-mw3g-jr7f-3gg4">CVE-2024-26816 · GitHub Advisory Database</a></li>
+<li><a href="https://lwn.net/Articles/962782/">When ELF notes reveal too much [LWN.net]</a></li>
+</ul>
+		</section>
+
+		<div class="post-tags">
+			
+			
+			<nav class="nav tags">
+				<ul class="tags">
+					
+					<li><a href="/tags/kernel">kernel</a></li>
+					
+				</ul>
+			</nav>
+			
+			
+		</div>
+		<div id="disqus_thread"></div>
+<script type="text/javascript">
+    (function () {
+        
+        
+        if (window.location.hostname == "localhost")
+            return;
+
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        var disqus_shortname = 'ldrx30';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+
+</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/ldrx30" rel="me" title="GitHub"><i data-feather="github"></i></a>
+    <a class="border"></a></div>
+  <div class="footer-info">
+    2024  © ldrx30 |  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>

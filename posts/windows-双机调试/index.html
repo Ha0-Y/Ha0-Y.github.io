@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html><head lang="en"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>windows双机调试 - ldrx30</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="
+如何调试内核
+" />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="windows双机调试" />
+<meta property="og:description" content="
+如何调试内核
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/windows-%E5%8F%8C%E6%9C%BA%E8%B0%83%E8%AF%95/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-01-18T00:00:00+00:00" />
+<meta property="article:modified_time" content="2024-01-18T00:00:00+00:00" />
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="windows双机调试"/>
+<meta name="twitter:description" content="
+如何调试内核
+"/>
+<script src="http://localhost:1313/js/feather.min.js"></script>
+	
+	
+        <link href="http://localhost:1313/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="http://localhost:1313/css/main.5cebd7d4fb2b97856af8d32a6def16164fcf7d844e98e236fcb3559655020373.css" />
+		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="http://localhost:1313/css/dark.d22e2a2879d933a4b781535fc4c4c716e9f9d35ea4986dd0cbabda82effc4bdd.css"  disabled />
+	
+
+	
+	
+		<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+		</script>
+
+		
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			tex2jax: {
+				inlineMath: [['$','$'], ['\\(','\\)']],
+				displayMath: [['$$','$$'], ['\[','\]']],
+				processEscapes: true,
+				processEnvironments: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+				TeX: { equationNumbers: { autoNumber: "AMS" },
+						 extensions: ["AMSmath.js", "AMSsymbols.js"] }
+			}
+		});
+		</script>
+	
+
+	
+	
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css">
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js"></script>
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+					renderMathInElement(document.body, {
+							delimiters: [
+									{left: "$$", right: "$$", display: true},
+									{left: "$", right: "$", display: false}
+							]
+					});
+			});
+			</script>
+	
+
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="http://localhost:1313/">ldrx30</a>
+	</div>
+	<nav>
+		
+		<a href="/">Home</a>
+		
+		<a href="/posts">All posts</a>
+		
+		<a href="/about">About</a>
+		
+		| <span id="dark-mode-toggle" onclick="toggleTheme()"></span>
+		<script src="http://localhost:1313/js/themetoggle.js"></script>
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">windows双机调试</h1>
+			<div class="meta">Posted on Jan 18, 2024</div>
+		</div>
+		
+
+		
+
+		<section class="body">
+			<blockquote>
+<p>如何调试内核</p>
+</blockquote>
+<h2 id="windows-vm">windows vm</h2>
+<h3 id="win1011-虚拟机">win10/11 虚拟机</h3>
+<p>安装好VM，禁止系统更新，避免gadget地址改变。</p>
+<p>神奇的字符串，不知道为什么出现在这里</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>KH2J9-PC326-T44D4-39H6V-TVPBY   // 10
+</span></span><span style="display:flex;"><span>BCQNW-3VWYB-4V7QD-M6R2B-7MH26   // 11
+</span></span></code></pre></div><h3 id="调试内核">调试内核</h3>
+<h4 id="符号信息">符号信息</h4>
+<p>WinDbg preview &ndash;&gt; File &ndash;&gt; setting &ndash;&gt; debugging setting &ndash;&gt; default symbol path</p>
+<ul>
+<li>如果在指定的目录找不到，就会远程下载</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-gdscript3" data-lang="gdscript3"><span style="display:flex;"><span>srv<span style="color:#ff79c6">*</span>C:\Symbols<span style="color:#ff79c6">*</span>https:<span style="color:#ff79c6">//</span>msdl<span style="color:#ff79c6">.</span>microsoft<span style="color:#ff79c6">.</span>com<span style="color:#ff79c6">/</span>download<span style="color:#ff79c6">/</span>symbols
+</span></span></code></pre></div><h4 id="双机调试">双机调试</h4>
+<h5 id="管道">管道</h5>
+<p>WinDbg 双机调试内核。</p>
+<ul>
+<li>虚拟机添加一个串行端口，选择命名管道，这个命名管道形式如：<code>\\.\pipe\com_1</code>，选择该端是服务，另一端是应用程序</li>
+<li>windbg 选择 attach to kernel</li>
+</ul>
+<p>待调试机器：添加一个串口设备，使用命名的管道；开机后管理员开启cmd</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>bcdedit /dbgsettings serial baudrate:115200 debugport:1
+</span></span><span style="display:flex;"><span>bcdedit /copy <span style="color:#f1fa8c">&#34;{current}&#34;</span> /d WinDebug        <span style="color:#6272a4"># 这一步成功会生成一个引导项，打印出其uuid</span>
+</span></span><span style="display:flex;"><span>bcdedit /displayorder <span style="color:#f1fa8c">&#34;{current}&#34;</span> <span style="color:#f1fa8c">&#34;{uuid}&#34;</span>   <span style="color:#6272a4"># 指定开机进入上一步的引导项</span>
+</span></span><span style="display:flex;"><span>bcdedit /debug <span style="color:#f1fa8c">&#34;{uuid}&#34;</span> on                   <span style="color:#6272a4"># 开启debug</span>
+</span></span></code></pre></div><p>调试机器：windbg attach kernel，填内容</p>
+<ul>
+<li>波特率：115200</li>
+<li>管道：待调试机器的命名管道</li>
+<li>resets: 0</li>
+</ul>
+<p>也可使用 也可  <code>win+r</code> 运行 msconfig</p>
+<h5 id="网络">网络</h5>
+<p><a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/setting-up-a-network-debugging-connection">Set up KDNET network kernel debugging manually</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-pwsh" data-lang="pwsh"><span style="display:flex;"><span>bcdedit /debug on
+</span></span><span style="display:flex;"><span>bcdedit /dbgsettings net hostip:w.x.y.z port:n
+</span></span><span style="display:flex;"><span>shutdown -r -t <span style="color:#bd93f9">0</span>
+</span></span></code></pre></div><p>打开签名认证开关</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>bcdedit/set testsigning on
+</span></span></code></pre></div><p>显示为 <code>Debuggee is running...</code>，后来才知道需要点击顶栏 <code>break</code> 进行断点</p>
+<p>还可以使用 <code>VS</code> 调试。</p>
+<p>参考：<a href="https://bbs.kanxue.com/thread-261326.htm">双机内核调试</a></p>
+		</section>
+
+		<div class="post-tags">
+			
+			
+			<nav class="nav tags">
+				<ul class="tags">
+					
+					<li><a href="/tags/windows">Windows</a></li>
+					
+				</ul>
+			</nav>
+			
+			
+		</div>
+		<div id="disqus_thread"></div>
+<script type="text/javascript">
+    (function () {
+        
+        
+        if (window.location.hostname == "localhost")
+            return;
+
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        var disqus_shortname = 'ldrx30';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+
+</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/ldrx30" rel="me" title="GitHub"><i data-feather="github"></i></a>
+    <a class="border"></a></div>
+  <div class="footer-info">
+    2024  © ldrx30 |  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>

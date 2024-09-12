@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>CSE on ldrx30</title>
+    <link>http://localhost:1313/categories/cse/</link>
+    <description>Recent content in CSE on ldrx30</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>© ldrx30</copyright>
+    <lastBuildDate>Sun, 04 Aug 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/categories/cse/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>BFS-Ekoparty2022-windows-pwn</title>
+      <link>http://localhost:1313/posts/bfs-ekoparty2022-windows-pwn/</link>
+      <pubDate>Sun, 04 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/bfs-ekoparty2022-windows-pwn/</guid>
+      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;Windows userland PWN&lt;/p&gt;&#xA;&lt;/blockquote&gt;</description>
+    </item>
+    <item>
+      <title>hypervisor-in-rust-0</title>
+      <link>http://localhost:1313/posts/hypervisor-in-rust-0/</link>
+      <pubDate>Sun, 28 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/hypervisor-in-rust-0/</guid>
+      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;hypervisors and high-performance fuzzing.&lt;/p&gt;&#xA;&lt;/blockquote&gt;</description>
+    </item>
+    <item>
+      <title>afl-llvm</title>
+      <link>http://localhost:1313/posts/afl-llvm/</link>
+      <pubDate>Mon, 06 May 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/afl-llvm/</guid>
+      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;llvm mode&lt;/p&gt;&#xA;&lt;/blockquote&gt;</description>
+    </item>
+    <item>
+      <title>D3CTF-d3lgfs</title>
+      <link>http://localhost:1313/posts/d3ctf-d3lgfs/</link>
+      <pubDate>Tue, 30 Apr 2024 12:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/d3ctf-d3lgfs/</guid>
+      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;WDF PWN&lt;/p&gt;&#xA;&lt;/blockquote&gt;</description>
+    </item>
+    <item>
+      <title>ELFNote-leak-kernel-base</title>
+      <link>http://localhost:1313/posts/elfnote-leak-kernel-base/</link>
+      <pubDate>Mon, 15 Apr 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/elfnote-leak-kernel-base/</guid>
+      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;CVE-2024-26816&lt;/p&gt;&#xA;&lt;/blockquote&gt;</description>
+    </item>
+    <item>
+      <title>afl-fuzz</title>
+      <link>http://localhost:1313/posts/afl-fuzz/</link>
+      <pubDate>Mon, 25 Mar 2024 20:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/afl-fuzz/</guid>
+      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;FUZZ&lt;/p&gt;&#xA;&lt;/blockquote&gt;</description>
+    </item>
+    <item>
+      <title>Tenda-cve</title>
+      <link>http://localhost:1313/posts/tenda-cve/</link>
+      <pubDate>Thu, 21 Mar 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/tenda-cve/</guid>
+      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;IoT简易入门&lt;/p&gt;&#xA;&lt;/blockquote&gt;</description>
+    </item>
+    <item>
+      <title>afl-gcc</title>
+      <link>http://localhost:1313/posts/afl-gcc/</link>
+      <pubDate>Sat, 09 Mar 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/afl-gcc/</guid>
+      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;模糊测试插桩&lt;/p&gt;&#xA;&lt;/blockquote&gt;</description>
+    </item>
+    <item>
+      <title>Docker-escape</title>
+      <link>http://localhost:1313/posts/docker-escape/</link>
+      <pubDate>Wed, 06 Mar 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/docker-escape/</guid>
+      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;云😶‍🌫️&lt;/p&gt;&#xA;&lt;/blockquote&gt;</description>
+    </item>
+    <item>
+      <title>msf</title>
+      <link>http://localhost:1313/posts/msf/</link>
+      <pubDate>Wed, 31 Jan 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/msf/</guid>
+      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;Metasploit Framework 简单用用&lt;/p&gt;&#xA;&lt;/blockquote&gt;</description>
+    </item>
+    <item>
+      <title>unsafe-unlink</title>
+      <link>http://localhost:1313/posts/unsafe-unlink/</link>
+      <pubDate>Wed, 13 Sep 2023 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/unsafe-unlink/</guid>
+      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;经典漏洞&lt;/p&gt;&#xA;&lt;/blockquote&gt;</description>
+    </item>
+    <item>
+      <title>程序保护机制</title>
+      <link>http://localhost:1313/posts/%E7%A8%8B%E5%BA%8F%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%88%B6/</link>
+      <pubDate>Sat, 26 Aug 2023 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/%E7%A8%8B%E5%BA%8F%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%88%B6/</guid>
+      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;程序保护机制学习&lt;/p&gt;&#xA;&lt;/blockquote&gt;</description>
+    </item>
+  </channel>
+</rss>

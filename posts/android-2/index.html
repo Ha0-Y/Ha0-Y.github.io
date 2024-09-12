@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html><head lang="en"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Android-2 - ldrx30</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="
+安卓新人😋
+" />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="Android-2" />
+<meta property="og:description" content="
+安卓新人😋
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/android-2/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-10-18T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-10-18T00:00:00+00:00" />
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Android-2"/>
+<meta name="twitter:description" content="
+安卓新人😋
+"/>
+<script src="http://localhost:1313/js/feather.min.js"></script>
+	
+	
+        <link href="http://localhost:1313/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="http://localhost:1313/css/main.5cebd7d4fb2b97856af8d32a6def16164fcf7d844e98e236fcb3559655020373.css" />
+		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="http://localhost:1313/css/dark.d22e2a2879d933a4b781535fc4c4c716e9f9d35ea4986dd0cbabda82effc4bdd.css"  disabled />
+	
+
+	
+	
+		<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+		</script>
+
+		
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			tex2jax: {
+				inlineMath: [['$','$'], ['\\(','\\)']],
+				displayMath: [['$$','$$'], ['\[','\]']],
+				processEscapes: true,
+				processEnvironments: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+				TeX: { equationNumbers: { autoNumber: "AMS" },
+						 extensions: ["AMSmath.js", "AMSsymbols.js"] }
+			}
+		});
+		</script>
+	
+
+	
+	
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css">
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js"></script>
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+					renderMathInElement(document.body, {
+							delimiters: [
+									{left: "$$", right: "$$", display: true},
+									{left: "$", right: "$", display: false}
+							]
+					});
+			});
+			</script>
+	
+
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="http://localhost:1313/">ldrx30</a>
+	</div>
+	<nav>
+		
+		<a href="/">Home</a>
+		
+		<a href="/posts">All posts</a>
+		
+		<a href="/about">About</a>
+		
+		| <span id="dark-mode-toggle" onclick="toggleTheme()"></span>
+		<script src="http://localhost:1313/js/themetoggle.js"></script>
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">Android-2</h1>
+			<div class="meta">Posted on Oct 18, 2023</div>
+		</div>
+		
+
+		
+
+		<section class="body">
+			<blockquote>
+<p>安卓新人😋</p>
+</blockquote>
+<h2 id="hello-world">Hello World</h2>
+<ol>
+<li>Android Studio 创建一个项目，等待gradle</li>
+<li>想要run起来，创建一个device。在Android Studio顶栏，device manager -&gt; create.</li>
+</ol>
+<ul>
+<li>什么都先选第一个，缺什么东西使用IDE下载</li>
+</ul>
+<h3 id="activity">Activity</h3>
+<p>Activity代表了一个具有用户界面的单一屏幕</p>
+<p>Android 初始化是通过 Activity 中的 onCreate() 回调的调用开始的。存在有一序列的回调方法来启动一个活动，同时有一序列的方法来关闭活动</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>onCreate()</td>
+<td>这是第一个回调，在活动第一次创建时调用</td>
+</tr>
+<tr>
+<td>onStart()</td>
+<td>这个回调在活动为用户可见时被调用</td>
+</tr>
+<tr>
+<td>onResume()</td>
+<td>这个回调在应用程序与用户开始可交互的时候调用</td>
+</tr>
+<tr>
+<td>onPause()</td>
+<td>被暂停的活动无法接受用户输入，不能执行任何代码。当前活动将要被暂停，上一个活动将要被恢复时调用</td>
+</tr>
+<tr>
+<td>onStop()</td>
+<td>当活动不在可见时调用</td>
+</tr>
+<tr>
+<td>onDestroy()</td>
+<td>当活动被系统销毁之前调用</td>
+</tr>
+<tr>
+<td>onRestart()</td>
+<td>当活动被停止以后重新打开时调用</td>
+</tr>
+</tbody>
+</table>
+<h3 id="bundle">bundle</h3>
+<p>Bundle主要用于<strong>传递数据</strong>：它保存的数据，是以key-value(键值对)的形式存在的。</p>
+<p>我们经常使用<em>Bundle在Activity之间传递数据</em>，传递的数据可以是boolean、byte、int、long、float、double、string等基本类型或它们对应的数组，也可以是对象或对象数组。当Bundle传递的是对象或对象数组时，实现Serializable 或 Parcelable 接口。</p>
+<h3 id="常见组件">常见组件</h3>
+<ol>
+<li>onclick：点击事件</li>
+<li>button：按钮</li>
+<li>EditText：
+编辑文本控件
+编辑框（EditText）是TextView 的子类，在TextView 的基础上增加了文本编辑功能，用于处理用户输入，例如登录框等，是非常常用的组件。</li>
+</ol>
+<h3 id="apk">APK</h3>
+<p>android 创建一个空项目，打开hello xxx。先不在意细节，直接编译，可以直接运行（创建一个模拟器）</p>
+<p>打包成APK文件：</p>
+<ol>
+<li>Build -&gt; Build Bundles/Apks -&gt; Build APKs</li>
+<li>Build -&gt; Make Project 然后在执行1</li>
+<li>路径 app/build/outputs/apk</li>
+</ol>
+<p>如果是debug版本，需要更改 build variants 为 release</p>
+<p>然后就可以在jadx中反编译看看。</p>
+<h2 id="native">Native</h2>
+<ol>
+<li>Android Studio选择创建一个native C++ 项目，等待gradle</li>
+<li>出现一个 <code>cpp</code> 的文件夹，这就是我们需要写的库。同时存在java文件夹</li>
+</ol>
+<ul>
+<li>device创建或者使用已经存在的</li>
+</ul>
+<ol start="3">
+<li>Java层导入库</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">static</span> { System.<span style="color:#50fa7b">loadLibrary</span>(<span style="color:#f1fa8c">&#34;xxx&#34;</span>); }
+</span></span></code></pre></div><ol start="4">
+<li>在Java代码中出现如下的方法</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">native</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">demo</span>();
+</span></span></code></pre></div><h3 id="jnih">jni.h</h3>
+<blockquote>
+<p>在android ndk 下可以找到，直接采使用 find 命令找。</p>
+</blockquote>
+<ol>
+<li>某些类型</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">typedef</span> <span style="color:#8be9fd">void</span><span style="color:#ff79c6">*</span>           jobject;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">typedef</span> jobject         jclass;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">typedef</span> jobject         jstring;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">typedef</span> jobject         jarray;
+</span></span></code></pre></div><ol start="2">
+<li>JNIEnv 和 JavaVM声明，在C和C++ 用法不太相同。</li>
+</ol>
+<p>JNI 定义了两个关键数据结构，即<code>JavaVM</code>和<code>JNIEnv</code>。两者本质上都是指向函数表的二级指针。（在 C++ 版本中，它们是一些类，这些类具有指向函数表的指针，并具有每个通过该函数表间接调用的 JNI 函数的成员函数。）JavaVM 提供<code>调用接口</code>函数，您可以利用此类来函数创建和销毁 JavaVM。理论上，每个进程可以有多个 JavaVM，但 Android 只允许有一个。</p>
+<p>JNIEnv 提供了大部分 JNI 函数。原生函数都会收到 JNIEnv 作为第一个参数。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">_JNIEnv</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">_JavaVM</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">typedef</span> <span style="color:#ff79c6">const</span> <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">JNINativeInterface</span><span style="color:#ff79c6">*</span> C_JNIEnv;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">#if defined(__cplusplus)
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span><span style="color:#ff79c6">typedef</span> _JNIEnv JNIEnv;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">typedef</span> _JavaVM JavaVM;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">#else
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span><span style="color:#ff79c6">typedef</span> <span style="color:#ff79c6">const</span> <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">JNINativeInterface</span><span style="color:#ff79c6">*</span> JNIEnv;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">typedef</span> <span style="color:#ff79c6">const</span> <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">JNIInvokeInterface</span><span style="color:#ff79c6">*</span> JavaVM;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">#endif
+</span></span></span></code></pre></div><ol start="3">
+<li>JavaVM 原型</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">_JavaVM</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">const</span> <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">JNIInvokeInterface</span><span style="color:#ff79c6">*</span> functions;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">#if defined(__cplusplus)
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>    jint <span style="color:#50fa7b">DestroyJavaVM</span>()
+</span></span><span style="display:flex;"><span>    { <span style="color:#ff79c6">return</span> functions<span style="color:#ff79c6">-&gt;</span>DestroyJavaVM(<span style="color:#ff79c6">this</span>); }
+</span></span><span style="display:flex;"><span>    jint <span style="color:#50fa7b">AttachCurrentThread</span>(JNIEnv<span style="color:#ff79c6">**</span> p_env, <span style="color:#8be9fd">void</span><span style="color:#ff79c6">*</span> thr_args)
+</span></span><span style="display:flex;"><span>    { <span style="color:#ff79c6">return</span> functions<span style="color:#ff79c6">-&gt;</span>AttachCurrentThread(<span style="color:#ff79c6">this</span>, p_env, thr_args); }
+</span></span><span style="display:flex;"><span>    jint <span style="color:#50fa7b">DetachCurrentThread</span>()
+</span></span><span style="display:flex;"><span>    { <span style="color:#ff79c6">return</span> functions<span style="color:#ff79c6">-&gt;</span>DetachCurrentThread(<span style="color:#ff79c6">this</span>); }
+</span></span><span style="display:flex;"><span>    jint <span style="color:#50fa7b">GetEnv</span>(<span style="color:#8be9fd">void</span><span style="color:#ff79c6">**</span> env, jint version)
+</span></span><span style="display:flex;"><span>    { <span style="color:#ff79c6">return</span> functions<span style="color:#ff79c6">-&gt;</span>GetEnv(<span style="color:#ff79c6">this</span>, env, version); }
+</span></span><span style="display:flex;"><span>    jint <span style="color:#50fa7b">AttachCurrentThreadAsDaemon</span>(JNIEnv<span style="color:#ff79c6">**</span> p_env, <span style="color:#8be9fd">void</span><span style="color:#ff79c6">*</span> thr_args)
+</span></span><span style="display:flex;"><span>    { <span style="color:#ff79c6">return</span> functions<span style="color:#ff79c6">-&gt;</span>AttachCurrentThreadAsDaemon(<span style="color:#ff79c6">this</span>, p_env, thr_args); }
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">#endif </span><span style="color:#6272a4">/*__cplusplus*/</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">JNIInvokeInterface</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">void</span><span style="color:#ff79c6">*</span>       reserved0;
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">void</span><span style="color:#ff79c6">*</span>       reserved1;
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">void</span><span style="color:#ff79c6">*</span>       reserved2;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    jint        (<span style="color:#ff79c6">*</span>DestroyJavaVM)(JavaVM<span style="color:#ff79c6">*</span>);
+</span></span><span style="display:flex;"><span>    jint        (<span style="color:#ff79c6">*</span>AttachCurrentThread)(JavaVM<span style="color:#ff79c6">*</span>, JNIEnv<span style="color:#ff79c6">**</span>, <span style="color:#8be9fd">void</span><span style="color:#ff79c6">*</span>);
+</span></span><span style="display:flex;"><span>    jint        (<span style="color:#ff79c6">*</span>DetachCurrentThread)(JavaVM<span style="color:#ff79c6">*</span>);
+</span></span><span style="display:flex;"><span>    jint        (<span style="color:#ff79c6">*</span>GetEnv)(JavaVM<span style="color:#ff79c6">*</span>, <span style="color:#8be9fd">void</span><span style="color:#ff79c6">**</span>, jint);
+</span></span><span style="display:flex;"><span>    jint        (<span style="color:#ff79c6">*</span>AttachCurrentThreadAsDaemon)(JavaVM<span style="color:#ff79c6">*</span>, JNIEnv<span style="color:#ff79c6">**</span>, <span style="color:#8be9fd">void</span><span style="color:#ff79c6">*</span>);
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><ol start="4">
+<li>JNIEnv</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">JNINativeInterface</span> {
+</span></span><span style="display:flex;"><span>   <span style="color:#6272a4">// xxx 比较多
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>}
+</span></span></code></pre></div><ol start="5">
+<li>native method，签名有个具体的表</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">typedef</span> <span style="color:#ff79c6">struct</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">const</span> <span style="color:#8be9fd">char</span><span style="color:#ff79c6">*</span> name;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">const</span> <span style="color:#8be9fd">char</span><span style="color:#ff79c6">*</span> signature;
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">void</span><span style="color:#ff79c6">*</span>       fnPtr;
+</span></span><span style="display:flex;"><span>} JNINativeMethod;
+</span></span></code></pre></div><h3 id="静态注册">静态注册</h3>
+<ol>
+<li>静态注册的函数名一般为 <code>Java_包名_类名_函数名</code> 将包名中的 <code>.</code> 替换为 <code>_</code> 就是native层函数的名称</li>
+<li>函数：从<code>jni.h</code> 可以看出，第一个是JNIEnv，第二个为jclass，然后就是Java层代码的参数</li>
+<li>android studio 创建一个native C++ 默认为静态注册</li>
+</ol>
+<p>native-lib.cpp</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;jni.h&gt;</span><span style="color:#ff79c6">  
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;string&gt;</span><span style="color:#ff79c6">  
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>  
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">extern</span> <span style="color:#f1fa8c">&#34;C&#34;</span> 
+</span></span><span style="display:flex;"><span>JNIEXPORT jstring JNICALL  
+</span></span><span style="display:flex;"><span>Java_com_learn_native_1lib_MainActivity_stringFromJNI(  
+</span></span><span style="display:flex;"><span>        JNIEnv<span style="color:#ff79c6">*</span> env,  
+</span></span><span style="display:flex;"><span>        jobject <span style="color:#6272a4">/* this */</span>) {  
+</span></span><span style="display:flex;"><span>    std<span style="color:#ff79c6">::</span>string hello <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;Hello from C++&#34;</span>;  
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> env<span style="color:#ff79c6">-&gt;</span>NewStringUTF(hello.c_str());  
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>java层</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#ff79c6">package</span> com.learn.native_lib;  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> androidx.appcompat.app.AppCompatActivity;  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> android.os.Bundle;  
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> android.widget.TextView;  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> com.learn.native_lib.databinding.ActivityMainBinding;  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">MainActivity</span> <span style="color:#8be9fd;font-style:italic">extends</span> AppCompatActivity {  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// Used to load the &#39;native_lib&#39; library on application startup.  </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">static</span> {  
+</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">loadLibrary</span>(<span style="color:#f1fa8c">&#34;native_lib&#34;</span>);  
+</span></span><span style="display:flex;"><span>    }  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> ActivityMainBinding binding;  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    @Override  
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">protected</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">onCreate</span>(Bundle savedInstanceState) {  
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">super</span>.<span style="color:#50fa7b">onCreate</span>(savedInstanceState);  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>        binding <span style="color:#ff79c6">=</span> ActivityMainBinding.<span style="color:#50fa7b">inflate</span>(getLayoutInflater());  
+</span></span><span style="display:flex;"><span>        setContentView(binding.<span style="color:#50fa7b">getRoot</span>());  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// Example of a call to a native method  </span>
+</span></span><span style="display:flex;"><span>        TextView tv <span style="color:#ff79c6">=</span> binding.<span style="color:#50fa7b">sampleText</span>;  
+</span></span><span style="display:flex;"><span>        tv.<span style="color:#50fa7b">setText</span>(stringFromJNI());  
+</span></span><span style="display:flex;"><span>    }  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">/**  
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">     * A native method that is implemented by the &#39;native_lib&#39; native library,     
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">     * which is packaged with this application.     
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">     * */</span>    
+</span></span><span style="display:flex;"><span>     <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">native</span> String <span style="color:#50fa7b">stringFromJNI</span>();  
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>模拟器运行 + jadx反编译 + ida 打开so文件</p>
+<h3 id="动态注册">动态注册</h3>
+<ol>
+<li>函数名不用这么长，但是一般会与Java层的名称相同，方便开发</li>
+<li>JNI_Onload 函数，动态注册</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">#define classname &#34;com/learn/native_demo/MainActivity&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">static</span> jclass myClass;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>jint <span style="color:#50fa7b">JNI_OnLoad</span>(JavaVM<span style="color:#ff79c6">*</span> vm, <span style="color:#8be9fd">void</span><span style="color:#ff79c6">*</span> reserved) {
+</span></span><span style="display:flex;"><span>	JNIEnv<span style="color:#ff79c6">*</span> env <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">NULL</span>; 
+</span></span><span style="display:flex;"><span>    jint result <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">//1. 从JavaVM获取JNIEnv，这里使用1.4的版本
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">if</span>(vm<span style="color:#ff79c6">-&gt;</span>GetEnv((<span style="color:#8be9fd">void</span> <span style="color:#ff79c6">**</span>) <span style="color:#ff79c6">&amp;</span>env, JNI_VERSION_1_4) <span style="color:#ff79c6">!=</span> JNI_OK) { 
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// 2. 获取映射的java类
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    myClass <span style="color:#ff79c6">=</span> env<span style="color:#ff79c6">-&gt;</span>FindClass(className);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span>(myClass <span style="color:#ff79c6">==</span> <span style="color:#8be9fd;font-style:italic">NULL</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      printf(<span style="color:#f1fa8c">&#34;cannot get class:%s</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, className);
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// 2. 通过RegisterNatives方法动态注册
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">if</span>(env<span style="color:#ff79c6">-&gt;</span>RegisterNatives(myClass, gMethods, <span style="color:#ff79c6">sizeof</span>(gMethods)<span style="color:#ff79c6">/</span><span style="color:#ff79c6">sizeof</span>(gMethods[<span style="color:#bd93f9">0</span>])) <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      printf(<span style="color:#f1fa8c">&#34;register native method failed!</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>);
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">return</span> JNI_FALSE;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// 4. 返回版本，否则加载会失败。
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">return</span> JNI_VERSION_1_4;                  
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ol start="3">
+<li>动态注册，主要靠JNIEnv的RegisterNatives函数</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>jint RegisterNatives(jclass clazz, <span style="color:#ff79c6">const</span> JNINativeMethod<span style="color:#ff79c6">*</span> methods,
+</span></span><span style="display:flex;"><span>        jint nMethods)
+</span></span></code></pre></div><ol start="4">
+<li>我们需要自定义 JNINativeMethod 数组</li>
+</ol>
+<ul>
+<li><code>getNativeString</code>为Java类中定义的Native方法名。</li>
+<li><code>()Ljava/lang/String;</code> 为方法的签名， <code>()</code>表示该方法无参数</li>
+<li><code>reinterpret_cast&lt;void*&gt;(getString)</code> 为Native实现的方法名。这里强制转换成了函数指针。</li>
+<li>这些函数都需要我们实现</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">static</span> JNINativeMethod gMethods[] <span style="color:#ff79c6">=</span> {
+</span></span><span style="display:flex;"><span>        {<span style="color:#f1fa8c">&#34;getNativeString&#34;</span>, <span style="color:#f1fa8c">&#34;()Ljava/lang/String;&#34;</span>, <span style="color:#ff79c6">reinterpret_cast</span><span style="color:#ff79c6">&lt;</span><span style="color:#8be9fd">void</span><span style="color:#ff79c6">*&gt;</span>(getString)}
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><h2 id="smali-语法">smali 语法</h2>
+<p>Dalvik 虚拟机：Dalvik 是 Google 专门为 Android 平台设计的虚拟机。虽然 Android 程序可以使用 Java 语言来进行开发，但 Dalvik VM 和 Java VM 是两款不同的虚拟机。Dalvik VM 基于寄存器，而 Java VM 基于栈 。Dalvik VM 有专门的文件执行格式 dex (Dalvik Executable)，而 Java VM 则执行的是 Java 字节码。DVM 比 JVM 速度更快，占用的空间更少。</p>
+<p>不必要死记硬背，使用时查表，用着就熟悉了</p>
+<p><a href="https://ctf-wiki.org/android/basic_operating_mechanism/java_layer/smali/smali/">Smali - CTF Wiki (ctf-wiki.org)</a></p>
+<h2 id="firda">Firda</h2>
+<blockquote>
+<p>只能说多看官方文档</p>
+</blockquote>
+<p>命令使用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># 旧版 </span>
+</span></span><span style="display:flex;"><span>frida -U &lt;package_name&gt; -l hook.js  --no-pause
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 新版默认不会暂停，使用--pause 暂停 。</span>
+</span></span><span style="display:flex;"><span>frida-ps -Uai  // 获得名称
+</span></span><span style="display:flex;"><span>frida -U  &lt;name&gt; -l hook.js 
+</span></span></code></pre></div><p>某些方法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#6272a4">// 获取环境变量，就是获取 JNIEnv ，并且我们可以调用JNIEnv的方法
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>Java.vm.getEnv()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// 类型转化
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>hexdump()
+</span></span><span style="display:flex;"><span>readCString() 
+</span></span><span style="display:flex;"><span>toInt32()
+</span></span></code></pre></div><h3 id="native-hook">native hook</h3>
+<ol>
+<li>获得so基址</li>
+<li>获得函数基址，进行attach，两个方法，进入函数(onEnter)和退出函数(onLeave)的操作</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>Java.perform(() =&gt; {
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">let</span> lib_name <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;xxx.so&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">let</span> func_offset <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0x114514</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">let</span> libc_base <span style="color:#ff79c6">=</span> Module.findBaseAddress(lib_name);
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  console.log(<span style="color:#f1fa8c">&#34;libc base: &#34;</span> <span style="color:#ff79c6">+</span> libc_base);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// 一般so层函数第一个参数都是JniEnv，第二个参数是jclass
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#8be9fd;font-style:italic">let</span> func_addr <span style="color:#ff79c6">=</span> libc_base.add(func_offset);
+</span></span><span style="display:flex;"><span>  Interceptor.attach(func_addr, {
+</span></span><span style="display:flex;"><span>    onEnter<span style="color:#ff79c6">:</span> <span style="color:#8be9fd;font-style:italic">function</span> (args) {
+</span></span><span style="display:flex;"><span>      console.log(<span style="color:#f1fa8c">&#34;start function&#34;</span>);
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4">// console.log(&#34;args[0] = \n&#34; + hexdump(args[0]));
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>      <span style="color:#6272a4">// console.log(&#34;args[1] = \n&#34; + hexdump(args[1]));
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>      console.log(<span style="color:#f1fa8c">&#34;args[2] = \n&#34;</span> <span style="color:#ff79c6">+</span> hexdump(args[<span style="color:#bd93f9">2</span>]));
+</span></span><span style="display:flex;"><span>      console.log(<span style="color:#f1fa8c">&#34;args[3] = \n&#34;</span> <span style="color:#ff79c6">+</span> hexdump(args[<span style="color:#bd93f9">3</span>]));
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    onLeave<span style="color:#ff79c6">:</span> <span style="color:#8be9fd;font-style:italic">function</span> (retval) {
+</span></span><span style="display:flex;"><span>      console.log(<span style="color:#f1fa8c">&#34;function return&#34;</span>);
+</span></span><span style="display:flex;"><span>      console.log(<span style="color:#f1fa8c">&#34;return =&gt; &#34;</span> <span style="color:#ff79c6">+</span> hexdump(retval));
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  });
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><h3 id="inline-hook">inline hook</h3>
+<blockquote>
+<p>卡死的几率比较高</p>
+</blockquote>
+<ol>
+<li>获得指令的地址</li>
+<li>打印上下文 context</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>  Interceptor.attach(addr, {
+</span></span><span style="display:flex;"><span>    onEnter<span style="color:#ff79c6">:</span> <span style="color:#8be9fd;font-style:italic">function</span> (args) {
+</span></span><span style="display:flex;"><span>      console.log(<span style="color:#f1fa8c">&#34;start function&#34;</span>);
+</span></span><span style="display:flex;"><span>      console.log(JSON.stringify(<span style="color:#ff79c6">this</span>.context))
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4">// 具体的寄存器值
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>      conslole.log(<span style="color:#ff79c6">this</span>.context.x0)
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    onLeave<span style="color:#ff79c6">:</span> <span style="color:#8be9fd;font-style:italic">function</span> () {
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  });
+</span></span></code></pre></div><h2 id="ida-attach">IDA Attach</h2>
+<blockquote>
+<p>IDA yyds</p>
+</blockquote>
+<ol>
+<li>手机启动 IDA Pro <code>dbgsrv</code> 中的 android_server(x86_64 或者 arm 根据机型选择)</li>
+<li>端口转发</li>
+<li>IDA Pro 顶栏 Debugger -&gt; Attach -&gt; Remote Android debugger</li>
+</ol>
+<p>需要端口转发才能attach，将android端口转发一下</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>adb forward tcp:23946 tcp:23946
+</span></span></code></pre></div><h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://developer.android.com/reference/android/os/Bundle">Bundle Android Developers</a></li>
+<li><a href="https://frida.re/docs/home/">Frida • A world-class dynamic instrumentation toolkit</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/520523247?accessToken=eyJhbGciOiJIUzI1NiIsImtpZCI6ImRlZmF1bHQiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE2OTg3NDkwNTMsImZpbGVHVUlEIjoiZ1hxbWRWdmJPRXNYcG8zbyIsImlhdCI6MTY5ODc0ODc1MywiaXNzIjoidXBsb2FkZXJfYWNjZXNzX3Jlc291cmNlIiwidXNlcklkIjotODM1Mjk0Njk4M30.3D24gUz7Zah8RqqqLRzUIr5z1PlHm7nDF22mMsj6zBw">JNI动态注册、静态注册实例及其实现原理分析</a></li>
+</ul>
+		</section>
+
+		<div class="post-tags">
+			
+			
+			<nav class="nav tags">
+				<ul class="tags">
+					
+					<li><a href="/tags/android">Android</a></li>
+					
+				</ul>
+			</nav>
+			
+			
+		</div>
+		<div id="disqus_thread"></div>
+<script type="text/javascript">
+    (function () {
+        
+        
+        if (window.location.hostname == "localhost")
+            return;
+
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        var disqus_shortname = 'ldrx30';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+
+</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/ldrx30" rel="me" title="GitHub"><i data-feather="github"></i></a>
+    <a class="border"></a></div>
+  <div class="footer-info">
+    2024  © ldrx30 |  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>

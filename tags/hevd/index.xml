@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>HEVD on ldrx30</title>
+    <link>http://localhost:1313/tags/hevd/</link>
+    <description>Recent content in HEVD on ldrx30</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>© ldrx30</copyright>
+    <lastBuildDate>Wed, 07 Feb 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/hevd/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HEVD-UAF</title>
+      <link>http://localhost:1313/posts/hevd-uaf/</link>
+      <pubDate>Wed, 07 Feb 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/hevd-uaf/</guid>
+      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;Windows Kernel NonPagedPool UAF&lt;/p&gt;&#xA;&lt;/blockquote&gt;</description>
+    </item>
+  </channel>
+</rss>
